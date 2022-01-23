@@ -1,0 +1,16 @@
+[
+{
+  "modid": "sprk",
+  "name": "Spark",
+  "description": "Most based client",
+  "version": "1.0",
+  "mcversion": "1.12.2",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["dvd","geza3D","wallhacks"],
+  "credits": "The Forge and FML guys, for making this example",
+  "logoFile": "spark-logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]

@@ -1,0 +1,33 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "package": "me.wallhacks.spark.mixin.mixins",
+  "refmap": "mixins.spark.refmap.json",
+  "minVersion": "0.7.11",
+  "mixins": [
+    "MixinBlock",
+    "MixinChunkProviderClient",
+    "MixinEntity",
+    "MixinEntityBoat",
+    "MixinEntityLivingBase",
+    "MixinEntityPlayer",
+    "MixinEntityPlayerSP",
+    "MixinEntityRenderer",
+    "MixinGui",
+    "MixinGuiMainMenu",
+    "MixinGuiScreen",
+    "MixinLayerArmorBase",
+    "MixinMinecraft",
+    "MixinNetworkManager",
+    "MixinParticleManager",
+    "MixinRenderEnderCrystal",
+    "MixinRenderLivingBase",
+    "MixinRenderManager",
+    "MixinRenderPlayer",
+    "MixinWorld"
+  ],
+  "client": [
+    "MixinAbstractClientPlayer",
+    "MixinNetHandlerPlayClient"
+  ]
+}
