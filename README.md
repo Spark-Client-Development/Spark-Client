@@ -12,3 +12,10 @@ https://discord.gg/7ZbN7JMgS3
 
 # Contributing
 feel free to make a pull request il take a look if I have the time
+
+
+
+
+
+
+follow me in github pls
