@@ -58,15 +58,15 @@ public class Spark implements MC {
 	        rotationManager = new RotationManager();
 	        fontManager = new FontManager();
 	        systemManager = new SystemManager();
-            popManager = new PopManager();
+                popManager = new PopManager();
 	        commandManager = new CommandManager();
-            fadeManager = new FadeManager();
+                fadeManager = new FadeManager();
 	        clickGuiScreen = new ClickGuiMenuBase();
-            threadManager = new ThreadManager();
-            altManager = new AltManager();
-            socialManager = new SocialManager();
+                threadManager = new ThreadManager();
+                altManager = new AltManager();
+                socialManager = new SocialManager();
 	        configManager.Load();
-            logger.info("Spark client loaded successfully");
+               logger.info("Spark client loaded successfully");
     	}
 
 
