@@ -48,17 +48,16 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
         UpdateWalkingPlayerEvent.Pre event = new UpdateWalkingPlayerEvent.Pre();
         Spark.eventBus.post(event);
 
-        if (event.isCanceled())
+        if (event.isCanceled()) {
             info.cancel();
+        }
     }
 
 
     @Inject(method = "onUpdateWalkingPlayer", at = @At("RETURN"))
     public void onUpdateWalkingPlayerPost(final CallbackInfo callbackInfo) {
-
         UpdateWalkingPlayerEvent.Post event = new UpdateWalkingPlayerEvent.Post();
         Spark.eventBus.post(event);
-
     }
 
 

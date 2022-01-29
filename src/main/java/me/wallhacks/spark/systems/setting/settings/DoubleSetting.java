@@ -15,7 +15,6 @@ public class DoubleSetting extends Setting<Double> implements NumberSetting {
 
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max,Predicate<Double> visible, String settingCategory) {
         this(name,settingsHolder,value,min,max,0.1,visible,settingCategory);
-
     }
 
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, double sliderStep,String settingCategory) {
@@ -25,8 +24,12 @@ public class DoubleSetting extends Setting<Double> implements NumberSetting {
 
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, double sliderStep) {
         this(name,settingsHolder,value,min,max,sliderStep,null,"General");
-
     }
+
+    public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, Predicate<Double> visible) {
+        this(name,settingsHolder,value,min,max,0.1,visible,"General");
+    }
+
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max) {
         this(name,settingsHolder,value,min,max,0.1);
 

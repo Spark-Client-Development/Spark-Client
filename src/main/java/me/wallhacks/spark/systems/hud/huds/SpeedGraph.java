@@ -33,7 +33,7 @@ public class SpeedGraph extends HudElement {
         Vec3d v = new Vec3d(MC.mc.player.prevPosX- MC.mc.player.posX, MC.mc.player.prevPosY- MC.mc.player.posY, MC.mc.player.prevPosZ- MC.mc.player.posZ);
 
         double speed = ((MathHelper.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)));
-
+        speed*=(50/mc.timer.tickLength);
 
 
         speeds.add(speed);

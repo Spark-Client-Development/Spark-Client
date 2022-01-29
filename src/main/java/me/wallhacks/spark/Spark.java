@@ -26,6 +26,7 @@ public class Spark implements MC {
 
     public static EventBus eventBus;
 
+    public static RPCManager rpcManager;
     public static SystemManager systemManager;
     public static ConfigManager configManager;
     public static RotationManager rotationManager;
@@ -52,7 +53,6 @@ public class Spark implements MC {
 	        eventBus = MinecraftForge.EVENT_BUS;
 
 	        eventBus.register(new CommandHandler());
-
 	        configManager = new ConfigManager();
 	        keyManager = new KeyManager();
 	        rotationManager = new RotationManager();
@@ -66,6 +66,7 @@ public class Spark implements MC {
             altManager = new AltManager();
             socialManager = new SocialManager();
 	        configManager.Load();
+            rpcManager = new RPCManager();
             logger.info("Spark client loaded successfully");
     	}
 

@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.setting;
 
+import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.systems.SettingsHolder;
 
 import java.util.function.Predicate;
@@ -38,6 +39,7 @@ public abstract class Setting<T> {
 
     public void setValue(T value) {
         this.value = value;
+        new SettingChangeEvent(this);
         settingsHolder.onSettingChange();
     }
 

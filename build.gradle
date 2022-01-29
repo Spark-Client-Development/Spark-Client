@@ -87,6 +87,7 @@ shadowJar {
         include(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
         include(dependency('org.spongepowered:mixin'))
         include(dependency('club.minnced:java-discord-rpc:2.0.1'))
+        include(dependency('club.minnced:discord-rpc-release:v3.3.0'))
         include(dependency('org.jetbrains:annotations:22.0.0'))
     }
     exclude 'dummyThing'
