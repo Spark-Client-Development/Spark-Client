@@ -49,7 +49,7 @@ import java.util.ConcurrentModificationException;
 @Module.Registration(name = "CrystalAura", description = "Superior module litarly best ever")
 public class CrystalAura extends Module {
     IntSetting prediction = new IntSetting("Prediction", this, 0, 0, 20, "Prediction");
-
+    BooleanSetting prePlace = new BooleanSetting("PrePlace", this, true, "Prediction");
 
     BooleanSetting PlayersOnly = new BooleanSetting("PlayersOnly", this, true, "Attacking");
 
@@ -163,14 +163,14 @@ public class CrystalAura extends Module {
             try {
                 //see if this crystal was planned to be placed
                 if (c.getPosition().add(0, -1, 0).equals(currentCrystalBlockPos)) {
-
-
                     //reset to allow break
                     BreakPauseTimer = 0;
                     if (InstantBreak.isOn()) {
                         //if insta break is one we set break target and call break
-                        currentCrystalEntity = c;
-                        doBreak();
+                        if ( CrystalUtil.calculateDamageCrystal(c.getPositionVector(), predictedPlayer,false) > minEnemydamage.getValue()) {
+                            currentCrystalEntity = c;
+                            doBreak();
+                        }
                     }
 
                 }
@@ -349,7 +349,7 @@ public class CrystalAura extends Module {
                 EntityEnderCrystal e = (EntityEnderCrystal) o;
 
                 if (canBreakCrystal(e)) {
-                    float Value = getValueForCrystalExplodingAtPoint(e.getPositionVector()).value;
+                    float Value = getValueForCrystalExplodingAtPoint(e.getPositionVector(), false).value;
 
 
                     if (Value > bestValue) {
@@ -376,7 +376,7 @@ public class CrystalAura extends Module {
         float bestValue = 0;
         for (BlockPos pos : WorldUtils.getSphere(PlayerUtil.GetPlayerPosFloored(MC.mc.player), 7, 7, 1)) {
             if (CanPlaceOnBlock(pos)) {
-                ValueForExplodingCrystalAtPoint Value = getValueForCrystalExplodingAtPoint(new Vec3d(pos.getX() + 0.5f, pos.getY() + 1, pos.getZ() + 0.5f));
+                ValueForExplodingCrystalAtPoint Value = getValueForCrystalExplodingAtPoint(new Vec3d(pos.getX() + 0.5f, pos.getY() + 1, pos.getZ() + 0.5f), prePlace.getValue());
 
                 if (Value.value > bestValue) {
                     bestValue = Value.value;
@@ -403,11 +403,11 @@ public class CrystalAura extends Module {
         }
     }
 
-    ValueForExplodingCrystalAtPoint getValueForCrystalExplodingAtPoint(Vec3d pos) {
+    ValueForExplodingCrystalAtPoint getValueForCrystalExplodingAtPoint(Vec3d pos, boolean prePlace) {
         float bestValue = -1;
 
         float myhealth = MC.mc.player.getHealth() + MC.mc.player.getAbsorptionAmount();
-        float selfdam = CrystalUtil.calculateDamageCrystal(pos, predictedPlayer);
+        float selfdam = CrystalUtil.calculateDamageCrystal(pos, predictedPlayer, false);
         PredictedEntity target = null;
 
         if (selfdam + 2 < myhealth || !NoSuicide.isOn())
@@ -415,7 +415,7 @@ public class CrystalAura extends Module {
 
                 for (PredictedEntity ct : predictedEnemies) {
                     EntityLivingBase e = ct.entity;
-                    float Edam = CrystalUtil.calculateDamageCrystal(pos, ct);
+                    float Edam = CrystalUtil.calculateDamageCrystal(pos, ct, prePlace);
 
                     if (Edam > MinDamFacePlace.getValue())
                         if (FacePlaceHealth.getValue() > e.getHealth() + e.getAbsorptionAmount() || Edam > minEnemydamage.getValue() || (breakArmour.isOn() && AttackUtil.isArmourLow(e))) {

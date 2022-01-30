@@ -161,26 +161,23 @@ public class InventoryManager extends Module {
             InventoryUtil.throwItem(s);
             timer.delayRandom(delay.getValue(),50);
         }
-        else if(SortInventory.isOn())
-        {
-
-            for (int i = 0; i < perfectInventory().length; i++) {
-                Item item = perfectInventory()[i];
-                int sloti = InventoryUtil.getSlotIdFromInventoryId(i);
-                if(sloti != s && item != null)
-                {
-                    if(!invenotrySortIsItemSame(item, MC.mc.player.inventoryContainer.getInventory().get(sloti).getItem()))
-                        if(invenotrySortIsItemSame(item,itemStack.getItem()))
-                            if(perfectInventory()[slot] == null || !invenotrySortIsItemSame(perfectInventory()[slot],itemStack.getItem()))
-                            {
-                                InventoryUtil.moveItem(s,sloti);
-                                timer.delayRandom(delay.getValue(),50);
-                                break;
-                            }
+        else if(SortInventory.isOn()) {
+            if (perfectInventory() != null) {
+                for (int i = 0; i < perfectInventory().length; i++) {
+                    Item item = perfectInventory()[i];
+                    int sloti = InventoryUtil.getSlotIdFromInventoryId(i);
+                    if (sloti != s && item != null) {
+                        if (!invenotrySortIsItemSame(item, MC.mc.player.inventoryContainer.getInventory().get(sloti).getItem()))
+                            if (invenotrySortIsItemSame(item, itemStack.getItem()))
+                                if (perfectInventory()[slot] == null || !invenotrySortIsItemSame(perfectInventory()[slot], itemStack.getItem())) {
+                                    InventoryUtil.moveItem(s, sloti);
+                                    timer.delayRandom(delay.getValue(), 50);
+                                    break;
+                                }
+                    }
                 }
             }
         }
-
     }
 
     boolean invenotrySortIsItemSame(Item i1,Item i2){

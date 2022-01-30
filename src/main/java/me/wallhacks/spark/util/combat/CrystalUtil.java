@@ -1,8 +1,10 @@
 package me.wallhacks.spark.util.combat;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.util.MC;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.DestroyBlockProgress;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CrystalUtil implements MC {
-        public static boolean rayTraceSolidCheck(Vec3d start, Vec3d end, boolean shouldIgnore) {
+        public static boolean rayTraceSolidCheck(Vec3d start, Vec3d end, boolean shouldIgnore, boolean preplace) {
             if (!Double.isNaN(start.x) && !Double.isNaN(start.y) && !Double.isNaN(start.z)) {
                 if (!Double.isNaN(end.x) && !Double.isNaN(end.y) && !Double.isNaN(end.z)) {
                     int currX = MathHelper.floor(start.x);
@@ -41,7 +43,7 @@ public class CrystalUtil implements MC {
                     net.minecraft.block.Block block = blockState.getBlock();
 
                     if ((blockState.getCollisionBoundingBox(mc.world, blockPos) != Block.NULL_AABB) &&
-                            block.canCollideCheck(blockState, false) && (getBlocks().contains(block) || !shouldIgnore)) {
+                            block.canCollideCheck(blockState, false) && (getBlocks().contains(block) || !shouldIgnore) && (!isBreakBlock(blockPos) || !preplace)) {
                         return true;
                     }
 
@@ -119,13 +121,20 @@ public class CrystalUtil implements MC {
                         blockState = mc.world.getBlockState(blockPos);
                         block = blockState.getBlock();
 
-                        if (block.canCollideCheck(blockState, false) && (getBlocks().contains(block) || !shouldIgnore)) {
+                        if (block.canCollideCheck(blockState, false) && (getBlocks().contains(block) || !shouldIgnore) && (!isBreakBlock(blockPos) || !preplace)) {
                             return true;
                         }
                     }
                 }
             }
 
+            return false;
+        }
+
+        private static boolean isBreakBlock(BlockPos pos) {
+            for (DestroyBlockProgress progress : mc.renderGlobal.damagedBlocks.values()) {
+                if (progress.getPosition().equals(pos)) return true;
+            }
             return false;
         }
 
@@ -143,10 +152,10 @@ public class CrystalUtil implements MC {
         }
 
         //use this to calculate damage for prediction
-        public static float calculateDamageCrystal(Vec3d expolsionPoint, PredictedEntity predicted) {
-            return calculateDamageCrystal(expolsionPoint, predicted.entity,predicted.predictedBB);
+        public static float calculateDamageCrystal(Vec3d expolsionPoint, PredictedEntity predicted, boolean prePlace) {
+            return calculateDamageCrystal(expolsionPoint, predicted.entity,predicted.predictedBB, prePlace);
         }
-        public static float calculateDamageCrystal(Vec3d expolsionPoint, EntityLivingBase entity, AxisAlignedBB predicted){
+        public static float calculateDamageCrystal(Vec3d expolsionPoint, EntityLivingBase entity, AxisAlignedBB predicted, boolean prePlace){
 
             float finald = 0;
 
@@ -156,7 +165,7 @@ public class CrystalUtil implements MC {
             entity.resetPositionToBB();
 
             //damage calculation
-            finald = calculateDamageCrystal(expolsionPoint,entity,true);
+            finald = calculateDamageCrystal(expolsionPoint,entity,true, prePlace);
             //set enttiy bb back to normal one
             entity.boundingBox = realBB;
             entity.resetPositionToBB();
@@ -167,22 +176,20 @@ public class CrystalUtil implements MC {
 
 
         public static float calculateDamageCrystal(EntityEnderCrystal crystal, Entity target, boolean shouldIgnore) {
-            return calculateDamageCrystal(new Vec3d(crystal.posX, crystal.posY, crystal.posZ), target, shouldIgnore);
+            return calculateDamageCrystal(new Vec3d(crystal.posX, crystal.posY, crystal.posZ), target, shouldIgnore, false);
         }
 
-        public static float calculateDamageCrystal(BlockPos pos, Entity target, boolean shouldIgnore) {
-            return calculateDamageCrystal(new Vec3d(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5), target, shouldIgnore);
+        public static float calculateDamageCrystal(BlockPos pos, Entity target, boolean shouldIgnore, boolean prePlace) {
+            return calculateDamageCrystal(new Vec3d(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5), target, shouldIgnore, prePlace);
         }
 
-        public static float calculateDamageCrystal(Vec3d explosionPosition,Entity target, boolean shouldIgnore) {
-            return getExplosionDamage(target, explosionPosition, 6.0f, shouldIgnore);
+        public static float calculateDamageCrystal(Vec3d explosionPosition,Entity target, boolean shouldIgnore, boolean prePlace) {
+            return getExplosionDamage(target, explosionPosition, 6.0f, shouldIgnore, prePlace);
         }
 
 
 
-        public static float getExplosionDamage(Entity targetEntity, Vec3d explosionPosition, float explosionPower, boolean shouldIgnore) {
-
-
+        public static float getExplosionDamage(Entity targetEntity, Vec3d explosionPosition, float explosionPower, boolean shouldIgnore, boolean preplace) {
             Vec3d entityPosition = new Vec3d(targetEntity.posX, targetEntity.posY, targetEntity.posZ);
             if (targetEntity.isImmuneToExplosions()) return 0.0f;
             explosionPower *= 2.0f;
@@ -212,7 +219,7 @@ public class CrystalUtil implements MC {
                                     zOff + bbox.minZ + (bbox.maxZ - bbox.minZ) * z
                             );
 
-                            if (!rayTraceSolidCheck(startPos, explosionPosition, shouldIgnore)) ++nonSolid;
+                            if (!rayTraceSolidCheck(startPos, explosionPosition, shouldIgnore, preplace)) ++nonSolid;
                             ++total;
                         }
                     }

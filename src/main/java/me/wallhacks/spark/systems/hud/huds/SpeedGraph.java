@@ -7,6 +7,7 @@ import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.StringUtil;
 import me.wallhacks.spark.util.render.ColorUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -30,7 +31,8 @@ public class SpeedGraph extends HudElement {
 
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
-        Vec3d v = new Vec3d(MC.mc.player.prevPosX- MC.mc.player.posX, MC.mc.player.prevPosY- MC.mc.player.posY, MC.mc.player.prevPosZ- MC.mc.player.posZ);
+        Entity e = mc.player.ridingEntity == null ? mc.player : mc.player.ridingEntity;
+        Vec3d v = new Vec3d(e.prevPosX- e.posX, e.prevPosY- e.posY, e.prevPosZ- e.posZ);
 
         double speed = ((MathHelper.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)));
         speed*=(50/mc.timer.tickLength);
