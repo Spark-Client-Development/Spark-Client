@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.module.modules.player;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.Module;
@@ -107,6 +108,7 @@ public class Offhand extends Module {
     }
 
     private boolean shouldCrystalSwap(){
+
         return CrystalSwap.isOn() && SystemManager.getModule(CrystalAura.class).isEnabled();
     }
 

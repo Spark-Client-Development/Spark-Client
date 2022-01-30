@@ -29,9 +29,11 @@ public class KitCommand extends Command {
 
 		addOption("list", arg -> {
 
+			String currentKit = SystemManager.getModule(InventoryManager.class).currentKit;
+
 			Spark.sendInfo(""+CommandManager.COLOR1+"List:");
-			for (String kit : SystemManager.getModule(InventoryManager.class).kits.keySet()) {
-				Spark.sendInfo(""+CommandManager.COLOR1+" - "+CommandManager.COLOR2+kit);
+			for (String kit : SystemManager.getModule(InventoryManager.class).getKits().keySet()) {
+				Spark.sendInfo(""+CommandManager.COLOR1+" - "+(currentKit == kit ? "*" : "")+CommandManager.COLOR2+kit);
 			}
 		});
 

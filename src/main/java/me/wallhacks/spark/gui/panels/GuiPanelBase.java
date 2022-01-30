@@ -56,8 +56,11 @@ public class GuiPanelBase extends Gui {
         this.height = height;
     }
 
+    public static boolean mouseCantBeOn = false;
 
     public static boolean isMouseIn(int posX,int posY,int sizeX,int sizeY,int MouseX, int MouseY){
+        if (mouseCantBeOn)
+            return false;
         return MouseX >= posX && MouseY >= posY && MouseX < posX + sizeX && MouseY < posY + sizeY;
 
     }

@@ -33,7 +33,7 @@ public class AltEntry extends GuiPanelBase {
         final int y = j1 - Mouse.getY() * j1 / this.mc.displayHeight - 1;
         fontManager.drawString(account.getName(),posX+ 22, posY + 4, -1);
         if (player != null)
-            GuiUtil.drawEntityOnScreen(posX+10,posY+34,16, x, y, player);
+            GuiUtil.drawEntityOnScreen(posX+10,posY+34,16, mouseX, mouseY, player);
         fontManager.drawString(account.getStatus(),posX+ 22,posY+13, -1);
     }
 }

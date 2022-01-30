@@ -41,7 +41,7 @@ public class GuiPanelScroll extends GuiPanelBase {
             if(isMouseOn)
                 scroll = (-(Mouse.getDWheel()*0.3) + scroll); //no need for delta time here Mouse.getDWheel() takes care of it
             else
-                MouseY = MouseY > posX ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+                GuiPanelBase.mouseCantBeOn = true;
 
             scroll = Math.max(0, Math.min(scroll, content.height-height));
 
@@ -67,6 +67,8 @@ public class GuiPanelScroll extends GuiPanelBase {
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
             GL11.glPopMatrix();
+
+            GuiPanelBase.mouseCantBeOn = false;
 
         }
     }

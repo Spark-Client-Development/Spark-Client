@@ -46,7 +46,10 @@ public class PlayerUtil implements MC {
     {
         return new BlockPos(Math.floor(pos.x), Math.floor(pos.y+h), Math.floor(pos.z));
     }
-
+    public static BlockPos GetPlayerPosFloored(final double x,final double y,final double z)
+    {
+        return new BlockPos(Math.floor(x), Math.floor(y), Math.floor(z));
+    }
 
 
 
