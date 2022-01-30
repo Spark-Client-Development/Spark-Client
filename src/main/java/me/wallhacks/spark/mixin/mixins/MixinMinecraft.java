@@ -13,23 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin({ Minecraft.class })
 public class MixinMinecraft {
-
-    @Inject(method = "init", at = @At("RETURN"))
-    private void init(final CallbackInfo callbackInfo) {
-        //if you ever read this code
-        //then return as soon as possible
-        //nothing to see down here
-        //zero weird ductape fixes that can break at any time down here
-        //just continue your day dont look down here
-
-        //it was wallhacks that suggested this not me
-
-        if(Spark.runInShitWay)
-    	if(Spark.instance == null)
-            Spark.instance = new Spark();
-    }
-
-
     @Inject(method={"runTickKeyboard"}, at={@At(value="FIELD", target="Lnet/minecraft/client/Minecraft;currentScreen:Lnet/minecraft/client/gui/GuiScreen;", ordinal=0)}, locals= LocalCapture.CAPTURE_FAILSOFT)
     private void onRunTickKeyboard(CallbackInfo ci, int i) {
         if (Keyboard.getEventKeyState() && Spark.eventBus != null) {

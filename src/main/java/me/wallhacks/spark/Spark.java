@@ -41,57 +41,33 @@ public class Spark implements MC {
 
     public static SocialManager socialManager;
 
-    public static boolean runInShitWay = true;
-
+    @Mod.Instance
     public static Spark instance;
 
-
-    public Spark() {
-    	if(!isModLoadedTwice()) {
-	        Display.setTitle(NAME+" | v" + VERSION);
-            logger.info("Loading spark client...");
-	        eventBus = MinecraftForge.EVENT_BUS;
-
-	        eventBus.register(new CommandHandler());
-	        configManager = new ConfigManager();
-	        keyManager = new KeyManager();
-	        rotationManager = new RotationManager();
-	        fontManager = new FontManager();
-	        systemManager = new SystemManager();
-            popManager = new PopManager();
-	        commandManager = new CommandManager();
-            fadeManager = new FadeManager();
-	        clickGuiScreen = new ClickGuiMenuBase();
-            threadManager = new ThreadManager();
-            altManager = new AltManager();
-            socialManager = new SocialManager();
-	        configManager.Load();
-            rpcManager = new RPCManager();
-            logger.info("Spark client loaded successfully");
-    	}
-
-
-    }
-
-    //I don't know why... I don't know how... I don't want to know why... but unless i do this check the mod get loaded twice on eclipse...
-    public boolean isModLoadedTwice() {
-    	for(ModContainer mod : Loader.instance().getActiveModList()) {
-    		if(mod.getMod() instanceof Spark) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        if(!runInShitWay)
-            if(instance == null)
-                instance = new Spark();
-
+        Display.setTitle(NAME + " | v" + VERSION);
+        logger.info("Loading spark client...");
+        eventBus = MinecraftForge.EVENT_BUS;
+        eventBus.register(new CommandHandler());
+        configManager = new ConfigManager();
+        keyManager = new KeyManager();
+        rotationManager = new RotationManager();
+        fontManager = new FontManager();
+        systemManager = new SystemManager();
+        popManager = new PopManager();
+        commandManager = new CommandManager();
+        fadeManager = new FadeManager();
+        clickGuiScreen = new ClickGuiMenuBase();
+        threadManager = new ThreadManager();
+        altManager = new AltManager();
+        socialManager = new SocialManager();
+        configManager.Load();
+        rpcManager = new RPCManager();
+        logger.info("Spark client loaded successfully");
     }
 
-	public static void sendInfo(String msg) {
-		mc.player.sendMessage(new TextComponentString(ChatFormatting.DARK_PURPLE+"[Spark.Sex]"+ChatFormatting.GRAY+" " + msg));
-	}
+    public static void sendInfo(String msg) {
+        mc.player.sendMessage(new TextComponentString(ChatFormatting.DARK_PURPLE + "[Spark.Sex]" + ChatFormatting.GRAY + " " + msg));
+    }
 }

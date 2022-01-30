@@ -231,7 +231,7 @@ public class AltManager implements MC {
                 userName.setFocused(false);
             }
         }
-        fontManager.drawString("Account-Manager", width - offset + 75 - fontManager.getTextWidth("Alt Manager") / 2, 4, -1);
+        fontManager.drawString("Account-Manager", width - offset + 75 - fontManager.getTextWidth("Alt-Manager") / 2, 4, -1);
         scroll.setPositionAndSize((width - offset + 1), 17, 145, height - 66 - fieldOffset - statusOffset);
         scroll.renderContent(mouseX, mouseY, deltaTime);
         String name = mc.getSession().getProfile().getName();
