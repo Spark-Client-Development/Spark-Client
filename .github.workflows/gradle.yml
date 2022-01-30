@@ -1,0 +1,40 @@
+name: Gradle Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: |
+          ./gradlew setupDecompWorkspace
+          ./gradlew build
+      - name: List files
+        run: ls
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Spark
+          path: ./build/libs/*-release.jar
+      - name: Prepare Artifact for Discord upload
+        env:
+          RUN_ID: ${{ github.run_number }}
+        run: cp ./build/libs/*-release.jar ./build/libs/Spark-T${RUN_ID}.jar
+      - name: Upload Artifact to Discord
+        uses: sinshutu/upload-to-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK69 }}
+        with:
+          args: ./build/libs/Spark-T*.jar
