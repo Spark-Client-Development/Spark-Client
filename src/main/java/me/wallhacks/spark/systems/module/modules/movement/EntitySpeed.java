@@ -3,12 +3,16 @@ package me.wallhacks.spark.systems.module.modules.movement;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import me.wallhacks.spark.util.MC;
+import net.minecraft.client.gui.GuiDownloadTerrain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.network.play.server.SPacketSetPassengers;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -16,6 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Module.Registration(name = "EntitySpeed", description = "Go fast on entity brrrr")
 public class EntitySpeed extends Module {
     DoubleSetting speed = new DoubleSetting("Speed", this, 1.5, 0.1, 10.0);
+    BooleanSetting bypass = new BooleanSetting("Bypass", this, false);
     double currSpeed = 0;
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
@@ -30,7 +35,8 @@ public class EntitySpeed extends Module {
 
             final boolean movingForward = forward != 0.0;
             final boolean movingStrafe = strafe != 0.0;
-
+            if (bypass.getValue() && !mc.gameSettings.keyBindSneak.isKeyDown())
+                mc.player.connection.sendPacket(new CPacketUseEntity(riding, EnumHand.MAIN_HAND));
             if (!movingForward && !movingStrafe) {
                 riding.motionX = 0.0;
                 riding.motionZ = 0.0;
@@ -56,6 +62,15 @@ public class EntitySpeed extends Module {
         } else {
             currSpeed = 40;
         }
+    }
+
+    @SubscribeEvent
+    public void OnPacketReceive(PacketReceiveEvent event) {
+        Packet packet = event.getPacket();
+        if (!bypass.getValue() || mc.gameSettings.keyBindSneak.isKeyDown() || mc.currentScreen instanceof GuiDownloadTerrain) return;
+        if (packet instanceof SPacketPlayerPosLook) {
+            event.setCanceled(true);
+        } else if (packet instanceof SPacketSetPassengers && mc.player.ridingEntity != null) event.setCanceled(true);
     }
 
     @Override
