@@ -269,6 +269,8 @@ public class Preview extends Module {
         GlStateManager.enableLighting();
 
 
+        GlStateManager.enableDepth();
+
     }
 
     public void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {

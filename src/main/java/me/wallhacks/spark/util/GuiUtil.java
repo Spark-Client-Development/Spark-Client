@@ -215,7 +215,7 @@ public class GuiUtil {
 
     public static void glScissor(int x, int y, int width, int height) {
         ScaledResolution scr = new ScaledResolution(MC.mc);
-        GL11.glScissor(x * 2, (scr.getScaledHeight() - y - height) * 2, width * 2, height * 2);
+        GL11.glScissor((x+ (int) GuiUtil.getGlScissorOffset().x) * scr.getScaleFactor(), (scr.getScaledHeight() - y - height - (int) GuiUtil.getGlScissorOffset().y) * scr.getScaleFactor(), width * scr.getScaleFactor(), height * scr.getScaleFactor());
     }
 
     public static boolean drawButton(String text, int left, int top, int right, int bottom, Color color, int mouseX, int mouseY, boolean clicked) {

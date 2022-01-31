@@ -118,7 +118,7 @@ public class AltManager implements MC {
         GL11.glPushMatrix();
         GL11.glTranslated(-offset,0,0);
 
-        GuiUtil.setGlScissorOffset(new Vec3d(-offset*2,0,0));
+        GuiUtil.setGlScissorOffset(new Vec3d(-offset,0,0));
 
 
         mouseX += offset;
@@ -146,7 +146,7 @@ public class AltManager implements MC {
             password.posY = height - 26 - fieldOffset;
             userName.posX = width + 7;
             userName.posY = height - 43 - fieldOffset;
-            GL11.glScissor((width - (int) offset + 5)* 2, 90, width*2, 90 + fieldOffset * 2);
+            GuiUtil.glScissor((width - (int) offset + 5), height-(90+fieldOffset), width, 45 + fieldOffset);
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             userName.renderContent(mouseX, mouseY, 0);
             password.renderContent(mouseX, mouseY, 0);

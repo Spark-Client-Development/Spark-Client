@@ -1,6 +1,7 @@
 package me.wallhacks.spark.gui.panels;
 
 import me.wallhacks.spark.util.GuiUtil;
+import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import me.wallhacks.spark.util.MathUtil;
@@ -49,7 +50,10 @@ public class GuiPanelScroll extends GuiPanelBase {
 
             GL11.glPushMatrix();
 
-            GL11.glScissor((this.posX)*2+ (int) GuiUtil.getGlScissorOffset().x, (mc.displayHeight - (height + this.posY)*2)-(int) GuiUtil.getGlScissorOffset().y, (this.width)*2, height*2);
+
+
+
+            GuiUtil.glScissor(this.posX, this.posY, (this.width), height);
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             //scroll view
 

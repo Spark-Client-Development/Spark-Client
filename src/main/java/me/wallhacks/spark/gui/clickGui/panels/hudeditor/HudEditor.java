@@ -6,6 +6,7 @@ import me.wallhacks.spark.gui.clickGui.panels.hudeditor.hudsList.GuiHudSettingTa
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.manager.SystemManager;
+import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -54,6 +55,13 @@ public class HudEditor extends ClickGuiPanel {
     int MouseXOffset = 0;
     int MouseYOffset = 0;
     GuiPanelBase lastSelected = null;
+    HudElement selectedHudElement = null;
+
+    public HudElement getSelected() {
+
+        return selectedHudElement;
+
+    }
 
     @Override
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
@@ -63,10 +71,7 @@ public class HudEditor extends ClickGuiPanel {
         for (HudElement hud : SystemManager.getHudModules()) {
             if(hud.isEnabled())
             {
-                moveHudElements[i].setPositionAndSize(hud.getRenderPosX(),hud.getRenderPosY(),hud.getWidth(),hud.getHeight());
 
-
-                moveHudElements[i].renderContent(MouseX,MouseY,deltaTime);
 
 
                 if(moveHudElements[i] == GuiPanelBase.SelectedMouse) {
@@ -75,41 +80,54 @@ public class HudEditor extends ClickGuiPanel {
                         if(Mouse.isButtonDown(1))
                             guiHudSettingTab.guiEditSettingPanel.setCurrentSettingsHolder(hud);
                         lastSelected = GuiPanelBase.SelectedMouse;
-                        MouseXOffset = MouseX - lastSelected.posX;
-                        MouseYOffset = MouseY - lastSelected.posY;
+                        selectedHudElement = hud;
 
 
                     }
                     else {
-                        int moveToX = MouseX -MouseXOffset;
-                        int moveToY = MouseY -MouseYOffset;
+                        lastSelected.posX = MouseX -MouseXOffset;
+                        lastSelected.posY = MouseY -MouseYOffset;
 
                         if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                            moveToX = MathHelper.clamp(moveToX,0,getWidth()-hud.getWidth());
-                            moveToY = MathHelper.clamp(moveToY,0,getHeight()-hud.getHeight());
+                            lastSelected.posX = MathHelper.clamp(lastSelected.posX,0,getWidth()-hud.getWidth());
+                            lastSelected.posY = MathHelper.clamp(lastSelected.posY,0,getHeight()-hud.getHeight());
+
 
                         }
 
-                        hud.setRenderPosX(moveToX);
-                        hud.setRenderPosY(moveToY);
 
                         hud.setSnappedElement(-1);
 
-
+                        hud.setRenderPosX(lastSelected.posX);
+                        hud.setRenderPosY(lastSelected.posY);
 
                         if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
                         for (HudElement b : SystemManager.getHudModules()) {
                             if(hud != b && hud.isIn(b,-10) && hud.getId() != b.getSnappedElement()){
+
+                                //snap
+                                if(hud.isIn(b))
+                                {
+                                    int yDis = Math.abs(hud.getCenterRenderPosY() < b.getCenterRenderPosY() ? hud.getEndRenderPosY()-b.getRenderPosY() : b.getEndRenderPosY()-hud.getRenderPosY());
+                                    int xDis = Math.abs(hud.getCenterRenderPosX() < b.getCenterRenderPosX() ? hud.getEndRenderPosX()-b.getRenderPosX() : b.getEndRenderPosX()-hud.getRenderPosX());
+
+                                    if(yDis < xDis)
+                                    {
+                                        lastSelected.posY = (hud.getCenterRenderPosY() < b.getCenterRenderPosY() ? b.getRenderPosY()-hud.getHeight() : b.getEndRenderPosY());
+                                    }
+                                    else
+                                    {
+                                        lastSelected.posX = (hud.getCenterRenderPosX() < b.getCenterRenderPosX() ? b.getRenderPosX()-hud.getWidth() : b.getEndRenderPosX());
+                                    }
+
+                                }
+
+                                //attach
                                 hud.setSnappedElement(b.getId());
 
-
-
-
-                                double x = ((1.0 / b.getWidth()) * (moveToX-b.getRenderPosX()));
-                                double y = ((1.0 / b.getHeight()) * (moveToY-b.getRenderPosY()));
-
-                                hud.setPercentPosX(x);
-                                hud.setPercentPosY(y);
+                                //update relative pos
+                                hud.setRenderPosX(lastSelected.posX);
+                                hud.setRenderPosY(lastSelected.posY);
 
 
 
@@ -118,15 +136,29 @@ public class HudEditor extends ClickGuiPanel {
                         }
 
 
+
+
                     }
+
+                    MouseXOffset = MathHelper.clamp(MouseX - lastSelected.posX,0,lastSelected.width);
+                    MouseYOffset = MathHelper.clamp(MouseY - lastSelected.posY,0,lastSelected.height);
+
+
                 }
+                moveHudElements[i].setPositionAndSize(hud.getRenderPosX(),hud.getRenderPosY(),hud.getWidth(),hud.getHeight());
+                moveHudElements[i].renderContent(MouseX,MouseY,deltaTime);
 
             }
             i++;
         }
 
         if(GuiPanelBase.SelectedMouse == null)
+        {
+            selectedHudElement = null;
             lastSelected = null;
+        }
+
+
 
         showMenuBar = !isMoving;
 

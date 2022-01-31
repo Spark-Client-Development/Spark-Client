@@ -170,14 +170,42 @@ public class HudElement extends SettingsHolder implements MC {
     public int getEndRenderPosY() {
         return getRenderPosY()+getHeight();
     }
+    public int getCenterRenderPosX() {
+        return getRenderPosX()+getWidth()/2;
+    }
+    public int getCenterRenderPosY() {
+        return getRenderPosY()+getHeight()/2;
+    }
 
     public void setRenderPosX(int posX) {
-        double w = (mc.displayWidth/2.0 - getWidth());
-        setPercentPosX(1.0/w*posX);
+        if(getSnappedElement() >= 0)
+        {
+            HudElement e = (HudElement) SystemManager.getHudModules().toArray()[getSnappedElement()];
+            double x = ((1.0 / e.getWidth()) * (posX-e.getRenderPosX()));
+            setPercentPosX(x);
+
+        }
+        else
+        {
+            double w = (mc.displayWidth/2.0 - getWidth());
+            setPercentPosX(1.0/w*posX);
+        }
+
     }
     public void setRenderPosY(int posY) {
-        double w = (mc.displayHeight/2.0 - getHeight());
-        setPercentPosY(1.0/w*posY);
+        if(getSnappedElement() >= 0)
+        {
+            HudElement e = (HudElement) SystemManager.getHudModules().toArray()[getSnappedElement()];
+            double y = ((1.0 / e.getHeight()) * (posY-e.getRenderPosY()));
+            setPercentPosY(y);
+
+        }
+        else
+        {
+            double w = (mc.displayHeight/2.0 - getHeight());
+            setPercentPosY(1.0/w*posY);
+        }
+
     }
 
 
@@ -256,7 +284,7 @@ public class HudElement extends SettingsHolder implements MC {
         if(mc.currentScreen instanceof ClickGuiMenuBase)
         if(((ClickGuiMenuBase)mc.currentScreen).getPanel() instanceof HudEditor)
         {
-            return mouseOver(Mouse.getX()/2,mc.currentScreen.height - Mouse.getY()/2);
+            return ((HudEditor)((ClickGuiMenuBase)mc.currentScreen).getPanel()).getSelected() == this;
         }
         return false;
     }

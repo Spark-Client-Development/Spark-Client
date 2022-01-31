@@ -71,6 +71,7 @@ public class TargetHud extends HudElement {
                 MC.mc.getRenderItem().zLevel = 0.0f;
             }
             try {
+                GlStateManager.color(1,1,1,1);
                 GuiInventory.drawEntityOnScreen((int)getRenderPosX() + 18, (int)getRenderPosY() + getHeight() - 7, 29, 0.0f, 0.0f, (EntityPlayer) target);
             } catch (ReportedException ignored) {
             }
