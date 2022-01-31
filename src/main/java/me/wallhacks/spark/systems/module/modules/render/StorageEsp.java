@@ -22,7 +22,7 @@ public class StorageEsp extends Module {
 
 
     @SubscribeEvent
-    public void onFog(RenderWorldLastEvent event) {
+    public void onRender(RenderWorldLastEvent event) {
         GL11.glPushMatrix();
 
         for(TileEntity o : MC.mc.world.loadedTileEntityList){

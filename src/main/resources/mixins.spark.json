@@ -24,10 +24,13 @@
     "MixinRenderLivingBase",
     "MixinRenderManager",
     "MixinRenderPlayer",
-    "MixinWorld"
+    "MixinWorld",
+    "MixinBlockLiquid",
+    "MixinPlayerControllerMP"
   ],
   "client": [
     "MixinAbstractClientPlayer",
-    "MixinNetHandlerPlayClient"
+    "MixinNetHandlerPlayClient",
+
   ]
 }

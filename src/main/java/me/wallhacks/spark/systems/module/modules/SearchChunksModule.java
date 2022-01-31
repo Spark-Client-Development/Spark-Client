@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.module.modules;
 
+import me.wallhacks.spark.Spark;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.network.play.server.SPacketMultiBlockChange;
 import net.minecraft.util.math.BlockPos;
@@ -54,9 +55,12 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
     public void onThread(ThreadEvent event) {
         if(chunksToSearch.size() > 0)
         {
+
             Chunk c = mc.world.getChunk(chunksToSearch.get(0).x,chunksToSearch.get(0).z);
             if(chunksToSearch.get(0) != null && c != null)
             {
+                if(found.containsKey(c))
+                    found.remove(c);
                 searchChunk(c);
             }
             chunksToSearch.remove(chunksToSearch.get(0));
@@ -95,6 +99,8 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
         ChunkPos[] chunks = WorldUtils.getAdjacentChunks(event.getChunk().getPos());
         for (ChunkPos c : chunks)
             addedChunk(c);
+        addedChunk(event.getChunk().getPos());
+
     }
     @SubscribeEvent
     public void chunkUnLoad(ChunkLoadEvent.Unload event) {
@@ -134,6 +140,7 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
             return;
 
 
+
         if(needsAdjacentChunks())
         {
             ChunkPos[] chunks = WorldUtils.getAdjacentChunks(pos);
@@ -147,6 +154,7 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
 
 
         }
+
 
 
         chunksToSearch.add(pos);
