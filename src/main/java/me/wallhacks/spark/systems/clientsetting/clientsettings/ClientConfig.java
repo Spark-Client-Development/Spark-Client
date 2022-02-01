@@ -16,7 +16,7 @@ public class ClientConfig extends ClientSetting {
 
     public ColorSetting friendColor = new ColorSetting("FriendColor",this, new Color(18, 55, 177,186),"Render");
 
-    public BooleanSetting rpc = new BooleanSetting("rpc", this, true, "Discord");
+    public BooleanSetting rpc = new BooleanSetting("rpc", this, true);
 
     public double getFadeTime() {
         return fadeTime.getValue();
@@ -31,7 +31,6 @@ public class ClientConfig extends ClientSetting {
     public ClientConfig() {
         super();
         INSTANCE = this;
-
     }
 
     public static ClientConfig getInstance(){
