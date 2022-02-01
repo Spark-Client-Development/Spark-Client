@@ -2,6 +2,8 @@ package me.wallhacks.spark;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.manager.*;
+import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -17,12 +19,16 @@ import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.systems.command.CommandHandler;
 import me.wallhacks.spark.util.MC;
 
+import java.io.File;
+
 @Mod(modid = Spark.MODID, name = Spark.NAME, version = Spark.VERSION)
 public class Spark implements MC {
     public static final String MODID = "sprk";
     public static final String NAME = "Spark";
     public static final String VERSION = "1.0";
     public static final Logger logger = LogManager.getLogger(MODID);
+
+    public static File ParentPath;
 
     public static EventBus eventBus;
 
@@ -47,6 +53,7 @@ public class Spark implements MC {
 
 
     public Spark() {
+        ParentPath = new File(Minecraft.getMinecraft().gameDir.getParent(), Spark.MODID);
     	if(!isModLoadedTwice()) {
 	        Display.setTitle(NAME+" | v" + VERSION);
             logger.info("Loading spark client...");
@@ -65,7 +72,11 @@ public class Spark implements MC {
             threadManager = new ThreadManager();
             altManager = new AltManager();
             socialManager = new SocialManager();
+
 	        configManager.Load();
+            socialManager.LoadFriends();
+            InventoryManager.instance.LoadKits();
+
             rpcManager = new RPCManager();
             logger.info("Spark client loaded successfully");
     	}

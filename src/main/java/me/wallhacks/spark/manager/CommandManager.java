@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.systems.command.Command;
-import me.wallhacks.spark.systems.command.commands.FriendCommand;
-import me.wallhacks.spark.systems.command.commands.HClipCommand;
-import me.wallhacks.spark.systems.command.commands.KitCommand;
-import me.wallhacks.spark.systems.command.commands.VClipCommand;
+import me.wallhacks.spark.systems.command.commands.*;
 
 public class CommandManager {
 
@@ -20,6 +17,7 @@ public class CommandManager {
 		new VClipCommand();
 		new KitCommand();
 		new FriendCommand();
+		new ConfigCommand();
 	}
 
 	public static ChatFormatting ErrorColor = ChatFormatting.RED;

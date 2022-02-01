@@ -2,6 +2,7 @@ package me.wallhacks.spark.mixin.mixins;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.InputEvent;
+import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
 import org.lwjgl.input.Keyboard;
@@ -40,10 +41,14 @@ public class MixinMinecraft {
     @Inject(method = "crashed", at = @At("HEAD"))
     public void crashed(CrashReport crash, CallbackInfo callbackInfo) {
         Spark.configManager.Save();
+        Spark.socialManager.SaveFriends();
+        InventoryManager.instance.SaveKits();
     }
 
     @Inject(method = "shutdown", at = @At("HEAD"))
     public void shutdown(CallbackInfo callbackInfo) {
         Spark.configManager.Save();
+        Spark.socialManager.SaveFriends();
+        InventoryManager.instance.SaveKits();
     }
 }

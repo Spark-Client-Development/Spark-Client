@@ -45,6 +45,12 @@ public class InventoryManager extends Module {
 
     }
 
+    public static InventoryManager instance;
+    public InventoryManager() {
+        instance = this;
+
+    }
+
     public String currentKit;
 
     Item[] perfectInventory(){
@@ -73,8 +79,6 @@ public class InventoryManager extends Module {
         refreshSelected();
     }
     public void deleteKit(String name){
-        if(kits.size() == 1)
-            return;
         kits.remove(name);
         refreshSelected();
     }
@@ -282,12 +286,12 @@ public class InventoryManager extends Module {
 
 
     String getKitsFile(){
-        String base = Spark.configManager.ParentPath.getAbsolutePath() + "\\"+this.getName()+"\\";
+        String base = Spark.ParentPath.getAbsolutePath() + "\\"+this.getName()+"\\";
         return base + "kits.sex";
     }
 
-    @Override
-    public void onConfigLoad() {
+
+    public void LoadKits() {
         super.onConfigLoad();
 
         try {
@@ -320,8 +324,8 @@ public class InventoryManager extends Module {
         }
     }
 
-    @Override
-    public void onConfigSave() {
+
+    public void SaveKits() {
         super.onConfigSave();
 
         try {

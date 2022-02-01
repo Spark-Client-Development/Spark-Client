@@ -3,7 +3,8 @@ package me.wallhacks.spark.manager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.panels.GuiPanelScroll;
-import me.wallhacks.spark.util.GuiUtil;
+import me.wallhacks.spark.util.*;
+import me.wallhacks.spark.util.auth.account.MSAccount;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -22,20 +23,21 @@ import org.lwjgl.opengl.GL11;
 import me.wallhacks.spark.gui.panels.GuiPanelInputField;
 import me.wallhacks.spark.gui.altList.AltList;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.auth.MSAuth;
-import me.wallhacks.spark.util.SessionUtils;
 import me.wallhacks.spark.util.objects.FakeWorld;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.auth.account.Account;
 import me.wallhacks.spark.util.auth.account.AccountType;
 import me.wallhacks.spark.util.auth.account.MojangAccount;
+import scala.xml.dtd.impl.Base;
 
 import java.awt.*;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AltManager implements MC {
-    public CopyOnWriteArrayList<Account> accounts;
+    CopyOnWriteArrayList<Account> accounts;
     public static FakeWorld fakeWorld;
     EntityOtherPlayerMP player;
     Timer timer = new Timer();
@@ -54,6 +56,8 @@ public class AltManager implements MC {
     public String status = "";
     boolean justLogin;
     Timer statusTimer = new Timer();
+
+    String key = new RandomString(50).nextString();
 
     public AltManager() {
         WorldInfo info = new WorldInfo();
@@ -76,10 +80,63 @@ public class AltManager implements MC {
         player.playerInfo = playerInfo;
         player.playerInfo.setGameType(GameType.CREATIVE);
         accounts = new CopyOnWriteArrayList<>();
-        Spark.configManager.loadAlts(this);
+        loadAlts();
         altList = new AltList();
         altList.setList(this);
         scroll = new GuiPanelScroll(0, 0, 0, 0, altList);
+    }
+    String getAltFile(String name) {
+        String base = Spark.ParentPath.getAbsolutePath() + "\\alts\\";
+        return base + name + ".acc";
+    }
+
+
+
+
+    public void loadAlts() {
+        //get the key
+        File authKey = new File(Spark.ParentPath.getAbsolutePath() + "\\alts\\auth.key");
+        if (authKey.exists()) {
+            key = FileUtil.read(authKey.getAbsolutePath());
+            for (String file : FileUtil.listFilesForFolder(Spark.ParentPath.getAbsolutePath() + "\\alts", ".acc")) {
+                try {
+                    FileInputStream fi_stream = new FileInputStream(Spark.ParentPath.getAbsolutePath() + "\\alts" + "\\" + file);
+                    DataInputStream di_stream = new DataInputStream(fi_stream);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(di_stream));
+                    String backupName = file.substring(0, file.length() - 4);
+                    switch (br.readLine()) {
+                        case "MOJANG": {
+                            String uuid = br.readLine();
+                            String mail = br.readLine();
+                            String password = br.readLine();
+                            mail = EncryptionUtil.decrypt(mail, key);
+                            password = EncryptionUtil.decrypt(password, key);
+                            uuid = EncryptionUtil.decrypt(uuid, key);
+                            MojangAccount acc = new MojangAccount(mail, password, backupName, uuid);
+                            addAlt(acc);
+                            break;
+                        }
+                        case "MICROSOFT": {
+                            String uuid = br.readLine();
+                            String refresh = br.readLine();
+                            refresh = EncryptionUtil.decrypt(refresh, key);
+                            uuid = EncryptionUtil.decrypt(uuid, key);
+                            MSAccount acc = new MSAccount(null, refresh, backupName, uuid);
+                            acc.refresh();
+                            addAlt(acc);
+                            break;
+                        }
+                        case "CRACKED": {
+                            addAlt(new Account(new Session(br.readLine(), "", "", "Mojang"), AccountType.CRACKED, ""));
+                            break;
+                        }
+                    }
+                } catch (Exception fucked) {
+                    Spark.logger.info("TEST");
+                    fucked.printStackTrace();
+                }
+            }
+        }
     }
 
     public void render(int mouseX, int mouseY, float deltaTime) {
@@ -171,7 +228,7 @@ public class AltManager implements MC {
                             Session s = new Session(userName.getText(), "", "", "Mojang");
                             if (add) {
                                 Account account = new Account(s, AccountType.CRACKED, "");
-                                accounts.add(account);
+                                addAlt(account);
                                 refresh();
                             } else {
                                 mc.session = s;
@@ -198,7 +255,7 @@ public class AltManager implements MC {
                 } else {
                     status = "Logged in to " + loginAcc.getName() + "!";
                     if (!justLogin) {
-                        accounts.add(loginAcc);
+                        addAlt(loginAcc);
                         refresh();
                     } else {
                         mc.session = loginAcc.session;
@@ -212,7 +269,7 @@ public class AltManager implements MC {
         if (msAuth != null) {
             statusTimer.reset();
             if (msAuth.acc != null) {
-                this.accounts.add(msAuth.acc);
+                this.addAlt(msAuth.acc);
                 status = "Logged in to " + msAuth.acc.getName();
                 msAuth = null;
                 refresh();
@@ -282,4 +339,49 @@ public class AltManager implements MC {
         userName.onKey(keyCode, typedChar);
         password.onKey(keyCode, typedChar);
     }
+
+    public void removeAlt(Account account) {
+        accounts.remove(account);
+        FileUtil.deleteFile(getAltFile(account.getName()));
+
+    }
+    public void addAlt(Account account) {
+        accounts.add(account);
+        try {
+            ArrayList<String> lines = new ArrayList<>();
+            switch (account.accountType) {
+                //save accounts encrypted with the key
+                case MICROSOFT: {
+                    lines.add("MICROSOFT");
+                    lines.add(EncryptionUtil.encrypt(account.getUUID(), key));
+                    lines.add(EncryptionUtil.encrypt(((MSAccount) account).getRefreshToken(), key));
+                    break;
+                }
+                case MOJANG: {
+                    lines.add("MOJANG");
+                    lines.add(EncryptionUtil.encrypt(account.getUUID(), key));
+                    lines.add(EncryptionUtil.encrypt(((MojangAccount) account).getMail(), key));
+                    lines.add(EncryptionUtil.encrypt(((MojangAccount) account).getPassword(), key));
+                    break;
+                }
+                case CRACKED: {
+                    lines.add("CRACKED");
+                    lines.add(account.getName());
+                    break;
+                }
+            }
+            String content = "";
+            for (String e : lines)
+                content = content + e + "\n";
+
+            FileUtil.write(getAltFile(account.getName()), content);
+        } catch (Exception fucked) {
+            //saik
+        }
+    }
+    public CopyOnWriteArrayList<Account> getAlts() {
+        return accounts;
+    }
+
+
 }

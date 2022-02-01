@@ -22,7 +22,15 @@ public class KitCommand extends Command {
 		addOption("select", arg -> {
 			if(arg != null){
 				SystemManager.getModule(InventoryManager.class).selectKit(arg);
-				Spark.sendInfo(""+ CommandManager.COLOR1+"Kit "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been selected!");
+				Spark.sendInfo(""+ CommandManager.COLOR1+"Kit "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been deleted!");
+
+			}
+		}, "<kitname>");
+
+		addOption("delete", arg -> {
+			if(arg != null){
+				SystemManager.getModule(InventoryManager.class).deleteKit(arg);
+				Spark.sendInfo(""+ CommandManager.COLOR1+"Kit "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been deleted!");
 
 			}
 		}, "<kitname>");
@@ -31,9 +39,9 @@ public class KitCommand extends Command {
 
 			String currentKit = SystemManager.getModule(InventoryManager.class).currentKit;
 
-			Spark.sendInfo(""+CommandManager.COLOR1+"List:");
+			Spark.sendInfo(""+CommandManager.COLOR1+"Kit List:");
 			for (String kit : SystemManager.getModule(InventoryManager.class).getKits().keySet()) {
-				Spark.sendInfo(""+CommandManager.COLOR1+" - "+(currentKit == kit ? "*" : "")+CommandManager.COLOR2+kit);
+				Spark.sendInfo(""+CommandManager.COLOR1+" - "+(kit.equals(currentKit) ? "*" : "")+CommandManager.COLOR2+kit);
 			}
 		});
 

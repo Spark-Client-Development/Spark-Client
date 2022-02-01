@@ -32,7 +32,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-@Module.Registration(name = "BowAim", description = "Makes you not suck with the bow")
+@Module.Registration(name = "BowAimAssist", description = "Makes you not suck with the bow")
 public class BowAim extends Module implements MC {
 
 	BooleanSetting SilentRotate = new BooleanSetting("SilentRotate",this,false);

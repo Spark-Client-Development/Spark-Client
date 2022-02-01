@@ -19,8 +19,8 @@ public class AltList extends GuiPanelBase {
 
     public void setList(AltManager altManager) {
         list = new ArrayList<>();
-        if (altManager.accounts.isEmpty()) return;
-        for (Account a : altManager.accounts) {
+        if (altManager.getAlts().isEmpty()) return;
+        for (Account a : altManager.getAlts()) {
             list.add(new AltEntry(a));
         }
     }
@@ -56,7 +56,7 @@ public class AltList extends GuiPanelBase {
         height = h;
 
         if(toRemove != null) {
-            Spark.altManager.accounts.remove(toRemove.account);
+            Spark.altManager.removeAlt(toRemove.account);
             list.remove(toRemove);
         }
 
