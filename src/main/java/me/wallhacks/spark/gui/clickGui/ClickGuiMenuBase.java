@@ -35,7 +35,12 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
 
         for (int i = 0; i < panels.length; i++)
         {
-            menus[i] = new GuiPanelButton(i,panels[i].getName());
+            int finalI = i;
+            menus[i] = new GuiPanelButton(() -> {
+                    switchToSelected = finalI;
+                    getPanel().init();
+            }
+            ,panels[i].getName());
         }
     }
 
@@ -91,13 +96,13 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
             GL11.glPushMatrix();
             GL11.glTranslated((inVert ? -1 : 1)*-width+width*Progress*(inVert ? -1 : 1),0,0);
 
-            GuiUtil.setGlScissorOffset(new Vec3d((inVert ? -1 : 1)*-width+width*Progress*(inVert ? -1 : 1),0,0));
+            GuiUtil.addGlScissorOffset(new Vec3d((inVert ? -1 : 1)*-width+width*Progress*(inVert ? -1 : 1),0,0));
 
             clickGuiPanelSwitchTo.renderContent(MouseX,MouseY,deltaTime);
 
             GL11.glPopMatrix();
 
-            GuiUtil.setGlScissorOffset(new Vec3d(width*Progress*(inVert ? -1 : 1),0,0));
+            GuiUtil.addGlScissorOffset(new Vec3d(width*Progress*(inVert ? -1 : 1),0,0));
 
 
 
@@ -163,26 +168,7 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
 
 
 
-    @Override
-    public void preformAction(GuiPanelButton button) {
 
-
-
-        for (int i = 0; i < panels.length; i++)
-        {
-            if(button == menus[i])
-            {
-                switchToSelected = i;
-                getPanel().init();
-                return;
-            }
-        }
-
-        getPanel().preformAction(button);
-
-
-
-    }
     public ClickGuiPanel getPanel(int i) {
         return panels[i];
     }

@@ -1,5 +1,7 @@
 package me.wallhacks.spark.manager;
 
+import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.util.FileUtil;
 import me.wallhacks.spark.util.SessionUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -59,6 +61,51 @@ public class SocialManager {
 
     public boolean isFriend(EntityPlayer player) {
         return isFriend(player.getGameProfile().getId());
+    }
+
+
+
+    String getFriendsFile() {
+        String base = Spark.ParentPath.getAbsolutePath() + "\\socials\\";
+        return base + "friends.sex";
+    }
+
+
+    public void LoadFriends() {
+        try {
+            String s = FileUtil.read(getFriendsFile());
+            if (s != null) {
+                String[] List = s.split("\n");
+                Spark.socialManager.clearFriends();
+                for (String var : List) {
+                    if (var != "") {
+                        UUID uuid = UUID.fromString(var);
+                        Spark.socialManager.addFriend(uuid);
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            Spark.logger.info("Failed to load friends");
+            e.printStackTrace();
+        }
+    }
+
+    public void SaveFriends() {
+        try {
+            ArrayList<String> lines = new ArrayList<String>();
+
+            String content = "";
+            for (UUID e : Spark.socialManager.getFriends())
+                content = content + e.toString() + "\n";
+
+            FileUtil.write(getFriendsFile(), content);
+
+
+        } catch (Exception e) {
+            Spark.logger.info("Failed to save friends");
+            e.printStackTrace();
+        }
     }
 
 }

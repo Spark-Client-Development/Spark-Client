@@ -22,9 +22,8 @@ public class RPC implements MC {
             while (!Thread.currentThread().isInterrupted()) {
                 rpc.Discord_RunCallbacks();
                 presence.details = mc.session.getUsername();
-                if (mc.currentServerData != null && mc.player != null) {
-                    presence.state = "Playing on " + mc.currentServerData.serverIP;
-                } else presence.state = "On main menu";
+                presence.state  = ((mc.isSingleplayer() ? "Playing alone" : (mc.getCurrentServerData() != null ? "With friends on "+mc.getCurrentServerData().serverIP : "In Menu")));
+
                 rpc.Discord_UpdatePresence(presence);
                 try {
                     Thread.sleep(2000L);

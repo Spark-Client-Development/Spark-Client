@@ -20,6 +20,7 @@ import me.wallhacks.spark.systems.setting.settings.ItemListSelectSetting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 @Module.Registration(name = "InventoryManager", description = "Steals from chests")
 public class InventoryManager extends Module {
@@ -37,19 +38,30 @@ public class InventoryManager extends Module {
     }, "Remove");
 
 
-    public HashMap<String,Item[]> kits = new HashMap<>();
+    HashMap<String,Item[]> kits = new HashMap<>();
+
+    public Map<String, Item[]> getKits() {
+        return kits;
+
+    }
+
+    public static InventoryManager instance;
+    public InventoryManager() {
+        instance = this;
+
+    }
+
     public String currentKit;
 
     Item[] perfectInventory(){
-        return kits.get(currentKit);
+        return kits.containsKey(currentKit) ? kits.get(currentKit) : null;
     }
 
 
     public void selectKit(String name){
         if(kits.containsKey(name))
             currentKit = name;
-        else if(currentKit == null)
-            currentKit = kits.keySet().iterator().next();
+        refreshSelected();
     }
     public void setKitFromInventory(String name,boolean hotbarOnly){
 
@@ -64,15 +76,18 @@ public class InventoryManager extends Module {
     }
     public void setKit(String name,Item[] inv){
         kits.put(name,inv);
-        if(currentKit == null)
-            currentKit = name;
+        refreshSelected();
     }
     public void deleteKit(String name){
-        if(kits.size() == 1)
-            return;
         kits.remove(name);
-        if(name == currentKit)
+        refreshSelected();
+    }
+    public void refreshSelected() {
+        if(kits.size() <= 0)
+            currentKit = null;
+        else if(!kits.containsKey(currentKit))
             currentKit = kits.keySet().iterator().next();
+
     }
 
 
@@ -154,7 +169,7 @@ public class InventoryManager extends Module {
         int s = InventoryUtil.getSlotIdFromInventoryId(slot);
         ItemStack itemStack = (ItemStack) MC.mc.player.inventoryContainer.getInventory().get(s);
 
-        Spark.logger.info("Clean slot " + slot);
+
 
         if(!KeepItemStack(itemStack))
         {
@@ -162,8 +177,13 @@ public class InventoryManager extends Module {
             timer.delayRandom(delay.getValue(),50);
         }
         else if(SortInventory.isOn()) {
+
             if (perfectInventory() != null) {
+
                 for (int i = 0; i < perfectInventory().length; i++) {
+
+
+
                     Item item = perfectInventory()[i];
                     int sloti = InventoryUtil.getSlotIdFromInventoryId(i);
                     if (sloti != s && item != null) {
@@ -266,12 +286,12 @@ public class InventoryManager extends Module {
 
 
     String getKitsFile(){
-        String base = Spark.configManager.ParentPath.getAbsolutePath() + "\\"+this.getName()+"\\";
+        String base = Spark.ParentPath.getAbsolutePath() + "\\"+this.getName()+"\\";
         return base + "kits.sex";
     }
 
-    @Override
-    public void onConfigLoad() {
+
+    public void LoadKits() {
         super.onConfigLoad();
 
         try {
@@ -304,8 +324,8 @@ public class InventoryManager extends Module {
         }
     }
 
-    @Override
-    public void onConfigSave() {
+
+    public void SaveKits() {
         super.onConfigSave();
 
         try {

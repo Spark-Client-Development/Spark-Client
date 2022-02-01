@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.hud;
 
+import me.wallhacks.spark.Spark;
 import net.minecraft.client.gui.Gui;
 
 import java.util.ArrayList;
@@ -9,11 +10,11 @@ public abstract class AlignedHudElement extends HudElement {
 
 
     protected boolean alignLeft() {
-        return 0.5 > getPercentPosX();
+        return mc.displayWidth/4 > getCenterRenderPosX();
     }
 
     protected boolean alignTop() {
-        return 0.5 > getPercentPosY();
+        return mc.displayHeight/4 > getCenterRenderPosY();
     }
 
     protected int getBackgroundColor() {

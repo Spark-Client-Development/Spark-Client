@@ -1,6 +1,7 @@
 package me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings;
 
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiSettingPanel;
+import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelInputField;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.gui.Gui;
@@ -194,7 +195,8 @@ public class GuiColorSettingPanel extends GuiSettingPanel<ColorSetting> {
     }
 
     public static boolean mouseOver(int minX, int minY, int maxX, int maxY, int mX, int mY) {
-        return mX >= minX && mY >= minY && mX <= maxX && mY <= maxY;
+
+        return GuiPanelBase.isMouseIn(minX,minY,maxX-minX,maxY-minY,mX,mY);
     }
     
     public abstract class Slider<T> {

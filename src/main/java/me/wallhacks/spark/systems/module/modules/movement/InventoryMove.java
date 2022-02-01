@@ -8,6 +8,7 @@ import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiInt
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiKeySettingPanel;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelInputField;
+import me.wallhacks.spark.gui.panels.GuiPanelScreen;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.MC;
 import net.minecraft.client.gui.GuiChat;
@@ -64,7 +65,7 @@ public class InventoryMove extends Module {
                 !(MC.mc.currentScreen instanceof GuiChat) &&
                 !(MC.mc.currentScreen instanceof GuiEditSign) &&
                 !(MC.mc.currentScreen instanceof GuiScreenBook) &&
-                !(MC.mc.currentScreen instanceof ClickGuiMenuBase &&
+                !(MC.mc.currentScreen instanceof GuiPanelScreen &&
                         (GuiPanelBase.FocusedMouse instanceof GuiPanelInputField || GuiPanelBase.FocusedMouse instanceof GuiIntSettingPanel ||
                                 GuiPanelBase.FocusedMouse instanceof GuiDoubleSettingPanel || GuiPanelBase.FocusedMouse instanceof GuiKeySettingPanel)));
     }

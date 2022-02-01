@@ -22,11 +22,6 @@ public class MixinChunkProviderClient {
         Spark.eventBus.post(e);
     }
 
-    @Inject(method = "loadChunk", at = @At("RETURN"))
-    public void loadChunk(int x, int z, final CallbackInfoReturnable<Chunk> callbackInfo)
-    {
-        ChunkLoadEvent.Load e = new ChunkLoadEvent.Load(Minecraft.getMinecraft().world.getChunkProvider().provideChunk(x, z));
-        Spark.eventBus.post(e);
-    }
+
 
 }

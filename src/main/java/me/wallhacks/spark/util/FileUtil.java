@@ -27,7 +27,22 @@ public class FileUtil {
         }
 
     }
+    public static ArrayList<String> listFolderForFolder (String dir) {
+        final File folder = new File(dir);
+        ArrayList<String> s = new ArrayList<String>();
+        if(folder.listFiles() != null)
+            for (final File fileEntry : folder.listFiles()) {
+                if (fileEntry.isDirectory())
+                    s.add(fileEntry.getName());
 
+            }
+        return s;
+    }
+    public static boolean exists(String dir) {
+        final File folder = new File(dir);
+
+        return folder.exists();
+    }
     public static boolean deleteDirectory(String dir) {
         final File folder = new File(dir);
         if(folder.listFiles() != null){

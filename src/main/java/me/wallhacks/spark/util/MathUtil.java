@@ -7,12 +7,26 @@ import java.util.Random;
 
 public class MathUtil {
     public static double lerp(double current,double target,double lerp){
-        current -= (current-target)*Math.min(lerp, 1);
+        current -= (current-target)*MathHelper.clamp(lerp,0, 1);
 
         return current;
 
     }
     public static double moveTwards(double current,double target,double step){
+        if(target > current)
+            current = Math.min(current+step, target);
+        else if(target < current)
+            current = Math.max(current-step, target);
+        return current;
+
+    }
+    public static float lerp(float current,float target,float lerp){
+        current -= (current-target)*Math.min(lerp, 1);
+
+        return current;
+
+    }
+    public static float moveTwards(float current,float target,float step){
         if(target > current)
             current = Math.min(current+step, target);
         else if(target < current)

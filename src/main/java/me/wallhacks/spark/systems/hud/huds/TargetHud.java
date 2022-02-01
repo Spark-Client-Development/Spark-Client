@@ -1,17 +1,28 @@
 package me.wallhacks.spark.systems.hud.huds;
 
+import com.mojang.realmsclient.dto.PlayerInfo;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.hud.HudElement;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
+import me.wallhacks.spark.systems.setting.settings.IntSetting;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.MathUtil;
+import me.wallhacks.spark.util.StringUtil;
+import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.HoleUtil;
 import me.wallhacks.spark.util.objects.Timer;
+import me.wallhacks.spark.util.player.PlayerUtil;
+import me.wallhacks.spark.util.render.ColorUtil;
 import net.minecraft.block.BlockAir;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -20,61 +31,107 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.systems.module.modules.combat.CrystalAura;
 import me.wallhacks.spark.systems.module.modules.combat.KillAura;
 import me.wallhacks.spark.systems.module.modules.render.NameTags;
+import org.lwjgl.opengl.GL11;
 
-@HudElement.Registration(name = "TargetHud", posX = 0.5, posY = 0, height = 73, width = 150, description = "Shows info about your current target")
+import java.awt.*;
+
+@HudElement.Registration(name = "TargetHud", posX = 0.5, posY = 0, height = 70, width = 140, description = "Shows info about your current target")
 public class TargetHud extends HudElement {
-    int progress;
-    Timer timer = new Timer();
+
+    BooleanSetting useRange = new BooleanSetting("UseRange",this,false);
+    IntSetting range = new IntSetting("Range",this,100,20,100,v -> useRange.isOn());
+
+    BooleanSetting original = new BooleanSetting("Originalook",this,false);
+
+
+
+    double smoothHealth = 0;
 
     @Override
-    public void draw(float time) {
-        if (getTarget() != null) {
-            EntityPlayer target = getTarget();
-            this.setBackGround(true);
+    public void draw(float deltaTime) {
+
+        super.draw(deltaTime);
+
+        EntityPlayer target = getTarget();
+        if (target != null) {
+
+
+
+            setBackGround(true);
+
+            double health = target.getAbsorptionAmount() + target.getHealth();
+            smoothHealth = MathUtil.moveTwards(smoothHealth,health,deltaTime*0.1);
+
+            double smoothPercent = MathHelper.clamp((smoothHealth) / 36,0,1);
+
+
+
+            Color healthColor = ColorUtil.getColorBasedOnHealthPercent((float)smoothPercent);
+
+
             fontManager.getLargeFont().drawText((target).getName(), getRenderPosX() + 38, getRenderPosY() + 5, -1);
-            MC.mc.getRenderItem().renderItemAndEffectIntoGUI(new ItemStack(Items.TOTEM_OF_UNDYING), (int) getRenderPosX() + 35, (int) getRenderPosY() + 19);
+            mc.getRenderItem().renderItemAndEffectIntoGUI(new ItemStack(Items.TOTEM_OF_UNDYING), (int) getRenderPosX() + 35, (int) getRenderPosY() + 19);
             fontManager.drawString("Pops " + TextFormatting.RED + Spark.popManager.getTotemPops(target), (int)getRenderPosX() + 50, (int)getRenderPosY() + 22, -1);
-            try {
-                drawPing((int)getRenderPosX() + 37, (int)getRenderPosY() + 39, MC.mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime());
-                fontManager.drawString("Ping " + NameTags.getPingText(MC.mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime()) + MC.mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime(), (int)getRenderPosX() + 50, (int)getRenderPosY() + 39, -1);
-            } catch (NullPointerException ignored) {
+
+            NetworkPlayerInfo playerInfo = mc.getConnection().getPlayerInfo(target.getUniqueID());
+            if(playerInfo != null)
+            {
+                drawPing((int)getRenderPosX() + 37, (int)getRenderPosY() + 39, playerInfo.getResponseTime());
+                fontManager.drawString("Ping " + NameTags.getPingText(mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime()) + mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime(), (int)getRenderPosX() + 50, (int)getRenderPosY() + 39, -1);
+
             }
-            fontManager.getBadaboom().drawText(holeString(target), getRenderPosX() + 35, getRenderPosY() + 55, -1);
-            double percent = (target.getAbsorptionAmount() + target.getHealth()) / 36;
-            int bar = (int) (150 * percent);
-            if (progress != bar) {
-                if (progress > bar) {
-                    progress = (int) Math.max(bar, progress - timer.getPassedTimeMs() / 3);
-                } else {
-                    progress = (int) Math.min(bar, progress + timer.getPassedTimeMs() / 3);
-                }
+
+
+            if(original.isOn())
+            {
+                fontManager.getBadaboom().drawText(holeString(target), getRenderPosX() + 37, getRenderPosY() + 53, -1);
+
             }
-            timer.reset();
-            Gui.drawRect((int)getRenderPosX(), (int)getRenderPosY() + getHeight() - 3, (int)getRenderPosX() + progress, (int)getRenderPosY() + getHeight(), HudSettings.getInstance().getGuiHudMainColor().getRGB());
+            else
+            {
+                int x = fontManager.drawString("Health ", getRenderPosX() + 10, getRenderPosY() + 56, -1);
+
+                x = fontManager.drawString(StringUtil.fmt(health,1), x, getRenderPosY() + 56, healthColor.getRGB());
+
+                x = fontManager.drawString("Distance "+StringUtil.fmt(PlayerUtil.getDistance(target.getPositionVector()),1)+"m", x+8, getRenderPosY() + 56, -1);
+
+            }
+
+
+            Gui.drawRect((int)getRenderPosX(), (int)getRenderPosY() + getHeight() - 3, (int)getRenderPosX() + (int)(smoothPercent*getWidth()), (int)getRenderPosY() + getHeight(), healthColor.getRGB());
             GlStateManager.enableTexture2D();
+            RenderHelper.enableStandardItemLighting();
+            mc.getRenderItem().zLevel = 200.0f;
             int offset = 0;
             for (ItemStack itemStack : target.inventory.armorInventory) {
-                if (itemStack.isEmpty()) {
-                    offset++;
-                    continue;
-                }
-                MC.mc.getRenderItem().zLevel = 200.0f;
-                MC.mc.getRenderItem().renderItemOverlayIntoGUI(MC.mc.fontRenderer, itemStack, (int)getRenderPosX() + 130, (int)getRenderPosY() + 50 - (offset * 15), "");
-                MC.mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, (int)getRenderPosX() + 130, (int)getRenderPosY() + 50 - (offset * 15));
-                MC.mc.getRenderItem().renderItemOverlayIntoGUI(MC.mc.fontRenderer, itemStack, (int)getRenderPosX() + 130, (int)getRenderPosY() + 50 - (offset * 15), "");
+
                 offset++;
-                MC.mc.getRenderItem().zLevel = 0.0f;
+                if (itemStack.isEmpty())
+                    continue;
+
+                mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, (int)getRenderPosX() + getWidth()-20, (int)getRenderPosY() + 62 - (offset * 15));
+                mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, (int)getRenderPosX() + getWidth()-20, (int)getRenderPosY() +  + 62 - (offset * 15), "");
+
             }
-            try {
+            GlStateManager.color(1,1,1,1);
+            RenderHelper.disableStandardItemLighting();
+
+            mc.getRenderItem().zLevel = 0.0f;
+            if(original.isOn())
                 GuiInventory.drawEntityOnScreen((int)getRenderPosX() + 18, (int)getRenderPosY() + getHeight() - 7, 29, 0.0f, 0.0f, (EntityPlayer) target);
-            } catch (ReportedException ignored) {
-            }
+            else
+                GuiInventory.drawEntityOnScreen((int)getRenderPosX() + 18, (int)getRenderPosY() + 51, 25, 0.0f, 0.0f, (EntityPlayer) target);
+
+
         } else setBackGround(false);
+
+
     }
 
     protected void drawPing(int x, int y, int ping) {
@@ -94,7 +151,6 @@ public class TargetHud extends HudElement {
         } else {
             j = 4;
         }
-
         this.drawTexturedModalRect(x, y, 0, 176 + j * 8, 10, 8);
     }
 
@@ -114,7 +170,7 @@ public class TargetHud extends HudElement {
     private String holeString(EntityPlayer target) {
         if (getTarget() != null) {
             BlockPos pos = new BlockPos(target.posX, target.posY + 0.9, target.posZ);
-            if (!(MC.mc.world.getBlockState(pos).getBlock() instanceof BlockAir)) {
+            if (!(mc.world.getBlockState(pos).getBlock() instanceof BlockAir)) {
                 return (ChatFormatting.DARK_RED + "Burrowed!");
             }
             if (HoleUtil.isInHole(target)) {
@@ -135,20 +191,24 @@ public class TargetHud extends HudElement {
         if (CrystalAura.targetEntity instanceof EntityPlayer) return (EntityPlayer) CrystalAura.targetEntity;
         if (KillAura.killaurTarget instanceof EntityPlayer) return (EntityPlayer) KillAura.killaurTarget;
         EntityPlayer returnEntity = null;
-        double dist = 15;
-        for (Entity entity : MC.mc.world.loadedEntityList) {
+        double closest = useRange.isOn() ? range.getValue() : Double.MAX_VALUE;
+        for (Entity entity : mc.world.loadedEntityList) {
             if (entity instanceof EntityPlayer) {
-                if (entity != MC.mc.player) {
-                    if (MC.mc.player.getDistance(entity) > dist)
+                if (AttackUtil.canAttackPlayer((EntityPlayer) entity)) {
+                    float distance = mc.player.getDistance(entity);
+                    if (distance > closest)
                         continue;
-                    double pDist = MC.mc.player.getDistance(entity);
-                    if (pDist < dist) {
-                        dist = pDist;
+                    double pDist = mc.player.getDistance(entity);
+                    if (pDist < closest) {
+                        closest = pDist;
                         returnEntity = (EntityPlayer) entity;
                     }
                 }
             }
         }
+        if(returnEntity == null && isInHudEditor())
+            return mc.player;
+
         return returnEntity;
     }
 }

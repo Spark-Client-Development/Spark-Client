@@ -23,7 +23,7 @@ public class SystemsScreen extends ClickGuiPanel {
 
     @Override
     public String getName() {
-        return "Modules";
+        return "Systems";
     }
 
 
@@ -34,26 +34,16 @@ public class SystemsScreen extends ClickGuiPanel {
 
 
         clientSettings = new GuiPanelButton[]{
-                new GuiPanelButton(0,GuiSettings.getInstance().getName()),
-                new GuiPanelButton(1,AntiCheatConfig.getInstance().getName()),
-                new GuiPanelButton(2,ClientConfig.getInstance().getName()),
+                new GuiPanelButton(() -> { guiEditSettingPanel.setCurrentSettingsHolder(GuiSettings.getInstance());},GuiSettings.getInstance().getName()),
+                new GuiPanelButton(() -> { guiEditSettingPanel.setCurrentSettingsHolder(AntiCheatConfig.getInstance());},AntiCheatConfig.getInstance().getName()),
+                new GuiPanelButton(() -> { guiEditSettingPanel.setCurrentSettingsHolder(ClientConfig.getInstance());},ClientConfig.getInstance().getName()),
 
         };
 
 
 
     }
-    @Override
-    public void preformAction(GuiPanelButton button) {
-        int id = button.getId();
 
-        switch (id)
-        {
-            case 0: guiEditSettingPanel.setCurrentSettingsHolder(GuiSettings.getInstance()); break;
-            case 1: guiEditSettingPanel.setCurrentSettingsHolder(AntiCheatConfig.getInstance()); break;
-            case 2: guiEditSettingPanel.setCurrentSettingsHolder(ClientConfig.getInstance()); break;
-        }
-    }
 
 
 

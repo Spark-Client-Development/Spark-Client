@@ -2,7 +2,10 @@ package me.wallhacks.spark.systems.setting.settings;
 
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.util.player.InventoryUtil;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.translation.I18n;
 
 public class ItemListSelectSetting extends ListSelectSetting<Item> {
 
@@ -21,8 +24,8 @@ public class ItemListSelectSetting extends ListSelectSetting<Item> {
     }
     @Override
     public String getValueDisplayString(Item t){
-        String[] sl = t.getTranslationKey().split("\\.");
-        return sl[1];
+
+        return I18n.translateToLocal(t.getTranslationKey() + ".name");
     }
 
 

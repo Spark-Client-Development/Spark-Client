@@ -28,6 +28,7 @@ public class Refill extends Module {
         if (nullCheck()) return;
         if (MC.mc.currentScreen instanceof GuiContainer) return;
 
+
         if (ticksSinceLastRefill < tickDelay.getValue()) {
             ticksSinceLastRefill++;
             return;

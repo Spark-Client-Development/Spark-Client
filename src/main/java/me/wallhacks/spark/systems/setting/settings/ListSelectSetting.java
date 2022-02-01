@@ -2,6 +2,10 @@ package me.wallhacks.spark.systems.setting.settings;
 
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.setting.Setting;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -74,6 +78,7 @@ public class ListSelectSetting<N> extends Setting<Map<N,Boolean>> {
     }
 
     public String getValueDisplayString(N _t){
+
         return _t.toString();
     }
     public String getValueIdString(N _t){

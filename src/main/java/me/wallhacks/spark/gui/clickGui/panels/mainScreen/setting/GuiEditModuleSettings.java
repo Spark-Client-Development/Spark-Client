@@ -64,6 +64,9 @@ public class GuiEditModuleSettings extends GuiPanelBase {
         }
     }
 
+    public boolean isWaitingForKey() {
+        return waitingForKey;
+    }
     boolean waitingForKey = false;
 
     @Override

@@ -16,6 +16,9 @@ public abstract class ClickGuiTheme {
     public Color getContrastColor() {
         return  new Color(150,150,150,255);
     }
+    public boolean getBrighten() {
+        return true;
+    }
     public Color getGuiSubPanelBackgroundColor() {
         return new Color(32,44,57,100);
     }

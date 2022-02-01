@@ -7,7 +7,9 @@ import java.awt.*;
 
 public class Light extends ClickGuiTheme {
 
-
+    public boolean getBrighten() {
+        return false;
+    }
     //general
     public Color getMainColor() {
         return GuiSettings.getInstance().getMainColor();
@@ -15,7 +17,7 @@ public class Light extends ClickGuiTheme {
 
 
     public Color getContrastColor() {
-        return  new Color(20, 20, 30, 180);
+        return  new Color(34, 34, 49, 180);
     }
 
     public Color getGuiSubPanelBackgroundColor() {
@@ -25,7 +27,7 @@ public class Light extends ClickGuiTheme {
         return new Color(171, 168, 168, 199);
     }
     public Color getGuiScreenBackgroundColor() {
-        return  new Color(20, 20, 30, 180);
+        return  new Color(38, 38, 54, 180);
     }
 
     //settings

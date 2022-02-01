@@ -173,11 +173,13 @@ public class RotationManager implements MC {
     }
 
 
+    public Float getFakeRotationPitch() {
+        return FakeRotationPitch;
+    }
 
-
-
-
-
+    public Float getFakeRotationYaw() {
+        return FakeRotationYaw;
+    }
 
     //render rotation
     private static float headyaw = 0;

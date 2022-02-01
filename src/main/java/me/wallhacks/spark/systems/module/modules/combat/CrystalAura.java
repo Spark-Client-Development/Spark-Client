@@ -2,8 +2,10 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.EntityAddEvent;
+import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.movement.Speed;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.WorldUtils;
@@ -11,6 +13,7 @@ import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.CrystalUtil;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.objects.PredictedEntity;
+import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
@@ -26,20 +29,26 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemEndCrystal;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.Explosion;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
+import org.apache.http.util.EntityUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -64,18 +73,25 @@ public class CrystalAura extends Module {
     BooleanSetting breakArmour = new BooleanSetting("BreakArmour", this, true, "Attacking");
     BooleanSetting NoSuicide = new BooleanSetting("NoSuicide", this, true, "Attacking");
 
-    BooleanSetting Replace = new BooleanSetting("InstantReplace", this, true, "Time");
+
+    ModeSetting Replace = new ModeSetting("Replace", this,"Instant", Arrays.asList("EntityRemove", "Instant","TickAfterExplosion", "OnExplosionPack"), "Time");
 
     IntSetting breakCooldown = new IntSetting("BreakCooldown", this, 6, 0, 10, "Time");
     IntSetting placeCooldown = new IntSetting("PlaceCooldown", this, 6, 0, 10, "Time");
+    IntSetting placeTries = new IntSetting("placeTries", this, 2, 1, 5, "Time");
+
 
     IntSetting breakDelay = new IntSetting("BreakDelay", this, 1, 0, 5, "Time");
     IntSetting placeDelay = new IntSetting("PlaceDelay", this, 1, 0, 5, "Time");
 
     ModeSetting Switch = new ModeSetting("Switch", this, "Auto", Arrays.asList("Off", "Auto", "Silent", "NoGap"), "Other");
 
+    BooleanSetting DebugCs = new BooleanSetting("DebugSpeed", this, false, "Other");
+    BooleanSetting Debug = new BooleanSetting("Debug", this, false, "Other");
+
 
     BooleanSetting InstantBreak = new BooleanSetting("InstantBreak", this, false, "Time");
+
 
     ModeSetting render = new ModeSetting("Mode", this, "Normal", Arrays.asList("Normal", "Fancy", "Off"), "Render");
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38DC5E5E, true), "Render");
@@ -89,6 +105,7 @@ public class CrystalAura extends Module {
 
 
     //targets
+    EntityEnderCrystal lastSuccessfulBrokenEntity = null;
     EntityEnderCrystal lastAttackedEntity = null;
     EntityEnderCrystal currentCrystalEntity = null;
     BlockPos currentCrystalBlockPos = null;
@@ -103,9 +120,23 @@ public class CrystalAura extends Module {
     boolean isUpdate = false;
 
 
+    int placeCounter = 0;
+    int placeCounterTimer = 0;
     //use this event for good rotation support
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
+        placeCounterTimer++;
+        if(placeCounterTimer >= 20)
+        {
+            if(DebugCs.isOn())
+                mc.player.sendStatusMessage(new TextComponentString("Ca Speed: "+placeCounter+" c/s"),true);
+
+
+
+            placeCounter = 0;
+            placeCounterTimer = 0;
+        }
+
         //get enemies list and run ca
         predictTarget();
 
@@ -136,7 +167,25 @@ public class CrystalAura extends Module {
 
 
         //if broke crystal or sent packet and replace is on we can place it
-        if (currentCrystalEntity == null || (Replace.isOn() && currentCrystalEntity == lastAttackedEntity)) {
+
+        place: {
+
+            if(currentCrystalEntity != null)
+                switch (Replace.getValue())
+                {
+                    case "EntityRemove":
+                        break place;
+                    case "Instant":
+                        if(currentCrystalEntity == lastAttackedEntity)
+                            break;
+                        break place;
+                    case "TickAfterExplosion":
+                    case "OnExplosionPack":
+                        if(currentCrystalEntity == lastSuccessfulBrokenEntity)
+                            break;
+                        break place;
+                }
+
             //get ca pos
             getCrystalPlacePos();
             //place it
@@ -165,12 +214,17 @@ public class CrystalAura extends Module {
                 if (c.getPosition().add(0, -1, 0).equals(currentCrystalBlockPos)) {
                     //reset to allow break
                     BreakPauseTimer = 0;
+                    placeCounter++;
+
+                    if(Debug.isOn())
+                        Spark.sendInfo("Crystal spawned with id " + c.getEntityId());
+
                     if (InstantBreak.isOn()) {
                         //if insta break is one we set break target and call break
-                        if ( CrystalUtil.calculateDamageCrystal(c.getPositionVector(), predictedPlayer,false) > minEnemydamage.getValue()) {
-                            currentCrystalEntity = c;
-                            doBreak();
-                        }
+                        if(Debug.isOn())
+                            Spark.sendInfo("Insta breaking crystal " + c.getEntityId());
+                        currentCrystalEntity = c;
+                        doBreak();
                     }
 
                 }
@@ -178,6 +232,26 @@ public class CrystalAura extends Module {
                 //prevent crash
                 ex.printStackTrace();
             }
+
+        }
+    }
+
+    @SubscribeEvent
+    public void onPacket(PacketReceiveEvent event) {
+        Packet p = event.getPacket();
+        if(p instanceof SPacketExplosion) {
+            SPacketExplosion ex = (SPacketExplosion)p;
+
+            if (PlayerUtil.GetPlayerPosFloored(ex.getX(),ex.getY()+0.1,ex.getZ()).add(0, -1, 0).equals(currentCrystalBlockPos)) {
+                lastSuccessfulBrokenEntity = lastAttackedEntity;
+
+                if(Debug.isOn())
+                    Spark.sendInfo("Crystal exploded with id " + lastSuccessfulBrokenEntity.getEntityId());
+
+                if(Replace.isValueName("OnExplosionPack"))
+                    doPlace();
+            }
+
 
         }
     }
@@ -261,13 +335,17 @@ public class CrystalAura extends Module {
                 MC.mc.playerController.syncCurrentPlayItem();
             }
 
-            //apply cooldown/timeout if failed 2 places
+            //apply cooldown/timeout if failed xamount(2by default) places
             PlaceTries++;
-            if (PlaceTries >= 2)
+            if (PlaceTries >= placeTries.getValue())
                 PlacePauseTimer = placeCooldown.getValue();
 
             //reset delay to wait time before next action
             DelayTimer = 0;
+
+            if(Debug.isOn())
+                Spark.sendInfo("Place packet sent!");
+
         }
     }
 
@@ -332,6 +410,9 @@ public class CrystalAura extends Module {
 
                 //reset delay to wait time before next action
                 DelayTimer = 0;
+
+                if(Debug.isOn())
+                    Spark.sendInfo("Crystal break packet for id: " + currentCrystalEntity.getEntityId());
             }
 
 

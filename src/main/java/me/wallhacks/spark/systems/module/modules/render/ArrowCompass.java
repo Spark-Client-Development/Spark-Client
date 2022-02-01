@@ -111,7 +111,7 @@ public class ArrowCompass extends Module {
         if(Spark.socialManager.isFriend(entity))
             return ClientConfig.getInstance().friendColor.getColor();
         float l = MathHelper.clamp((PlayerUtil.getDistance(entity.getPositionVector())-5)/40f,0,1);
-        return ColorUtil.lerp(distantColor.getColor(),closeColor.getColor(), l);
+        return ColorUtil.lerpColor(distantColor.getColor(),closeColor.getColor(), l);
     }
 
 

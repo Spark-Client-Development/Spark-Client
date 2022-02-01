@@ -1,6 +1,8 @@
 package me.wallhacks.spark.gui.panels;
 
 import me.wallhacks.spark.util.GuiUtil;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import me.wallhacks.spark.util.MathUtil;
@@ -30,6 +32,11 @@ public class GuiPanelScroll extends GuiPanelBase {
         this.content = content;
 
     }
+    public GuiPanelScroll(GuiPanelBase content) {
+        super(0, 0, 10, 10);
+        this.content = content;
+
+    }
 
     @Override
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
@@ -41,7 +48,7 @@ public class GuiPanelScroll extends GuiPanelBase {
             if(isMouseOn)
                 scroll = (-(Mouse.getDWheel()*0.3) + scroll); //no need for delta time here Mouse.getDWheel() takes care of it
             else
-                MouseY = MouseY > posX ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+                GuiPanelBase.mouseCantBeOn = true;
 
             scroll = Math.max(0, Math.min(scroll, content.height-height));
 
@@ -49,14 +56,19 @@ public class GuiPanelScroll extends GuiPanelBase {
 
             GL11.glPushMatrix();
 
-            GL11.glScissor((this.posX)*2+ (int) GuiUtil.getGlScissorOffset().x, (mc.displayHeight - (height + this.posY)*2)-(int) GuiUtil.getGlScissorOffset().y, (this.width)*2, height*2);
+
+
+
+            GuiUtil.glScissor(this.posX, this.posY, (this.width), height);
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             //scroll view
 
             content.posX = this.posX;
             content.posY = this.posY;
 
+            GuiUtil.addGlScissorOffset(new Vec3d(0,-smoothScroll,0));
             GL11.glTranslated(0,-smoothScroll,0);
+
 
             if(controlWidth)
                 content.width = width;
@@ -66,7 +78,10 @@ public class GuiPanelScroll extends GuiPanelBase {
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
+            GuiUtil.addGlScissorOffset(new Vec3d(0,smoothScroll,0));
             GL11.glPopMatrix();
+
+            GuiPanelBase.mouseCantBeOn = false;
 
         }
     }

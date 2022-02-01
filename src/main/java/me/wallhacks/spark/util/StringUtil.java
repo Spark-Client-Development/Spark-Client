@@ -21,7 +21,7 @@ public class StringUtil {
 
     public static String BlockToText(Block b){
 
-        return b.toString().substring(b.toString().indexOf("{")+1,b.toString().indexOf("}")).split(":")[1];
+        return b.getLocalizedName();
 
     }
 
@@ -31,10 +31,8 @@ public class StringUtil {
             return String.format("%d",(long)d);
         else if(d*10 == (long) (d*10))
             return String.format("%.1f",d);
-        else if(d*100 == (long) (d*100))
-            return String.format("%.2f",d);
         else
-            return String.format("%.3f",d);
+            return String.format("%.2f",d);
     }
     public static String fmt(double d,int decimals)
     {

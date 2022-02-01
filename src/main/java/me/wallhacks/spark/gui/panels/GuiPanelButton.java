@@ -4,12 +4,14 @@ import java.awt.*;
 
 public class GuiPanelButton extends GuiPanelBase {
 
-    public GuiPanelButton(int id,String text) {
+    final Runnable action;
+
+    public GuiPanelButton(Runnable action, String text) {
         super();
-        this.id = id;
+        this.action = action;
+
         this.text = text;
     }
-    int id = 0;
     String text;
 
     Color overrideColor = null;
@@ -25,20 +27,19 @@ public class GuiPanelButton extends GuiPanelBase {
     public boolean drawLine = false;
 
 
-    public int getId() {
-        return id;
-    }
+
 
     @Override
     public void onClickDown(int MouseButton, int MouseX, int MouseY) {
         super.onClickDown(MouseButton, MouseX, MouseY);
+        action.run();
     }
 
     @Override
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
         super.renderContent(MouseX, MouseY, deltaTime);
 
-        drawBackGround(overrideColor == null ? guiSettings.getGuiMainPanelBackgroundColor().getRGB() : overrideColor.getRGB());
+        drawBackGround(overrideColor == null ? guiSettings.getGuiSubPanelBackgroundColor().getRGB() : overrideColor.getRGB());
 
 
         Color c = isMouseOn ? guiSettings.getContrastColor().brighter() : guiSettings.getContrastColor();

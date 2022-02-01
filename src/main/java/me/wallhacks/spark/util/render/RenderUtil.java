@@ -36,6 +36,15 @@ public class RenderUtil implements MC {
         float f2 = (float)(eyes.z - pos.z);
         return MathHelper.sqrt(f * f + f1 * f1 + f2 * f2);
     }
+    public static float getRenderDistance (Vec3d vec){
+        Vec3d pos = new Vec3d(vec.x,vec.y,vec.z);
+        Vec3d eyes = mc.player.getPositionEyes(mc.getRenderPartialTicks());
+        float f = (float)(eyes.x - pos.x);
+        float f1 = (float)(eyes.y - pos.y);
+        float f2 = (float)(eyes.z - pos.z);
+        return MathHelper.sqrt(f * f + f1 * f1 + f2 * f2);
+    }
+
 
     public static void glBillboard(float x, float y, float z) {
         float scale = 0.02666667f;

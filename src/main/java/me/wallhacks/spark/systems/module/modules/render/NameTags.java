@@ -316,7 +316,7 @@ public class NameTags extends Module {
         if (healthBar.getValue()) {
             int length = (int) ((width * 2 - 1) * percent);
             length = Math.max(2, length);
-            Color color = ColorUtil.lerp(new Color(0x27DC00), new Color(0xBB0A0A), colorPercent);
+            Color color = ColorUtil.lerpColor(new Color(0x27DC00), new Color(0xBB0A0A), colorPercent);
             GlStateManager.disableDepth();
             drawRoundedRect((int) - width + 1, 4, (int) (length - width + 1), 6, color.getRGB(), 1);
         }
