@@ -48,6 +48,7 @@ public class SpeedGraph extends HudElement {
 
     @Override
     public void draw(float deltaTime) {
+        super.draw(deltaTime);
         if(speeds.size() <= 0)
             return;
 
@@ -89,6 +90,8 @@ public class SpeedGraph extends HudElement {
 
         //draw graph
         drawGraph(deltaTime);
+
+
     }
 
 

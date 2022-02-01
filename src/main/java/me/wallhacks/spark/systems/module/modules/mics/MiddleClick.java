@@ -18,7 +18,7 @@ public class MiddleClick extends Module{
         if (!nullCheck() && event.getKey() == -4) {
             RayTraceResult r = MC.mc.objectMouseOver;
             if (r.entityHit instanceof EntityPlayer) {
-                UUID player = ((EntityPlayer) r.entityHit).getGameProfile().getId();
+                String player = ((EntityPlayer) r.entityHit).getGameProfile().getName();
                 if (Spark.socialManager.isFriend(player)) {
                     Spark.socialManager.removeFriend(player);
                 } else Spark.socialManager.addFriend(player);

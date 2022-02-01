@@ -1,5 +1,6 @@
 package me.wallhacks.spark.util.render;
 
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
@@ -47,13 +48,14 @@ public class ColorUtil {
         return RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null)[2];
     }
 
-    public static Color lerp(Color from,Color to,float blending) {
+    public static Color lerpColor(Color from, Color to, float blending) {
+        blending = MathHelper.clamp(blending,0,1);
         float inverse_blending = 1 - blending;
 
-        float red =   from.getRed()   * blending   +   to.getRed()   * inverse_blending;
-        float green = from.getGreen() * blending   +   to.getGreen() * inverse_blending;
-        float blue =  from.getBlue()  * blending   +   to.getBlue()  * inverse_blending;
-        float alpha =  from.getBlue()  * blending   +   to.getBlue()  * inverse_blending;
+        float red =   to.getRed()   * blending   +   from.getRed()   * inverse_blending;
+        float green = to.getGreen() * blending   +   from.getGreen() * inverse_blending;
+        float blue =  to.getBlue()  * blending   +   from.getBlue()  * inverse_blending;
+        float alpha =  to.getBlue()  * blending   +   from.getBlue()  * inverse_blending;
 
         return new Color (red / 255, green / 255, blue / 255);
     }
@@ -74,5 +76,18 @@ public class ColorUtil {
 
     public static Color mutiplyAlpha(Color c,float mul) {
         return new Color(c.getRed(),c.getGreen(),c.getBlue(), (int)(c.getAlpha()*mul));
+    }
+
+
+
+
+    public static Color getColorBasedOnHealthPercent(float percent) {
+        return lerpColor(
+                new Color(236, 6, 6, 255),
+                new Color(11, 245, 3, 255),
+
+
+                percent
+        );
     }
 }

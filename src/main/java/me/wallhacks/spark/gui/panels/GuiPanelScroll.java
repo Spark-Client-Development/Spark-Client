@@ -2,6 +2,7 @@ package me.wallhacks.spark.gui.panels;
 
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import me.wallhacks.spark.util.MathUtil;
@@ -28,6 +29,11 @@ public class GuiPanelScroll extends GuiPanelBase {
 
     public GuiPanelScroll(int posX, int posY, int heightX, int heightY,GuiPanelBase content) {
         super(posX, posY, heightX, heightY);
+        this.content = content;
+
+    }
+    public GuiPanelScroll(GuiPanelBase content) {
+        super(0, 0, 10, 10);
         this.content = content;
 
     }
@@ -60,7 +66,9 @@ public class GuiPanelScroll extends GuiPanelBase {
             content.posX = this.posX;
             content.posY = this.posY;
 
+            GuiUtil.addGlScissorOffset(new Vec3d(0,-smoothScroll,0));
             GL11.glTranslated(0,-smoothScroll,0);
+
 
             if(controlWidth)
                 content.width = width;
@@ -70,6 +78,7 @@ public class GuiPanelScroll extends GuiPanelBase {
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
+            GuiUtil.addGlScissorOffset(new Vec3d(0,smoothScroll,0));
             GL11.glPopMatrix();
 
             GuiPanelBase.mouseCantBeOn = false;

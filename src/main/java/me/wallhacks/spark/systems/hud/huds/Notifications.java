@@ -45,6 +45,7 @@ public class Notifications extends HudElement {
 
     @Override
     public void draw(float deltaTime) {
+        super.draw(deltaTime);
         ScaledResolution sr = new ScaledResolution(MC.mc);
         if (isInHudEditor()) {
             if (getRenderPosX() + getWidth() / 2 > sr.getScaledWidth() / 2) {

@@ -199,23 +199,22 @@ public class GuiUtil {
         GL11.glPopMatrix();
     }
 
-    static Vec3d glScissorOffset = new Vec3d(0d, 0d, 0d);
+    static Vec3d glTransformOffset = new Vec3d(0d, 0d, 0d);
 
-    public static Vec3d getGlScissorOffset() {
-        return glScissorOffset;
+    public static Vec3d getGlTransformOffset() {
+        return glTransformOffset;
     }
 
     public static void resetGlScissorOffset() {
-        GuiUtil.glScissorOffset = new Vec3d(0, 0, 0);
+        GuiUtil.glTransformOffset = new Vec3d(0, 0, 0);
     }
-
-    public static void setGlScissorOffset(Vec3d glScissorOffset) {
-        GuiUtil.glScissorOffset = glScissorOffset;
+    public static void addGlScissorOffset(Vec3d glScissorOffset) {
+        GuiUtil.glTransformOffset = GuiUtil.glTransformOffset.add(glScissorOffset);
     }
 
     public static void glScissor(int x, int y, int width, int height) {
         ScaledResolution scr = new ScaledResolution(MC.mc);
-        GL11.glScissor((x+ (int) GuiUtil.getGlScissorOffset().x) * scr.getScaleFactor(), (scr.getScaledHeight() - y - height - (int) GuiUtil.getGlScissorOffset().y) * scr.getScaleFactor(), width * scr.getScaleFactor(), height * scr.getScaleFactor());
+        GL11.glScissor((x+ (int) GuiUtil.getGlTransformOffset().x) * scr.getScaleFactor(), (scr.getScaledHeight() - y - height - (int) GuiUtil.getGlTransformOffset().y) * scr.getScaleFactor(), width * scr.getScaleFactor(), height * scr.getScaleFactor());
     }
 
     public static boolean drawButton(String text, int left, int top, int right, int bottom, Color color, int mouseX, int mouseY, boolean clicked) {

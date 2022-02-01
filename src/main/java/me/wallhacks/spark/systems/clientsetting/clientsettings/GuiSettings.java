@@ -86,6 +86,9 @@ public class GuiSettings extends ClientSetting {
     public Color getContrastColor() {
         return themes[setting.getValueIndex()].getContrastColor();
     }
+    public boolean getBrighten() {
+        return themes[setting.getValueIndex()].getBrighten();
+    }
 
     public Color getGuiSubPanelBackgroundColor() {
         return themes[setting.getValueIndex()].getGuiSubPanelBackgroundColor();

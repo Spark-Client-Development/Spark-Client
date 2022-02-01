@@ -21,7 +21,7 @@ public class StringUtil {
 
     public static String BlockToText(Block b){
 
-        return b.toString().substring(b.toString().indexOf("{")+1,b.toString().indexOf("}")).split(":")[1];
+        return b.getLocalizedName();
 
     }
 

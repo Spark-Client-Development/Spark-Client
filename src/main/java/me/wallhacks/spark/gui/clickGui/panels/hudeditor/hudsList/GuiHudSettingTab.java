@@ -63,7 +63,10 @@ public class GuiHudSettingTab extends GuiPanelBase {
     public GuiEditSettingPanel guiEditSettingPanel = new GuiEditSettingPanel();
     public GuiHudPanel guiHudPanel = new GuiHudPanel(0,0,0,0);
 
-    public GuiPanelButton guiSystemManagerPanel = new GuiPanelButton(0,HudSettings.getInstance().getName());
+
+
+    public GuiPanelButton guiSystemManagerPanel = new GuiPanelButton(() -> {
+        guiEditSettingPanel.setCurrentSettingsHolder(HudSettings.getInstance());}, HudSettings.getInstance().getName());
 
 
     int offsetX = 0;

@@ -18,9 +18,7 @@ public class ClickGuiPanel {
     }
 
 
-    public void preformAction(GuiPanelButton button) {
 
-    }
 
     protected int getWidth() {
         return clickGuiMenuBase.width;

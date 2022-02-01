@@ -169,9 +169,5 @@ public class HudEditor extends ClickGuiPanel {
     }
 
 
-    @Override
-    public void preformAction(GuiPanelButton button) {
-        if(button.getId() == 0)
-            guiHudSettingTab.guiEditSettingPanel.setCurrentSettingsHolder(HudSettings.getInstance());
-    }
+
 }

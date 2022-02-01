@@ -68,6 +68,7 @@ public class ModuleList extends AlignedHudElement {
 
     @Override
     public void draw(float deltaTime) {
+        super.draw(deltaTime);
         drawList(list);
     }
 

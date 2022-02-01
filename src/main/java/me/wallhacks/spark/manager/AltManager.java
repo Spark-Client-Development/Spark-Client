@@ -118,7 +118,7 @@ public class AltManager implements MC {
         GL11.glPushMatrix();
         GL11.glTranslated(-offset,0,0);
 
-        GuiUtil.setGlScissorOffset(new Vec3d(-offset,0,0));
+        GuiUtil.addGlScissorOffset(new Vec3d(-offset,0,0));
 
 
         mouseX += offset;
@@ -257,6 +257,7 @@ public class AltManager implements MC {
         fontManager.drawString(name, width  + 31, height - 40, -1);
         fontManager.drawString((cracked ? TextFormatting.RED + "Cracked" : TextFormatting.GREEN + "Premium"), width + 31, height - 29, -1);
 
+        GuiUtil.addGlScissorOffset(new Vec3d(offset,0,0));
         GL11.glPopMatrix();
     }
 

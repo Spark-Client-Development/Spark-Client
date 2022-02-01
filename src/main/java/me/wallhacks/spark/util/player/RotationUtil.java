@@ -2,6 +2,11 @@ package me.wallhacks.spark.util.player;
 
 
 import me.wallhacks.spark.util.MC;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 public class RotationUtil implements MC {
 
@@ -67,6 +72,31 @@ public class RotationUtil implements MC {
                 { posX, posZ };
     }
 
+
+    public static float[] getViewRotations(Vec3d vec, EntityPlayer me)
+    {
+        Vec3d eyesPos = me.getPositionEyes(Minecraft.getMinecraft().getRenderPartialTicks());
+
+        return getViewRotations(vec,eyesPos,me);
+    }
+    public static float[] getViewRotations(Vec3d vec, Vec3d eyesPos, EntityPlayer me)
+    {
+        double diffX = vec.x - eyesPos.x;
+        double diffY = vec.y - eyesPos.y;
+        double diffZ = vec.z - eyesPos.z;
+
+        double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
+
+        float yaw = (float) Math.toDegrees(Math.atan2(diffZ, diffX)) - 90F;
+        float pitch = (float) -Math.toDegrees(Math.atan2(diffY, diffXZ));
+
+        //return new float[]{ me.rotationYaw + MathHelper.wrapDegrees(yaw - me.rotationYaw), me.rotationPitch + MathHelper.wrapDegrees(pitch - me.rotationPitch) };
+
+        float[] myRot = new float[]{me.rotationYaw,me.rotationPitch};
+
+        return new float[] {myRot[0] + MathHelper.wrapDegrees(yaw-myRot[0]), myRot[1]+ MathHelper.wrapDegrees(pitch-myRot[1]) };
+
+    }
 
 
 }

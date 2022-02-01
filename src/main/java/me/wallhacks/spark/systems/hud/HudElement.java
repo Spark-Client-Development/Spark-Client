@@ -293,6 +293,8 @@ public class HudElement extends SettingsHolder implements MC {
     //this event is good trust me
     @SubscribeEvent
     public void render(RenderGameOverlayEvent.Chat event) {
+        GlStateManager.disableLighting();
+        GlStateManager.enableAlpha();
         float deltaTime = (System.nanoTime()-Time)/1000000f;
         if(isInHudEditor())
             Gui.drawRect(getRenderPosX(), getRenderPosY(), getEndRenderPosX(), getEndRenderPosY(), !isSelectedInHudEditor() ? hudSettings.getGuiHudListBackgroundColor().getRGB() : new Color(47, 47, 47, 160).getRGB());
@@ -303,8 +305,7 @@ public class HudElement extends SettingsHolder implements MC {
         Time = System.nanoTime();
 
         GlStateManager.color(1f,1f,1f,1f);
-        GlStateManager.disableLighting();
-        GlStateManager.enableAlpha();
+
     }
 
     public void draw(float deltaTime) {

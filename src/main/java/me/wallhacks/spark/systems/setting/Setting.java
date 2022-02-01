@@ -52,7 +52,9 @@ public abstract class Setting<T> {
     }
 
 
-
+    public SettingsHolder getSettingsHolder() {
+        return settingsHolder;
+    }
 
     public boolean setValueString(String value) {
     	return false;

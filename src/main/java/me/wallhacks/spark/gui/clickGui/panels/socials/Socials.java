@@ -57,7 +57,16 @@ public class Socials extends ClickGuiPanel {
     public final GuiPanelScroll guiPanelScroll = new GuiPanelScroll(0, 0, 0, 0,playerListGui);
     public final GuiPanelScroll guiPanelScrollFrieds = new GuiPanelScroll(0, 0, 0, 0,playerFriendListGui);
 
-    public final GuiPanelButton addButton = new GuiPanelButton(0,"Add Offline");
+    public final GuiPanelButton addButton = new GuiPanelButton(() -> {
+        if(moduleSearchField.getText().length() > 0)
+        {
+            UUID id = SessionUtils.getid(moduleSearchField.getText());
+            if(id != null)
+                Spark.socialManager.addFriend(id);
+
+        }
+
+    }, "Add Offline");
 
     @Override
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
@@ -150,17 +159,6 @@ public class Socials extends ClickGuiPanel {
     }
 
 
-    @Override
-    public void preformAction(GuiPanelButton button) {
-        if(button.getId()==0 && moduleSearchField.getText().length() > 0)
-        {
-            UUID id = SessionUtils.getid(moduleSearchField.getText());
-            if(id != null)
-                Spark.socialManager.addFriend(id);
-
-        }
-
-    }
 
     public CopyOnWriteArrayList<PlayerListItem> players = new CopyOnWriteArrayList<>();
 

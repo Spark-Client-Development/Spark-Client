@@ -2,6 +2,7 @@ package me.wallhacks.spark.gui.panels;
 
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiEditModuleSettings;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiKeySettingPanel;
@@ -12,6 +13,7 @@ import java.io.IOException;
 public class GuiPanelScreen extends GuiScreen {
 
     final GuiScreen lastScreen;
+
     protected final FontManager fontManager;
 
     public GuiPanelScreen() {
@@ -21,6 +23,10 @@ public class GuiPanelScreen extends GuiScreen {
     public GuiPanelScreen(final GuiScreen prev) {
         this.lastScreen = prev;
 
+        GuiPanelBase.SelectedMouse = null;
+        GuiPanelBase.TopMouseOn = null;
+        GuiPanelBase.FocusedMouse = null;
+
         this.fontManager = Spark.fontManager;
     }
 
@@ -28,20 +34,23 @@ public class GuiPanelScreen extends GuiScreen {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
 
         if (keyCode == 1) {
-            if(GuiPanelBase.FocusedMouse instanceof GuiKeySettingPanel || GuiPanelBase.FocusedMouse instanceof GuiKeySettingPanel)
+            if((GuiPanelBase.FocusedMouse instanceof GuiEditModuleSettings && ((GuiEditModuleSettings)GuiPanelBase.FocusedMouse).isWaitingForKey()) || GuiPanelBase.FocusedMouse instanceof GuiKeySettingPanel)
             {
                 GuiPanelBase.FocusedMouse = null;
                 GuiPanelBase.SelectedMouse = null;
                 return;
             }
-            this.mc.displayGuiScreen(lastScreen);
-            if (this.mc.currentScreen == null) {
-                this.mc.setIngameFocus();
-            }
+            close();
         }
         else {
             if(GuiPanelBase.FocusedMouse != null)
                 GuiPanelBase.FocusedMouse.onKey(keyCode,typedChar);
+        }
+    }
+    public void close() {
+        this.mc.displayGuiScreen(lastScreen);
+        if (this.mc.currentScreen == null) {
+            this.mc.setIngameFocus();
         }
     }
 
@@ -56,9 +65,6 @@ public class GuiPanelScreen extends GuiScreen {
     }
 
 
-    public void preformAction(GuiPanelButton button) {
-
-    }
 
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
 
@@ -90,8 +96,6 @@ public class GuiPanelScreen extends GuiScreen {
                 {
                     GuiPanelBase.SelectedMouse = GuiPanelBase.TopMouseOn;
                     GuiPanelBase.SelectedMouse.onClickDown(button);
-                    if(GuiPanelBase.SelectedMouse instanceof GuiPanelButton && button == 0)
-                        preformAction(((GuiPanelButton)GuiPanelBase.SelectedMouse));
                 }
                 if(GuiPanelBase.SelectedMouse != null)
                     GuiPanelBase.SelectedMouse.onClick(button);
