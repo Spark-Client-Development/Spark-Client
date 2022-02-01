@@ -33,6 +33,9 @@ minecraft {
     mappings = project.mcpVersion
     coreMod = 'me.wallhacks.spark.mixin.MixinLoader'
     makeObfSourceJar = false
+    replaceIn 'reference/Reference.java'
+    replace '${version_lunatriuscore}', project.version_lunatriuscore
+    replace '${version_schematica}', project.version_schematica
 }
 
 repositories {
@@ -56,6 +59,7 @@ dependencies {
     compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
     compile group: 'org.json', name: 'json', version: '20210307'
     compile 'org.jetbrains:annotations:22.0.0'
+    compile 'com.github.ImpactDevelopment:SimpleTweaker:1.2'
     compile 'cabaletta:baritone-api:1.2'
     compile 'com.github.cabaletta:baritone:1.2.14'
     compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
@@ -79,10 +83,10 @@ processResources {
     inputs.property 'mcversion', project.minecraft.version
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+        expand 'version': project.version,
+               'mcversion': project.minecraft.version,
+               'version_lunatriuscore': project.version_lunatriuscore,
+               'version_schematica': project.version_schematica
     }
     rename '(.+_at.cfg)', 'META-INF/$1'
 }

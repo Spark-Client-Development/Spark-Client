@@ -24,9 +24,7 @@
     "MixinRenderLivingBase",
     "MixinRenderManager",
     "MixinRenderPlayer",
-    "MixinWorld"
-  ],
-  "client": [
+    "MixinWorld",
     "MixinAbstractClientPlayer",
     "MixinNetHandlerPlayClient"
   ]
