@@ -52,6 +52,7 @@ public class Spark implements MC {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
+        ParentPath = new File(Minecraft.getMinecraft().gameDir.getParent(), Spark.MODID);
         Display.setTitle(NAME + " | v" + VERSION);
         logger.info("Loading spark client...");
         eventBus = MinecraftForge.EVENT_BUS;

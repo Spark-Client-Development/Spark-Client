@@ -17,6 +17,7 @@
     "MixinGuiMainMenu",
     "MixinGuiScreen",
     "MixinLayerArmorBase",
+    "MixinAbstractClientPlayer",
     "MixinMinecraft",
     "MixinNetworkManager",
     "MixinParticleManager",

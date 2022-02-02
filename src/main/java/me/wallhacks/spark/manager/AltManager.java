@@ -90,9 +90,6 @@ public class AltManager implements MC {
         return base + name + ".acc";
     }
 
-
-
-
     public void loadAlts() {
         //get the key
         File authKey = new File(Spark.ParentPath.getAbsolutePath() + "\\alts\\auth.key");
