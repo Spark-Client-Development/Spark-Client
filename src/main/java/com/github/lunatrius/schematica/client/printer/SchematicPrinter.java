@@ -157,18 +157,22 @@ public class SchematicPrinter
 
         final double blockReachDistance = this.minecraft.playerController.getBlockReachDistance() - 0.1;
         final double blockReachDistanceSq = blockReachDistance * blockReachDistance;
-
-        for (final MBlockPos pos : BlockPosHelper.getAllInBoxXZY(minX, minY, minZ, maxX, maxY, maxZ))
-        {
-            if (pos.distanceSqToCenter(dX, dY, dZ) > blockReachDistanceSq)
-            {
+        MBlockPos placePos = null;
+        double best = 0.0f;
+        for (final MBlockPos pos : BlockPosHelper.getAllInBoxXZY(minX, minY, minZ, maxX, maxY, maxZ)) {
+            double dist = pos.distanceSqToCenter(dX, dY, dZ);
+            if (dist > blockReachDistanceSq) {
                 continue;
             }
+            if (dist > best || placePos == null) {
+                placePos = pos;
+            }
+        }
 
+        if (placePos != null) {
             try
             {
-                if (placeBlock(world, player, pos))
-                {
+                if (placeBlock(world, player, placePos)) {
                     Stationary = false;
                     return syncSlotAndSneaking(player, slot, isSneaking, true);
                 }
