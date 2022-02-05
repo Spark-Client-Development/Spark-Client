@@ -2,6 +2,7 @@ package me.wallhacks.spark.gui.clickGui;
 
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.panels.GuiPanelScreen;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -10,7 +11,6 @@ import org.lwjgl.opengl.GL11;
 import me.wallhacks.spark.gui.clickGui.panels.hudeditor.HudEditor;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.SystemsScreen;
 import me.wallhacks.spark.gui.clickGui.panels.socials.Socials;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.render.ColorUtil;
 
@@ -27,9 +27,9 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
 
     double Progress = 0;
 
-    final GuiSettings guiSettings;
+    final ClientConfig guiSettings;
     public ClickGuiMenuBase() {
-        guiSettings = GuiSettings.getInstance();
+        guiSettings = ClientConfig.getInstance();
         menus = new GuiPanelButton[panels.length];
 
 
@@ -126,7 +126,7 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
 
         int sizeX = 60;
         int sizeY = 18;
-        int spacing = GuiSettings.getInstance().spacing;
+        int spacing = ClientConfig.getInstance().spacing;
 
 
         int fullWidth = (sizeX*menus.length+menus.length*spacing-spacing);
@@ -144,7 +144,7 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
 
             drawRect(x-spacing,y-spacing,x+fullWidth+spacing,y+sizeY+spacing, ColorUtil.mutiplyAlpha(guiSettings.getGuiScreenBackgroundColor(), (float) MathUtil.lerp(clickGuiPanel.renderBackground() ? 0 : 1,clickGuiPanelSwitchTo.renderBackground() ? 0 : 1,Progress)).getRGB());
 
-            drawRect(x-spacing,y-spacing,x+fullWidth+spacing,y+sizeY+spacing, GuiSettings.getInstance().getGuiMainPanelBackgroundColor().getRGB());
+            drawRect(x-spacing,y-spacing,x+fullWidth+spacing,y+sizeY+spacing, ClientConfig.getInstance().getGuiMainPanelBackgroundColor().getRGB());
             int i = 0;
             for (GuiPanelButton button : menus) {
 

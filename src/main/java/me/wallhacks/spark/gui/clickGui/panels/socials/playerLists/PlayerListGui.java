@@ -4,7 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.socials.Socials;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 public class PlayerListGui extends GuiPanelBase {
 
@@ -32,7 +32,7 @@ public class PlayerListGui extends GuiPanelBase {
 
         boolean isFriend = (socials.playerFriendListGui == this);
 
-        int spacing = GuiSettings.spacing;
+        int spacing = ClientConfig.spacing;
 
         int h = spacing;
         for (PlayerListItem item : socials.players) {

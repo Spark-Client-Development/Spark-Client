@@ -22,14 +22,13 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import me.wallhacks.spark.gui.panels.GuiPanelInputField;
 import me.wallhacks.spark.gui.altList.AltList;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 import me.wallhacks.spark.util.auth.MSAuth;
 import me.wallhacks.spark.util.objects.FakeWorld;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.auth.account.Account;
 import me.wallhacks.spark.util.auth.account.AccountType;
 import me.wallhacks.spark.util.auth.account.MojangAccount;
-import scala.xml.dtd.impl.Base;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 import java.awt.*;
 import java.io.*;
@@ -70,8 +69,8 @@ public class AltManager implements MC {
         };
         fakeWorld = new FakeWorld(info, provider);
         provider.setWorld(fakeWorld);
-        userName = new GuiPanelInputField(69, 0, 0, 136, 15, GuiSettings.getInstance().getGuiSettingFieldColor().getRGB(), -1);
-        password = new GuiPanelInputField(71, 0, 0, 136, 15, GuiSettings.getInstance().getGuiSettingFieldColor().getRGB(), -1);
+        userName = new GuiPanelInputField(69, 0, 0, 136, 15, ClientConfig.getInstance().getGuiSettingFieldColor().getRGB(), -1);
+        password = new GuiPanelInputField(71, 0, 0, 136, 15, ClientConfig.getInstance().getGuiSettingFieldColor().getRGB(), -1);
         userName.setTextOffsetX(2);
         password.setTextOffsetX(2);
         password.setPassword(true);
@@ -188,13 +187,13 @@ public class AltManager implements MC {
                 click = true;
             }
         } else selected = false;
-        Gui.drawRect(width, 0, width + 5, height, GuiSettings.getInstance().getGuiMainPanelBackgroundColor().getRGB());
-        Gui.drawRect(width, 0, width+150, height, GuiSettings.getInstance().getGuiScreenBackgroundColor().getRGB());
-        Gui.drawRect(width + 5, 0, width+150, 13, GuiSettings.getInstance().getGuiMainPanelBackgroundColor().getRGB());
-        Gui.drawRect(width + 5, height - 45, width+150, height, GuiSettings.getInstance().getGuiMainPanelBackgroundColor().getRGB());
-        Gui.drawRect(width + 5, 13, width+150, 15, GuiSettings.getInstance().getMainColor().getRGB());
-        Gui.drawRect(width + 5, height - 47 - fieldOffset - statusOffset, width+150, height - fieldOffset - 45 - statusOffset, GuiSettings.getInstance().getMainColor().getRGB());
-        Gui.drawRect(width + 5, height - 45 - fieldOffset - statusOffset, width+150, height - 45, GuiSettings.getInstance().getGuiMainPanelBackgroundColor().getRGB());
+        Gui.drawRect(width, 0, width + 5, height, ClientConfig.getInstance().getGuiMainPanelBackgroundColor().getRGB());
+        Gui.drawRect(width, 0, width+150, height, ClientConfig.getInstance().getGuiScreenBackgroundColor().getRGB());
+        Gui.drawRect(width + 5, 0, width+150, 13, ClientConfig.getInstance().getGuiMainPanelBackgroundColor().getRGB());
+        Gui.drawRect(width + 5, height - 45, width+150, height, ClientConfig.getInstance().getGuiMainPanelBackgroundColor().getRGB());
+        Gui.drawRect(width + 5, 13, width+150, 15, ClientConfig.getInstance().getMainColor().getRGB());
+        Gui.drawRect(width + 5, height - 47 - fieldOffset - statusOffset, width+150, height - fieldOffset - 45 - statusOffset, ClientConfig.getInstance().getMainColor().getRGB());
+        Gui.drawRect(width + 5, height - 45 - fieldOffset - statusOffset, width+150, height - 45, ClientConfig.getInstance().getGuiMainPanelBackgroundColor().getRGB());
         if (fieldOffset != 0) {
             password.posX = width  + 7;
             password.posY = height - 26 - fieldOffset;
@@ -208,8 +207,8 @@ public class AltManager implements MC {
                 fontManager.drawString("password " + TextFormatting.DARK_GRAY + "(leave blank for cracked)", width  + 11, height - 22 - fieldOffset, new Color(0xAFAFAF).getRGB());
             if (userName.getText().equals("") && !userName.isFocused())
                 fontManager.drawString("username", width + 11, height - 39 - fieldOffset, new Color(0xAFAFAF).getRGB());
-            boolean add = GuiUtil.drawButton("Add", width  + 7, height - 9 - fieldOffset, width + 74, height + 6 - fieldOffset, GuiSettings.getInstance().getMainColor(), mouseX, mouseY, loginAcc != null);
-            boolean login = GuiUtil.drawButton("Login", width + 76, height - 9 - fieldOffset, width  + 143, height + 6 - fieldOffset, GuiSettings.getInstance().getMainColor(), mouseX, mouseY, loginAcc != null);
+            boolean add = GuiUtil.drawButton("Add", width  + 7, height - 9 - fieldOffset, width + 74, height + 6 - fieldOffset, ClientConfig.getInstance().getMainColor(), mouseX, mouseY, loginAcc != null);
+            boolean login = GuiUtil.drawButton("Login", width + 76, height - 9 - fieldOffset, width  + 143, height + 6 - fieldOffset, ClientConfig.getInstance().getMainColor(), mouseX, mouseY, loginAcc != null);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
             if (loginAcc == null) {
                 if (click) {
@@ -278,8 +277,8 @@ public class AltManager implements MC {
         if (statusTimer.passedMs(2000)) {
             status = "";
         }
-        boolean ms = GuiUtil.drawButton(msAuth == null ? "Add MS" : "Cancel", width + 105, height - 40, width + 140, height - 25, GuiSettings.getInstance().getMainColor(), mouseX, mouseY, addingMojang || loginAcc != null);
-        boolean mj = GuiUtil.drawButton(addingMojang ? "Cancel" : "Add Alt", width  + 105, height - 20, width + 140, height - 5, GuiSettings.getInstance().getMainColor(), mouseX, mouseY, loginAcc != null || msAuth != null);
+        boolean ms = GuiUtil.drawButton(msAuth == null ? "Add MS" : "Cancel", width + 105, height - 40, width + 140, height - 25, ClientConfig.getInstance().getMainColor(), mouseX, mouseY, addingMojang || loginAcc != null);
+        boolean mj = GuiUtil.drawButton(addingMojang ? "Cancel" : "Add Alt", width  + 105, height - 20, width + 140, height - 5, ClientConfig.getInstance().getMainColor(), mouseX, mouseY, loginAcc != null || msAuth != null);
         if (statusOffset == 15) {
             fontManager.drawString(status, width + 7, height - 46 - fieldOffset - 10, -1);
         }

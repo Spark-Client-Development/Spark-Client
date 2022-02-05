@@ -5,8 +5,8 @@ import me.wallhacks.spark.manager.AltManager;
 import me.wallhacks.spark.util.GuiUtil;
 import org.lwjgl.input.Mouse;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 import me.wallhacks.spark.util.auth.account.Account;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 import java.util.ArrayList;
 
@@ -33,8 +33,8 @@ public class AltList extends GuiPanelBase {
         for (AltEntry item : list) {
             item.setPositionAndSize(posX+spacing,posY+h,width-spacing*2,36);
             item.renderContent(MouseX,MouseY,deltaTime);
-            boolean remove = GuiUtil.drawButton("Delete", item.posX + 22,item.posY + 22,item.posX+78,item.posY+35, GuiSettings.getInstance().getMainColor(), MouseX, MouseY, false);
-            boolean login = GuiUtil.drawButton("Login", item.posX + 81,item.posY + 22,item.posX+137,item.posY+35, GuiSettings.getInstance().getMainColor(), MouseX, MouseY, item.account.loading);
+            boolean remove = GuiUtil.drawButton("Delete", item.posX + 22,item.posY + 22,item.posX+78,item.posY+35, ClientConfig.getInstance().getMainColor(), MouseX, MouseY, false);
+            boolean login = GuiUtil.drawButton("Login", item.posX + 81,item.posY + 22,item.posX+137,item.posY+35, ClientConfig.getInstance().getMainColor(), MouseX, MouseY, item.account.loading);
             if(Mouse.isButtonDown(0)) {
                 if(item.isMouseOn) {
                     if(!selected) {

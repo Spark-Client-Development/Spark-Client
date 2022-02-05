@@ -1,7 +1,7 @@
 package me.wallhacks.spark.systems.clientsetting.clientsettings.clickguitheme.guithemes;
 
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.clickguitheme.ClickGuiTheme;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 import java.awt.*;
 
@@ -11,7 +11,7 @@ public class Opaque extends ClickGuiTheme {
 
     //general
     public Color getMainColor() {
-        return GuiSettings.getInstance().getMainColor();
+        return ClientConfig.getInstance().getMainColor();
     }
 
 

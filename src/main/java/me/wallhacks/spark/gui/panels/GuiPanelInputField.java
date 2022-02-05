@@ -12,8 +12,8 @@ import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 import me.wallhacks.spark.manager.FontManager;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 import me.wallhacks.spark.util.objects.Timer;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 public class GuiPanelInputField extends GuiPanelBase {
 
@@ -29,8 +29,8 @@ public class GuiPanelInputField extends GuiPanelBase {
 
     public GuiPanelInputField(int id,int posX, int posY, int width, int height) {
         super(posX, posY, width, height);
-        backGroundColor = GuiSettings.getInstance().getGuiSubPanelBackgroundColor().getRGB();
-        textColor = GuiSettings.getInstance().getContrastColor().getRGB();
+        backGroundColor = ClientConfig.getInstance().getGuiSubPanelBackgroundColor().getRGB();
+        textColor = ClientConfig.getInstance().getContrastColor().getRGB();
         this.id = id;
         fontRenderer = Spark.fontManager;
     }

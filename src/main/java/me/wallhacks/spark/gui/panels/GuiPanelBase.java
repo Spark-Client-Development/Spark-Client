@@ -1,16 +1,16 @@
 package me.wallhacks.spark.gui.panels;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import me.wallhacks.spark.manager.FontManager;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 
 public class GuiPanelBase extends Gui {
 
     protected final FontManager fontManager;
     protected final Minecraft mc;
-    protected final GuiSettings guiSettings;
+    protected final ClientConfig guiSettings;
 
     public GuiPanelBase() {
         this(0,0,0,0);
@@ -26,7 +26,7 @@ public class GuiPanelBase extends Gui {
 
         this.fontManager = Spark.fontManager;
         this.mc = Minecraft.getMinecraft();
-        this.guiSettings = GuiSettings.getInstance();
+        this.guiSettings = ClientConfig.getInstance();
     }
 
 

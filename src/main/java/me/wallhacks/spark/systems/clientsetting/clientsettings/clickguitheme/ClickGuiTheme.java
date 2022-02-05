@@ -1,6 +1,6 @@
 package me.wallhacks.spark.systems.clientsetting.clientsettings.clickguitheme;
 
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 import java.awt.*;
 
@@ -9,7 +9,7 @@ public abstract class ClickGuiTheme {
 
     //general
     public Color getMainColor() {
-        return GuiSettings.getInstance().getMainColor();
+        return ClientConfig.getInstance().getMainColor();
     }
 
 

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractClientPlayer.class)
 public class MixinAbstractClientPlayer {
-    @Inject(method={"isSpectator"}, at={@At(value="HEAD")}, cancellable=true)
+    @Inject(method = {"isSpectator"}, at={@At(value="HEAD")}, cancellable=true)
     public void isSpectator(CallbackInfoReturnable<Boolean> info) {
         if(Minecraft.getMinecraft().getConnection() == null)
             info.setReturnValue(false);

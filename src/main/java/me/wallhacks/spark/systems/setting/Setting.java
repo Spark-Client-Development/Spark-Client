@@ -5,7 +5,7 @@ import me.wallhacks.spark.systems.SettingsHolder;
 
 import java.util.function.Predicate;
 
-public abstract class Setting<T> {
+public class Setting<T> {
     private T value;
     private final String name;
     private final SettingsHolder settingsHolder;

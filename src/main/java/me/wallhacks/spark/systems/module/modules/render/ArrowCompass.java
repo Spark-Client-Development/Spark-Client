@@ -1,6 +1,7 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.systems.clientsetting.ClientSetting;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.PlayerUtil;
@@ -109,7 +110,7 @@ public class ArrowCompass extends Module {
     private Color getColor(EntityPlayer entity){
         //lerp by distance
         if(Spark.socialManager.isFriend(entity))
-            return ClientConfig.getInstance().friendColor.getColor();
+            return ClientConfig.getInstance().friendColor.getValue();
         float l = MathHelper.clamp((PlayerUtil.getDistance(entity.getPositionVector())-5)/40f,0,1);
         return ColorUtil.lerpColor(distantColor.getColor(),closeColor.getColor(), l);
     }

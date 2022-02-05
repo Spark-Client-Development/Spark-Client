@@ -1,6 +1,7 @@
 package me.wallhacks.spark.manager;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.BaritoneConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import me.wallhacks.spark.systems.SettingsHolder;
@@ -42,8 +43,8 @@ public class ConfigManager {
 
         SaveFromConfig(config);
         config = name;
-        LoadFromConfig(config);
-
+        LoadFromConfig(config, true);
+        LoadFromConfig(config, false);
         return true;
     }
     public boolean deleteConfig(String name) {
@@ -62,8 +63,7 @@ public class ConfigManager {
     public void Load() {
         if(FileUtil.exists(Spark.ParentPath.getAbsolutePath()+"\\config.sex"))
             config = FileUtil.read(Spark.ParentPath.getAbsolutePath()+"\\config.sex");
-        LoadFromConfig(config);
-
+        LoadFromConfig(config, false);
     }
 
     public void Save() {
@@ -73,8 +73,8 @@ public class ConfigManager {
     }
 
 
-    public void LoadFromConfig(String configName) {
-        loadSystems(configName);
+    public void LoadFromConfig(String configName, boolean baritone) {
+        loadSystems(configName, baritone);
     }
 
     public void SaveFromConfig(String configName) {
@@ -94,8 +94,10 @@ public class ConfigManager {
 
 
 
-    private void loadSystems(String configName) {
+    private void loadSystems(String configName, boolean baritone) {
         for (SettingsHolder system : SystemManager.getSystems()) {
+            if (system instanceof BaritoneConfig && !baritone) continue;
+            if (!(system instanceof BaritoneConfig) && baritone) continue;
             try {
                 String s = FileUtil.read(getSystemSettingFile(system,configName));
                 if (s != null) {

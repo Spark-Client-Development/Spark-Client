@@ -3,12 +3,12 @@ package me.wallhacks.spark.gui.clickGui.panels.mainScreen;
 import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.gui.clickGui.ClickGuiPanel;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.BaritoneConfig;
 import net.minecraft.client.gui.Gui;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.moduleslist.GuiClientModulePanel;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiEditSettingPanel;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 
 public class SystemsScreen extends ClickGuiPanel {
 
@@ -34,9 +34,9 @@ public class SystemsScreen extends ClickGuiPanel {
 
 
         clientSettings = new GuiPanelButton[]{
-                new GuiPanelButton(() -> { guiEditSettingPanel.setCurrentSettingsHolder(GuiSettings.getInstance());},GuiSettings.getInstance().getName()),
-                new GuiPanelButton(() -> { guiEditSettingPanel.setCurrentSettingsHolder(AntiCheatConfig.getInstance());},AntiCheatConfig.getInstance().getName()),
                 new GuiPanelButton(() -> { guiEditSettingPanel.setCurrentSettingsHolder(ClientConfig.getInstance());},ClientConfig.getInstance().getName()),
+                new GuiPanelButton(() -> { guiEditSettingPanel.setCurrentSettingsHolder(AntiCheatConfig.getInstance());},AntiCheatConfig.getInstance().getName()),
+                new GuiPanelButton(() -> { guiEditSettingPanel.setCurrentSettingsHolder(BaritoneConfig.getInstance());},BaritoneConfig.getInstance().getName()),
 
         };
 

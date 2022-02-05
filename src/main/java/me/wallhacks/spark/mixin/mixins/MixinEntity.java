@@ -8,7 +8,7 @@ import me.wallhacks.spark.systems.module.modules.movement.Velocity;
 
 @Mixin(Entity.class)
 public class MixinEntity {
-    @Redirect(method={"applyEntityCollision"}, at=@At(value="INVOKE", target="Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
+    @Redirect(method = {"applyEntityCollision"}, at=@At(value="INVOKE", target="Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
     public void addVelocityHook(Entity entity, double x, double y, double z) {
         if (!Velocity.INSTANCE.isEnabled() || !Velocity.INSTANCE.NoPush.getValue()) {
             entity.motionX += x;

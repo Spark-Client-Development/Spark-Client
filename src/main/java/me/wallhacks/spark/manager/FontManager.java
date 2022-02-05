@@ -3,7 +3,7 @@ package me.wallhacks.spark.manager;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.GameFontRenderer;
 import net.minecraft.client.Minecraft;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 import java.awt.*;
 import java.io.InputStream;
@@ -88,9 +88,9 @@ public class FontManager implements MC {
     }
 
     public static boolean getCustomFontEnabled(){
-        return GuiSettings.getInstance().getCustomFontEnabled();
+        return ClientConfig.getInstance().getCustomFontEnabled();
     }
     public static boolean getFontShadow(){
-        return GuiSettings.getInstance().getFontShadow();
+        return ClientConfig.getInstance().getFontShadow();
     }
 }

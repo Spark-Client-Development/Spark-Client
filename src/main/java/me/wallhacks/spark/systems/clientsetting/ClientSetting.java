@@ -15,6 +15,7 @@ public abstract class ClientSetting extends SettingsHolder implements MC {
     public @interface Registration {
         String name();
         String description();
+        boolean safe() default true;
     }
 
 
@@ -31,14 +32,12 @@ public abstract class ClientSetting extends SettingsHolder implements MC {
 
     private final String name = getMod().name();
     private final String description = getMod().description();
-
+    private final boolean safe = getMod().safe();
 
     @Override
     public String getName() {
         return name;
     }
-
-
 
 
 }

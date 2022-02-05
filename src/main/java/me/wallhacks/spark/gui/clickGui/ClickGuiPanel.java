@@ -1,20 +1,18 @@
 package me.wallhacks.spark.gui.clickGui;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.manager.FontManager;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 public class ClickGuiPanel {
 
-    public final GuiSettings guiSettings;
+    public final ClientConfig guiSettings;
     final ClickGuiMenuBase clickGuiMenuBase;
     public final FontManager fontManager;
     public ClickGuiPanel(ClickGuiMenuBase clickGuiMenuBase) {
         this.clickGuiMenuBase = clickGuiMenuBase;
-        guiSettings = GuiSettings.getInstance();
+        guiSettings = ClientConfig.getInstance();
         fontManager = Spark.fontManager;
-
     }
 
 

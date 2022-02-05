@@ -3,10 +3,11 @@ package me.wallhacks.spark.gui.clickGui.settingScreens.listScreen;
 import me.wallhacks.spark.gui.clickGui.settingScreens.SettingScreen;
 import me.wallhacks.spark.gui.panels.GuiPanelInputField;
 import me.wallhacks.spark.gui.panels.GuiPanelScroll;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.util.ResourceLocation;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
+
 
 public class ListSettingScreen extends SettingScreen<ListSelectSetting> {
     public ListSettingScreen(ListSelectSetting setting) {
@@ -23,7 +24,7 @@ public class ListSettingScreen extends SettingScreen<ListSelectSetting> {
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
         super.renderContent(MouseX, MouseY, deltaTime);
 
-        GuiSettings guiSettings =  GuiSettings.getInstance();
+        ClientConfig guiSettings =  ClientConfig.getInstance();
 
 
         guiPanelInputField.setBackGroundColor(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
@@ -38,7 +39,7 @@ public class ListSettingScreen extends SettingScreen<ListSelectSetting> {
 
 
 
-        guiPanelScroll.setPositionAndSize(settingPosX,settingPosY,settingWidth,settingHeight-18-GuiSettings.spacing);
+        guiPanelScroll.setPositionAndSize(settingPosX,settingPosY,settingWidth,settingHeight-18-ClientConfig.spacing);
         guiPanelScroll.drawBackGround(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
         guiPanelScroll.renderContent(MouseX, MouseY, deltaTime);
 

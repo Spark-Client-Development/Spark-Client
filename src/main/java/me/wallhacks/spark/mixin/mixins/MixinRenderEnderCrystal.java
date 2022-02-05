@@ -20,7 +20,7 @@ public class MixinRenderEnderCrystal {
     public ModelBase modelEnderCrystalNoBase;
 
 
-    @Redirect(method={"doRender"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/model/ModelBase;render(Lnet/minecraft/entity/Entity;FFFFFF)V"))
+    @Redirect(method = {"doRender"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/model/ModelBase;render(Lnet/minecraft/entity/Entity;FFFFFF)V"))
     public void renderModelBaseHook(ModelBase model, Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         RenderLivingEvent event = new RenderLivingEvent(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, model);
         Spark.eventBus.post(event);

@@ -1,6 +1,7 @@
 package me.wallhacks.spark.manager;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
@@ -9,7 +10,6 @@ import me.wallhacks.spark.event.client.InputEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 import me.wallhacks.spark.systems.command.commands.ModuleCommand;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.module.Module;
@@ -160,7 +160,7 @@ public class SystemManager {
                 module.setEnabled(!module.isEnabled());
             }
         }
-        if(event.getKey() == getClientSetting(GuiSettings.class).getBind())
+        if(event.getKey() == getClientSetting(ClientConfig.class).getBind())
             Minecraft.getMinecraft().displayGuiScreen(Spark.clickGuiScreen);
     }
 

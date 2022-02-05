@@ -3,7 +3,7 @@ package me.wallhacks.spark.gui.clickGui.panels.hudeditor.hudsList;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiEditSettingPanel;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 
 public class GuiHudSettingTab extends GuiPanelBase {
@@ -14,8 +14,8 @@ public class GuiHudSettingTab extends GuiPanelBase {
     public GuiHudSettingTab() {
         super();
 
-        height = 238+GuiSettings.getInstance().spacing*3;
-        width = moduleListWidth + settingsWidth + GuiSettings.getInstance().spacing*3;
+        height = 238+ ClientConfig.getInstance().spacing*3;
+        width = moduleListWidth + settingsWidth + ClientConfig.getInstance().spacing*3;
 
 
 
@@ -37,7 +37,7 @@ public class GuiHudSettingTab extends GuiPanelBase {
         drawEdges(guiSettings.getContrastColor().getRGB());
 
 
-        int spacing = GuiSettings.getInstance().spacing;
+        int spacing = ClientConfig.getInstance().spacing;
 
 
 

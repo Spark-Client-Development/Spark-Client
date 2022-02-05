@@ -23,9 +23,4 @@ public class MixinParticleManager {
         if(event.isCanceled())
             info.cancel();
     }
-
-
-
-
-
 }

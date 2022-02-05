@@ -1,16 +1,13 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.panels.GuiPanelScreen;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.GuiSettings;
 import me.wallhacks.spark.systems.setting.Setting;
 import me.wallhacks.spark.util.GuiUtil;
-import me.wallhacks.spark.util.MathUtil;
-import me.wallhacks.spark.util.render.ColorUtil;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 public class SettingScreen<T extends Setting> extends GuiPanelScreen {
     public SettingScreen(T setting) {
@@ -33,14 +30,14 @@ public class SettingScreen<T extends Setting> extends GuiPanelScreen {
         super.renderContent(MouseX, MouseY, deltaTime);
 
 
-        GuiSettings guiSettings =  GuiSettings.getInstance();
+        ClientConfig guiSettings =  ClientConfig.getInstance();
 
 
         drawRect(0,0,this.width,this.height, guiSettings.getGuiScreenBackgroundColor().getRGB());
 
         int nameBarHeight = 18;
         int width = settingWidth;
-        int height = settingHeight+GuiSettings.spacing+nameBarHeight;
+        int height = settingHeight+ClientConfig.spacing+nameBarHeight;
 
 
         int x = getCenterX()-width/2;
@@ -63,7 +60,7 @@ public class SettingScreen<T extends Setting> extends GuiPanelScreen {
 
 
         settingPosX = x;
-        settingPosY = y+GuiSettings.spacing+nameBarHeight;
+        settingPosY = y+ClientConfig.spacing+nameBarHeight;
 
 
 

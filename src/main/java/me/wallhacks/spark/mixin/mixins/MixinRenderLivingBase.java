@@ -19,7 +19,7 @@ public abstract class MixinRenderLivingBase {
     @Shadow
     protected ModelBase mainModel;
 
-    @Inject(method={"renderModel"}, at={@At(value="INVOKE", target="Lnet/minecraft/client/model/ModelBase;render(Lnet/minecraft/entity/Entity;FFFFFF)V")}, cancellable=true)
+    @Inject(method = {"renderModel"}, at={@At(value="INVOKE", target="Lnet/minecraft/client/model/ModelBase;render(Lnet/minecraft/entity/Entity;FFFFFF)V")}, cancellable=true)
     public void renderModel(EntityLivingBase entityLivingBase, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, CallbackInfo info) {
         RenderLivingEvent event = new RenderLivingEvent(entityLivingBase, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, mainModel);
         if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu) return;
@@ -28,7 +28,7 @@ public abstract class MixinRenderLivingBase {
             info.cancel();
         }
     }
-    @Inject(method={"canRenderName(Lnet/minecraft/entity/EntityLivingBase;)Z"}, at={@At(value="HEAD")}, cancellable=true)
+    @Inject(method = {"canRenderName(Lnet/minecraft/entity/EntityLivingBase;)Z"}, at={@At(value="HEAD")}, cancellable=true)
     public void canRenderName(CallbackInfoReturnable<Boolean> info) {
         if (Minecraft.getMinecraft().player == null)
             info.setReturnValue(false);
