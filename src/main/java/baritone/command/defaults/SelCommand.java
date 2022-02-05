@@ -63,8 +63,8 @@ public class SelCommand extends Command {
                     return;
                 }
                 Color color = Baritone.settings().colorSelectionPos1.getValue();
-                float opacity = Baritone.settings().selectionOpacity.getValue();
-                float lineWidth = Baritone.settings().selectionLineWidth.getValue();
+                float opacity = Baritone.settings().selectionOpacity.getValue().floatValue();
+                float lineWidth = Baritone.settings().selectionLineWidth.getValue().floatValue();
                 boolean ignoreDepth = Baritone.settings().renderSelectionIgnoreDepth.getValue();
                 IRenderer.startLines(color, opacity, lineWidth, ignoreDepth);
                 IRenderer.drawAABB(new AxisAlignedBB(pos1, pos1.add(1, 1, 1)));

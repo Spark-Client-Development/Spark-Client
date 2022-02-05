@@ -36,4 +36,6 @@ public interface ILookBehavior extends IBehavior {
      * @param force    Whether or not to "force" the rotations
      */
     void updateTarget(Rotation rotation, boolean force);
+
+    float getYaw();
 }

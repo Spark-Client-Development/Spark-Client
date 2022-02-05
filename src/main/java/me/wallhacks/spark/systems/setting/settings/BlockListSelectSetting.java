@@ -9,8 +9,6 @@ public class BlockListSelectSetting extends ListSelectSetting<Block> {
 
     public BlockListSelectSetting(String name, SettingsHolder module, Block[] selected, String settingCategory) {
         super(name, module, WorldUtils.getListOfBlocks(), selected,settingCategory);
-
-
     }
 
 
@@ -23,12 +21,4 @@ public class BlockListSelectSetting extends ListSelectSetting<Block> {
     public String getValueDisplayString(Block t){
         return StringUtil.BlockToText(t);
     }
-
-
-
-
-
-
-
-
 }

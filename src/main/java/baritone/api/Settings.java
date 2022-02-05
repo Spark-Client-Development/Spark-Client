@@ -82,24 +82,24 @@ public final class Settings {
      * <p>
      * Decrease to make Baritone more often consider paths that would require placing blocks
      */
-    public final DoubleSetting blockPlacementPenalty = new DoubleSetting(20D, 0D, 30D, "Penalty");
+    public final DoubleSetting blockPlacementPenalty = new DoubleSetting(20D, 0D, 30D, "PathFinding");
 
     /**
-     * This is just a tiebreaker to make it less likely to break blocks if it can avoid it.
+     * This is just a tiebreaker to make it less likely to break blocks if it can avoid it.-
      * For example, fire has a break cost of 0, this makes it nonzero, so all else being equal
      * it will take an otherwise equivalent route that doesn't require it to put out fire.
      */
-    public final DoubleSetting blockBreakAdditionalPenalty = new DoubleSetting(2D, 0D, 30D, "Penalty");
+    public final DoubleSetting blockBreakAdditionalPenalty = new DoubleSetting(2D, 0D, 30D, "PathFinding");
 
     /**
      * Additional penalty for hitting the space bar (ascend, pillar, or parkour) because it uses hunger
      */
-    public final Setting<Double> jumpPenalty = new Setting<>(2D);
+    public final DoubleSetting jumpPenalty = new DoubleSetting(2D, 0D, 30D, "PathFinding");
 
     /**
      * Walking on water uses up hunger really quick, so penalize it
      */
-    public final Setting<Double> walkOnWaterOnePenalty = new Setting<>(3D);
+    public final DoubleSetting walkOnWaterOnePenalty = new DoubleSetting(3D, 0D, 30D, "PathFinding");
 
     /**
      * Allow Baritone to fall arbitrary distances and place a water bucket beneath it.
@@ -307,17 +307,17 @@ public final class Settings {
     /**
      * How many ticks between right clicks are allowed. Default in game is 4
      */
-    public final Setting<Integer> rightClickSpeed = new Setting<>(4, "Advanced");
+    public final IntSetting rightClickDelay = new IntSetting(4, 0, 6, "Advanced");
 
     /**
      * Block reach distance
      */
-    public final Setting<Float> blockReachDistance = new Setting<>(4.5f);
+    public final DoubleSetting blockReachDistance = new DoubleSetting(4.5D, 3D, 6D, "Advanced");
 
     /**
      * How many degrees to randomize the pitch and yaw every tick. Set to 0 to disable
      */
-    public final Setting<Double> randomLooking = new Setting<>(0.01d);
+    public final DoubleSetting randomLooking = new DoubleSetting(0.01d, 0D, 1D, "Advanced");
 
     /**
      * This is the big A* setting.
@@ -334,21 +334,21 @@ public final class Settings {
      * <p>
      * Finding the optimal path is worth it, so it's the default.
      */
-    public final Setting<Double> costHeuristic = new Setting<>(3.563);
+    public final DoubleSetting costHeuristic = new DoubleSetting(3.563, 0D, 6D, "PathFinding");
 
     // a bunch of obscure internal A* settings that you probably don't want to change
     /**
      * The maximum number of times it will fetch outside loaded or cached chunks before assuming that
      * pathing has reached the end of the known area, and should therefore stop.
      */
-    public final Setting<Integer> pathingMaxChunkBorderFetch = new Setting<>(50);
+    public final IntSetting pathingMaxChunkBorderFetch = new IntSetting(50, 0, 100, "PathFinding");
 
     /**
      * Set to 1.0 to effectively disable this feature
      *
      * @see <a href="https://github.com/cabaletta/baritone/issues/18">Issue #18</a>
      */
-    public final Setting<Double> backtrackCostFavoringCoefficient = new Setting<>(0.5);
+    public final DoubleSetting backtrackCostFavoringCoefficient = new DoubleSetting(0.5, 0D, 10D, "PathFinding");
 
     /**
      * Toggle the following 4 settings
@@ -365,18 +365,18 @@ public final class Settings {
      * <p>
      * Set below 1.0 to go out of your way to walk near mob spawners
      */
-    public final Setting<Double> mobSpawnerAvoidanceCoefficient = new Setting<>(2.0);
+    public final DoubleSetting mobSpawnerAvoidanceCoefficient = new DoubleSetting(2D, 0D, 2D, "Avoidance");
 
-    public final Setting<Integer> mobSpawnerAvoidanceRadius = new Setting<>(16);
+    public final IntSetting mobSpawnerAvoidanceRadius = new IntSetting(16, 5, 20, "Avoidance");
 
     /**
      * Set to 1.0 to effectively disable this feature
      * <p>
      * Set below 1.0 to go out of your way to walk near mobs
      */
-    public final Setting<Double> mobAvoidanceCoefficient = new Setting<>(1.5);
+    public final DoubleSetting mobAvoidanceCoefficient = new DoubleSetting(1.5, 0D, 2D, "Avoidance");
 
-    public final Setting<Integer> mobAvoidanceRadius = new Setting<>(8);
+    public final IntSetting mobAvoidanceRadius = new IntSetting(8, 2, 20, "Avoidance");
 
     /**
      * When running a goto towards a container block (chest, ender chest, furnace, etc),
@@ -410,34 +410,34 @@ public final class Settings {
      * If a movement's cost increases by more than this amount between calculation and execution (due to changes
      * in the environment / world), cancel and recalculate
      */
-    public final Setting<Double> maxCostIncrease = new Setting<>(10D, "PathFinding");
+    public final DoubleSetting maxCostIncrease = new DoubleSetting(10D, 0D, 50D, "PathFinding");
 
     /**
      * Stop 5 movements before anything that made the path COST_INF.
      * For example, if lava has spread across the path, don't walk right up to it then recalculate, it might
      * still be spreading lol
      */
-    public final Setting<Integer> costVerificationLookahead = new Setting<>(5, "PathFinding");
+    public final IntSetting costVerificationLookahead = new IntSetting(5, 0, 20, "PathFinding");
 
     /**
      * Static cutoff factor. 0.9 means cut off the last 10% of all paths, regardless of chunk load state
      */
-    public final Setting<Double> pathCutoffFactor = new Setting<>(0.9, "PathFinding");
+    public final DoubleSetting pathCutoffFactor = new DoubleSetting(0.9D, 0D, 1D,"PathFinding");
 
     /**
      * Only apply static cutoff for paths of at least this length (in terms of number of movements)
      */
-    public final Setting<Integer> pathCutoffMinimumLength = new Setting<>(30, "PathFinding");
+    public final IntSetting pathCutoffMinimumLength = new IntSetting(30, 0, 100, "PathFinding");
 
     /**
      * Start planning the next path once the remaining movements tick estimates sum up to less than this value
      */
-    public final Setting<Integer> planningTickLookahead = new Setting<>(150, "PathFinding");
+    public final IntSetting planningTickLookahead = new IntSetting(150, 0, 500, "PathFinding");
 
     /**
      * Default size of the Long2ObjectOpenHashMap used in pathing
      */
-    public final Setting<Integer> pathingMapDefaultSize = new Setting<>(1024, "PathFinding");
+    public final IntSetting pathingMapDefaultSize = new IntSetting(1024, 100, 2000, "PathFinding");
 
     /**
      * Load factor coefficient for the Long2ObjectOpenHashMap used in pathing
@@ -451,13 +451,13 @@ public final class Settings {
      * 3 won't deal any damage. But if you just want to get down the mountain quickly and you have
      * Feather Falling IV, you might set it a bit higher, like 4 or 5.
      */
-    public final Setting<Integer> maxFallHeightNoWater = new Setting<>(3, "General");
+    public final IntSetting maxFallHeightNoWater = new IntSetting(3, 2, 256, "General");
 
     /**
      * How far are you allowed to fall onto solid ground (with a water bucket)?
      * It's not that reliable, so I've set it below what would kill an unarmored player (23)
      */
-    public final Setting<Integer> maxFallHeightBucket = new Setting<>(20, "General");
+    public final IntSetting maxFallHeightBucket = new IntSetting(20, 3, 256, "General");
 
     /**
      * Is it okay to sprint through a descend followed by a diagonal?
@@ -485,46 +485,46 @@ public final class Settings {
     /**
      * If a movement takes this many ticks more than its initial cost estimate, cancel it
      */
-    public final Setting<Integer> movementTimeoutTicks = new Setting<>(100, "Timout");
+    public final IntSetting movementTimeoutTicks = new IntSetting(100, 10, 200, "Timout");
 
     /**
      * Pathing ends after this amount of time, but only if a path has been found
      * <p>
      * If no valid path (length above the minimum) has been found, pathing continues up until the failure timeout
      */
-    public final Setting<Long> primaryTimeoutMS = new Setting<>(500L, "Timout");
+    public final IntSetting primaryTimeoutMS = new IntSetting(500, 10, 2000,  "Timout");
 
     /**
      * Pathing can never take longer than this, even if that means failing to find any path at all
      */
-    public final Setting<Long> failureTimeoutMS = new Setting<>(2000L, "Timout");
+    public final IntSetting failureTimeoutMS = new IntSetting(2000, 10, 5000, "Timout");
 
     /**
      * Planning ahead while executing a segment ends after this amount of time, but only if a path has been found
      * <p>
      * If no valid path (length above the minimum) has been found, pathing continues up until the failure timeout
      */
-    public final Setting<Long> planAheadPrimaryTimeoutMS = new Setting<>(4000L, "Timout");
+    public final IntSetting planAheadPrimaryTimeoutMS = new IntSetting(4000, 10, 10000,  "Timout");
 
     /**
      * Planning ahead while executing a segment can never take longer than this, even if that means failing to find any path at all
      */
-    public final Setting<Long> planAheadFailureTimeoutMS = new Setting<>(5000L, "Timout");
+    public final IntSetting planAheadFailureTimeoutMS = new IntSetting(5000, 10, 10000,  "Timout");
 
     /**
      * For debugging, consider nodes much much slower
      */
-    public final Setting<Boolean> slowPath = new Setting<>(false, "Advanced");
+    public final Setting<Boolean> slowPath = new Setting<>(false, "Debug");
 
     /**
      * Milliseconds between each node
      */
-    public final Setting<Long> slowPathTimeDelayMS = new Setting<>(100L, "Advanced");
+    public final IntSetting slowPathTimeDelayMS = new IntSetting(100, 10, 1000, "Debug");
 
     /**
      * The alternative timeout number when slowPath is on
      */
-    public final Setting<Long> slowPathTimeoutMS = new Setting<>(40000L, "Advanced");
+    public final IntSetting slowPathTimeoutMS = new IntSetting(40000, 10, 100000,"Debug");
 
     /**
      * The big one. Download all chunks in simplified 2-bit format and save them for better very-long-distance pathing.
@@ -626,12 +626,12 @@ public final class Settings {
     /**
      * Line width of the path when rendered, in pixels
      */
-    public final Setting<Float> pathRenderLineWidthPixels = new Setting<>(5F, "Render");
+    public final DoubleSetting pathRenderLineWidthPixels = new DoubleSetting(5, 1, 5, "Render");
 
     /**
      * Line width of the goal when rendered, in pixels
      */
-    public final Setting<Float> goalRenderLineWidthPixels = new Setting<>(3F, "Render");
+    public final DoubleSetting goalRenderLineWidthPixels = new DoubleSetting(3, 1, 5, "Render");
 
     /**
      * Start fading out the path at 20 movements ahead, and stop rendering it entirely 30 movements ahead.
@@ -689,7 +689,7 @@ public final class Settings {
      * 0.0f = not visible, fully transparent (instead of setting this to 0, turn off renderCachedChunks)
      * 1.0f = fully opaque
      */
-    public final Setting<Float> cachedChunksOpacity = new Setting<>(0.5f, "Render");
+    public final DoubleSetting cachedChunksOpacity = new DoubleSetting(0.5D, 0D, 1D,"Render");
 
     /**
      * Whether or not to allow you to run Baritone commands with the prefix
@@ -750,187 +750,187 @@ public final class Settings {
     /**
      * If we are more than 300 movements into the current path, discard the oldest segments, as they are no longer useful
      */
-    public final Setting<Integer> maxPathHistoryLength = new Setting<>(300);
+    public final IntSetting maxPathHistoryLength = new IntSetting(300, 10, 1000, "PathFinding");
 
     /**
      * If the current path is too long, cut off this many movements from the beginning.
      */
-    public final Setting<Integer> pathHistoryCutoffAmount = new Setting<>(50);
+    public final IntSetting pathHistoryCutoffAmount = new IntSetting(50, 5, 100, "PathFinding");
 
     /**
      * Rescan for the goal once every 5 ticks.
      * Set to 0 to disable.
      */
-    public final Setting<Integer> mineGoalUpdateInterval = new Setting<>(5);
+    public final IntSetting mineGoalUpdateInterval = new IntSetting(5, 0, 100, "Advanced");
 
     /**
      * After finding this many instances of the target block in the cache, it will stop expanding outward the chunk search.
      */
-    public final Setting<Integer> maxCachedWorldScanCount = new Setting<>(10);
+    public final IntSetting maxCachedWorldScanCount = new IntSetting(10, 1, 100, "Advanced");
 
     /**
      * Sets the minimum y level whilst mining - set to 0 to turn off.
      */
-    public final Setting<Integer> minYLevelWhileMining = new Setting<>(0);
+    public final IntSetting minYLevelWhileMining = new IntSetting(0, 0, 256,"Advanced");
 
     /**
      * This will only allow baritone to mine exposed ores, can be used to stop ore obfuscators on servers that use them.
      */
-    public final Setting<Boolean> allowOnlyExposedOres = new Setting<>(false);
+    public final Setting<Boolean> allowOnlyExposedOres = new Setting<>(false, "Advanced");
 
     /**
      * When allowOnlyExposedOres is enabled this is the distance around to search.
      * <p>
      * It is recommended to keep this value low, as it dramatically increases calculation times.
      */
-    public final Setting<Integer> allowOnlyExposedOresDistance = new Setting<>(1);
+    public final IntSetting allowOnlyExposedOresDistance = new IntSetting(1, 1, 20,"Advanced");
 
     /**
      * When GetToBlock doesn't know any locations for the desired block, explore randomly instead of giving up.
      */
-    public final Setting<Boolean> exploreForBlocks = new Setting<>(true);
+    public final Setting<Boolean> exploreForBlocks = new Setting<>(true, "PathFinding");
 
     /**
      * While exploring the world, offset the closest unloaded chunk by this much in both axes.
      * <p>
      * This can result in more efficient loading, if you set this to the render distance.
      */
-    public final Setting<Integer> worldExploringChunkOffset = new Setting<>(0);
+    public final IntSetting worldExploringChunkOffset = new IntSetting(0, 0, 128, "PathFinding");
 
     /**
      * Take the 10 closest chunks, even if they aren't strictly tied for distance metric from origin.
      */
-    public final Setting<Integer> exploreChunkSetMinimumSize = new Setting<>(10);
+    public final IntSetting exploreChunkSetMinimumSize = new IntSetting(10, 1, 100,"PathFinding");
 
     /**
      * Attempt to maintain Y coordinate while exploring
      * <p>
      * -1 to disable
      */
-    public final Setting<Integer> exploreMaintainY = new Setting<>(64);
+    public final IntSetting exploreMaintainY = new IntSetting(64, -1, 256, "PathFinding");
 
     /**
      * Replant normal Crops while farming and leave cactus and sugarcane to regrow
      */
-    public final Setting<Boolean> replantCrops = new Setting<>(true);
+    public final Setting<Boolean> replantCrops = new Setting<>(true, "Advanced");
 
     /**
      * Replant nether wart while farming. This setting only has an effect when replantCrops is also enabled
      */
-    public final Setting<Boolean> replantNetherWart = new Setting<>(false);
+    public final Setting<Boolean> replantNetherWart = new Setting<>(false, "Advanced");
 
     /**
      * When the cache scan gives less blocks than the maximum threshold (but still above zero), scan the main world too.
      * <p>
      * Only if you have a beefy CPU and automatically mine blocks that are in cache
      */
-    public final Setting<Boolean> extendCacheOnThreshold = new Setting<>(false);
+    public final Setting<Boolean> extendCacheOnThreshold = new Setting<>(false, "Advanced");
 
     /**
      * Don't consider the next layer in builder until the current one is done
      */
-    public final Setting<Boolean> buildInLayers = new Setting<>(false);
+    public final Setting<Boolean> buildInLayers = new Setting<>(false, "Schematica");
 
     /**
      * false = build from bottom to top
      * <p>
      * true = build from top to bottom
      */
-    public final Setting<Boolean> layerOrder = new Setting<>(false);
+    public final Setting<Boolean> layerOrder = new Setting<>(false, "Schematica");
 
     /**
      * Start building the schematic at a specific layer.
      * Can help on larger builds when schematic wants to break things its already built
      */
-    public final Setting<Integer> startAtLayer = new Setting<>(0);
+    public final IntSetting startAtLayer = new IntSetting(0, 0, 256, "Schematica");
 
     /**
      * If a layer is unable to be constructed, just skip it.
      */
-    public final Setting<Boolean> skipFailedLayers = new Setting<>(false);
+    public final Setting<Boolean> skipFailedLayers = new Setting<>(false, "Schematica");
 
     /**
      * How far to move before repeating the build. 0 to disable repeating on a certain axis, 0,0,0 to disable entirely
      */
-    public final Setting<Vec3i> buildRepeat = new Setting<>(new Vec3i(0, 0, 0));
+    public final Setting<Vec3i> buildRepeat = new Setting<>(new Vec3i(0, 0, 0), "Schematica");
 
     /**
      * How many times to buildrepeat. -1 for infinite.
      */
-    public final Setting<Integer> buildRepeatCount = new Setting<>(-1);
+    public final IntSetting buildRepeatCount = new IntSetting(-1, -1, 1000,"Schematica");
 
     /**
      * Don't notify schematics that they are moved.
      * e.g. replacing will replace the same spots for every repetition
      * Mainly for backward compatibility.
      */
-    public final Setting<Boolean> buildRepeatSneaky = new Setting<>(true);
+    public final Setting<Boolean> buildRepeatSneaky = new Setting<>(true, "Schematica");
 
     /**
      * Allow standing above a block while mining it, in BuilderProcess
      * <p>
      * Experimental
      */
-    public final Setting<Boolean> breakFromAbove = new Setting<>(false);
+    public final Setting<Boolean> breakFromAbove = new Setting<>(false, "Schematica");
 
     /**
      * As well as breaking from above, set a goal to up and to the side of all blocks to break.
      * <p>
      * Never turn this on without also turning on breakFromAbove.
      */
-    public final Setting<Boolean> goalBreakFromAbove = new Setting<>(false);
+    public final Setting<Boolean> goalBreakFromAbove = new Setting<>(false, "Schematica");
 
     /**
      * Build in map art mode, which makes baritone only care about the top block in each column
      */
-    public final Setting<Boolean> mapArtMode = new Setting<>(false);
+    public final Setting<Boolean> mapArtMode = new Setting<>(false, "Schematica");
 
     /**
      * Override builder's behavior to not attempt to correct blocks that are currently water
      */
-    public final Setting<Boolean> okIfWater = new Setting<>(false);
+    public final Setting<Boolean> okIfWater = new Setting<>(false, "Schematica");
 
     /**
      * The set of incorrect blocks can never grow beyond this size
      */
-    public final Setting<Integer> incorrectSize = new Setting<>(100);
+    public final IntSetting incorrectSize = new IntSetting(100, 5, 1000,"Schematica");
 
     /**
      * Multiply the cost of breaking a block that's correct in the builder's schematic by this coefficient
      */
-    public final Setting<Double> breakCorrectBlockPenaltyMultiplier = new Setting<>(10d);
+    public final DoubleSetting breakCorrectBlockPenaltyMultiplier = new DoubleSetting(10d, 0D, 50D, "Schematica");
 
     /**
      * When this setting is true, build a schematic with the highest X coordinate being the origin, instead of the lowest
      */
-    public final Setting<Boolean> schematicOrientationX = new Setting<>(false);
+    public final Setting<Boolean> schematicOrientationX = new Setting<>(false, "Schematica");
 
     /**
      * When this setting is true, build a schematic with the highest Y coordinate being the origin, instead of the lowest
      */
-    public final Setting<Boolean> schematicOrientationY = new Setting<>(false);
+    public final Setting<Boolean> schematicOrientationY = new Setting<>(false, "Schematica");
 
     /**
      * When this setting is true, build a schematic with the highest Z coordinate being the origin, instead of the lowest
      */
-    public final Setting<Boolean> schematicOrientationZ = new Setting<>(false);
+    public final Setting<Boolean> schematicOrientationZ = new Setting<>(false, "Schematica");
 
     /**
      * The fallback used by the build command when no extension is specified. This may be useful if schematics of a
      * particular format are used often, and the user does not wish to have to specify the extension with every usage.
      */
-    public final Setting<String> schematicFallbackExtension = new Setting<>("schematic");
+    public final Setting<String> schematicFallbackExtension = new Setting<>("schematic", "Schematica");
 
     /**
      * Distance to scan every tick for updates. Expanding this beyond player reach distance (i.e. setting it to 6 or above)
      * is only necessary in very large schematics where rescanning the whole thing is costly.
      */
-    public final Setting<Integer> builderTickScanRadius = new Setting<>(5);
+    public final IntSetting builderTickScanRadius = new IntSetting(5, 4, 20, "Schematica");
 
     /**
      * While mining, should it also consider dropped items of the correct type as a pathing destination (as well as ore blocks)?
      */
-    public final Setting<Boolean> mineScanDroppedItems = new Setting<>(true);
+    public final Setting<Boolean> mineScanDroppedItems = new Setting<>(true, "Advanced");
 
     /**
      * While mining, wait this number of milliseconds after mining an ore to see if it will drop an item
@@ -938,12 +938,12 @@ public final class Settings {
      * <p>
      * Thanks Louca
      */
-    public final Setting<Long> mineDropLoiterDurationMSThanksLouca = new Setting<>(250L);
+    public final IntSetting mineDropLoiterDurationMS = new IntSetting(250, 0, 5000, "Advanced");
 
     /**
      * Trim incorrect positions too far away, helps performance but hurts reliability in very large schematics
      */
-    public final Setting<Boolean> distanceTrim = new Setting<>(true);
+    public final Setting<Boolean> distanceTrim = new Setting<>(true, "Advanced");
 
     /**
      * Cancel the current path if the goal has changed, and the path originally ended in the goal but doesn't anymore.
@@ -958,29 +958,29 @@ public final class Settings {
      * <p>
      * Also on cosmic prisons this should be set to true since you don't actually mine the ore it just gets replaced with stone.
      */
-    public final Setting<Boolean> cancelOnGoalInvalidation = new Setting<>(true);
+    public final Setting<Boolean> cancelOnGoalInvalidation = new Setting<>(true, "Advanced");
 
     /**
      * The "axis" command (aka GoalAxis) will go to a axis, or diagonal axis, at this Y level.
      */
-    public final Setting<Integer> axisHeight = new Setting<>(120);
+    public final IntSetting axisHeight = new IntSetting(120, 0, 256,"Advanced");
 
     /**
      * Disconnect from the server upon arriving at your goal
      */
-    public final Setting<Boolean> disconnectOnArrival = new Setting<>(false);
+    public final Setting<Boolean> disconnectOnArrival = new Setting<>(false, "General");
 
     /**
      * Disallow MineBehavior from using X-Ray to see where the ores are. Turn this option on to force it to mine "legit"
      * where it will only mine an ore once it can actually see it, so it won't do or know anything that a normal player
      * couldn't. If you don't want it to look like you're X-Raying, turn this on
      */
-    public final Setting<Boolean> legitMine = new Setting<>(false);
+    public final Setting<Boolean> legitMine = new Setting<>(false, "Advanced");
 
     /**
      * What Y level to go to for legit strip mining
      */
-    public final Setting<Integer> legitMineYLevel = new Setting<>(11);
+    public final IntSetting legitMineYLevel = new IntSetting(11, 0, 256, "Advanced");
 
     /**
      * Magically see ores that are separated diagonally from existing ores. Basically like mining around the ores that it finds
@@ -993,37 +993,37 @@ public final class Settings {
      * it can reach without mining blocks adjacent to lava. This really defeats the purpose of legitMine since a player could never
      * do that lol, so thats one reason why its disabled
      */
-    public final Setting<Boolean> legitMineIncludeDiagonals = new Setting<>(false);
+    public final Setting<Boolean> legitMineIncludeDiagonals = new Setting<>(false, "Advanced");
 
     /**
      * When mining block of a certain type, try to mine two at once instead of one.
      * If the block above is also a goal block, set GoalBlock instead of GoalTwoBlocks
      * If the block below is also a goal block, set GoalBlock to the position one down instead of GoalTwoBlocks
      */
-    public final Setting<Boolean> forceInternalMining = new Setting<>(true);
+    public final Setting<Boolean> forceInternalMining = new Setting<>(true, "Advanced");
 
     /**
      * Modification to the previous setting, only has effect if forceInternalMining is true
      * If true, only apply the previous setting if the block adjacent to the goal isn't air.
      */
-    public final Setting<Boolean> internalMiningAirException = new Setting<>(true);
+    public final Setting<Boolean> internalMiningAirException = new Setting<>(true, "Advanced");
 
     /**
      * The actual GoalNear is set this distance away from the entity you're following
      * <p>
      * For example, set followOffsetDistance to 5 and followRadius to 0 to always stay precisely 5 blocks north of your follow target.
      */
-    public final Setting<Double> followOffsetDistance = new Setting<>(0D);
+    public final DoubleSetting followOffsetDistance = new DoubleSetting(0D, 0D, 20D,"Advanced");
 
     /**
      * The actual GoalNear is set in this direction from the entity you're following. This value is in degrees.
      */
-    public final Setting<Float> followOffsetDirection = new Setting<>(0F);
+    public final DoubleSetting followOffsetDirection = new DoubleSetting(0D, 0D, 360, "Advanced");
 
     /**
      * The radius (for the GoalNear) of how close to your target position you actually have to be
      */
-    public final Setting<Integer> followRadius = new Setting<>(3);
+    public final IntSetting followRadius = new IntSetting(3, 0, 20,"Advanced");
 
     /**
      * Turn this on if your exploration filter is enormous, you don't want it to check if it's done,
@@ -1045,7 +1045,7 @@ public final class Settings {
      * incorrect cache can cause Baritone to get stuck, take damage, or perform any action it wouldn't otherwise, everything
      * is rechecked once the real chunk is in range.
      * <p>
-     * Having a robust cache greatly improves long distance pathfinding, as it's able to go around large scale obstacles
+     * Having a robust cache greatly improves long distance PathFinding, as it's able to go around large scale obstacles
      * before they're in render distance. In fact, when the chunkCaching setting is disabled and Baritone starts anew
      * every time, or when you enter a completely new and very complicated area, it backtracks far more often because it
      * has to build up that cache from scratch. But after it's gone through an area just once, the next time will have zero
@@ -1063,127 +1063,127 @@ public final class Settings {
     /**
      * The size of the box that is rendered when the current goal is a GoalYLevel
      */
-    public final Setting<Double> yLevelBoxSize = new Setting<>(15D);
+    public final DoubleSetting yLevelBoxSize = new DoubleSetting(15D, 1D, 100D, "Render");
 
     /**
      * The color of the current path
      */
-    public final Setting<Color> colorCurrentPath = new Setting<>(Color.RED);
+    public final Setting<Color> colorCurrentPath = new Setting<>(Color.RED, "Render");
 
     /**
      * The color of the next path
      */
-    public final Setting<Color> colorNextPath = new Setting<>(Color.MAGENTA);
+    public final Setting<Color> colorNextPath = new Setting<>(Color.MAGENTA, "Render");
 
     /**
      * The color of the blocks to break
      */
-    public final Setting<Color> colorBlocksToBreak = new Setting<>(Color.RED);
+    public final Setting<Color> colorBlocksToBreak = new Setting<>(Color.RED, "Render");
 
     /**
      * The color of the blocks to place
      */
-    public final Setting<Color> colorBlocksToPlace = new Setting<>(Color.GREEN);
+    public final Setting<Color> colorBlocksToPlace = new Setting<>(Color.GREEN, "Render");
 
     /**
      * The color of the blocks to walk into
      */
-    public final Setting<Color> colorBlocksToWalkInto = new Setting<>(Color.MAGENTA);
+    public final Setting<Color> colorBlocksToWalkInto = new Setting<>(Color.MAGENTA, "Render");
 
     /**
      * The color of the best path so far
      */
-    public final Setting<Color> colorBestPathSoFar = new Setting<>(Color.BLUE);
+    public final Setting<Color> colorBestPathSoFar = new Setting<>(Color.BLUE, "Render");
 
     /**
      * The color of the path to the most recent considered node
      */
-    public final Setting<Color> colorMostRecentConsidered = new Setting<>(Color.CYAN);
+    public final Setting<Color> colorMostRecentConsidered = new Setting<>(Color.CYAN, "Render");
 
     /**
      * The color of the goal box
      */
-    public final Setting<Color> colorGoalBox = new Setting<>(Color.GREEN);
+    public final Setting<Color> colorGoalBox = new Setting<>(Color.GREEN, "Render");
 
     /**
      * The color of the goal box when it's inverted
      */
-    public final Setting<Color> colorInvertedGoalBox = new Setting<>(Color.RED);
+    public final Setting<Color> colorInvertedGoalBox = new Setting<>(Color.RED, "Render");
 
     /**
      * The color of all selections
      */
-    public final Setting<Color> colorSelection = new Setting<>(Color.CYAN);
+    public final Setting<Color> colorSelection = new Setting<>(Color.CYAN, "Render");
 
     /**
      * The color of the selection pos 1
      */
-    public final Setting<Color> colorSelectionPos1 = new Setting<>(Color.BLACK);
+    public final Setting<Color> colorSelectionPos1 = new Setting<>(Color.BLACK, "Render");
 
     /**
      * The color of the selection pos 2
      */
-    public final Setting<Color> colorSelectionPos2 = new Setting<>(Color.ORANGE);
+    public final Setting<Color> colorSelectionPos2 = new Setting<>(Color.ORANGE, "Render");
 
     /**
      * The opacity of the selection. 0 is completely transparent, 1 is completely opaque
      */
-    public final Setting<Float> selectionOpacity = new Setting<>(.5f);
+    public final DoubleSetting selectionOpacity = new DoubleSetting(.5f, 0, 1, "Render");
 
     /**
      * Line width of the goal when rendered, in pixels
      */
-    public final Setting<Float> selectionLineWidth = new Setting<>(2F);
+    public final DoubleSetting selectionLineWidth = new DoubleSetting(2F, 1, 5, "Render");
 
     /**
      * Render selections
      */
-    public final Setting<Boolean> renderSelection = new Setting<>(true);
+    public final Setting<Boolean> renderSelection = new Setting<>(true, "Render");
 
     /**
      * Ignore depth when rendering selections
      */
-    public final Setting<Boolean> renderSelectionIgnoreDepth = new Setting<>(true);
+    public final Setting<Boolean> renderSelectionIgnoreDepth = new Setting<>(true, "Render");
 
     /**
      * Render selection corners
      */
-    public final Setting<Boolean> renderSelectionCorners = new Setting<>(true);
+    public final Setting<Boolean> renderSelectionCorners = new Setting<>(true, "Render");
 
     /**
      * Use sword to mine.
      */
-    public final Setting<Boolean> useSwordToMine = new Setting<>(true);
+    public final Setting<Boolean> useSwordToMine = new Setting<>(true, "Advanced");
 
     /**
      * Desktop notifications
      */
-    public final Setting<Boolean> desktopNotifications = new Setting<>(false);
+    public final Setting<Boolean> desktopNotifications = new Setting<>(false, "Debug");
 
     /**
      * Desktop notification on path complete
      */
-    public final Setting<Boolean> notificationOnPathComplete = new Setting<>(true);
+    public final Setting<Boolean> notificationOnPathComplete = new Setting<>(true, "Debug");
 
     /**
      * Desktop notification on farm fail
      */
-    public final Setting<Boolean> notificationOnFarmFail = new Setting<>(true);
+    public final Setting<Boolean> notificationOnFarmFail = new Setting<>(true, "Debug");
 
     /**
      * Desktop notification on build finished
      */
-    public final Setting<Boolean> notificationOnBuildFinished = new Setting<>(true);
+    public final Setting<Boolean> notificationOnBuildFinished = new Setting<>(true, "Debug");
 
     /**
      * Desktop notification on explore finished
      */
-    public final Setting<Boolean> notificationOnExploreFinished = new Setting<>(true);
+    public final Setting<Boolean> notificationOnExploreFinished = new Setting<>(true, "Debug");
 
     /**
      * Desktop notification on mine fail
      */
-    public final Setting<Boolean> notificationOnMineFail = new Setting<>(true);
+    public final Setting<Boolean> notificationOnMineFail = new Setting<>(true, "Debug");
 
     /**
      * A map of lowercase setting field names to their respective setting

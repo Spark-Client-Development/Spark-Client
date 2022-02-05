@@ -19,9 +19,9 @@ public class SelectionRenderer implements IRenderer, AbstractGameEventListener {
     }
 
     public static void renderSelections(ISelection[] selections) {
-        float opacity = settings.selectionOpacity.getValue();
+        float opacity = settings.selectionOpacity.getValue().floatValue();
         boolean ignoreDepth = settings.renderSelectionIgnoreDepth.getValue();
-        float lineWidth = settings.selectionLineWidth.getValue();
+        float lineWidth = settings.selectionLineWidth.getValue().floatValue();
 
         if (!settings.renderSelection.getValue()) {
             return;

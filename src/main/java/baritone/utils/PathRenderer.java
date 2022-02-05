@@ -117,7 +117,7 @@ public final class PathRenderer implements IRenderer {
     }
 
     public static void drawPath(IPath path, int startIndex, Color color, boolean fadeOut, int fadeStart0, int fadeEnd0) {
-        IRenderer.startLines(color, settings.pathRenderLineWidthPixels.getValue(), settings.renderPathIgnoreDepth.getValue());
+        IRenderer.startLines(color, settings.pathRenderLineWidthPixels.getValue().floatValue(), settings.renderPathIgnoreDepth.getValue());
 
         int fadeStart = fadeStart0 + startIndex;
         int fadeEnd = fadeEnd0 + startIndex;
@@ -179,7 +179,7 @@ public final class PathRenderer implements IRenderer {
     }
 
     public static void drawManySelectionBoxes(Entity player, Collection<BlockPos> positions, Color color) {
-        IRenderer.startLines(color, settings.pathRenderLineWidthPixels.getValue(), settings.renderSelectionBoxesIgnoreDepth.getValue());
+        IRenderer.startLines(color, settings.pathRenderLineWidthPixels.getValue().floatValue(), settings.renderSelectionBoxesIgnoreDepth.getValue());
 
         //BlockPos blockpos = movingObjectPositionIn.getBlockPos();
         BlockStateInterface bsi = new BlockStateInterface(BaritoneAPI.getProvider().getPrimaryBaritone().getPlayerContext()); // TODO this assumes same dimension between primary baritone and render view? is this safe?
@@ -290,7 +290,7 @@ public final class PathRenderer implements IRenderer {
             return;
         }
 
-        IRenderer.startLines(color, settings.goalRenderLineWidthPixels.getValue(), settings.renderGoalIgnoreDepth.getValue());
+        IRenderer.startLines(color, settings.goalRenderLineWidthPixels.getValue().floatValue(), settings.renderGoalIgnoreDepth.getValue());
 
         renderHorizontalQuad(minX, maxX, minZ, maxZ, y1);
         renderHorizontalQuad(minX, maxX, minZ, maxZ, y2);

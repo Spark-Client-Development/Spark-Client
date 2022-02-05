@@ -23,6 +23,7 @@ import baritone.api.behavior.ILookBehavior;
 import baritone.api.event.events.PlayerUpdateEvent;
 import baritone.api.event.events.RotationMoveEvent;
 import baritone.api.utils.Rotation;
+import baritone.pathing.movement.movements.MovementTraverse;
 
 public final class LookBehavior extends Behavior implements ILookBehavior {
 
@@ -126,5 +127,12 @@ public final class LookBehavior extends Behavior implements ILookBehavior {
         } else if (ctx.player().rotationPitch > 10) {
             ctx.player().rotationPitch--;
         }
+    }
+
+    @Override
+    public float getYaw() {
+        if (target != null)
+            return target.getYaw();
+        return ctx.player().rotationYaw;
     }
 }

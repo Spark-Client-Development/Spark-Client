@@ -120,7 +120,7 @@ public class GuiClick extends GuiScreen {
                 GlStateManager.enableBlend();
                 GlStateManager.tryBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
                 GlStateManager.color(Color.RED.getColorComponents(null)[0], Color.RED.getColorComponents(null)[1], Color.RED.getColorComponents(null)[2], 0.4F);
-                GlStateManager.glLineWidth(Baritone.settings().pathRenderLineWidthPixels.getValue());
+                GlStateManager.glLineWidth(Baritone.settings().pathRenderLineWidthPixels.getValue().floatValue());
                 GlStateManager.disableTexture2D();
                 GlStateManager.depthMask(false);
                 GlStateManager.disableDepth();

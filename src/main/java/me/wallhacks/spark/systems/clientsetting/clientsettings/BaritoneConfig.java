@@ -8,6 +8,7 @@ import me.wallhacks.spark.systems.setting.Setting;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
+import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
@@ -36,6 +37,9 @@ public class BaritoneConfig extends ClientSetting {
                 settingMap.put(s, bSetting);
             } else if (bSetting instanceof Settings.DoubleSetting) {
                 DoubleSetting s = new DoubleSetting(bSetting.getName(), this, (Double) bSetting.getValue(), ((Settings.DoubleSetting) bSetting).min, ((Settings.DoubleSetting) bSetting).max, bSetting.getCategory());
+                settingMap.put(s, bSetting);
+            } else if (bSetting instanceof Settings.IntSetting) {
+                IntSetting s = new IntSetting(bSetting.getName(), this, (Integer) bSetting.getValue(), ((Settings.IntSetting) bSetting).min, ((Settings.IntSetting) bSetting).max, bSetting.getCategory());
                 settingMap.put(s, bSetting);
             }
         }

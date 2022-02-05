@@ -1,10 +1,19 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
+import baritone.Baritone;
+import baritone.api.pathing.movement.IMovement;
+import baritone.api.pathing.path.IPathExecutor;
+import baritone.api.BaritoneAPI;
+import baritone.pathing.movement.Movement;
+import baritone.pathing.movement.movements.MovementAscend;
+import baritone.pathing.movement.movements.MovementDiagonal;
+import baritone.pathing.movement.movements.MovementTraverse;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerMoveEvent;
 import me.wallhacks.spark.event.player.PlayerPreUpdateEvent;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.BaritoneConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.MC;
 import net.minecraft.entity.MoverType;
@@ -25,7 +34,7 @@ import java.util.Arrays;
 @Module.Registration(name = "Speed", description = "Fast module go brrr")
 public class Speed extends Module {
     ModeSetting mode = new ModeSetting("Mode", this, "Vanilla", Arrays.asList("Vanilla", "Strafe", "StrictNCP", "OnGround"));
-    DoubleSetting mSpeed = new DoubleSetting("MaxSpeed", this, 2.0, 1.0, 10, v-> mode.is("OnGround"));
+    DoubleSetting mSpeed = new DoubleSetting("MaxSpeed", this, 2.0, 1.0, 10, v -> mode.is("OnGround"));
     BooleanSetting liquids = new BooleanSetting("Liquids", this, false);
     BooleanSetting useSpeed = new BooleanSetting("UseSpeed", this, false, "Effects");
     BooleanSetting useJumpBoost = new BooleanSetting("UseJumpBoost", this, false, "Effects");
@@ -102,9 +111,11 @@ public class Speed extends Module {
 
     @SubscribeEvent
     public void onPacketSend(PacketSendEvent event) {
-        if (event.getPacket() instanceof CPacketPlayer.Position || event.getPacket() instanceof CPacketPlayer.PositionRotation) {
-            if (gState == 3 && !((mc.player.collidedHorizontally || mc.player.moveForward == 0) && mc.player.moveStrafing == 0) && mc.player.onGround) {
-                ((CPacketPlayer) event.getPacket()).y += checkHeadspace() ? 0.2 : 0.4;
+        if (fullCheck()) {
+            if (event.getPacket() instanceof CPacketPlayer.Position || event.getPacket() instanceof CPacketPlayer.PositionRotation) {
+                if (gState == 3 && !((mc.player.collidedHorizontally || mc.player.moveForward == 0) && mc.player.moveStrafing == 0) && mc.player.onGround) {
+                    ((CPacketPlayer) event.getPacket()).y += checkHeadspace() ? 0.2 : 0.4;
+                }
             }
         }
     }
@@ -132,7 +143,7 @@ public class Speed extends Module {
                         }
                     }
                 }
-                speed = Math.min(Math.max(speed, getBaseMotionSpeed()), getBaseMotionSpeed()*mSpeed.getValue());
+                speed = Math.min(Math.max(speed, getBaseMotionSpeed()), getBaseMotionSpeed() * mSpeed.getValue());
             } else {
                 if (!mode.is("Strict")) {
                     speed = getBaseMotionSpeed();
@@ -203,8 +214,9 @@ public class Speed extends Module {
                 forward *= Math.sin(0.7853981633974483D);
                 strafe *= Math.cos(0.7853981633974483D);
             }
-            event.setX(forward * speed * -Math.sin(Math.toRadians(mc.player.rotationYaw)) + strafe * speed * Math.cos(Math.toRadians(mc.player.rotationYaw)));
-            event.setZ(forward * speed * Math.cos(Math.toRadians(mc.player.rotationYaw)) - strafe * speed * -Math.sin(Math.toRadians(mc.player.rotationYaw)));
+            float yaw = BaritoneAPI.getProvider().getPrimaryBaritone().getLookBehavior().getYaw();
+            event.setX(forward * speed * -Math.sin(Math.toRadians(yaw)) + strafe * speed * Math.cos(Math.toRadians(yaw)));
+            event.setZ(forward * speed * Math.cos(Math.toRadians(yaw)) - strafe * speed * -Math.sin(Math.toRadians(yaw)));
         }
     }
 
@@ -233,6 +245,8 @@ public class Speed extends Module {
                 return false;
             } else if (mc.player.isElytraFlying()) {
                 return false;
+            } else if (!isSafeToSpeed()) {
+                return false;
             } else {
                 return !mc.player.isOnLadder() && mc.player.getRidingEntity() == null && MC.mc.getRenderViewEntity() == MC.mc.player;
             }
@@ -243,6 +257,27 @@ public class Speed extends Module {
 
     private boolean checkHeadspace() {
         return mc.world.getCollisionBoxes(mc.player, mc.player.getEntityBoundingBox().offset(0D, 0.21D, 0D)).size() > 0;
+    }
+
+    boolean isSafeToSpeed() {
+        if (!BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().isPathing()) return true;
+        IPathExecutor executor = BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().getCurrent();
+        int currentPostion = executor.getPosition();
+        Class f = null;
+        if (executor.getPath().movements().isEmpty()) return true;
+        for (int i = 0; i < Math.min(2, executor.getPath().movements().size() - currentPostion - 1); i++) {
+            IMovement movement = executor.getPath().movements().get(currentPostion + i);
+            if (movement instanceof MovementTraverse || movement instanceof MovementDiagonal) {
+                if (f == null) {
+                    f = movement.getClass();
+                    continue;
+                } else if (movement.getClass().equals(f)) {
+                    continue;
+                }
+            }
+            return false;
+        }
+        return true;
     }
 
     public Vec3d getVelocity() {

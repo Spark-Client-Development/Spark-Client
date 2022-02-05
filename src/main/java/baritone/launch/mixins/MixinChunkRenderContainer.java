@@ -44,7 +44,7 @@ public class MixinChunkRenderContainer {
         if (Baritone.settings().renderCachedChunks.getValue() && !Minecraft.getMinecraft().isSingleplayer() && Minecraft.getMinecraft().world.getChunk(renderChunkIn.getPosition()).isEmpty()) {
             GlStateManager.enableAlpha();
             GlStateManager.enableBlend();
-            GL14.glBlendColor(0, 0, 0, Baritone.settings().cachedChunksOpacity.getValue());
+            GL14.glBlendColor(0, 0, 0, Baritone.settings().cachedChunksOpacity.getValue().floatValue());
             GlStateManager.tryBlendFuncSeparate(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_ONE, GL_ZERO);
         }
         return renderChunkIn.getPosition();

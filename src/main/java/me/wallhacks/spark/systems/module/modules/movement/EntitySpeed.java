@@ -1,5 +1,7 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.geometry.BoundingBox;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
@@ -12,24 +14,39 @@ import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.network.play.server.SPacketSetPassengers;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Module.Registration(name = "EntitySpeed", description = "Go fast on entity brrrr")
 public class EntitySpeed extends Module {
     DoubleSetting speed = new DoubleSetting("Speed", this, 1.5, 0.1, 10.0);
     BooleanSetting bypass = new BooleanSetting("Bypass", this, false);
+    BooleanSetting dev = new BooleanSetting("Dev", this, false);
     double currSpeed = 0;
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
         if (mc.player.ridingEntity != null) {
             Entity riding = mc.player.ridingEntity;
-            riding.rotationYaw = mc.player.rotationYaw;
-            riding.prevRotationYaw = mc.player.rotationYaw;
+
             double forward = mc.player.movementInput.moveForward;
             double strafe = mc.player.movementInput.moveStrafe;
-
             float yaw = mc.player.rotationYaw;
+            if (dev.getValue()) {
+                boolean x = (riding.posX >= 0);
+                boolean z = (riding.posZ >= 0);
+                boolean s = Math.abs(riding.posZ) - Math.abs(riding.posX) < 1.5;
+                if (s) {
+                    if (x == z) {
+                        riding.posX = riding.posZ;
+                    } else {
+                        riding.posX = riding.posZ*-1;
+                    }
+                }
+                riding.boundingBox = new AxisAlignedBB(riding.posX, riding.boundingBox.minY, riding.posZ, riding.posX, riding.boundingBox.minY, riding.posZ);
+                yaw = Math.round((yaw + 1.0f) / 45.0f) * 45.0f;
+            }
 
+            riding.rotationYaw = yaw;
             final boolean movingForward = forward != 0.0;
             final boolean movingStrafe = strafe != 0.0;
             if (bypass.getValue() && !mc.gameSettings.keyBindSneak.isKeyDown())
@@ -73,5 +90,10 @@ public class EntitySpeed extends Module {
     @Override
     public void onEnable() {
         currSpeed = 40;
+    }
+
+    @Override
+    public void onDisable() {
+        if (mc.player.ridingEntity != null) mc.player.ridingEntity.noClip = false;
     }
 }
