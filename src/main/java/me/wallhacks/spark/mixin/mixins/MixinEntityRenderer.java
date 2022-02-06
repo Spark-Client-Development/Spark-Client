@@ -5,8 +5,10 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.render.FovModifierEvent;
 import me.wallhacks.spark.event.render.RenderHurtCameraEffectEvent;
 import me.wallhacks.spark.manager.SystemManager;
+import me.wallhacks.spark.systems.module.modules.mics.Putin;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import org.spongepowered.asm.mixin.Mixin;
@@ -59,6 +61,15 @@ public class MixinEntityRenderer {
         } else {
             return worldClient.getEntitiesInAABBexcluding(entityIn, boundingBox, predicate);
         }
+    }
+
+    @Inject(method = "orientCamera", at = @At("HEAD"))
+    public void orientCamera(float partialTicks,final CallbackInfo callbackInfo)
+    {
+        if(Putin.instance.isEnabled())
+            GlStateManager.scale(2, 2 * 0.4, 2);
+
+
     }
 
 }

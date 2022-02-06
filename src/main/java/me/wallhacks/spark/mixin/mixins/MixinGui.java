@@ -14,8 +14,8 @@ public class MixinGui {
 
     @Inject(method = "drawGradientRect", at = @At("HEAD"), cancellable = true)
     private void drawGradientRect(final CallbackInfo callbackInfo) {
-        if(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)
-            callbackInfo.cancel();
+        //if(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)
+          //  callbackInfo.cancel();
     }
 
 }
