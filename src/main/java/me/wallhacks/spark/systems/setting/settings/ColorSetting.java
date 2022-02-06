@@ -71,7 +71,7 @@ public class ColorSetting extends Setting<Color> {
 
 
     public int getRGB() {
-        return getValue().getRGB();
+        return getColor().getRGB();
     }
 
     public void setColor(Color color) {

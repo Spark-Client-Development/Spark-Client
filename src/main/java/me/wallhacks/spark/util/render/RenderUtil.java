@@ -230,4 +230,45 @@ public class RenderUtil implements MC {
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
+    
+    //You can use it to draw a circle by setting the corners to 360
+	public static void draw3DHorizontalPolygonOutline(double startDegree, double endDegree, int corners, double x, double y, double z, double radius, float width, int color) {
+		double increment = 360 / (double) corners;
+		x += radius;
+		z += radius;
+		GlStateManager.pushMatrix();
+	    GlStateManager.enableBlend();
+	    GlStateManager.disableDepth();
+	    GlStateManager.tryBlendFuncSeparate(770, 771, 0, 1);
+	    GlStateManager.disableTexture2D();
+	    GlStateManager.enableAlpha();
+	    GlStateManager.depthMask(false);
+	    GL11.glEnable(GL11.GL_LINE_SMOOTH);
+	    GL11.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	    GL11.glLineWidth(width);
+	
+	    float a = (float)(color >> 24 & 255) / 255.0F;
+	    float r = (float)(color >> 16 & 255) / 255.0F;
+	    float g = (float)(color >> 8 & 255) / 255.0F;
+	    float b = (float)(color & 255) / 255.0F;
+	
+	    final Tessellator tessellator = Tessellator.getInstance();
+	    final BufferBuilder bufferbuilder = tessellator.getBuffer();
+	    bufferbuilder.begin(GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+	    for(double i = startDegree; i <= endDegree; i+=increment) {
+	    	bufferbuilder.pos(x-Math.cos(Math.toRadians(i))*radius, y, z-Math.sin(Math.toRadians(i))*radius).color(r, g, b, a).endVertex();
+	    }
+	    bufferbuilder.pos(x-Math.cos(Math.toRadians(endDegree))*radius, y, z-Math.sin(Math.toRadians(endDegree))*radius).color(r, g, b, a).endVertex();
+	    tessellator.draw();
+	    GL11.glDisable(GL_LINE_SMOOTH);
+	    GlStateManager.depthMask(true);
+	    GlStateManager.enableDepth();
+	    GlStateManager.enableTexture2D();
+	    GlStateManager.disableBlend();
+	    GlStateManager.popMatrix();
+	}
+	
+	public static void draw3DHorizontalPolygonOutline(double startDegree, double endDegree, int corners, Vec3d vector, double radius, float width, int color) {
+		draw3DHorizontalPolygonOutline(startDegree, endDegree, corners, vector.x, vector.y, vector.z, radius, width, color);
+	}
 }
