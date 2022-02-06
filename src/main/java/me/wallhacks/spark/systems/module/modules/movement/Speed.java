@@ -142,7 +142,7 @@ public class Speed extends Module {
                         }
                     }
                 }
-                speed = Math.min(Math.max(speed, getBaseMotionSpeed()), getBaseMotionSpeed() * mSpeed.getValue());
+                speed = Math.max(speed, getBaseMotionSpeed());
             } else {
                 if (!mode.is("Strict")) {
                     speed = getBaseMotionSpeed();
