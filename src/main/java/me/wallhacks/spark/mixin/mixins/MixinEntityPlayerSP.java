@@ -3,14 +3,18 @@ package me.wallhacks.spark.mixin.mixins;
 import com.mojang.authlib.GameProfile;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.*;
+import me.wallhacks.spark.systems.module.modules.player.PortalChat;
+import me.wallhacks.spark.util.MC;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -36,7 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Mixin({EntityPlayerSP.class})
-public class MixinEntityPlayerSP extends AbstractClientPlayer {
+public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
 
     public MixinEntityPlayerSP(World worldIn, GameProfile playerProfile) {
         super(worldIn, playerProfile);
@@ -360,4 +364,15 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
             this.world.profiler.endSection();
         }
     }
+
+    @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;closeScreen()V"))
+    public void closeScreen(EntityPlayerSP player) {
+        if (!PortalChat.INSTANCE.isEnabled()) player.closeScreen();
+    }
+
+    @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;displayGuiScreen(Lnet/minecraft/client/gui/GuiScreen;)V"))
+    public void closeScreen(Minecraft minecraft, GuiScreen screen) {
+        if (!PortalChat.INSTANCE.isEnabled()) mc.displayGuiScreen(screen);
+    }
+
 }

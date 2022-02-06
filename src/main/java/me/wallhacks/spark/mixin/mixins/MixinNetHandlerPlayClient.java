@@ -6,11 +6,13 @@ import me.wallhacks.spark.util.MC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.SPacketChunkData;
+import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.network.play.server.SPacketUnloadChunk;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -27,6 +29,5 @@ public class MixinNetHandlerPlayClient implements MC {
         ChunkLoadEvent.Load e = new ChunkLoadEvent.Load(Minecraft.getMinecraft().world.getChunkProvider().provideChunk(packetIn.getChunkX(), packetIn.getChunkZ()));
         Spark.eventBus.post(e);
     }
-
 }
 

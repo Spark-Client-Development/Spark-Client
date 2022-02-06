@@ -34,7 +34,6 @@ import java.util.Arrays;
 @Module.Registration(name = "Speed", description = "Fast module go brrr")
 public class Speed extends Module {
     ModeSetting mode = new ModeSetting("Mode", this, "Vanilla", Arrays.asList("Vanilla", "Strafe", "StrictNCP", "OnGround"));
-    DoubleSetting mSpeed = new DoubleSetting("MaxSpeed", this, 2.0, 1.0, 10, v -> mode.is("OnGround"));
     BooleanSetting liquids = new BooleanSetting("Liquids", this, false);
     BooleanSetting useSpeed = new BooleanSetting("UseSpeed", this, false, "Effects");
     BooleanSetting useJumpBoost = new BooleanSetting("UseJumpBoost", this, false, "Effects");
