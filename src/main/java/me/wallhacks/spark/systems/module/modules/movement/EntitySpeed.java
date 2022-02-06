@@ -1,7 +1,5 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import javafx.geometry.BoundingBox;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
