@@ -94,7 +94,9 @@ public class ClientConfig extends ClientSetting {
         return themes[setting.getValueIndex()].getGuiBackgroundSliderColor();
     }
 
-    public BooleanSetting rpc = new BooleanSetting("rpc", this, true);
+    public BooleanSetting rpc = new BooleanSetting("rpc", this, true,"rpc");
+    public BooleanSetting rpcusername = new BooleanSetting("username", this, true,"rpc");
+    public BooleanSetting rpcip = new BooleanSetting("server", this, true,"rpc");
 
     public double getFadeTime() {
         return fadeTime.getValue();

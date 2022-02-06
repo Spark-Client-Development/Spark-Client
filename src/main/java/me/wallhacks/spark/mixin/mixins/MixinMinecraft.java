@@ -2,6 +2,7 @@ package me.wallhacks.spark.mixin.mixins;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.InputEvent;
+import me.wallhacks.spark.event.client.RunTickEvent;
 import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
@@ -19,6 +20,13 @@ public class MixinMinecraft {
         if (Keyboard.getEventKeyState() && Spark.eventBus != null) {
             Spark.eventBus.post(new InputEvent(i));
         }
+    }
+
+
+
+    @Inject(method = "runTick", at = @At("HEAD"))
+    public void runTick(CallbackInfo ci) {
+        Spark.eventBus.post(new RunTickEvent());
     }
 
     @Inject(method = "crashed", at = @At("HEAD"))
