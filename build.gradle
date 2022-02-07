@@ -85,6 +85,9 @@ processResources {
                'version_lunatriuscore': project.version_lunatriuscore,
                'version_schematica': project.version_schematica
     }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
@@ -104,7 +107,6 @@ shadowJar {
 mixin {
     defaultObfuscationEnv searge
     add sourceSets.main, 'mixins.spark.refmap.json'
-
 }
 
 reobf {

@@ -15,7 +15,7 @@ public class MixinLoader implements IFMLLoadingPlugin {
 
     public MixinLoader() {
         MixinBootstrap.init();
-        Mixins.addConfigurations("mixins.spark.json", "mixins.baritone.json");
+        Mixins.addConfigurations("mixins.spark.json");
         MixinEnvironment.getDefaultEnvironment().setObfuscationContext("searge");
     }
 

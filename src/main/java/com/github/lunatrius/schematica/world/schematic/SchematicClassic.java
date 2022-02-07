@@ -1,7 +1,6 @@
 package com.github.lunatrius.schematica.world.schematic;
 
 import com.github.lunatrius.schematica.api.ISchematic;
-import com.github.lunatrius.schematica.reference.Names;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -14,18 +13,12 @@ public class SchematicClassic extends SchematicFormat {
     }
 
     @Override
-    public boolean writeToNBT(final NBTTagCompound tagCompound, final ISchematic schematic) {
-        // TODO
-        return false;
-    }
-
-    @Override
     public String getName() {
-        return Names.Formats.CLASSIC;
+        return "Classic";
     }
 
     @Override
     public String getExtension() {
-        return Names.Extensions.SCHEMATIC;
+        return ".schematic";
     }
 }

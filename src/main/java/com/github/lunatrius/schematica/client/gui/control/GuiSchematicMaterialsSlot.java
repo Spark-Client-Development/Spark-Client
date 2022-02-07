@@ -2,21 +2,16 @@ package com.github.lunatrius.schematica.client.gui.control;
 
 import com.github.lunatrius.core.client.gui.GuiHelper;
 import com.github.lunatrius.schematica.client.util.BlockList;
-import com.github.lunatrius.schematica.reference.Names;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 
 class GuiSchematicMaterialsSlot extends GuiSlot {
     private final Minecraft minecraft = Minecraft.getMinecraft();
 
     private final GuiSchematicMaterials guiSchematicMaterials;
-
-    private final String strMaterialAvailable = I18n.format(Names.Gui.Control.MATERIAL_AVAILABLE);
-    private final String strMaterialMissing = I18n.format(Names.Gui.Control.MATERIAL_MISSING);
 
     protected int selectedIndex = -1;
 
@@ -61,6 +56,8 @@ class GuiSchematicMaterialsSlot extends GuiSlot {
 
         final String itemName = wrappedItemStack.getItemStackDisplayName();
         final String amount = wrappedItemStack.getFormattedAmount();
+        String strMaterialAvailable = "Available";
+        String strMaterialMissing = "Missing";
         final String amountMissing = wrappedItemStack.getFormattedAmountMissing(strMaterialAvailable, strMaterialMissing);
 
         GuiHelper.drawItemStackWithSlot(this.minecraft.renderEngine, itemStack, x, y);

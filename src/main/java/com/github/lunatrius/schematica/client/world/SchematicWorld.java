@@ -5,7 +5,6 @@ import com.github.lunatrius.core.util.math.MBlockPos;
 import com.github.lunatrius.schematica.api.ISchematic;
 import com.github.lunatrius.schematica.block.state.pattern.BlockStateReplacer;
 import com.github.lunatrius.schematica.client.world.chunk.ChunkProviderSchematic;
-import com.github.lunatrius.schematica.reference.Names;
 import com.github.lunatrius.schematica.reference.Reference;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -36,19 +35,19 @@ public class SchematicWorld extends WorldClient {
     private static final WorldSettings WORLD_SETTINGS = new WorldSettings(0, GameType.CREATIVE, false, false, WorldType.FLAT);
 
     public static enum LayerMode {
-        ALL(Names.Gui.Control.MODE_ALL) {
+        ALL("ALL") {
             @Override
             public boolean shouldUseLayer(final SchematicWorld world, final int layer) {
                 return true;
             }
         },
-        SINGLE_LAYER(Names.Gui.Control.MODE_LAYERS) {
+        SINGLE_LAYER("Layers") {
             @Override
             public boolean shouldUseLayer(final SchematicWorld world, final int layer) {
                 return layer == world.renderingLayer;
             }
         },
-        ALL_BELOW(Names.Gui.Control.MODE_BELOW) {
+        ALL_BELOW("All below") {
             @Override
             public boolean shouldUseLayer(final SchematicWorld world, final int layer) {
                 return layer <= world.renderingLayer;

@@ -4,37 +4,27 @@ import com.github.lunatrius.core.client.gui.GuiScreenBase;
 import com.github.lunatrius.schematica.Schematica;
 import com.github.lunatrius.schematica.client.util.BlockList;
 import com.github.lunatrius.schematica.client.world.SchematicWorld;
-import com.github.lunatrius.schematica.handler.ConfigurationHandler;
 import com.github.lunatrius.schematica.proxy.ClientProxy;
-import com.github.lunatrius.schematica.reference.Names;
 import com.github.lunatrius.schematica.reference.Reference;
-import com.github.lunatrius.schematica.util.ItemStackSortType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.client.config.GuiUnicodeGlyphButton;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Formatter;
 import java.util.List;
 
 public class GuiSchematicMaterials extends GuiScreenBase {
     private GuiSchematicMaterialsSlot guiSchematicMaterialsSlot;
-
-    private ItemStackSortType sortType = ItemStackSortType.fromString(ConfigurationHandler.sortType);
-
-    private GuiUnicodeGlyphButton btnSort = null;
     private GuiButton btnDump = null;
     private GuiButton btnDone = null;
-
-    private final String strMaterialName = I18n.format(Names.Gui.Control.MATERIAL_NAME);
-    private final String strMaterialAmount = I18n.format(Names.Gui.Control.MATERIAL_AMOUNT);
 
     protected final List<BlockList.WrappedItemStack> blockList;
 
@@ -43,20 +33,16 @@ public class GuiSchematicMaterials extends GuiScreenBase {
         final Minecraft minecraft = Minecraft.getMinecraft();
         final SchematicWorld schematic = ClientProxy.schematic;
         this.blockList = new BlockList().getList(minecraft.player, schematic, minecraft.world);
-        this.sortType.sort(this.blockList);
+        sort(blockList);
     }
 
     @Override
     public void initGui() {
         int id = 0;
-
-        this.btnSort = new GuiUnicodeGlyphButton(++id, this.width / 2 - 154, this.height - 30, 100, 20, " " + I18n.format(Names.Gui.Control.SORT_PREFIX + this.sortType.label), this.sortType.glyph, 2.0f);
-        this.buttonList.add(this.btnSort);
-
-        this.btnDump = new GuiButton(++id, this.width / 2 - 50, this.height - 30, 100, 20, I18n.format(Names.Gui.Control.DUMP));
+        this.btnDump = new GuiButton(++id, this.width / 2 - 50, this.height - 30, 100, 20, "Save to file");
         this.buttonList.add(this.btnDump);
 
-        this.btnDone = new GuiButton(++id, this.width / 2 + 54, this.height - 30, 100, 20, I18n.format(Names.Gui.DONE));
+        this.btnDone = new GuiButton(++id, this.width / 2 + 54, this.height - 30, 100, 20, "Done");
         this.buttonList.add(this.btnDone);
 
         this.guiSchematicMaterialsSlot = new GuiSchematicMaterialsSlot(this);
@@ -71,15 +57,7 @@ public class GuiSchematicMaterials extends GuiScreenBase {
     @Override
     protected void actionPerformed(final GuiButton guiButton) {
         if (guiButton.enabled) {
-            if (guiButton.id == this.btnSort.id) {
-                this.sortType = this.sortType.next();
-                this.sortType.sort(this.blockList);
-                this.btnSort.displayString = " " + I18n.format(Names.Gui.Control.SORT_PREFIX + this.sortType.label);
-                this.btnSort.glyph = this.sortType.glyph;
-
-                ConfigurationHandler.propSortType.set(String.valueOf(this.sortType));
-                ConfigurationHandler.loadConfiguration();
-            } else if (guiButton.id == this.btnDump.id) {
+            if (guiButton.id == this.btnDump.id) {
                 dumpMaterialList(this.blockList);
             } else if (guiButton.id == this.btnDone.id) {
                 this.mc.displayGuiScreen(this.parentScreen);
@@ -98,8 +76,10 @@ public class GuiSchematicMaterials extends GuiScreenBase {
     public void drawScreen(final int x, final int y, final float partialTicks) {
         this.guiSchematicMaterialsSlot.drawScreen(x, y, partialTicks);
 
-        drawString(this.fontRenderer, this.strMaterialName, this.width / 2 - 108, 4, 0x00FFFFFF);
-        drawString(this.fontRenderer, this.strMaterialAmount, this.width / 2 + 108 - this.fontRenderer.getStringWidth(this.strMaterialAmount), 4, 0x00FFFFFF);
+        String strMaterialName = "Material";
+        drawString(this.fontRenderer, strMaterialName, this.width / 2 - 108, 4, 0x00FFFFFF);
+        String strMaterialAmount = "Amount";
+        drawString(this.fontRenderer, strMaterialAmount, this.width / 2 + 108 - this.fontRenderer.getStringWidth(strMaterialAmount), 4, 0x00FFFFFF);
         super.drawScreen(x, y, partialTicks);
     }
 
@@ -137,4 +117,14 @@ public class GuiSchematicMaterials extends GuiScreenBase {
             Reference.logger.error("Could not dump the material list!", e);
         }
     }
+
+    private void sort(List<BlockList.WrappedItemStack> list) {
+        Collections.sort(list, new Comparator<BlockList.WrappedItemStack>() {
+            public int compare(BlockList.WrappedItemStack a, BlockList.WrappedItemStack b) {
+                return Integer.compare(a.total, b.total);
+            }
+        });
+
+    }
+
 }

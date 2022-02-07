@@ -11,7 +11,9 @@ public class BlockListSelectSetting extends ListSelectSetting<Block> {
         super(name, module, WorldUtils.getListOfBlocks(), selected,settingCategory);
     }
 
-
+    public BlockListSelectSetting(String name, SettingsHolder module, Block[] selected) {
+        super(name, module, WorldUtils.getListOfBlocks(), selected, "General");
+    }
 
     @Override
     public String getValueIdString(Block t){

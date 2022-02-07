@@ -3,15 +3,12 @@ package com.github.lunatrius.schematica.client.gui.load;
 import com.github.lunatrius.core.client.gui.GuiScreenBase;
 import com.github.lunatrius.schematica.Schematica;
 import com.github.lunatrius.schematica.client.world.SchematicWorld;
-import com.github.lunatrius.schematica.handler.ConfigurationHandler;
 import com.github.lunatrius.schematica.proxy.ClientProxy;
-import com.github.lunatrius.schematica.reference.Names;
 import com.github.lunatrius.schematica.reference.Reference;
 import com.github.lunatrius.schematica.util.FileFilterSchematic;
 import com.github.lunatrius.schematica.world.schematic.SchematicUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -33,11 +30,7 @@ public class GuiSchematicLoad extends GuiScreenBase {
     private GuiButton btnOpenDir = null;
     private GuiButton btnDone = null;
 
-    private final String strTitle = I18n.format(Names.Gui.Load.TITLE);
-    private final String strFolderInfo = I18n.format(Names.Gui.Load.FOLDER_INFO);
-    private String strNoSchematic = I18n.format(Names.Gui.Load.NO_SCHEMATIC);
-
-    protected File currentDirectory = ConfigurationHandler.schematicDirectory;
+    protected File currentDirectory = Schematica.schematicDirectory;
     protected final List<GuiSchematicEntry> schematicFiles = new ArrayList<GuiSchematicEntry>();
 
     public GuiSchematicLoad(final GuiScreen guiScreen) {
@@ -48,10 +41,10 @@ public class GuiSchematicLoad extends GuiScreenBase {
     public void initGui() {
         int id = 0;
 
-        this.btnOpenDir = new GuiButton(id++, this.width / 2 - 154, this.height - 36, 150, 20, I18n.format(Names.Gui.Load.OPEN_FOLDER));
+        this.btnOpenDir = new GuiButton(id++, this.width / 2 - 154, this.height - 36, 150, 20, "Open schematic folder");
         this.buttonList.add(this.btnOpenDir);
 
-        this.btnDone = new GuiButton(id++, this.width / 2 + 4, this.height - 36, 150, 20, I18n.format(Names.Gui.DONE));
+        this.btnDone = new GuiButton(id++, this.width / 2 + 4, this.height - 36, 150, 20, "Done");
         this.buttonList.add(this.btnDone);
 
         this.guiSchematicLoadSlot = new GuiSchematicLoadSlot(this);
@@ -74,14 +67,14 @@ public class GuiSchematicLoad extends GuiScreenBase {
                 try {
                     final Class<?> c = Class.forName("java.awt.Desktop");
                     final Object m = c.getMethod("getDesktop").invoke(null);
-                    c.getMethod("browse", URI.class).invoke(m, ConfigurationHandler.schematicDirectory.toURI());
+                    c.getMethod("browse", URI.class).invoke(m, Schematica.schematicDirectory.toURI());
                 } catch (final Throwable e) {
                     retry = true;
                 }
 
                 if (retry) {
                     Reference.logger.info("Opening via Sys class!");
-                    Sys.openURL("file://" + ConfigurationHandler.schematicDirectory.getAbsolutePath());
+                    Sys.openURL("file://" + Schematica.schematicDirectory.getAbsolutePath());
                 }
             } else if (guiButton.id == this.btnDone.id) {
                 if (Schematica.proxy.isLoadEnabled) {
@@ -98,8 +91,10 @@ public class GuiSchematicLoad extends GuiScreenBase {
     public void drawScreen(final int x, final int y, final float partialTicks) {
         this.guiSchematicLoadSlot.drawScreen(x, y, partialTicks);
 
-        drawCenteredString(this.fontRenderer, this.strTitle, this.width / 2, 4, 0x00FFFFFF);
-        drawCenteredString(this.fontRenderer, this.strFolderInfo, this.width / 2 - 78, this.height - 12, 0x00808080);
+        String strTitle = "Select schematic file";
+        drawCenteredString(this.fontRenderer, strTitle, this.width / 2, 4, 0x00FFFFFF);
+        String strFolderInfo = "(Place schematic files here)";
+        drawCenteredString(this.fontRenderer, strFolderInfo, this.width / 2 - 78, this.height - 12, 0x00808080);
 
         super.drawScreen(x, y, partialTicks);
     }
@@ -128,7 +123,7 @@ public class GuiSchematicLoad extends GuiScreenBase {
         this.schematicFiles.clear();
 
         try {
-            if (!this.currentDirectory.getCanonicalPath().equals(ConfigurationHandler.schematicDirectory.getCanonicalPath())) {
+            if (!this.currentDirectory.getCanonicalPath().equals(Schematica.schematicDirectory.getCanonicalPath())) {
                 this.schematicFiles.add(new GuiSchematicEntry("..", Items.LAVA_BUCKET, 0, true));
             }
         } catch (final IOException e) {
@@ -156,7 +151,8 @@ public class GuiSchematicLoad extends GuiScreenBase {
 
         final File[] filesSchematics = this.currentDirectory.listFiles(FILE_FILTER_SCHEMATIC);
         if (filesSchematics == null || filesSchematics.length == 0) {
-            this.schematicFiles.add(new GuiSchematicEntry(this.strNoSchematic, Blocks.DIRT, 0, false));
+            String strNoSchematic = "-- No schematic --";
+            this.schematicFiles.add(new GuiSchematicEntry(strNoSchematic, Blocks.DIRT, 0, false));
         } else {
             Arrays.sort(filesSchematics, (final File a, final File b) -> a.getName().compareToIgnoreCase(b.getName()));
             for (final File file : filesSchematics) {

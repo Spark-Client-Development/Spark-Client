@@ -1,6 +1,5 @@
 package com.github.lunatrius.schematica.world.schematic;
 
-import com.github.lunatrius.schematica.reference.Names;
 import com.github.lunatrius.schematica.reference.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -61,8 +60,8 @@ public final class SchematicUtil {
     public static ItemStack getIconFromNBT(final NBTTagCompound tagCompound) {
         ItemStack icon = DEFAULT_ICON.copy();
 
-        if (tagCompound != null && tagCompound.hasKey(Names.NBT.ICON)) {
-            icon.deserializeNBT(tagCompound.getCompoundTag(Names.NBT.ICON));
+        if (tagCompound != null && tagCompound.hasKey("Icon")) {
+            icon.deserializeNBT(tagCompound.getCompoundTag("Icon"));
 
             if (icon.isEmpty()) {
                 icon = DEFAULT_ICON.copy();

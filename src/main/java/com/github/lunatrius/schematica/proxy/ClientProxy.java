@@ -3,16 +3,11 @@ package com.github.lunatrius.schematica.proxy;
 import com.github.lunatrius.core.util.math.MBlockPos;
 import com.github.lunatrius.core.util.vector.Vector3d;
 import com.github.lunatrius.schematica.api.ISchematic;
-import com.github.lunatrius.schematica.client.printer.SchematicPrinter;
 import com.github.lunatrius.schematica.client.renderer.RenderSchematic;
 import com.github.lunatrius.schematica.client.world.SchematicWorld;
-import com.github.lunatrius.schematica.command.client.CommandSchematicaReplace;
-import com.github.lunatrius.schematica.handler.ConfigurationHandler;
 import com.github.lunatrius.schematica.handler.client.GuiHandler;
-import com.github.lunatrius.schematica.handler.client.InputHandler;
 import com.github.lunatrius.schematica.handler.client.OverlayHandler;
 import com.github.lunatrius.schematica.handler.client.RenderTickHandler;
-import com.github.lunatrius.schematica.handler.client.TickHandler;
 import com.github.lunatrius.schematica.handler.client.WorldHandler;
 import com.github.lunatrius.schematica.reference.Reference;
 import com.github.lunatrius.schematica.world.schematic.SchematicFormat;
@@ -22,10 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -151,40 +143,13 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void preInit(final FMLPreInitializationEvent event) {
-        super.preInit(event);
-
-        final Property[] sliders = {
-                ConfigurationHandler.propAlpha,
-                ConfigurationHandler.propBlockDelta,
-                ConfigurationHandler.propRenderDistance,
-                ConfigurationHandler.propPlaceDelay,
-                ConfigurationHandler.propTimeout,
-                ConfigurationHandler.propPlaceDistance
-        };
-        for (final Property prop : sliders) {
-            prop.setConfigEntryClass(GuiConfigEntries.NumberSliderEntry.class);
-        }
-
-        for (final KeyBinding keyBinding : InputHandler.KEY_BINDINGS) {
-            ClientRegistry.registerKeyBinding(keyBinding);
-        }
-    }
-
-    @Override
     public void init(final FMLInitializationEvent event) {
         super.init(event);
-
-        MinecraftForge.EVENT_BUS.register(InputHandler.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(TickHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(RenderTickHandler.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(ConfigurationHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(RenderSchematic.INSTANCE);
         MinecraftForge.EVENT_BUS.register(GuiHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(new OverlayHandler());
         MinecraftForge.EVENT_BUS.register(new WorldHandler());
-
-        ClientCommandHandler.instance.registerCommand(new CommandSchematicaReplace());
     }
 
     @Override
@@ -209,7 +174,6 @@ public class ClientProxy extends CommonProxy {
     public void resetSettings() {
         super.resetSettings();
 
-        SchematicPrinter.INSTANCE.setEnabled(true);
         unloadSchematic();
 
         isRenderingGuide = false;
@@ -227,7 +191,7 @@ public class ClientProxy extends CommonProxy {
     public void unloadSchematic() {
         schematic = null;
         RenderSchematic.INSTANCE.setWorldAndLoadRenderers(null);
-        SchematicPrinter.INSTANCE.setSchematic(null);
+        //SchematicPrinter.INSTANCE.setSchematic(null);
     }
 
     @Override
@@ -243,19 +207,9 @@ public class ClientProxy extends CommonProxy {
 
         ClientProxy.schematic = world;
         RenderSchematic.INSTANCE.setWorldAndLoadRenderers(world);
-        SchematicPrinter.INSTANCE.setSchematic(world);
+        //SchematicPrinter.INSTANCE.setSchematic(world);
         world.isRendering = true;
 
         return true;
-    }
-
-    @Override
-    public boolean isPlayerQuotaExceeded(final EntityPlayer player) {
-        return false;
-    }
-
-    @Override
-    public File getPlayerSchematicDirectory(final EntityPlayer player, final boolean privateDirectory) {
-        return ConfigurationHandler.schematicDirectory;
     }
 }
