@@ -4,6 +4,7 @@ import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.util.MC;
 
 public class RPC implements MC {
@@ -21,8 +22,8 @@ public class RPC implements MC {
         thread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 rpc.Discord_RunCallbacks();
-                presence.details = mc.session.getUsername();
-                presence.state  = ((mc.isSingleplayer() ? "Playing alone" : (mc.getCurrentServerData() != null ? "With friends on "+mc.getCurrentServerData().serverIP : "In Menu")));
+                presence.details = ClientConfig.getInstance().rpcusername.isOn() ? mc.session.getUsername() : "";
+                presence.state  = ClientConfig.getInstance().rpcip.isOn() ? ((mc.isSingleplayer() ? "Playing alone" : (mc.getCurrentServerData() != null ? "With friends on "+mc.getCurrentServerData().serverIP : "In Menu"))) : "";
 
                 rpc.Discord_UpdatePresence(presence);
                 try {
