@@ -24,6 +24,7 @@
     "spark.MixinAbstractClientPlayer",
     "spark.MixinMinecraft",
     "spark.MixinNetworkManager",
+    "spark.MixinNetHandlerPlayClient",
     "spark.MixinParticleManager",
     "spark.MixinRenderEnderCrystal",
     "spark.MixinRenderLivingBase",

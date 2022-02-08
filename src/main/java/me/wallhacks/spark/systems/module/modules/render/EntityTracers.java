@@ -34,17 +34,17 @@ public class EntityTracers extends Module {
 
     IntSetting range = new IntSetting("Range",this, 260, 20, 260);
 
-
+    boolean s;
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent event) {
-        MC.mc.gameSettings.viewBobbing = false;
-
+        s = mc.gameSettings.viewBobbing;
+        mc.gameSettings.viewBobbing = false;
         GL11.glPushMatrix();
-
-        for(Object o : MC.mc.world.loadedEntityList.toArray()){
+    
+        for(Object o : mc.world.loadedEntityList.toArray()){
 
             Entity entity = (Entity)o;
-            if(range.getValue() < range.getMax() && range.getValue() < MC.mc.player.getDistance(entity))
+            if(range.getValue() < range.getMax() && range.getValue() < mc.player.getDistance(entity))
                 continue;
             if(entity instanceof EntityLivingBase){
                 EntityLivingBase e = (EntityLivingBase)entity;
@@ -64,7 +64,7 @@ public class EntityTracers extends Module {
             }
 
         }
-
+        mc.gameSettings.viewBobbing = s;
         GL11.glPopMatrix();
     }
 

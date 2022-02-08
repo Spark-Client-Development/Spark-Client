@@ -18,14 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(NetHandlerPlayClient.class)
 public class MixinNetHandlerPlayClient implements MC {
-
-
-
     @Inject(method = "handleChunkData", at = @At("RETURN"))
-    public void handleChunkData(SPacketChunkData packetIn, final CallbackInfo callbackInfo)
-    {
-
-
+    public void handleChunkData(SPacketChunkData packetIn, final CallbackInfo callbackInfo) {
         ChunkLoadEvent.Load e = new ChunkLoadEvent.Load(Minecraft.getMinecraft().world.getChunkProvider().provideChunk(packetIn.getChunkX(), packetIn.getChunkZ()));
         Spark.eventBus.post(e);
     }

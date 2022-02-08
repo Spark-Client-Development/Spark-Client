@@ -13,12 +13,13 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.systems.module.modules.SearchChunksModule;
+import me.wallhacks.spark.systems.module.SearchChunksModule;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.HoleUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.render.EspUtil;
 import me.wallhacks.spark.util.render.RenderUtil;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.*;
@@ -82,10 +83,11 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
             EspUtil.boundingESPBoxFilled(box, color);
         }
         if (mode.is("Glow")) {
-            GlStateManager.shadeModel(7425);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
             EspUtil.drawGradientBlockOutline(box, new Color(0, 0, 0, 0), color, outlineWidth.getFloatValue());
             color = type == Type.Bedrock ? bedrock.getColor(alpha) : obsidian.getColor(alpha);
             EspUtil.drawOpenGradientBoxBB(box, color, new Color(0, 0, 0, 0));
+            GlStateManager.shadeModel(GL11.GL_FLAT);
         }
     }
 
@@ -124,7 +126,7 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
 
         ArrayList<Integer> layersToSearch = new ArrayList<>();
         heightLoop:
-        for (int y = 0; y < 256; y++) {
+        for (int y = 0; y <= 256; y++) {
             int hardBlocks = 0;
 
             for (int x = chunk.getPos().getXStart(); x <= chunk.getPos().getXEnd(); x+=3) {
@@ -171,10 +173,5 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
                 addFound(new HoleInfo(potentialHole, Type.Obsidian, 0, 1));
         }
     }
-
-
-
-
-
 
 }

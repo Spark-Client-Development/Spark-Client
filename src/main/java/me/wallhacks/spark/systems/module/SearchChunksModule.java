@@ -1,4 +1,4 @@
-package me.wallhacks.spark.systems.module.modules;
+package me.wallhacks.spark.systems.module;
 
 import me.wallhacks.spark.Spark;
 import net.minecraft.network.play.server.SPacketBlockChange;
@@ -12,7 +12,6 @@ import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.event.player.ChunkLoadEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerLivingTickEvent;
-import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.WorldUtils;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,13 +46,21 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
         chunksToSearch.clear();
         found.clear();
     }
+
+    public void refresh() {
+        chunksToSearch.clear();
+        for (Chunk c : mc.world.getChunkProvider().loadedChunks.values()) {
+            addedChunk(c.getPos());
+        }
+    }
+
     @SubscribeEvent
     public void onUpdate(PlayerLivingTickEvent event) {
 
     }
     @SubscribeEvent
     public void onThread(ThreadEvent event) {
-        if(chunksToSearch.size() > 0)
+        if(!chunksToSearch.isEmpty())
         {
 
             Chunk c = mc.world.getChunk(chunksToSearch.get(0).x,chunksToSearch.get(0).z);
@@ -67,12 +74,8 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
         }
     }
 
-
-
     protected void searchChunk(Chunk chunk) {
     }
-
-
 
     protected void addFound(T add) {
         Chunk c = mc.world.getChunk(add);
@@ -100,7 +103,6 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
         for (ChunkPos c : chunks)
             addedChunk(c);
         addedChunk(event.getChunk().getPos());
-
     }
     @SubscribeEvent
     public void chunkUnLoad(ChunkLoadEvent.Unload event) {
@@ -139,24 +141,14 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
         if(chunksToSearch.contains(pos))
             return;
 
-
-
-        if(needsAdjacentChunks())
-        {
+        if(needsAdjacentChunks()) {
             ChunkPos[] chunks = WorldUtils.getAdjacentChunks(pos);
-
 
             for (ChunkPos c : chunks) {
                 if(mc.world.getChunkProvider().provideChunk(c.x,c.z) == mc.world.getChunkProvider().blankChunk)
                     return;
             }
-
-
-
         }
-
-
-
         chunksToSearch.add(pos);
     }
 }

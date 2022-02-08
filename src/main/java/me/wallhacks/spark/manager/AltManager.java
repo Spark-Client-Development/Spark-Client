@@ -90,7 +90,6 @@ public class AltManager implements MC {
     }
 
     public void loadAlts() {
-        //get the key
         File authKey = new File(Spark.ParentPath.getAbsolutePath() + "\\alts\\auth.key");
         if (authKey.exists()) {
             key = FileUtil.read(authKey.getAbsolutePath());
@@ -340,41 +339,53 @@ public class AltManager implements MC {
     }
     public void addAlt(Account account) {
         accounts.add(account);
-        try {
-            ArrayList<String> lines = new ArrayList<>();
-            switch (account.accountType) {
-                //save accounts encrypted with the key
-                case MICROSOFT: {
-                    lines.add("MICROSOFT");
-                    lines.add(EncryptionUtil.encrypt(account.getUUID(), key));
-                    lines.add(EncryptionUtil.encrypt(((MSAccount) account).getRefreshToken(), key));
-                    break;
-                }
-                case MOJANG: {
-                    lines.add("MOJANG");
-                    lines.add(EncryptionUtil.encrypt(account.getUUID(), key));
-                    lines.add(EncryptionUtil.encrypt(((MojangAccount) account).getMail(), key));
-                    lines.add(EncryptionUtil.encrypt(((MojangAccount) account).getPassword(), key));
-                    break;
-                }
-                case CRACKED: {
-                    lines.add("CRACKED");
-                    lines.add(account.getName());
-                    break;
-                }
-            }
-            String content = "";
-            for (String e : lines)
-                content = content + e + "\n";
-
-            FileUtil.write(getAltFile(account.getName()), content);
-        } catch (Exception fucked) {
-            //saik
-        }
     }
     public CopyOnWriteArrayList<Account> getAlts() {
         return accounts;
     }
 
 
+    //why did you delete this in the first place?
+    public void saveAlts() {
+        //delete old alt directory
+        FileUtil.deleteDirectory(Spark.ParentPath.getAbsolutePath() + "\\alts");
+
+        //start by making random string for auth key
+        String key = new RandomString(50).nextString();
+        //save the key
+        FileUtil.write(Spark.ParentPath.getAbsolutePath() + "\\alts\\auth.key", key);
+        for (Account account : Spark.altManager.accounts) {
+            try {
+                ArrayList<String> lines = new ArrayList<>();
+                switch (account.accountType) {
+                    //save accounts encrypted with the key
+                    case MICROSOFT: {
+                        lines.add("MICROSOFT");
+                        lines.add(EncryptionUtil.encrypt(account.getUUID(), key));
+                        lines.add(EncryptionUtil.encrypt(((MSAccount) account).getRefreshToken(), key));
+                        break;
+                    }
+                    case MOJANG: {
+                        lines.add("MOJANG");
+                        lines.add(EncryptionUtil.encrypt(account.getUUID(), key));
+                        lines.add(EncryptionUtil.encrypt(((MojangAccount) account).getMail(), key));
+                        lines.add(EncryptionUtil.encrypt(((MojangAccount) account).getPassword(), key));
+                        break;
+                    }
+                    case CRACKED: {
+                        lines.add("CRACKED");
+                        lines.add(account.getName());
+                        break;
+                    }
+                }
+                String content = "";
+                for (String e : lines)
+                    content = content + e + "\n";
+
+                FileUtil.write(getAltFile(account.getName()), content);
+            } catch (Exception fucked) {
+                //saik
+            }
+        }
+    }
 }

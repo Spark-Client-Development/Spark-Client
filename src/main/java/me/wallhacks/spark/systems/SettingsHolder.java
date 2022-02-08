@@ -21,10 +21,6 @@ public abstract class SettingsHolder {
         return settings;
     }
 
-    public void onSettingChange() {
-
-    }
-
     public void onConfigLoad(){
 
     }

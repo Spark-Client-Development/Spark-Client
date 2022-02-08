@@ -40,7 +40,6 @@ public class Setting<T> {
     public void setValue(T value) {
         this.value = value;
         new SettingChangeEvent(this);
-        settingsHolder.onSettingChange();
     }
 
     public String getName() {

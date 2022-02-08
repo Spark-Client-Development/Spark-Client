@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -34,14 +35,15 @@ public class EspUtil implements MC {
         GL11.glDepthMask(false);
         //drawColorBox(new AxisAlignedBB(x, y, z, x + 1.0, y + 1.0, z + 1.0));
         GL11.glColor4d(0, 1, 0, 0.15F);
-        AxisAlignedBB bb = new AxisAlignedBB(x, y, z,x - box.minX+box.maxX, y - box.minY+box.maxY, z - box.minZ+box.maxZ);
-        RenderGlobal.drawSelectionBoundingBox(bb, 1f/256f*r,1f/256f*g,1f/256f*b,1f/256f*a);
+        AxisAlignedBB bb = new AxisAlignedBB(x, y, z, x - box.minX + box.maxX, y - box.minY + box.maxY, z - box.minZ + box.maxZ);
+        RenderGlobal.drawSelectionBoundingBox(bb, 1f / 256f * r, 1f / 256f * g, 1f / 256f * b, 1f / 256f * a);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(true);
         GL11.glDisable(GL11.GL_BLEND);
     }
-    public static void boundingESPBoxFilled(AxisAlignedBB box,Color c) {
+
+    public static void boundingESPBoxFilled(AxisAlignedBB box, Color c) {
         int r = c.getRed();
         int g = c.getGreen();
         int b = c.getBlue();
@@ -57,9 +59,9 @@ public class EspUtil implements MC {
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(false);
 
-        GL11.glColor4d(1f/256f*r, 1f/256f*g, 1f/256f*b, 1f/256f*a);
+        GL11.glColor4d(1f / 256f * r, 1f / 256f * g, 1f / 256f * b, 1f / 256f * a);
         GL11.glBegin(GL11.GL_QUADS);
-        AxisAlignedBB bb = new AxisAlignedBB(x, y, z,x - box.minX+box.maxX, y - box.minY+box.maxY, z - box.minZ+box.maxZ);
+        AxisAlignedBB bb = new AxisAlignedBB(x, y, z, x - box.minX + box.maxX, y - box.minY + box.maxY, z - box.minZ + box.maxZ);
         GL11.glVertex3d(bb.minX, bb.minY, bb.minZ);
         GL11.glVertex3d(bb.maxX, bb.minY, bb.minZ);
         GL11.glVertex3d(bb.maxX, bb.minY, bb.maxZ);
@@ -329,37 +331,33 @@ public class EspUtil implements MC {
         GlStateManager.popMatrix();
     }
 
-    public static void entityESPTracers(Entity entity, Color c,int lineWidth) {
+    public static void entityESPTracers(Entity entity, Color c, int lineWidth) {
         double p_188388_2_ = mc.getRenderPartialTicks();
-        renderTracers(new Vec3d(entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * p_188388_2_,entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * p_188388_2_,entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * p_188388_2_), c,lineWidth);
+        renderTracers(new Vec3d(entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * p_188388_2_, entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * p_188388_2_, entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * p_188388_2_), c, lineWidth);
     }
 
-    public static void renderTracers(Vec3d end, Color color,int lineWidth) {
+    public static void renderTracers(Vec3d end, Color color, int lineWidth) {
         GL11.glBlendFunc(770, 771);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glLineWidth(lineWidth);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(false);
+        end = end.add(-mc.getRenderManager().renderPosX, -mc.getRenderManager().renderPosY, -mc.getRenderManager().renderPosZ);
 
-        end = end.add(-mc.getRenderManager().renderPosX,- mc.getRenderManager().renderPosY,- mc.getRenderManager().renderPosZ);
 
-        Vec3d start = mc.player.getPositionEyes(mc.getRenderPartialTicks());
-
-        start = start.add(-mc.getRenderManager().renderPosX,- mc.getRenderManager().renderPosY,- mc.getRenderManager().renderPosZ);
-        start = start.add(getClientLookVec().x, getClientLookVec().y, getClientLookVec().z);
 
         GL11.glBegin(GL11.GL_LINES);
 
 
+        GL11.glColor4f(1f / 256f * color.getRed(), 1f / 256f * color.getGreen(), 1f / 256f * color.getBlue(), 1f / 256f * color.getAlpha());
 
-        GL11.glColor4f(1f/256f*color.getRed(), 1f/256f*color.getGreen(), 1f/256f*color.getBlue(), 1f/256f*color.getAlpha());
+        Vec3d start = RenderUtil.interpolateEntityByTicks(mc.renderViewEntity, mc.getRenderPartialTicks()).add(ActiveRenderInfo.getCameraPosition());
 
         GL11.glVertex3d(start.x, start.y, start.z);
         GL11.glVertex3d(end.x, end.y, end.z);
 
         GL11.glEnd();
-
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(true);
@@ -378,21 +376,21 @@ public class EspUtil implements MC {
 
 
         GL11.glBegin(GL11.GL_LINES);
-        
-        GL11.glColor4f(1f/256f*color.getRed(), 1f/256f*color.getGreen(), 1f/256f*color.getBlue(), 1f/256f*color.getAlpha());
+
+        GL11.glColor4f(1f / 256f * color.getRed(), 1f / 256f * color.getGreen(), 1f / 256f * color.getBlue(), 1f / 256f * color.getAlpha());
 
 
-        for(int i = 0; i < list.size()-1; i++) {
+        for (int i = 0; i < list.size() - 1; i++) {
             double x = list.get(i).x - mc.getRenderManager().renderPosX;
             double y = list.get(i).y - mc.getRenderManager().renderPosY;
             double z = list.get(i).z - mc.getRenderManager().renderPosZ;
 
             GL11.glVertex3d(x, y, z);
 
-            x = list.get(i+1).x - mc.getRenderManager().renderPosX;
-            y = list.get(i+1).y - mc.getRenderManager().renderPosY;
-            z = list.get(i+1).z - mc.getRenderManager().renderPosZ;
-            
+            x = list.get(i + 1).x - mc.getRenderManager().renderPosX;
+            y = list.get(i + 1).y - mc.getRenderManager().renderPosY;
+            z = list.get(i + 1).z - mc.getRenderManager().renderPosZ;
+
             GL11.glVertex3d(x, y, z);
 
         }
@@ -406,11 +404,10 @@ public class EspUtil implements MC {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public static Vec3d getClientLookVec()
-    {
+    public static Vec3d getClientLookVec() {
         RenderManager r = mc.getRenderManager();
         float f = 0.017453292F;
-        float pi = (float)Math.PI;
+        float pi = (float) Math.PI;
 
         float f1 = MathHelper.cos(-r.playerViewY * f - pi);
         float f2 = MathHelper.sin(-r.playerViewY * f - pi);
@@ -421,7 +418,7 @@ public class EspUtil implements MC {
     }
 
 
-    public static AxisAlignedBB getRenderBB (Entity entity){
+    public static AxisAlignedBB getRenderBB(Entity entity) {
 
         double p_188388_2_ = mc.getRenderPartialTicks();
         return new AxisAlignedBB(
@@ -430,11 +427,11 @@ public class EspUtil implements MC {
                         + (entity.posX - entity.lastTickPosX) * p_188388_2_ - (entity.posX - entity.lastTickPosX)
                 ,
                 entity.boundingBox.minY
-                        + (entity.posY - entity.lastTickPosY) * p_188388_2_  - (entity.posY - entity.lastTickPosY)
+                        + (entity.posY - entity.lastTickPosY) * p_188388_2_ - (entity.posY - entity.lastTickPosY)
                 ,
                 entity.boundingBox.minZ
                         - 0.05
-                        + (entity.posZ - entity.lastTickPosZ) * p_188388_2_  - (entity.posZ - entity.lastTickPosZ)
+                        + (entity.posZ - entity.lastTickPosZ) * p_188388_2_ - (entity.posZ - entity.lastTickPosZ)
                 ,
                 entity.boundingBox.maxX
                         + 0.05
@@ -442,11 +439,11 @@ public class EspUtil implements MC {
                 ,
                 entity.boundingBox.maxY
                         + 0.1
-                        + (entity.posY - entity.lastTickPosY) * p_188388_2_  - (entity.posY - entity.lastTickPosY)
+                        + (entity.posY - entity.lastTickPosY) * p_188388_2_ - (entity.posY - entity.lastTickPosY)
                 ,
                 entity.boundingBox.maxZ
                         + 0.05
-                        + (entity.posZ - entity.lastTickPosZ) * p_188388_2_  - (entity.posZ - entity.lastTickPosZ)
+                        + (entity.posZ - entity.lastTickPosZ) * p_188388_2_ - (entity.posZ - entity.lastTickPosZ)
         );
 
     }

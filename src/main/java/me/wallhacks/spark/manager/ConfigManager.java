@@ -69,7 +69,7 @@ public class ConfigManager {
     public void Save() {
         FileUtil.write(Spark.ParentPath.getAbsolutePath()+"\\config.sex",config);
         SaveFromConfig(config);
-
+        Spark.altManager.saveAlts();
     }
 
 
