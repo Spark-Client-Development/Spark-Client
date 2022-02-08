@@ -6,6 +6,9 @@ import me.wallhacks.spark.event.render.FovModifierEvent;
 import me.wallhacks.spark.event.render.RenderHurtCameraEffectEvent;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.modules.mics.Putin;
+import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.render.CameraUtil;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixin({ EntityRenderer.class })
-public class MixinEntityRenderer {
+public class MixinEntityRenderer  implements MC {
 
     @Inject(method = "getFOVModifier", at = @At("HEAD"), cancellable = true)
     public void getFOVModifier(float partialTicks, boolean useFOVSetting, final CallbackInfoReturnable<Float> callbackInfo)
@@ -61,6 +64,15 @@ public class MixinEntityRenderer {
         } else {
             return worldClient.getEntitiesInAABBexcluding(entityIn, boundingBox, predicate);
         }
+    }
+
+    @Redirect(method = "updateCameraAndRender", at = @At(value = "INVOKE", target = "net/minecraft/client/entity/EntityPlayerSP.turn(FF)V"))
+    private void updateCameraAndRender(final EntityPlayerSP player, final float yaw, final float pitch) {
+        if (CameraUtil.freecamEnabled()) {
+            CameraUtil.getCamera().turn(yaw, pitch);
+            return;
+        }
+        player.turn(yaw, pitch);
     }
 
     @Inject(method = "orientCamera", at = @At("HEAD"))

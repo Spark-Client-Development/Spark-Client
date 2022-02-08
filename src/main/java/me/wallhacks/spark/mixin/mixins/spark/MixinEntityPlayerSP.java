@@ -5,6 +5,8 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.*;
 import me.wallhacks.spark.systems.module.modules.player.PortalChat;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.objects.FreecamEntity;
+import me.wallhacks.spark.util.render.CameraUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -35,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import me.wallhacks.spark.systems.module.modules.movement.NoSlow;
 import me.wallhacks.spark.systems.module.modules.movement.Step;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -362,6 +365,20 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
                 this.fire = -this.getFireImmuneTicks();
             }
             this.world.profiler.endSection();
+        }
+    }
+
+    @Inject(method = "isUser", at = @At("HEAD"), cancellable = true)
+    private void overrideIsUser(CallbackInfoReturnable<Boolean> cir) {
+        if (CameraUtil.freecamEnabled()) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "isCurrentViewEntity", at = @At("HEAD"), cancellable = true)
+    private void allowPlayerMovementInFreeCameraMode(CallbackInfoReturnable<Boolean> cir) {
+        if (CameraUtil.freecamEnabled()) {
+            cir.setReturnValue(true);
         }
     }
 

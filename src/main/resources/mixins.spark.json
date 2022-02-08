@@ -22,6 +22,8 @@
     "spark.MixinGuiScreen",
     "spark.MixinLayerArmorBase",
     "spark.MixinAbstractClientPlayer",
+    "spark.MixinVisGraph",
+    "spark.MixinDebugRendererChunkBorder",
     "spark.MixinMinecraft",
     "spark.MixinNetworkManager",
     "spark.MixinNetHandlerPlayClient",
