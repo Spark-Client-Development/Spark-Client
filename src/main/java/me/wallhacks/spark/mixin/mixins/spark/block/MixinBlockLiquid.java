@@ -1,4 +1,4 @@
-package me.wallhacks.spark.mixin.mixins.spark;
+package me.wallhacks.spark.mixin.mixins.spark.block;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.block.LiquidCollisionBBEvent;
@@ -15,23 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockLiquid.class)
 public class MixinBlockLiquid implements MC {
-
-
-
-
     @Inject(method = "getCollisionBoundingBox", at = @At("HEAD"), cancellable = true)
-    public void getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos, final CallbackInfoReturnable<AxisAlignedBB> callbackInfoReturnable)
-    {
+    public void getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos, final CallbackInfoReturnable<AxisAlignedBB> callbackInfoReturnable) {
         LiquidCollisionBBEvent event = new LiquidCollisionBBEvent(pos);
         Spark.eventBus.post(event);
-        if (event.isCanceled())
-        {
-
+        if (event.isCanceled()) {
             callbackInfoReturnable.setReturnValue(event.getBoundingBox());
             callbackInfoReturnable.cancel();
         }
     }
-
-
 }
 

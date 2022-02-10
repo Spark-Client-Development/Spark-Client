@@ -1,14 +1,21 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
+import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
+import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import net.minecraft.block.Block;
 import me.wallhacks.spark.systems.setting.settings.BlockListSelectSetting;
-
-@Module.Registration(name = "Xray", description = "Adds light")
-public class Xray extends Module {
-
-
+import net.minecraftforge.common.ForgeModContainer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+//I obviously took this module from summit https://github.com/ionar2/summit and I honestly dont feel bad about it
+@Module.Registration(name = "Wallhack", description = "Best module ever no doubt")
+public class Wallhack extends Module {
+    public static Wallhack INSTANCE;
+    public Wallhack() { INSTANCE = this; }
+    private BooleanSetting softReload = new BooleanSetting("SoftReload", this, true);
+    public DoubleSetting opacity = new DoubleSetting("Opacity", this, 125.0, 0.0, 255.0);
+    private BooleanSetting xray = new BooleanSetting("XRay", this, false);
     BlockListSelectSetting blocks = new BlockListSelectSetting("Blocks", this,
             new Block[]{
                     Block.getBlockFromName("coal_ore"),
@@ -48,20 +55,50 @@ public class Xray extends Module {
 
             }, "General");
 
-
-    public boolean isXrayBlock(Block o){
-        return (blocks.contains(o));
+    @Override
+    public void onEnable() {
+        mc.renderChunksMany = false;
+        reloadWorld();
+        ForgeModContainer.forgeLightPipelineEnabled = false;
     }
+
+    @SubscribeEvent
+    public void onSettingChange(SettingChangeEvent event) {
+        if (event.getSetting() == opacity || event.getSetting() == blocks || event.getSetting() == xray)
+            reloadWorld();
+    }
+
 
     @Override
     public void onDisable() {
-        MC.mc.renderGlobal.loadRenderers();
-
+        mc.renderChunksMany = false;
+        reloadWorld();
+        ForgeModContainer.forgeLightPipelineEnabled = true;
     }
 
-    @Override
-    public void onEnable() {
-        MC.mc.renderGlobal.loadRenderers();
+    private void reloadWorld()
+    {
+        if (mc.world == null || mc.renderGlobal == null)
+            return;
 
+        if (softReload.getValue()) {
+            mc.addScheduledTask(() -> {
+                int x = (int) mc.player.posX;
+                int y = (int) mc.player.posY;
+                int z = (int) mc.player.posZ;
+
+                int distance = mc.gameSettings.renderDistanceChunks * 16;
+
+                mc.renderGlobal.markBlockRangeForRenderUpdate(x - distance, y - distance, z - distance, x + distance, y + distance, z + distance);
+            });
+        }
+        else
+            mc.renderGlobal.loadRenderers();
+    }
+
+    public boolean isXrayBlock(Block o){
+        if (this.isEnabled() && xray.getValue())
+            return (blocks.contains(o));
+        else return false;
     }
 }
