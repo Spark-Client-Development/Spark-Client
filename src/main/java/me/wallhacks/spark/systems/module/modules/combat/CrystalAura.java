@@ -5,7 +5,6 @@ import me.wallhacks.spark.event.player.EntityAddEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.systems.module.modules.movement.Speed;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.WorldUtils;
@@ -13,7 +12,6 @@ import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.CrystalUtil;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.objects.PredictedEntity;
-import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
@@ -41,14 +39,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.Explosion;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
-import org.apache.http.util.EntityUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -598,7 +593,7 @@ public class CrystalAura extends Module {
 
 
         if (pos == null) return false;
-        return Spark.rotationManager.Rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, isUpdate);
+        return Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, isUpdate);
     }
 
     Vec3d getRotationPos(boolean forBreak) {

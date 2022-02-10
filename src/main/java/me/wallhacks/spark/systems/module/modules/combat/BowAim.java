@@ -2,7 +2,6 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
-import me.wallhacks.spark.manager.RotationManager;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.util.MC;
@@ -12,18 +11,9 @@ import me.wallhacks.spark.util.player.RotationUtil;
 import me.wallhacks.spark.util.render.EspUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.network.play.client.CPacketEntityAction;
-import net.minecraft.network.play.client.CPacketPlayer;
-import net.minecraft.network.play.client.CPacketPlayerDigging;
-import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -72,7 +62,7 @@ public class BowAim extends Module implements MC {
 		if(SilentRotate.isOn()){
 
 
-			Spark.rotationManager.Rotate(rot, 50,3,false);
+			Spark.rotationManager.rotate(rot, 50,3,false);
 
 
 		}

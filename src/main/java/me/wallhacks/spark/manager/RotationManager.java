@@ -29,11 +29,11 @@ public class RotationManager implements MC {
     //it return true if rotation was reached
     //yaw step is how fast it rotates and stay ticks is how many ticks after rotation we should keep that rotation
     //allow sendMultiplePackets if for doing multiple rotation things in one tick(bad idea for ca)
-    public boolean Rotate(float[] rotation, int yawstep,int stayTicks,boolean allowSendMultiplePackets) {
-        return Rotate(rotation,yawstep,stayTicks,allowSendMultiplePackets,true);
+    public boolean rotate(float[] rotation, int yawstep, int stayTicks, boolean allowSendMultiplePackets) {
+        return rotate(rotation,yawstep,stayTicks,allowSendMultiplePackets,true);
     }
 
-    public boolean Rotate(float[] rotation, int yawstep, int stayTicks, boolean allowSendMultiplePackets, boolean instant) {
+    public boolean rotate(float[] rotation, int yawstep, int stayTicks, boolean allowSendMultiplePackets, boolean instant) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if(!cancelNextWalkingUpdate) {
             if(FakeRotationYaw == null)

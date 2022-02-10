@@ -71,7 +71,7 @@ public class KillAura extends Module {
         if (lookAt == null) lookAt = target.boundingBox.getCenter();
 
         if (Rotate.isOn())
-            if (!Spark.rotationManager.Rotate(Spark.rotationManager.getLegitRotations(lookAt), RotStep.getValue(), StayTicks.getValue(), false))
+            if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(lookAt), RotStep.getValue(), StayTicks.getValue(), false))
                 return false;
         if (switchMode.is("Auto"))
             ItemSwitcher.Switch(new ItemForFightSwitchItem(target), ItemSwitcher.switchType.Mainhand);

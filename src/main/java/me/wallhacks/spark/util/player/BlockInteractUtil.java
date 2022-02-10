@@ -56,7 +56,7 @@ public class BlockInteractUtil implements MC {
             return BlockPlaceResult.FAILED;
 
         if(AntiCheatConfig.getInstance().getBlockRotate())
-        if(!Spark.rotationManager.Rotate(Spark.rotationManager.getLegitRotations(hitVec), AntiCheatConfig.getInstance().getBlockRotStep(), rotationStayTicks,allowSendMultipleRotPacket))
+        if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(hitVec), AntiCheatConfig.getInstance().getBlockRotStep(), rotationStayTicks,allowSendMultipleRotPacket))
             return BlockPlaceResult.WAIT;
 
 
