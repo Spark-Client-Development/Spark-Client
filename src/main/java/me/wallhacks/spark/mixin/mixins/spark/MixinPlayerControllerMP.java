@@ -70,5 +70,10 @@ public class MixinPlayerControllerMP implements MC {
 
     }
 
+    @Inject(method = "resetBlockRemoving", at = @At(value = "HEAD"), cancellable = true)
+    public void resetBlockRemoving(CallbackInfo info) {
+        if(Spark.breakManager.block != null)
+            info.cancel();
+    }
 
 }

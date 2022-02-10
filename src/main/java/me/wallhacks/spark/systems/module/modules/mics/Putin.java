@@ -6,6 +6,7 @@ import me.wallhacks.spark.systems.setting.settings.StringSetting;
 import me.wallhacks.spark.util.SessionUtils;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -82,8 +83,11 @@ public class Putin extends Module {
     }
 
     @SubscribeEvent
-    public void onFog(EntityViewRenderEvent.FogDensity event) {
+    public void onFogDensity(EntityViewRenderEvent.FogDensity event) {
         event.setDensity((16f*20f)/FogPower);
+
+        GlStateManager.setFog(GlStateManager.FogMode.EXP);
+
 
         event.setCanceled(true);
     }

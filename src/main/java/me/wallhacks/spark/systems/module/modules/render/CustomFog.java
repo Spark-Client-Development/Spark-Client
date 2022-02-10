@@ -1,6 +1,7 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
 import me.wallhacks.spark.systems.module.Module;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
@@ -26,8 +27,10 @@ public class CustomFog extends Module {
     }
 
     @SubscribeEvent
-    public void onFog(EntityViewRenderEvent.FogDensity event) {
+    public void onFogDensity(EntityViewRenderEvent.FogDensity event) {
         event.setDensity((fogDensity.getValue()/100f)*event.getDensity());
+
+        GlStateManager.setFog(GlStateManager.FogMode.EXP);
 
         event.setCanceled(true);
     }

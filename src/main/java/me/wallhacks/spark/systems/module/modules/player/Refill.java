@@ -18,6 +18,9 @@ import java.util.Map;
 @Module.Registration(name = "Refill", description = "Refills your hotbar for you")
 public class Refill extends Module {
 
+    // I hate it cause its a w+3 skid
+    // Why wallhacks why
+
     IntSetting threshold = new IntSetting("Threshold", this,32, 0, 63);
     IntSetting tickDelay = new IntSetting("Delay", this, 2, 0, 10);
 

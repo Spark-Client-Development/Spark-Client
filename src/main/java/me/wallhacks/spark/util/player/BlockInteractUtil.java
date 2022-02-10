@@ -36,7 +36,7 @@ public class BlockInteractUtil implements MC {
             return BlockPlaceResult.FAILED;
 
         Item willuse = ItemSwitcher.predictItem(switcher, ItemSwitcher.switchType.Both);
-        if(!(willuse instanceof ItemBlock))
+        if(!(willuse instanceof ItemBlock) && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
             return BlockPlaceResult.FAILED;
 
         if(checkEntities && !blockCollisionCheck(pos, ((ItemBlock)willuse).getBlock()))

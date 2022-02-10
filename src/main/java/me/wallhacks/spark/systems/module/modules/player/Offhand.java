@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.combat.CevBreaker;
 import me.wallhacks.spark.systems.module.modules.combat.CrystalAura;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.combat.CrystalUtil;
@@ -109,7 +110,7 @@ public class Offhand extends Module {
 
     private boolean shouldCrystalSwap(){
 
-        return CrystalSwap.isOn() && SystemManager.getModule(CrystalAura.class).isEnabled();
+        return CrystalSwap.isOn() && (SystemManager.getModule(CrystalAura.class).isEnabled() || SystemManager.getModule(CevBreaker.class).isEnabled());
     }
 
     private boolean shouldGapSwap() {
