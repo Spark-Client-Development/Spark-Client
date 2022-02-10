@@ -21,10 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Module.Registration(name = "Fullbright", description = "Adds light")
 public class FullBright extends Module {
 
-	@SubscribeEvent
-	public void onRenderWorld(WorldEvent event) {
-		MC.mc.gameSettings.gammaSetting = 100f;
-	}
+
 
 	@Override
 	public void onEnable() {
