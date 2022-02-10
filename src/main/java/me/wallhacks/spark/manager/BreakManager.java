@@ -69,7 +69,7 @@ public class BreakManager implements MC {
         if(AntiCheatConfig.getInstance().getBlockRotate())
         {
 
-            if(!Spark.rotationManager.Rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 4, false, true))
+            if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 4, false, true))
                 return;
 
 

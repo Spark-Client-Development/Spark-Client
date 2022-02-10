@@ -171,7 +171,7 @@ public class CevBreaker extends Module {
         Vec3d pos = CrystalUtil.getRotationPos(false,bestPos,null);
 
         //rotate if needed
-        if (!Spark.rotationManager.Rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
+        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
             return;
 
         mc.player.connection.sendPacket(new CPacketUseEntity(_Target));
@@ -201,7 +201,7 @@ public class CevBreaker extends Module {
 
 
         //rotate if needed
-        if (!Spark.rotationManager.Rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
+        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
             return;
 
 
