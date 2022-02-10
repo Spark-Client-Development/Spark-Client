@@ -55,6 +55,11 @@ public class HudElement extends SettingsHolder implements MC {
     public int getSnappedElement() {
         return snappedElement;
     }
+    public HudElement getSnappedElementObject() {
+        if(getSnappedElement() < 0)
+            return null;
+        return (HudElement) SystemManager.getHudModules().toArray()[getSnappedElement()];
+    }
 
     public boolean shouldDrawBackground() {
         return drawBackground;
@@ -143,6 +148,8 @@ public class HudElement extends SettingsHolder implements MC {
         if(getSnappedElement() >= 0)
         {
             HudElement e = (HudElement) SystemManager.getHudModules().toArray()[getSnappedElement()];
+
+
 
             x = (int) (e.getRenderPosX(getPercentPosX()));
         }

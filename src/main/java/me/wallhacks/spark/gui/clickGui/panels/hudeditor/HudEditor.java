@@ -98,41 +98,59 @@ public class HudEditor extends ClickGuiPanel {
 
                         hud.setSnappedElement(-1);
 
+
+
                         hud.setRenderPosX(lastSelected.posX);
                         hud.setRenderPosY(lastSelected.posY);
 
                         if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-                        for (HudElement b : SystemManager.getHudModules()) {
-                            if(hud != b && hud.isIn(b,-10) && hud.getId() != b.getSnappedElement()){
+                        {
+                            moduleLoop:
+                            for (HudElement b : SystemManager.getHudModules()) {
+                                if(b.isEnabled())
+                                    if(hud != b && hud.isIn(b,-10) && hud.getId() != b.getSnappedElement()){
 
-                                //snap
-                                if(hud.isIn(b))
-                                {
-                                    int yDis = Math.abs(hud.getCenterRenderPosY() < b.getCenterRenderPosY() ? hud.getEndRenderPosY()-b.getRenderPosY() : b.getEndRenderPosY()-hud.getRenderPosY());
-                                    int xDis = Math.abs(hud.getCenterRenderPosX() < b.getCenterRenderPosX() ? hud.getEndRenderPosX()-b.getRenderPosX() : b.getEndRenderPosX()-hud.getRenderPosX());
+                                        HudElement check = b;
+                                        while(check != null)
+                                        {
+                                            check = check.getSnappedElementObject();
+                                            if(check == hud)
+                                                continue moduleLoop;
+                                        }
 
-                                    if(yDis < xDis)
-                                    {
-                                        lastSelected.posY = (hud.getCenterRenderPosY() < b.getCenterRenderPosY() ? b.getRenderPosY()-hud.getHeight() : b.getEndRenderPosY());
+
+
+                                        //snap
+                                        if(hud.isIn(b))
+                                        {
+                                            int yDis = Math.abs(hud.getCenterRenderPosY() < b.getCenterRenderPosY() ? hud.getEndRenderPosY()-b.getRenderPosY() : b.getEndRenderPosY()-hud.getRenderPosY());
+                                            int xDis = Math.abs(hud.getCenterRenderPosX() < b.getCenterRenderPosX() ? hud.getEndRenderPosX()-b.getRenderPosX() : b.getEndRenderPosX()-hud.getRenderPosX());
+
+                                            if(yDis < xDis)
+                                            {
+                                                lastSelected.posY = (hud.getCenterRenderPosY() < b.getCenterRenderPosY() ? b.getRenderPosY()-hud.getHeight() : b.getEndRenderPosY());
+                                            }
+                                            else
+                                            {
+                                                lastSelected.posX = (hud.getCenterRenderPosX() < b.getCenterRenderPosX() ? b.getRenderPosX()-hud.getWidth() : b.getEndRenderPosX());
+                                            }
+
+                                        }
+
+                                        //attach
+                                        hud.setSnappedElement(b.getId());
+
+
+                                        //update relative pos
+                                        hud.setRenderPosX(lastSelected.posX);
+                                        hud.setRenderPosY(lastSelected.posY);
+
+
+
+                                        break;
                                     }
-                                    else
-                                    {
-                                        lastSelected.posX = (hud.getCenterRenderPosX() < b.getCenterRenderPosX() ? b.getRenderPosX()-hud.getWidth() : b.getEndRenderPosX());
-                                    }
-
-                                }
-
-                                //attach
-                                hud.setSnappedElement(b.getId());
-
-                                //update relative pos
-                                hud.setRenderPosX(lastSelected.posX);
-                                hud.setRenderPosY(lastSelected.posY);
-
-
-
-                                break;
                             }
+
                         }
 
 
