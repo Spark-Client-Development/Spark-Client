@@ -3,6 +3,7 @@ package me.wallhacks.spark.gui.clickGui;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.panels.GuiPanelScreen;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
+import me.wallhacks.spark.systems.module.modules.player.Freecam;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -67,6 +68,7 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
+
         mc.entityRenderer.getShaderGroup().deleteShaderGroup();
     }
 

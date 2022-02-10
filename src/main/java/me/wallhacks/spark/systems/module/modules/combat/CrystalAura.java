@@ -114,6 +114,11 @@ public class CrystalAura extends Module {
 
     boolean isUpdate = false;
 
+    public static CrystalAura instance;
+    public CrystalAura() {
+        instance = this;
+
+    }
 
     int placeCounter = 0;
     int placeCounterTimer = 0;
@@ -283,7 +288,7 @@ public class CrystalAura extends Module {
             //place crystal
 
             //get point for rotations
-            Vec3d pos = getRotationPos(true);
+            Vec3d pos = CrystalUtil.getRotationPos(true,currentCrystalBlockPos,currentCrystalEntity);
             if (pos == null)
                 pos = new Vec3d(currentCrystalBlockPos).add(0.5, 1, 0.5);
             final RayTraceResult result = MC.mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
@@ -589,41 +594,14 @@ public class CrystalAura extends Module {
     //rotation methods
     boolean rotate(boolean forBreak) {
         if (!AntiCheatConfig.getInstance().CrystalRotate()) return true;
-        Vec3d pos = getRotationPos(forBreak);
+        Vec3d pos = CrystalUtil.getRotationPos(forBreak,currentCrystalBlockPos,currentCrystalEntity);
 
 
         if (pos == null) return false;
         return Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, isUpdate);
     }
 
-    Vec3d getRotationPos(boolean forBreak) {
-        if (currentCrystalBlockPos != null)
-            if (currentCrystalEntity == null || currentCrystalEntity.getPosition().add(0, -1, 0).equals(currentCrystalBlockPos)) {
-                Vec3d pos = RaytraceUtil.getPointToBreakPlaceCrystal(currentCrystalBlockPos);
 
-                if (pos != null) return pos;
-                else if (currentCrystalEntity == null)
-                    return new Vec3d(currentCrystalBlockPos.getX() + 0.5, currentCrystalBlockPos.getY() + 1, currentCrystalBlockPos.getZ() + 0.5);
-                ;
-            }
-
-        if (forBreak || currentCrystalBlockPos == null) {
-            if (currentCrystalEntity != null) {
-                Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getVisiblePointsForBox(CrystalUtil.PredictCrystalBBFromPos(currentCrystalEntity.getPositionVector())));
-                if (pos != null) return pos;
-                return currentCrystalEntity.getPositionVector();
-            }
-        } else {
-            if (currentCrystalBlockPos != null) {
-                Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(currentCrystalBlockPos));
-                if (pos != null) return pos;
-                else
-                    return new Vec3d(currentCrystalBlockPos.getX() + 0.5, currentCrystalBlockPos.getY() + 1, currentCrystalBlockPos.getZ() + 0.5);
-            }
-        }
-
-        return null;
-    }
 
     private AxisAlignedBB getFacingVec(EnumFacing facing, BlockPos pos) {
         switch (renderVec) {

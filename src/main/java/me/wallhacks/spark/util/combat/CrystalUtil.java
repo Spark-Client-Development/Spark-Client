@@ -2,6 +2,8 @@ package me.wallhacks.spark.util.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.player.PlayerUtil;
+import me.wallhacks.spark.util.player.RaytraceUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.DestroyBlockProgress;
@@ -266,4 +268,37 @@ public class CrystalUtil implements MC {
             damage = Math.max(damage, 0.0f);
             return damage;
         }
+
+
+    public static Vec3d getRotationPos(boolean forBreak,BlockPos placePos,EntityEnderCrystal crystal) {
+        if (placePos != null)
+            if (crystal == null || crystal.getPosition().add(0, -1, 0).equals(placePos)) {
+                Vec3d pos = RaytraceUtil.getPointToBreakPlaceCrystal(placePos);
+
+                if (pos != null) return pos;
+                else if (crystal == null)
+                    return new Vec3d(placePos.getX() + 0.5, placePos.getY() + 1, placePos.getZ() + 0.5);
+                ;
+            }
+
+        if (forBreak || placePos == null) {
+            if (crystal != null) {
+                Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getVisiblePointsForBox(CrystalUtil.PredictCrystalBBFromPos(crystal.getPositionVector())));
+                if (pos != null) return pos;
+                return crystal.getPositionVector();
+            }
+        } else {
+            if (placePos != null) {
+                Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(placePos));
+                if (pos != null) return pos;
+                else
+                    return new Vec3d(placePos.getX() + 0.5, placePos.getY() + 1, placePos.getZ() + 0.5);
+            }
+        }
+
+        return null;
+    }
+
+
+
 }

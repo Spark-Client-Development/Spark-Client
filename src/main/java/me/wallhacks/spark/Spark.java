@@ -18,6 +18,7 @@ import org.lwjgl.opengl.Display;
 import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.systems.command.CommandHandler;
 import me.wallhacks.spark.util.MC;
+import scala.tools.ant.sabbus.Break;
 
 import java.io.File;
 
@@ -43,6 +44,7 @@ public class Spark implements MC {
     public static PopManager popManager;
     public static ClickGuiMenuBase clickGuiScreen;
     public static AltManager altManager;
+    public static BreakManager breakManager;
     public static ThreadManager threadManager;
 
     public static SocialManager socialManager;
@@ -64,6 +66,7 @@ public class Spark implements MC {
         systemManager = new SystemManager();
         popManager = new PopManager();
         commandManager = new CommandManager();
+        breakManager = new BreakManager();
         fadeManager = new FadeManager();
         clickGuiScreen = new ClickGuiMenuBase();
         threadManager = new ThreadManager();
