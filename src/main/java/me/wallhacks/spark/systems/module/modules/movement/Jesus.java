@@ -2,6 +2,7 @@ package me.wallhacks.spark.systems.module.modules.movement;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.block.LiquidCollisionBBEvent;
+import me.wallhacks.spark.event.entity.LiquidPushEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerLivingTickEvent;
 import me.wallhacks.spark.event.player.PlayerMoveEvent;
@@ -39,7 +40,11 @@ public class Jesus extends Module {
                 event.setCanceled(true);
             }
         }
+    }
 
+    @SubscribeEvent
+    public void onLiquidPush(LiquidPushEvent event) {
+        if (event.getEntity() == mc.player) event.setCanceled(true);
     }
     @SubscribeEvent
     public void onUpdate(PlayerLivingTickEvent event) {
@@ -48,7 +53,7 @@ public class Jesus extends Module {
 
 
 
-            if(isInLiquid())
+            if(PlayerUtil.isOnLiquid())
             {
 
 
@@ -111,47 +116,5 @@ public class Jesus extends Module {
             }
         }
     }
-
-
-    public boolean isInLiquid()
-    {
-
-
-        if (mc.player != null)
-        {
-            final AxisAlignedBB bb = mc.player.getRidingEntity() != null
-                    ? mc.player.getRidingEntity().boundingBox.contract(0.0d, 0.0d, 0.0d)
-                    : mc.player.boundingBox.contract(0.0d, 0.0d, 0.0d);
-            boolean onLiquid = false;
-            int y = (int) (bb.minY-0.1f);
-            for (int x = MathHelper.floor(bb.minX); x < MathHelper.floor(bb.maxX + 1.0D); x++)
-            {
-                for (int z = MathHelper.floor(bb.minZ); z < MathHelper.floor(bb.maxZ + 1.0D); z++)
-                {
-                    final Block block = mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
-                    if (block != Blocks.AIR)
-                    {
-                        if (!(block instanceof BlockLiquid))
-                        {
-                            if (!(mc.world.getBlockState(new BlockPos(x, y+1, z)).getBlock() instanceof BlockLiquid))
-                            {
-                                return false;
-
-                            }
-                        }
-
-                        onLiquid = true;
-                    }
-
-                }
-            }
-
-            return onLiquid;
-        }
-
-        return false;
-    }
-
-
 
 }

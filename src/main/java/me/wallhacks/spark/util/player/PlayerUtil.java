@@ -2,7 +2,9 @@ package me.wallhacks.spark.util.player;
 
 import me.wallhacks.spark.util.MC;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.*;
 
 import java.util.List;
@@ -170,6 +172,45 @@ public class PlayerUtil implements MC {
             }
         }
         return closest;
+    }
+
+    public static boolean isOnLiquid()
+    {
+
+
+        if (mc.player != null)
+        {
+            final AxisAlignedBB bb = mc.player.getRidingEntity() != null
+                    ? mc.player.getRidingEntity().boundingBox.contract(0.0d, 0.0d, 0.0d)
+                    : mc.player.boundingBox.contract(0.0d, 0.0d, 0.0d);
+            boolean onLiquid = false;
+            int y = (int) (bb.minY-0.1f);
+            for (int x = MathHelper.floor(bb.minX); x < MathHelper.floor(bb.maxX + 1.0D); x++)
+            {
+                for (int z = MathHelper.floor(bb.minZ); z < MathHelper.floor(bb.maxZ + 1.0D); z++)
+                {
+                    final Block block = mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
+                    if (block != Blocks.AIR)
+                    {
+                        if (!(block instanceof BlockLiquid))
+                        {
+                            if (!(mc.world.getBlockState(new BlockPos(x, y+1, z)).getBlock() instanceof BlockLiquid))
+                            {
+                                return false;
+
+                            }
+                        }
+
+                        onLiquid = true;
+                    }
+
+                }
+            }
+
+            return onLiquid;
+        }
+
+        return false;
     }
 
 }

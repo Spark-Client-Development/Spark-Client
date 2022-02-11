@@ -2,8 +2,10 @@ package me.wallhacks.spark.mixin.mixins.spark;
 
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.entity.LiquidPushEvent;
 import me.wallhacks.spark.event.player.EntityAddEvent;
 import me.wallhacks.spark.manager.SystemManager;
+import me.wallhacks.spark.systems.module.modules.movement.Jesus;
 import me.wallhacks.spark.systems.module.modules.world.ClientTime;
 import me.wallhacks.spark.systems.module.modules.world.ClientWeather;
 import net.minecraft.entity.Entity;
@@ -11,6 +13,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -61,7 +64,11 @@ public class MixinWorld {
         }
     }
 
-
-
+    @Redirect(method={"handleMaterialAcceleration"}, at=@At(value="INVOKE", target="Lnet/minecraft/entity/Entity;isPushedByWater()Z"))
+    public boolean isPushedbyWaterHook(Entity entity) {
+        LiquidPushEvent event = new LiquidPushEvent(entity);
+        Spark.eventBus.post(event);
+        return entity.isPushedByWater() && !event.isCanceled();
+    }
 
 }

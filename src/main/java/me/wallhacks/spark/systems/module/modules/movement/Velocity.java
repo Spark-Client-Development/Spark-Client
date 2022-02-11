@@ -1,5 +1,7 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import me.wallhacks.spark.event.entity.LiquidPushEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.MC;
@@ -22,9 +24,14 @@ public class Velocity extends Module {
     DoubleSetting Vertical = new DoubleSetting("Vertical", this, 0, 0, 1,0.1);
 
     public BooleanSetting NoPush = new BooleanSetting("NoPush", this, true);
-
+    public BooleanSetting noWater = new BooleanSetting("NoWater", this, true);
     public static Velocity INSTANCE;
     public Velocity() {INSTANCE = this;}
+
+    @SubscribeEvent
+    public void onLiquidPush(LiquidPushEvent event) {
+        if (noWater.getValue() && event.getEntity() == mc.player) event.setCanceled(true);
+    }
 
     @SubscribeEvent
     public void onPacketGet(PacketReceiveEvent event) {

@@ -16,6 +16,7 @@ import me.wallhacks.spark.event.player.PlayerPreUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.BaritoneConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.player.PlayerUtil;
 import net.minecraft.entity.MoverType;
 import net.minecraft.init.MobEffects;
 import net.minecraft.network.play.client.CPacketPlayer;
@@ -240,7 +241,7 @@ public class Speed extends Module {
         try {
             if (mc.player == null || !isEnabled() || MC.mc.world == null) {
                 return false;
-            } else if ((mc.player.isInLava() || mc.player.isInLava()) && !liquids.getValue()) {
+            } else if (((mc.player.isInLava() || mc.player.isInLava()) && !liquids.getValue()) || (mode.is("OnGround") && PlayerUtil.isOnLiquid())) {
                 return false;
             } else if (mc.player.isElytraFlying()) {
                 return false;
