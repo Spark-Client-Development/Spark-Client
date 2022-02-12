@@ -52,6 +52,8 @@ public class Configs extends ClickGuiPanel {
 
     public final GuiEditSettingPanel guiEditSettingPanel = new GuiEditSettingPanel();
 
+    public ConfigManager.Config copied;
+
     public final GuiPanelButton addButton = new GuiPanelButton(() -> {
         int i = 1;
         while(!Spark.configManager.createConfig(new ConfigManager.Config("Config"+i)))
@@ -150,7 +152,20 @@ public class Configs extends ClickGuiPanel {
 
 
 
+    public void CopyPasteConfig(ConfigManager.Config config) {
+        if(copied == null)
+        {
+            copied = config;
+        }
+        else
+        {
+            if(config != copied)
+                Spark.configManager.copyAndPasteConfig(copied,config);
+            copied = null;
+        }
 
+
+    }
 
     public void LoadConfig(ConfigManager.Config config) {
         Spark.configManager.loadConfig(config,true);

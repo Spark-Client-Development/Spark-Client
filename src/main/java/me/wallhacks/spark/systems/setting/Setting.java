@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 
 public class Setting<T> {
     private T value;
+    private final T defaultValue;
     private final String name;
     private final SettingsHolder settingsHolder;
     private final String settingCategory;
@@ -24,6 +25,7 @@ public class Setting<T> {
 
     public Setting(T value, String name, SettingsHolder settingsHolder,Predicate<T> visible, String settingCategory) {
         this.value = value;
+        this.defaultValue = value;
         this.name = name;
         this.settingsHolder = settingsHolder;
         this.settingCategory = settingCategory;
@@ -36,6 +38,10 @@ public class Setting<T> {
 
     public T getValue() {
         return this.value;
+    }
+
+    public T getDefaultValue() {
+        return defaultValue;
     }
 
     public void setValue(T value) {
@@ -62,8 +68,15 @@ public class Setting<T> {
     public boolean setValueString(String value) {
     	return false;
     }
+    public String getStringOfValue(T value) {
+        return value.toString();
+    }
+
+    public String getDefaultValueString() {
+        return getStringOfValue(value);
+    }
     public String getValueString() {
-        return getValue().toString();
+        return getStringOfValue(defaultValue);
     }
 
     public SettingsHolder getsettingsHolder() {

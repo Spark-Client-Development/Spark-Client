@@ -28,13 +28,8 @@ public class GuiEditModuleSettings extends GuiPanelBase {
             Module m = (Module)guiEditSettingPanel.currentSettingsHolder;
             super.renderContent(MouseX, MouseY, deltaTime);
 
-            int moduleSettingHeight = 18;
 
 
-            GuiPanelScroll guiPanelScroll = guiEditSettingPanel.guiPanelScroll;
-
-            guiPanelScroll.height = guiPanelScroll.height-moduleSettingHeight- guiSettings.spacing;
-            this.setPositionAndSize(guiPanelScroll.posX,guiPanelScroll.posY+guiPanelScroll.height+ guiSettings.spacing,guiPanelScroll.width,moduleSettingHeight);
 
             drawBackGround(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
 

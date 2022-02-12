@@ -242,7 +242,7 @@ public class NameTags extends Module {
 
     public String generateNameTag(EntityPlayer entityPlayer) {
         try {
-            return (Spark.socialManager.isFriend(entityPlayer.getName()) ? TextFormatting.AQUA : "") + entityPlayer.getGameProfile().getName() + generateGamemode(entityPlayer) + TextFormatting.RESET + getPingText(MC.mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime()) + generatePing(entityPlayer) + getHealthText(generateHealth(entityPlayer));
+            return (Spark.socialManager.isFriend(entityPlayer) ? TextFormatting.AQUA : "") + entityPlayer.getGameProfile().getName() + generateGamemode(entityPlayer) + TextFormatting.RESET + getPingText(MC.mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime()) + generatePing(entityPlayer) + getHealthText(generateHealth(entityPlayer));
         } catch (Exception e) {
 
         }
@@ -316,7 +316,7 @@ public class NameTags extends Module {
         if (healthBar.getValue()) {
             int length = (int) ((width * 2 - 1) * percent);
             length = Math.max(2, length);
-            Color color = ColorUtil.lerpColor(new Color(0x27DC00), new Color(0xBB0A0A), colorPercent);
+            Color color = ColorUtil.lerpColor(new Color(0xBB0A0A),new Color(0x27DC00), colorPercent);
             GlStateManager.disableDepth();
             drawRoundedRect((int) - width + 1, 4, (int) (length - width + 1), 6, color.getRGB(), 1);
         }

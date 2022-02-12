@@ -105,7 +105,7 @@ public class ClientConfig extends ClientSetting {
     }
 
     public String getChatPrefix(){
-        return  Prefix.getValueString();
+        return  Prefix.getValue();
     }
 
     public static ClientConfig INSTANCE;

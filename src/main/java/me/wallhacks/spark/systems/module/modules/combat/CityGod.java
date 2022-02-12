@@ -16,6 +16,9 @@ public class CityGod extends Module implements MC {
 	
 	@SubscribeEvent
 	public void onTick(LivingUpdateEvent e) {
+		if(nullCheck())
+			return;
+
 		if(mc.world.getCollisionBoxes(mc.player, mc.player.getEntityBoundingBox().grow(0.01, 0, 0.01)).size() < 2) {
 				mc.player.setPosition(
 						MathUtil.roundToClosest(posX(), Math.floor(posX()) + 0.301, Math.floor(posX()) + 0.699),

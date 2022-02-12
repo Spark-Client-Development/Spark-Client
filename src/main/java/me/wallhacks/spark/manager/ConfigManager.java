@@ -2,29 +2,17 @@ package me.wallhacks.spark.manager;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.SettingChangeEvent;
-import me.wallhacks.spark.event.player.UpdateWalkingPlayerEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.BaritoneConfig;
 import me.wallhacks.spark.systems.setting.settings.StringSetting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Session;
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.Setting;
-import me.wallhacks.spark.util.EncryptionUtil;
 import me.wallhacks.spark.util.FileUtil;
-import me.wallhacks.spark.util.RandomString;
-import me.wallhacks.spark.util.auth.account.Account;
-import me.wallhacks.spark.util.auth.account.AccountType;
-import me.wallhacks.spark.util.auth.account.MSAccount;
-import me.wallhacks.spark.util.auth.account.MojangAccount;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class ConfigManager {
 
@@ -45,6 +33,7 @@ public class ConfigManager {
         }
     }
 
+
     public ArrayList<Config> getConfigs() {
         return configs;
     }
@@ -58,12 +47,20 @@ public class ConfigManager {
         return Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator")+"configs"+System.getProperty("file.separator") + config.getConfigName();
     }
 
+    public void copyAndPasteConfig(Config from,Config to) {
+
+        FileUtil.copy(getConfigPath(from),getConfigPath(to));
+
+        if(to == currentConfig)
+            loadConfig(currentConfig,false);
+    }
+
     public boolean loadConfig(Config config,boolean saveOld) {
         if(!configs.contains(config))
             return false;
 
         if(saveOld)
-            SaveFromConfig(currentConfig);
+            SaveFromConfig(currentConfig,false);
         currentConfig = config;
 
         if(FileUtil.exists(getConfigPath(config))){
@@ -102,7 +99,7 @@ public class ConfigManager {
         if(configs.contains(config))
             return false;
         configs.add(config);
-        SaveFromConfig(config);
+        SaveFromConfig(config,true);
         return true;
     }
 
@@ -146,7 +143,7 @@ public class ConfigManager {
     public void SaveConfigConfigs(boolean overrideUnused) {
         FileUtil.write(Spark.ParentPath.getAbsolutePath()+System.getProperty("file.separator")+"config.sex",currentConfig.getConfigName());
         for (Config c : configs) {
-            saveSettingHolder(c,getConfigPath(c)+System.getProperty("file.separator")+"configData.sex");
+            saveSettingHolder(c,getConfigPath(c)+System.getProperty("file.separator")+"configData.sex",true);
         }
 
         String configFolder = (Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator")+"configs");
@@ -169,7 +166,7 @@ public class ConfigManager {
         SaveConfigConfigs(true);
 
 
-        SaveFromConfig(currentConfig);
+        SaveFromConfig(currentConfig,false);
 
     }
 
@@ -178,8 +175,8 @@ public class ConfigManager {
         loadSystems(config, baritone);
     }
 
-    public void SaveFromConfig(Config config) {
-        saveSystems(config);
+    public void SaveFromConfig(Config config,boolean saveDefaults) {
+        saveSystems(config,saveDefaults);
     }
 
     String getSystemSettingFile(SettingsHolder holder,Config config) {
@@ -253,32 +250,32 @@ public class ConfigManager {
         }
     }
 
-    private void saveSystems(Config config) {
+    private void saveSystems(Config config,boolean saveDefaults) {
         for (SettingsHolder system : SystemManager.getSystems()) {
-            saveSettingHolder(system,getSystemSettingFile(system,config));
+            saveSettingHolder(system,getSystemSettingFile(system,config),saveDefaults);
         }
     }
 
-    void saveSettingHolder(SettingsHolder holder,String file) {
+    void saveSettingHolder(SettingsHolder holder,String file,boolean saveDefaults) {
         try {
             ArrayList<String> lines = new ArrayList<String>();
 
             if (holder instanceof Module) {
-                lines.add("Toggled:" + ((Module) holder).isEnabled());
-                lines.add("KeyBind:" + ((Module) holder).getBind());
-                lines.add("Hold:" + ((Module) holder).isHold());
-                lines.add("Visible:" + ((Module) holder).isVisible());
-                lines.add("Muted:" + ((Module) holder).isMuted());
+                lines.add("Toggled:" + (saveDefaults ? ((Module) holder).getMod().enabled() : ((Module) holder).isEnabled()));
+                lines.add("KeyBind:" + (saveDefaults ? ((Module) holder).getMod().bind() : ((Module) holder).getBind()));
+                lines.add("Hold:" + (saveDefaults ? ((Module) holder).getMod().hold() : ((Module) holder).isHold()));
+                lines.add("Visible:" + (saveDefaults ? ((Module) holder).getMod().visible() : ((Module) holder).isVisible()));
+                lines.add("Muted:" + (saveDefaults ? ((Module) holder).getMod().muted() : ((Module) holder).isMuted()));
             }
             if (holder instanceof HudElement) {
-                lines.add("Toggled:" + ((HudElement) holder).isEnabled());
-                lines.add("PosPercentX:" + ((HudElement) holder).getPercentPosX());
-                lines.add("PosPercentY:" + ((HudElement) holder).getPercentPosY());
-                lines.add("SnappedElement:" + ((HudElement) holder).getSnappedElement());
+                lines.add("Toggled:" + (saveDefaults ? ((HudElement) holder).getMod().enabled() : ((HudElement) holder).isEnabled()));
+                lines.add("PosPercentX:" + (saveDefaults ? ((HudElement) holder).getMod().posX() : ((HudElement) holder).getPercentPosX()));
+                lines.add("PosPercentY:" + (saveDefaults ? ((HudElement) holder).getMod().posY() : ((HudElement) holder).getPercentPosY()));
+                lines.add("SnappedElement:" + (saveDefaults ? ((HudElement) holder).getMod().snappedElement() : ((HudElement) holder).getSnappedElement()));
             }
 
             for (Setting<?> setting : holder.getSettings())
-                lines.add(setting.getCategory() + "/" + setting.getName() + ":" + setting.getValueString());
+                lines.add(setting.getCategory() + "/" + setting.getName() + ":" + (saveDefaults ? setting.getDefaultValueString() : setting.getValueString()));
 
             String content = "";
             for (String e : lines)
@@ -310,7 +307,7 @@ public class ConfigManager {
             if(fileName != name.getValue())
             {
                 String configFolder = (Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator")+"configs");
-                if(name.getValue().length() > 0 || Spark.configManager.getConfigs().contains(name.getName()) || !FileUtil.renameDirectory(configFolder+System.getProperty("file.separator")+fileName,configFolder+System.getProperty("file.separator")+name.getValue()))
+                if(name.getValue().length() <= 0 || Spark.configManager.getConfigs().contains(name.getName()) || !FileUtil.renameDirectory(configFolder+System.getProperty("file.separator")+fileName,configFolder+System.getProperty("file.separator")+name.getValue()))
                     name.setValue(this.fileName);
             }
 

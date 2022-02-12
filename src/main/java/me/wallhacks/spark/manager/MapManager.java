@@ -53,9 +53,7 @@ public class MapManager implements MC {
 
     ArrayList<SparkMap> toLoad = new ArrayList<SparkMap>();
 
-    public SparkMap getMap(Vec2i mapPos){
-
-        int dim = getDim();
+    public SparkMap getMap(Vec2i mapPos,int dim){
 
         if(!loadedMaps.containsKey(dim))
             loadedMaps.put(dim, new HashMap<Vec2i,SparkMap>());
@@ -112,7 +110,7 @@ public class MapManager implements MC {
 
         Vec2i mapAtC = SparkMap.getMapPosFromWorldPos(c.getPos().x*16, c.getPos().z*16);
 
-        SparkMap M = getMap(mapAtC);
+        SparkMap M = getMap(mapAtC,getDim());
         if(toLoad.contains(M))
         {
             LoadMap(M);

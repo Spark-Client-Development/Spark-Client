@@ -166,24 +166,49 @@ public class Socials extends ClickGuiPanel {
     int ticksSinceTextNotChange = 0;
     public void updateList() {
 
-        ArrayList<SocialManager.SocialEntry> toAdd = new ArrayList<>();
-
 
         String searchText = moduleSearchField.getText();
 
 
         boolean isFound = false;
+
+
+        friendCheck:
         for (SocialManager.SocialEntry item : Spark.socialManager.getFriends())
-            toAdd.add(item);
+        {
+            for (PlayerListItem t : players)
+            {
+                if(t.getName().equalsIgnoreCase(item.getName()))
+                    continue friendCheck;
+            }
 
+            players.add(new PlayerListItem(item));
 
+        }
+
+        playerMaploop:
         for (NetworkPlayerInfo s : Minecraft.getMinecraft().player.connection.getPlayerInfoMap())
         {
             if(searchText.equalsIgnoreCase(s.getGameProfile().getName()))
                 isFound = true;
-            toAdd.add(Spark.socialManager.getSocialFromNetworkPlayerInfo((s)));
+
+            for (PlayerListItem t : players)
+            {
+                if(t.getName().equalsIgnoreCase(s.gameProfile.getName()))
+                    continue playerMaploop;
+            }
+
+            players.add(new PlayerListItem(s));
+
         }
 
+        for (PlayerListItem item : players)
+        {
+            if(searchText.equalsIgnoreCase(item.getName()))
+            {
+                isFound = true;
+            }
+        }
 
         if(lastSearchText.equalsIgnoreCase(searchText))
             ticksSinceTextNotChange++;
@@ -192,12 +217,6 @@ public class Socials extends ClickGuiPanel {
 
         if(searchText.length() > 0)
         {
-            for (PlayerListItem item : players)
-                if(searchText.equalsIgnoreCase(item.getName()))
-                {
-                    toAdd.add(item.player);
-                    isFound = true;
-                }
 
             if(ticksSinceTextNotChange == 10 && !isFound)
             {
@@ -212,23 +231,6 @@ public class Socials extends ClickGuiPanel {
                 });
             }
         }
-
-
-
-        for (PlayerListItem item : players)
-        {
-            if(toAdd.contains(item.player))
-            {
-                while (toAdd.contains(item.player))
-                    toAdd.remove(item.player);
-            }
-            else
-                players.remove(item);
-
-
-        }
-        for (SocialManager.SocialEntry item : toAdd)
-            players.add(new PlayerListItem(item));
 
 
         lastSearchText = moduleSearchField.getText();

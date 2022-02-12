@@ -1,5 +1,6 @@
 package me.wallhacks.spark.util.render;
 
+import com.sun.javafx.geom.Vec2d;
 import me.wallhacks.spark.manager.MapManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.util.GuiUtil;
@@ -18,13 +19,14 @@ public class MapRender implements MC {
 
 
 
-    public static void RenderWholeMap(int ImageStartX,int ImageStartY,int ImageScaleX,int ImageScaleY,int ImageScale,double TargetX,double TargetZ, double offsetX,double offsetY){
+    public static void RenderWholeMap(int ImageStartX,int ImageStartY,int ImageScaleX,int ImageScaleY,int ImageScale,double TargetX,double TargetZ, double offsetX,double offsetY,int dim){
         GL11.glPushMatrix();
         GuiUtil.glScissor(ImageStartX,ImageStartY,ImageScaleX,ImageScaleY);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
+
         //background
-        Gui.drawRect(ImageStartX, ImageStartY, ImageStartX+ImageScaleX, ImageStartY+ImageScaleY, HudSettings.getInstance().getGuiHudListBackgroundColor().getRGB());
+        Gui.drawRect(ImageStartX, ImageStartY, ImageStartX+ImageScaleX, ImageStartY+ImageScaleY, new Color(68, 68, 68, 165).getRGB());
         GlStateManager.color(1,1,1,1);
 
 
@@ -38,7 +40,9 @@ public class MapRender implements MC {
         for (int x = WholeMapStartPos.x; x <= WholeMapEndPos.x; x++) {
             for (int y = WholeMapStartPos.y; y <= WholeMapEndPos.y; y++) {
 
-                SparkMap map = MapManager.instance.getMap(new Vec2i(x, y));
+
+
+                SparkMap map = MapManager.instance.getMap(new Vec2i(x, y),dim);
 
                 float x_ = map.getStartPos().x*(ImageScale/SparkMap.getWidthAndHeight())-centerX;
                 float y_ = map.getStartPos().y*(ImageScale/SparkMap.getWidthAndHeight())-centerY;
@@ -48,9 +52,11 @@ public class MapRender implements MC {
             }
         }
 
-        if(true){
-            float OffsetXtoPlayer = (float) (ImageStartX+ImageScaleX * 0.5+offsetX+SparkMap.get2dMapPosFromWorldPos(mc.player.posX-TargetX,ImageScale));
-            float OffsetYtoPlayer = (float) (ImageStartY+ImageScaleY * 0.5+offsetY+SparkMap.get2dMapPosFromWorldPos(mc.player.posZ-TargetZ,ImageScale));
+        if(dim == mc.player.dimension || (dim != 1 && mc.player.dimension != 1)){
+
+            Vec2d pos = ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
+            float OffsetXtoPlayer = (float) (ImageStartX+ImageScaleX * 0.5+offsetX+SparkMap.get2dMapPosFromWorldPos(pos.x-TargetX,ImageScale));
+            float OffsetYtoPlayer = (float) (ImageStartY+ImageScaleY * 0.5+offsetY+SparkMap.get2dMapPosFromWorldPos(pos.y-TargetZ,ImageScale));
 
             GuiUtil.drawCompleteImageRotated(OffsetXtoPlayer,OffsetYtoPlayer,4,4,(int)mc.player.rotationYaw+90,ARROW_ICON, Color.WHITE);
         }
@@ -74,6 +80,29 @@ public class MapRender implements MC {
     }
 
 
+    public static Vec2d ConvertPos(Vec2d pos,int fromDim,int toDim)
+    {
+        if(toDim != fromDim)
+        {
+            if(fromDim == 1 || toDim == 1)
+            {
+                pos.x = 0;
+                pos.y = 0;
+            }
+            else {
+                if(fromDim == -1)
+                {
+                    pos.x *= 8;
+                    pos.y *= 8;
+                }
+                else{
+                    pos.x /= 8;
+                    pos.y /= 8;
+                }
+            }
+        }
+        return pos;
+    }
 
 
 }

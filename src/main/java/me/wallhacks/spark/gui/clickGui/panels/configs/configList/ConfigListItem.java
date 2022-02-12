@@ -27,9 +27,11 @@ public class ConfigListItem extends GuiPanelBase {
         this.configs = configs;
     }
 
-    GuiPanelButton EditButton = new GuiPanelButton(() -> {configs.EditConfig(config);},"Edit");
     GuiPanelButton DeleteButton = new GuiPanelButton(() -> {configs.DeleteConfig(config);},"Delete");
     GuiPanelButton LoadButton = new GuiPanelButton(() -> {configs.LoadConfig(config);},"Load");
+
+    GuiPanelButton CopyPastaButton = new GuiPanelButton(() -> {configs.CopyPasteConfig(config);},"Paste");
+
 
     @Override
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
@@ -41,22 +43,25 @@ public class ConfigListItem extends GuiPanelBase {
 
 
 
-
+        boolean loaded = Spark.configManager.getCurrentConfig() == config;
 
 
 
 
         int FieldSizeY = 14;
 
-        int xp = fontManager.drawString(config.getConfigName(),posX,posY+4, guiSettings.getContrastColor().getRGB());
+        int xp = fontManager.drawString(config.getConfigName(),posX,posY+4,loaded ? guiSettings.getContrastColor().brighter().getRGB() : guiSettings.getContrastColor().getRGB());
 
-        if(Spark.configManager.getCurrentConfig() == config)
-            fontManager.drawString(ChatFormatting.ITALIC +"[Loaded]",xp+5,posY+4, guiSettings.getContrastColor().getRGB());
+        if(configs.copied == config)
+            fontManager.drawString(ChatFormatting.ITALIC +"[Copied]",xp+5,posY+4, guiSettings.getContrastColor().getRGB());
 
 
         int y = posY+4+ fontManager.getTextHeight()/2-FieldSizeY/2;
 
         int x = posX + width;
+
+
+
 
         int FieldSizeX = fontManager.getTextWidth(DeleteButton.getText())+6;
         x-=FieldSizeX+4;
@@ -65,6 +70,7 @@ public class ConfigListItem extends GuiPanelBase {
         DeleteButton.setOverrideColor(guiSettings.getGuiSettingFieldColor());
         DeleteButton.renderContent(MouseX,MouseY,deltaTime);
 
+        LoadButton.setText(loaded ? "Loaded" : "Load");
         FieldSizeX = fontManager.getTextWidth(LoadButton.getText())+6;
         x-=FieldSizeX+4;
 
@@ -72,12 +78,15 @@ public class ConfigListItem extends GuiPanelBase {
         LoadButton.setOverrideColor(guiSettings.getMainColor());
         LoadButton.renderContent(MouseX,MouseY,deltaTime);
 
-        FieldSizeX = fontManager.getTextWidth(EditButton.getText())+6;
+        CopyPastaButton.setText(configs.copied == null ? "Copy" : "Paste");
+        FieldSizeX = fontManager.getTextWidth(CopyPastaButton.getText())+6;
         x-=FieldSizeX+4;
 
-        EditButton.setPositionAndSize(x,y,FieldSizeX,FieldSizeY);
-        EditButton.setOverrideColor(guiSettings.getGuiSettingFieldColor());
-        EditButton.renderContent(MouseX,MouseY,deltaTime);
+        CopyPastaButton.setPositionAndSize(x,y,FieldSizeX,FieldSizeY);
+        CopyPastaButton.setOverrideColor(guiSettings.getGuiSettingFieldColor());
+        CopyPastaButton.renderContent(MouseX,MouseY,deltaTime);
+
+
 
 
 
@@ -85,5 +94,11 @@ public class ConfigListItem extends GuiPanelBase {
 
 
 
+    }
+
+    @Override
+    public void onClickDown(int MouseButton, int MouseX, int MouseY) {
+        super.onClickDown(MouseButton, MouseX, MouseY);
+        configs.EditConfig(config);
     }
 }

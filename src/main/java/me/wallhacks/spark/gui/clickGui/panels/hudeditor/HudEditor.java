@@ -89,8 +89,8 @@ public class HudEditor extends ClickGuiPanel {
                         lastSelected.posY = MouseY -MouseYOffset;
 
                         if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                            lastSelected.posX = MathHelper.clamp(lastSelected.posX,0,getWidth()-hud.getWidth());
-                            lastSelected.posY = MathHelper.clamp(lastSelected.posY,0,getHeight()-hud.getHeight());
+                            lastSelected.posX = MathHelper.clamp(lastSelected.posX,0,getWidth()-hud.getWidth()+1);
+                            lastSelected.posY = MathHelper.clamp(lastSelected.posY,0,getHeight()-hud.getHeight()+1);
 
 
                         }

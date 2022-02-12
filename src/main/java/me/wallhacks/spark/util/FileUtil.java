@@ -1,6 +1,7 @@
 package me.wallhacks.spark.util;
 
 import com.google.common.io.Files;
+import org.apache.commons.io.FileUtils;
 import org.jline.utils.InputStreamReader;
 
 import java.io.*;
@@ -119,5 +120,17 @@ public class FileUtil {
         return new String[0];
 
 
+    }
+
+    public static void copy(String from,String to) {
+
+        File srcDir = new File(from);
+        File destDir = new File(to);
+
+        try {
+            FileUtils.copyDirectory(srcDir, destDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

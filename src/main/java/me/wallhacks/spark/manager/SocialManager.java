@@ -10,10 +10,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SocialManager {
 
-    private ArrayList<SocialEntry> friends = new ArrayList<>();
+    private CopyOnWriteArrayList<SocialEntry> friends = new CopyOnWriteArrayList<>();
 
     public void clearFriends() {
         friends.clear();
@@ -36,17 +37,17 @@ public class SocialManager {
 
 
 
-    public void removeFriend(UUID uuid){
-        if(getFriends().contains(uuid))
-            getFriends().remove(uuid);
-    }
-    public void removeFriend(String name){
-        if(getFriends().contains(name))
-            getFriends().remove(name);
-    }
+
     public void removeFriend(SocialEntry name){
         if(getFriends().contains(name))
             getFriends().remove(name);
+    }
+    public void removeFriend(String name){
+        for (SocialEntry s : getFriends()) {
+            if (s.getName().equalsIgnoreCase(name))
+                removeFriend(s);
+        }
+
     }
 
 
@@ -67,7 +68,10 @@ public class SocialManager {
         return getFriends().contains(entry);
     }
     public boolean isFriend(String name) {
-        return getFriends().contains(name);
+        for (SocialEntry s : getFriends()) {
+            if (s.getName().equalsIgnoreCase(name)) return true;
+        }
+        return false;
     }
 
     public boolean isFriend(EntityPlayer player) {

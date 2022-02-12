@@ -3,6 +3,7 @@ package me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.*;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.util.ResourceLocation;
@@ -103,11 +104,19 @@ public class GuiEditSettingPanel extends GuiPanelBase {
         GuiUtil.drawCompleteImage(posX+3,posY+3, nameBarHeight-6, nameBarHeight-6,settingIcon, guiSettings.getContrastColor());
 
 
-        int Yoffset = 18+ guiSettings.spacing;
+        int Yoffset = 0;
 
-        guiPanelScroll.setPositionAndSize(posX,posY+Yoffset,width,height-Yoffset);
+        if(currentSettingsHolder instanceof Module)
+        {
+            Yoffset += guiEditModuleSettings.height + guiSettings.spacing;
+            guiEditModuleSettings.setPositionAndSize(posX,posY+height-18,guiPanelScroll.width,18);
 
-        guiEditModuleSettings.renderContent(MouseX,MouseY,deltaTime);
+            guiEditModuleSettings.renderContent(MouseX,MouseY,deltaTime);
+
+        }
+
+        guiPanelScroll.setPositionAndSize(posX,posY+18+ guiSettings.spacing,width,height-18-guiSettings.spacing-Yoffset);
+
 
 
 

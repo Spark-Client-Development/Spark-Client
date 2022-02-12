@@ -105,11 +105,12 @@ public class ListSelectSetting<N> extends Setting<Map<N, Boolean>> {
     }
 
     @Override
-    public String getValueString() {
+    public String getStringOfValue(Map<N, Boolean> value) {
         String list = "";
 
-        for (N t : getSelected())
-            list = list + getValueIdString(t) + ",";
+        for (N t : value.keySet())
+            if (value.get(t))
+                list = list + getValueIdString(t) + ",";
 
 
         return list;
