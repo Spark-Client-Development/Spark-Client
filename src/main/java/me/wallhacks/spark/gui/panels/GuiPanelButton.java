@@ -14,6 +14,10 @@ public class GuiPanelButton extends GuiPanelBase {
     }
     String text;
 
+    public String getText() {
+        return text;
+    }
+
     Color overrideColor = null;
 
     public void setOverrideColor(Color overrideColor) {

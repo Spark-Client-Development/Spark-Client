@@ -52,6 +52,7 @@ public class GuiUtil {
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
+
         Minecraft.getMinecraft().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
         int l5 = 8;
         int i3 = 8;
@@ -63,6 +64,7 @@ public class GuiUtil {
         }
         GlStateManager.popAttrib();
     }
+
 
 
     public static void drawCompleteImage(float posX, float posY, float width, float height, ResourceLocation image, Color c) {

@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.setting;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.systems.SettingsHolder;
 
@@ -39,7 +40,10 @@ public class Setting<T> {
 
     public void setValue(T value) {
         this.value = value;
-        new SettingChangeEvent(this);
+
+
+        Spark.eventBus.post(new SettingChangeEvent(this));
+
     }
 
     public String getName() {

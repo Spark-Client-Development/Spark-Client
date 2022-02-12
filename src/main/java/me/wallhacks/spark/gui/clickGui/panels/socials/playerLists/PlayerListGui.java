@@ -38,10 +38,10 @@ public class PlayerListGui extends GuiPanelBase {
         for (PlayerListItem item : socials.players) {
 
             if(!isFriend){
-                if(!item.getName().toLowerCase().contains(socials.moduleSearchField.getText().toLowerCase()) || Spark.socialManager.isFriend(item.playerId))
+                if(!item.getName().toLowerCase().contains(socials.moduleSearchField.getText().toLowerCase()) || Spark.socialManager.isFriend(item.player))
                     continue;
             }
-            else if (!Spark.socialManager.isFriend(item.playerId))
+            else if (!Spark.socialManager.isFriend(item.player))
                 continue;
 
             item.setPositionAndSize(posX+spacing,posY+h,width-spacing*2,18);

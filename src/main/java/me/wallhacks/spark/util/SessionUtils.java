@@ -20,6 +20,13 @@ import org.apache.commons.io.IOUtils;
 public class SessionUtils implements MC {
     private static HashMap<UUID, Property> skinMap = new HashMap<>();
     public static boolean setSkin(NetworkPlayerInfo info, UUID uuid) {
+
+        if(uuid == null)
+        {
+            info.loadPlayerTextures();
+            return true;
+        }
+
         Property p;
         if (skinMap.containsKey(uuid)) {
             p = skinMap.get(uuid);
@@ -64,6 +71,9 @@ public class SessionUtils implements MC {
 
     public static UUID getid(String name) {
 
+        if(name == null)
+            return null;
+
         if(knownPlayerName.containsKey(name))
         {
             return knownPlayerName.get(name);
@@ -93,7 +103,9 @@ public class SessionUtils implements MC {
 
             return uuid;
         } catch (Exception e) {
-            //dont print the stacktrace it annoys the fuck out of me
+            knownPlayerName.put(name, null);
+
+            e.printStackTrace();
         }
         return null;
 
@@ -104,6 +116,9 @@ public class SessionUtils implements MC {
 
 
     public static String getname(UUID uuid) {
+
+        if(uuid == null)
+            return null;
 
         if(knownPlayerUUID.containsKey(uuid))
         {
@@ -125,15 +140,18 @@ public class SessionUtils implements MC {
             String playerSlot = nameValue.get(nameValue.size()-1).toString();
             JsonObject nameObject = (JsonObject) jp.parse(playerSlot);
 
-            knownPlayerUUID.put(uuid, nameObject.get("name").toString());
-            knownPlayerName.put(nameObject.get("name").toString(), uuid);
-            return nameObject.get("name").toString().replace('"'+"","");
+            String n = nameObject.get("name").toString().replaceAll('"'+"","");
 
 
+            knownPlayerUUID.put(uuid, n);
+            knownPlayerName.put(n, uuid);
+
+            return n;
 
             //return name;
         } catch (Exception e) {
 
+            knownPlayerUUID.put(uuid, null);
             e.printStackTrace();
         }
         return null;

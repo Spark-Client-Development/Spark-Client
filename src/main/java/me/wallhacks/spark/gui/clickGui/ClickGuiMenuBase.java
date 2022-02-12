@@ -1,5 +1,6 @@
 package me.wallhacks.spark.gui.clickGui;
 
+import me.wallhacks.spark.gui.clickGui.panels.configs.Configs;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.panels.GuiPanelScreen;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
@@ -17,7 +18,7 @@ import me.wallhacks.spark.util.render.ColorUtil;
 
 public class ClickGuiMenuBase extends GuiPanelScreen {
 
-    public final ClickGuiPanel[] panels = new ClickGuiPanel[]{new SystemsScreen(this),new HudEditor(this),new Socials(this)};
+    public final ClickGuiPanel[] panels = new ClickGuiPanel[]{new SystemsScreen(this),new HudEditor(this),new Socials(this),new Configs(this)};
 
 
     final GuiPanelButton[] menus;
@@ -39,7 +40,7 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
             int finalI = i;
             menus[i] = new GuiPanelButton(() -> {
                     switchToSelected = finalI;
-                    getPanel().init();
+
             }
             ,panels[i].getName());
         }
@@ -113,7 +114,10 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
 
             Progress+=deltaTime*0.005;
             if(Progress >= 1)
+            {
                 selected = switchToSelected;
+                getPanel().init();
+            }
 
 
         }

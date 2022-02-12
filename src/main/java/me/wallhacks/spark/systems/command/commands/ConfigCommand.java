@@ -2,6 +2,7 @@ package me.wallhacks.spark.systems.command.commands;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.manager.CommandManager;
+import me.wallhacks.spark.manager.ConfigManager;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.command.Command;
 import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
@@ -12,8 +13,12 @@ public class ConfigCommand extends Command {
 		super();
 		addOption("create", arg -> {
 			if(arg != null){
-				Spark.configManager.saveToConfig(arg);
-				Spark.sendInfo(""+ CommandManager.COLOR1+"Config "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been created!");
+				if(Spark.configManager.getConfigFromName(arg) == null)
+				{
+					Spark.configManager.createConfig(new ConfigManager.Config(arg));
+					Spark.sendInfo(""+ CommandManager.COLOR1+"Config "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been created!");
+
+				}
 
 
 			}
@@ -21,7 +26,7 @@ public class ConfigCommand extends Command {
 
 		addOption("select", arg -> {
 			if(arg != null){
-				if(Spark.configManager.loadConfig(arg))
+				if(Spark.configManager.loadConfig(Spark.configManager.getConfigFromName(arg),true))
 					Spark.sendInfo(""+ CommandManager.COLOR1+"Config "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been selected!");
 				else
 					Spark.sendInfo(""+ CommandManager.ErrorColor+"Config "+CommandManager.COLOR2+arg+ ""+CommandManager.ErrorColor+" can't be found!");
@@ -31,7 +36,7 @@ public class ConfigCommand extends Command {
 
 		addOption("delete", arg -> {
 			if(arg != null){
-				if(Spark.configManager.deleteConfig(arg))
+				if(Spark.configManager.deleteConfig(Spark.configManager.getConfigFromName(arg)))
 					Spark.sendInfo(""+ CommandManager.COLOR1+"Config "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been selected!");
 				else
 					Spark.sendInfo(""+ CommandManager.ErrorColor+"Config "+CommandManager.COLOR2+arg+ ""+CommandManager.ErrorColor+" can't be found!");
@@ -41,11 +46,11 @@ public class ConfigCommand extends Command {
 
 		addOption("list", arg -> {
 
-			String current = Spark.configManager.getCurrentConfigName();
+			ConfigManager.Config current = Spark.configManager.getCurrentConfig();
 
 			Spark.sendInfo(""+CommandManager.COLOR1+"Config List:");
-			for (String c : Spark.configManager.getList()) {
-				Spark.sendInfo(""+CommandManager.COLOR1+" - "+(current.equals(c) ? "*" : "")+CommandManager.COLOR2+c);
+			for (ConfigManager.Config c : Spark.configManager.getConfigs()) {
+				Spark.sendInfo(""+CommandManager.COLOR1+" - "+(current.equals(c) ? "*" : "")+CommandManager.COLOR2+c.getConfigName());
 			}
 		});
 

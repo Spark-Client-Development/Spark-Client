@@ -1,6 +1,8 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
 import baritone.api.event.events.WorldEvent;
+import me.wallhacks.spark.event.render.RenderLivingEvent;
+import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.MC;
@@ -21,7 +23,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Module.Registration(name = "Fullbright", description = "Adds light")
 public class FullBright extends Module {
 
-
+	@SubscribeEvent
+	public void worldLoadEvent(WorldLoadEvent event) {
+		MC.mc.gameSettings.gammaSetting = 100f;
+	}
 
 	@Override
 	public void onEnable() {

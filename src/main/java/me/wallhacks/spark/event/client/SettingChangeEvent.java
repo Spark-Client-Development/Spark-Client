@@ -9,7 +9,7 @@ public class SettingChangeEvent extends Event {
 
     public SettingChangeEvent(Setting setting) {
         this.setting = setting;
-        Spark.eventBus.post(this);
+
     }
 
     public Setting getSetting() {

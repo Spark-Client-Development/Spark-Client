@@ -3,8 +3,11 @@ package me.wallhacks.spark.mixin.mixins.spark;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.InputEvent;
 import me.wallhacks.spark.event.client.RunTickEvent;
+import me.wallhacks.spark.event.world.WorldLoadEvent;
+import me.wallhacks.spark.manager.AltManager;
 import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.crash.CrashReport;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import javax.annotation.Nullable;
 
 @Mixin({ Minecraft.class })
 public class MixinMinecraft {
@@ -34,6 +39,7 @@ public class MixinMinecraft {
         Spark.configManager.Save();
         Spark.socialManager.SaveFriends();
         InventoryManager.instance.SaveKits();
+        Spark.altManager.saveAlts();
     }
 
     @Inject(method = "shutdown", at = @At("HEAD"))
@@ -41,5 +47,12 @@ public class MixinMinecraft {
         Spark.configManager.Save();
         Spark.socialManager.SaveFriends();
         InventoryManager.instance.SaveKits();
+        Spark.altManager.saveAlts();
     }
+
+    @Inject(method = "loadWorld", at = @At("RETURN"))
+    public void loadWorld(CallbackInfo callbackInfo) {
+        Spark.eventBus.post(new WorldLoadEvent());
+    }
+
 }

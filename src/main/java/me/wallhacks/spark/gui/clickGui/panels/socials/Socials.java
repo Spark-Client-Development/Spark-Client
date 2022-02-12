@@ -8,6 +8,7 @@ import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.panels.GuiPanelInputField;
 import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.manager.SocialManager;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -60,9 +61,7 @@ public class Socials extends ClickGuiPanel {
     public final GuiPanelButton addButton = new GuiPanelButton(() -> {
         if(moduleSearchField.getText().length() > 0)
         {
-            UUID id = SessionUtils.getid(moduleSearchField.getText());
-            if(id != null)
-                Spark.socialManager.addFriend(id);
+            Spark.socialManager.addFriend(moduleSearchField.getText());
 
         }
 
@@ -149,10 +148,10 @@ public class Socials extends ClickGuiPanel {
         for (PlayerListItem item : players)
             if(item.isSelected())
             {
-                if(Spark.socialManager.isFriend(item.playerId))
-                    Spark.socialManager.removeFriend(item.playerId);
+                if(Spark.socialManager.isFriend(item.player))
+                    Spark.socialManager.removeFriend(item.player);
                 else
-                    Spark.socialManager.addFriend(item.playerId);
+                    Spark.socialManager.addFriend(item.player);
                 GuiPanelBase.SelectedMouse = null;
             }
 
@@ -167,14 +166,14 @@ public class Socials extends ClickGuiPanel {
     int ticksSinceTextNotChange = 0;
     public void updateList() {
 
-        ArrayList<UUID> toAdd = new ArrayList<>();
+        ArrayList<SocialManager.SocialEntry> toAdd = new ArrayList<>();
 
 
         String searchText = moduleSearchField.getText();
 
 
         boolean isFound = false;
-        for (UUID item : Spark.socialManager.getFriends())
+        for (SocialManager.SocialEntry item : Spark.socialManager.getFriends())
             toAdd.add(item);
 
 
@@ -182,10 +181,10 @@ public class Socials extends ClickGuiPanel {
         {
             if(searchText.equalsIgnoreCase(s.getGameProfile().getName()))
                 isFound = true;
-            toAdd.add(s.getGameProfile().getId());
+            toAdd.add(Spark.socialManager.getSocialFromNetworkPlayerInfo((s)));
         }
 
-        Spark.logger.info(ticksSinceTextNotChange+" "+searchText.length());
+
         if(lastSearchText.equalsIgnoreCase(searchText))
             ticksSinceTextNotChange++;
         else
@@ -196,7 +195,7 @@ public class Socials extends ClickGuiPanel {
             for (PlayerListItem item : players)
                 if(searchText.equalsIgnoreCase(item.getName()))
                 {
-                    toAdd.add(item.playerId);
+                    toAdd.add(item.player);
                     isFound = true;
                 }
 
@@ -208,7 +207,7 @@ public class Socials extends ClickGuiPanel {
                     UUID uuid = SessionUtils.getid(searchText);
                     Spark.logger.info(uuid);
                     if(uuid != null) {
-                        players.add(new PlayerListItem(uuid));
+                        players.add(new PlayerListItem(new SocialManager.UUIDSocial(uuid)));
                     }
                 });
             }
@@ -218,17 +217,17 @@ public class Socials extends ClickGuiPanel {
 
         for (PlayerListItem item : players)
         {
-            if(toAdd.contains(item.playerId))
+            if(toAdd.contains(item.player))
             {
-                while (toAdd.contains(item.playerId))
-                    toAdd.remove(item.playerId);
+                while (toAdd.contains(item.player))
+                    toAdd.remove(item.player);
             }
             else
                 players.remove(item);
 
 
         }
-        for (UUID item : toAdd)
+        for (SocialManager.SocialEntry item : toAdd)
             players.add(new PlayerListItem(item));
 
 

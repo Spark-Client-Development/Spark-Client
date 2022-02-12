@@ -72,7 +72,7 @@ public class Spark implements MC {
         threadManager = new ThreadManager();
         altManager = new AltManager();
         socialManager = new SocialManager();
-        configManager.Load();
+        configManager.Load(false);
         rpcManager = new RPCManager();
         logger.info("Spark client loaded successfully");
     }

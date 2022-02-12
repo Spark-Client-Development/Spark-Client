@@ -1,8 +1,10 @@
 package me.wallhacks.spark.manager;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListItem;
 import me.wallhacks.spark.util.FileUtil;
 import me.wallhacks.spark.util.SessionUtils;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
@@ -11,56 +13,68 @@ import java.util.UUID;
 
 public class SocialManager {
 
-    private ArrayList<UUID> friends = new ArrayList<>();
+    private ArrayList<SocialEntry> friends = new ArrayList<>();
 
     public void clearFriends() {
         friends.clear();
     }
-    public List<UUID> getFriends() {
+    public List<SocialEntry> getFriends() {
         return friends;
     }
     public List<String> getFriendsNames() {
         ArrayList<String> l = new ArrayList<>();
-        for (UUID s : getFriends())
-            l.add(SessionUtils.getname(s));
+        for (SocialEntry s : getFriends())
+            l.add(s.getName());
         return l;
     }
 
 
-    public void addFriend(UUID uuid){
-        if(!friends.contains(uuid))
-            friends.add(uuid);
+    public void addFriend(SocialEntry entry){
+        if(!friends.contains(entry))
+            friends.add(entry);
     }
+
+
+
     public void removeFriend(UUID uuid){
         if(getFriends().contains(uuid))
             getFriends().remove(uuid);
     }
+    public void removeFriend(String name){
+        if(getFriends().contains(name))
+            getFriends().remove(name);
+    }
+    public void removeFriend(SocialEntry name){
+        if(getFriends().contains(name))
+            getFriends().remove(name);
+    }
+
+
+
+
 
     public void addFriend(String name){
-        UUID uuid = SessionUtils.getid(name);
-        addFriend(uuid);
-    }
-    public void removeFriend(String name){
-        UUID uuid = SessionUtils.getid(name);
-        removeFriend(uuid);
+        UUID id = SessionUtils.fromString(name);
+        if(id != null)
+            addFriend(new UUIDSocial(id));
+        else
+            addFriend(new INGSocial(name));
     }
 
 
-    public boolean isFriend(UUID uuid) {
-        for (UUID s : getFriends()) {
-            if (uuid.equals(s)) return true;
-        }
-        return false;
+
+    public boolean isFriend(SocialEntry entry) {
+        return getFriends().contains(entry);
     }
     public boolean isFriend(String name) {
-        for (UUID s : getFriends()) {
-            if (name.equalsIgnoreCase(SessionUtils.getname(s))) return true;
-        }
-        return false;
+        return getFriends().contains(name);
     }
 
     public boolean isFriend(EntityPlayer player) {
-        return isFriend(player.getGameProfile().getId());
+        for (SocialEntry s : getFriends()) {
+            if (s.isEntityPlayer(player)) return true;
+        }
+        return false;
     }
 
 
@@ -78,9 +92,14 @@ public class SocialManager {
                 String[] List = s.split("\n");
                 Spark.socialManager.clearFriends();
                 for (String var : List) {
-                    if (var != "") {
-                        UUID uuid = UUID.fromString(var);
-                        Spark.socialManager.addFriend(uuid);
+                    String[] parts = var.split("/");
+                    if (parts.length == 2) {
+                        if(parts[0] == "ING")
+                            Spark.socialManager.addFriend(parts[1]);
+                        else
+                            Spark.socialManager.addFriend(new UUIDSocial(UUID.fromString(parts[1])));
+
+
                     }
                 }
 
@@ -96,8 +115,13 @@ public class SocialManager {
             ArrayList<String> lines = new ArrayList<String>();
 
             String content = "";
-            for (UUID e : Spark.socialManager.getFriends())
-                content = content + e.toString() + "\n";
+            for (SocialEntry e : Spark.socialManager.getFriends())
+            {
+                if(e instanceof INGSocial)
+                    content = content + "ING/" + e.getName() + "\n";
+                else
+                    content = content + "UUID/" + e.getUUID() + "\n";
+            }
 
             FileUtil.write(getFriendsFile(), content);
 
@@ -106,6 +130,112 @@ public class SocialManager {
             Spark.logger.info("Failed to save friends");
             e.printStackTrace();
         }
+    }
+
+
+
+
+
+
+    public static abstract class SocialEntry<T> {
+        public T getIdentifier() {
+            return identifier;
+        }
+
+        public SocialEntry(T identifier)
+        {
+            this.identifier = identifier;
+        }
+
+        T identifier;
+
+        public abstract boolean isEntityPlayer(EntityPlayer player);
+        public abstract String getName();
+        public abstract UUID getUUID();
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (o == this)
+                return true;
+            if ((o instanceof SocialEntry))
+            {
+                SocialEntry other = (SocialEntry)o;
+                if(other.getName() == null)
+                    return false;
+                return other.getName().equalsIgnoreCase(getName());
+            }
+            if(o instanceof String)
+                return ((String)o).equalsIgnoreCase(getName());
+            if(o instanceof UUID)
+                return ((UUID)o).equals(getUUID());
+
+
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return getName().hashCode();
+        }
+    }
+    public static class INGSocial extends SocialEntry<String> {
+
+        public INGSocial(String identifier) {
+            super(identifier.toLowerCase());
+        }
+
+        @Override
+        public boolean isEntityPlayer(EntityPlayer player) {
+            if(player == null || player.getGameProfile() == null)
+                return false;
+            return player.getGameProfile().getName().equalsIgnoreCase(getIdentifier());
+        }
+
+        @Override
+        public String getName() {
+            return getIdentifier();
+        }
+
+        @Override
+        public UUID getUUID() {
+            return SessionUtils.getid(getIdentifier());
+        }
+    }
+    public static class UUIDSocial extends SocialEntry<UUID> {
+
+        public UUIDSocial(UUID identifier) {
+            super(identifier);
+        }
+
+        @Override
+        public boolean isEntityPlayer(EntityPlayer player) {
+            if(player == null || player.getGameProfile() == null)
+                return false;
+            return player.getGameProfile().getId().equals(getIdentifier());
+        }
+
+        @Override
+        public String getName() {
+            return SessionUtils.getname(getIdentifier());
+        }
+
+        @Override
+        public UUID getUUID() {
+            return getIdentifier();
+        }
+    }
+
+
+    public static SocialEntry getSocialFromNetworkPlayerInfo(NetworkPlayerInfo info)
+    {
+        if(info.getGameProfile() != null)
+        {
+            if(info.getGameProfile().getId() != null && SessionUtils.getname(info.getGameProfile().getId()) != null)
+                return new UUIDSocial(info.getGameProfile().getId());
+            return new INGSocial(info.getGameProfile().getName());
+        }
+        return null;
+
     }
 
 }

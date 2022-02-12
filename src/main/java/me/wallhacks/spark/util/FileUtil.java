@@ -45,17 +45,32 @@ public class FileUtil {
     }
     public static boolean deleteDirectory(String dir) {
         final File folder = new File(dir);
-        if(folder.listFiles() != null){
-            for (final File fileEntry : folder.listFiles()) {
-                try {
-                    fileEntry.delete();
-                }catch (Exception e) {
+
+        return deleteDirectoryRecursion(folder);
+    }
+    public static boolean deleteDirectoryRecursion(File file) {
+        if (file.isDirectory()) {
+            File[] entries = file.listFiles();
+            if (entries != null) {
+                for (File entry : entries) {
+                    if(!deleteDirectoryRecursion(entry))
+                        return false;
                 }
             }
         }
-        return folder.delete();
+        return file.delete();
     }
 
+    public static boolean renameDirectory(String dir,String newDir) {
+        final File folder = new File(dir);
+        if(!folder.exists())
+            return false;
+        final File newFolder = new File(newDir);
+        if(newFolder.exists())
+            return false;
+
+        return folder.renameTo(newFolder);
+    }
     public static boolean write(String path, String content){
         File targetFile = new File(path);
         try{

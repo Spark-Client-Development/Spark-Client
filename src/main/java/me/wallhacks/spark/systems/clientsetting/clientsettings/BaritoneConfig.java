@@ -43,7 +43,7 @@ public class BaritoneConfig extends ClientSetting {
                 settingMap.put(s, bSetting);
             }
         }
-        Spark.configManager.LoadFromConfig(Spark.configManager.getCurrentConfigName(), true);
+        Spark.configManager.LoadFromConfig(Spark.configManager.getCurrentConfig(), true);
     }
 
     @SubscribeEvent
