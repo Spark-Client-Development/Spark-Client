@@ -18,11 +18,12 @@ public class AutoLog extends Module {
 		double health = Minecraft.getMinecraft().player.getHealth();
 	
 		if (health <= logHealth.getValue()) {
-			if (!allowLog)
+			if (allowLog) {
 				FMLClientHandler.instance().getClientToServerNetworkManager().closeChannel(new TextComponentString("Health was: " + String.valueOf((int)Math.ceil(health))));
-			allowLog = true;
+				allowLog = false;
+            }
 		} else {
-			allowLog = false;
+			allowLog = true;
 		}
 	}
 }
