@@ -17,7 +17,5 @@ public class MapGui extends GuiPanelScreen {
 
         //todo make better
         MapRender.RenderWholeMap(2,2,width-4,height-4,128,mc.player.posX,mc.player.posZ,0,0);
-
-
     }
 }

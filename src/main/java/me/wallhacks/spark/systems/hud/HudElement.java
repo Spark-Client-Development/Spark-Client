@@ -296,6 +296,14 @@ public class HudElement extends SettingsHolder implements MC {
         return false;
     }
 
+    protected boolean alignLeft() {
+        return mc.displayWidth/4 > getCenterRenderPosX();
+    }
+
+    protected boolean alignTop() {
+        return mc.displayHeight/4 > getCenterRenderPosY();
+    }
+
 
     //this event is good trust me
     @SubscribeEvent

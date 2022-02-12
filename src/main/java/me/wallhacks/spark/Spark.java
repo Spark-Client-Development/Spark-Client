@@ -37,6 +37,8 @@ public class Spark implements MC {
     public static SystemManager systemManager;
     public static ConfigManager configManager;
     public static RotationManager rotationManager;
+    //do not check this class nothing to see there totally no skidding involved
+    public static TickManager tickManager;
     public static FadeManager fadeManager;
     public static KeyManager keyManager;
     public static FontManager fontManager;
@@ -65,6 +67,7 @@ public class Spark implements MC {
         rotationManager = new RotationManager();
         fontManager = new FontManager();
         systemManager = new SystemManager();
+        tickManager = new TickManager();
         popManager = new PopManager();
         commandManager = new CommandManager();
         mapManager = new MapManager();

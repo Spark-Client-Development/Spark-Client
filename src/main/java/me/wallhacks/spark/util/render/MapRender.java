@@ -1,6 +1,7 @@
 package me.wallhacks.spark.util.render;
 
 import me.wallhacks.spark.manager.MapManager;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
@@ -23,7 +24,7 @@ public class MapRender implements MC {
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
         //background
-        Gui.drawRect(ImageStartX, ImageStartY, ImageStartX+ImageScaleX, ImageStartY+ImageScaleY,  new Color(70, 70, 70,255).getRGB());
+        Gui.drawRect(ImageStartX, ImageStartY, ImageStartX+ImageScaleX, ImageStartY+ImageScaleY, HudSettings.getInstance().getGuiHudListBackgroundColor().getRGB());
         GlStateManager.color(1,1,1,1);
 
 
