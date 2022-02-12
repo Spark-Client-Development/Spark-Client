@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.client.InputEvent;
 import me.wallhacks.spark.event.client.RunTickEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.manager.AltManager;
+import me.wallhacks.spark.manager.MapManager;
 import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -40,6 +41,7 @@ public class MixinMinecraft {
         Spark.socialManager.SaveFriends();
         InventoryManager.instance.SaveKits();
         Spark.altManager.saveAlts();
+
     }
 
     @Inject(method = "shutdown", at = @At("HEAD"))
@@ -48,6 +50,7 @@ public class MixinMinecraft {
         Spark.socialManager.SaveFriends();
         InventoryManager.instance.SaveKits();
         Spark.altManager.saveAlts();
+
     }
 
     @Inject(method = "loadWorld", at = @At("RETURN"))

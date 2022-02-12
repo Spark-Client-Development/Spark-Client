@@ -29,7 +29,7 @@ public class Putin extends Module {
 
 
     Color FogColor = new Color(160,0,0,140);
-    float FogPower = 2;
+
 
     public final ResourceLocation putinSkin = new ResourceLocation("textures/putin.png");
 
@@ -84,7 +84,7 @@ public class Putin extends Module {
 
     @SubscribeEvent
     public void onFogDensity(EntityViewRenderEvent.FogDensity event) {
-        event.setDensity((16f*20f)/FogPower);
+        event.setDensity(0.005f);
 
         GlStateManager.setFog(GlStateManager.FogMode.EXP);
 

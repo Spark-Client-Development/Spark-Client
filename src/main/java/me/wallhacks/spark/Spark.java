@@ -46,6 +46,7 @@ public class Spark implements MC {
     public static AltManager altManager;
     public static BreakManager breakManager;
     public static ThreadManager threadManager;
+    public static MapManager mapManager;
 
     public static SocialManager socialManager;
 
@@ -66,6 +67,7 @@ public class Spark implements MC {
         systemManager = new SystemManager();
         popManager = new PopManager();
         commandManager = new CommandManager();
+        mapManager = new MapManager();
         breakManager = new BreakManager();
         fadeManager = new FadeManager();
         clickGuiScreen = new ClickGuiMenuBase();

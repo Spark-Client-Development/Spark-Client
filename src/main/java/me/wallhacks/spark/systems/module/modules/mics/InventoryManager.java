@@ -286,7 +286,7 @@ public class InventoryManager extends Module {
 
 
     String getKitsFile(){
-        String base = Spark.ParentPath.getAbsolutePath() + "\\"+this.getName()+"\\";
+        String base = Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+""+this.getName()+""+System.getProperty("file.separator")+"";
         return base + "kits.sex";
     }
 

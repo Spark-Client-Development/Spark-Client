@@ -36,6 +36,7 @@ public class GuiUtil {
         GL11.glPopMatrix();
     }
 
+
     public static String getLoadingText(boolean text) {
         long time = (System.currentTimeMillis() % 300);
         String dot = ".";
@@ -202,7 +203,7 @@ public class GuiUtil {
         GL11.glPopMatrix();
     }
 
-    static Vec3d glTransformOffset = new Vec3d(0d, 0d, 0d);
+    static Vec3d glTransformOffset = new Vec3d(0, 0, 0);
 
     public static Vec3d getGlTransformOffset() {
         return glTransformOffset;

@@ -85,17 +85,17 @@ public class AltManager implements MC {
         scroll = new GuiPanelScroll(0, 0, 0, 0, altList);
     }
     String getAltFile(String name) {
-        String base = Spark.ParentPath.getAbsolutePath() + "\\alts\\";
+        String base = Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+"alts"+System.getProperty("file.separator")+"";
         return base + name + ".acc";
     }
 
     public void loadAlts() {
-        File authKey = new File(Spark.ParentPath.getAbsolutePath() + "\\alts\\auth.key");
+        File authKey = new File(Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+"alts"+System.getProperty("file.separator")+"auth.key");
         if (authKey.exists()) {
             key = FileUtil.read(authKey.getAbsolutePath());
-            for (String file : FileUtil.listFilesForFolder(Spark.ParentPath.getAbsolutePath() + "\\alts", ".acc")) {
+            for (String file : FileUtil.listFilesForFolder(Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+"alts", ".acc")) {
                 try {
-                    FileInputStream fi_stream = new FileInputStream(Spark.ParentPath.getAbsolutePath() + "\\alts" + "\\" + file);
+                    FileInputStream fi_stream = new FileInputStream(Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+"alts" + ""+System.getProperty("file.separator")+"" + file);
                     DataInputStream di_stream = new DataInputStream(fi_stream);
                     BufferedReader br = new BufferedReader(new InputStreamReader(di_stream));
                     String backupName = file.substring(0, file.length() - 4);
@@ -348,12 +348,12 @@ public class AltManager implements MC {
     //why did you delete this in the first place?
     public void saveAlts() {
         //delete old alt directory
-        FileUtil.deleteDirectory(Spark.ParentPath.getAbsolutePath() + "\\alts");
+        FileUtil.deleteDirectory(Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+"alts");
 
         //start by making random string for auth key
         String key = new RandomString(50).nextString();
         //save the key
-        FileUtil.write(Spark.ParentPath.getAbsolutePath() + "\\alts\\auth.key", key);
+        FileUtil.write(Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+"alts"+System.getProperty("file.separator")+"auth.key", key);
         for (Account account : Spark.altManager.accounts) {
             try {
                 ArrayList<String> lines = new ArrayList<>();

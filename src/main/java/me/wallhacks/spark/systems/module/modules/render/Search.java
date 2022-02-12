@@ -35,7 +35,8 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
 
     @SubscribeEvent
     public void onSettingChange(SettingChangeEvent event) {
-        if(mc.player != null)
+        if(mc.player == null)
+            return;
         if (event.getSetting() == searchBlocks) {
             refresh();
         }

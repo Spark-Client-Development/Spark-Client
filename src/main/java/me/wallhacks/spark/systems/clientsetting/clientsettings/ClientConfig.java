@@ -35,6 +35,8 @@ public class ClientConfig extends ClientSetting {
 
     BooleanSetting RenderShadow = new BooleanSetting("FontShadow",this,false,"ClickGui");
 
+    public BooleanSetting SaveMap = new BooleanSetting("SaveData", this, false, "Maps");
+
 
 
     public boolean getCustomFontEnabled(){

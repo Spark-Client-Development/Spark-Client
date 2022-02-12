@@ -41,8 +41,8 @@ public class Setting<T> {
     public void setValue(T value) {
         this.value = value;
 
+        new SettingChangeEvent(this);
 
-        Spark.eventBus.post(new SettingChangeEvent(this));
 
     }
 

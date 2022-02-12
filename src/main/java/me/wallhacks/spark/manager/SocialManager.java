@@ -80,7 +80,7 @@ public class SocialManager {
 
 
     String getFriendsFile() {
-        String base = Spark.ParentPath.getAbsolutePath() + "\\socials\\";
+        String base = Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+"socials"+System.getProperty("file.separator")+"";
         return base + "friends.sex";
     }
 
