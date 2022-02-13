@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@HudElement.Registration(name = "Notification", posY = 0.5, posX = 1.0, height = 20, width = 0, description = "Shows info about pvp and other ongoing events", drawBackground = false)
+@HudElement.Registration(name = "Notification", posY = 0.5, posX = 1.0, height = 20, width = 30, description = "Shows info about pvp and other ongoing events", drawBackground = false)
 public class Notifications extends HudElement {
     public static Notifications INSTANCE;
     public static final CopyOnWriteArrayList<Notification> notifications = new CopyOnWriteArrayList<>();
@@ -38,13 +38,11 @@ public class Notifications extends HudElement {
             notifications.add(notification);
     }
 
-    @Override
-    public int getWidth() {
-        return fontManager.getTextWidth("Notification") + 13;
-    }
+
 
     @Override
     public void draw(float deltaTime) {
+        setWidth(fontManager.getTextWidth("Notification") + 13);
         super.draw(deltaTime);
         ScaledResolution sr = new ScaledResolution(MC.mc);
         if (isInHudEditor()) {

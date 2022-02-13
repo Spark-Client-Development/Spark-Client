@@ -35,11 +35,16 @@ public class BlockInteractUtil implements MC {
         if(!mc.world.getBlockState(pos).getMaterial().isReplaceable())
             return BlockPlaceResult.FAILED;
 
-        Item willuse = ItemSwitcher.predictItem(switcher, ItemSwitcher.switchType.Both);
-        if(!(willuse instanceof ItemBlock) && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
-            return BlockPlaceResult.FAILED;
+        Item willuse = null;
+        if(switcher != null)
+        {
+            willuse = ItemSwitcher.predictItem(switcher, ItemSwitcher.switchType.Both);
+            if(!(willuse instanceof ItemBlock) && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
+                return BlockPlaceResult.FAILED;
+        }
 
-        if(checkEntities && !blockCollisionCheck(pos, ((ItemBlock)willuse).getBlock()))
+
+        if(checkEntities && !blockCollisionCheck(pos,willuse == null ? null : ((ItemBlock)willuse).getBlock()))
             return BlockPlaceResult.FAILED;
 
         EnumFacing face = getDirForPlacingBlockAtPos(pos);
@@ -107,24 +112,19 @@ public class BlockInteractUtil implements MC {
     public static EnumFacing getDirForPlacingBlockAtPos(BlockPos pos){
 
         for (EnumFacing enumFacing : EnumFacing.values()) {
-            if(canPlaceOnFace(pos,enumFacing))
-                return enumFacing;
+            if (mc.world.getBlockState(pos.offset(enumFacing, -1)).getBlock().material.isSolid())
+            {
+
+                if(null != getPointOnBlockFace(pos.offset(enumFacing, -1),enumFacing))
+                    return enumFacing;
+
+
+            }
         }
 
 
         return null;
 
-    }
-    static boolean canPlaceOnFace(BlockPos pos,EnumFacing enumFacing) {
-        if (mc.world.getBlockState(pos.offset(enumFacing, -1)).getBlock().material.isSolid())
-        {
-
-            if(null != getPointOnBlockFace(pos.offset(enumFacing, -1),enumFacing))
-                return true;
-
-
-        }
-        return false;
     }
 
     public static Vec3d getPointOnBlockFace(BlockPos pos, EnumFacing facing){

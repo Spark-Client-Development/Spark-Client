@@ -108,7 +108,7 @@ public class HudEditor extends ClickGuiPanel {
                             moduleLoop:
                             for (HudElement b : SystemManager.getHudModules()) {
                                 if(b.isEnabled())
-                                    if(hud != b && hud.isIn(b,-10) && hud.getId() != b.getSnappedElement()){
+                                    if(hud != b && hud.isIn(b,-1) && hud.getId() != b.getSnappedElement()){
 
                                         HudElement check = b;
                                         while(check != null)

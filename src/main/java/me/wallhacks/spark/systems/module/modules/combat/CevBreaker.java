@@ -70,6 +70,7 @@ public class CevBreaker extends Module {
     @Override
     public void onDisable() {
         Spark.breakManager.setCurrentBlock(null);
+        CevBlock = null;
         super.onDisable();
     }
 
@@ -81,53 +82,51 @@ public class CevBreaker extends Module {
         if(pos == null || (!pos.equals(CevBlock) && CevBlock != null))
         {
             setEnabled(false);
-            CevBlock = null;
+
             return;
         }
+        CevBlock = pos;
 
-        if(CevBlock != null)
+        GetState();
+
+        if(cooldown <= 0)
         {
-            GetState();
-
-            if(cooldown <= 0)
+            if(lastState == CBState.placeObi)
             {
-                if(lastState == CBState.placeObi)
-                {
-                    Vec3d CevBlockPos = new Vec3d(CevBlock).add(0.5,1,0.5);
-                    Vec3i offset = new Vec3i(Math.floor(Math.max(-1,Math.min(CevBlockPos.x-mc.player.posX, 1))),0,Math.floor(Math.max(-1,Math.min(CevBlockPos.y-mc.player.posZ, 1))));
-                    if(offset.getX() != 0 && offset.getZ() != 0)
-                        offset = new Vec3i(offset.getX(),0,0);
-                    BlockPos blockSetOff = CevBlock.add(offset);
+                Vec3d CevBlockPos = new Vec3d(CevBlock).add(0.5,1,0.5);
+                Vec3i offset = new Vec3i(Math.floor(Math.max(-1,Math.min(CevBlockPos.x-mc.player.posX, 1))),0,Math.floor(Math.max(-1,Math.min(CevBlockPos.y-mc.player.posZ, 1))));
+                if(offset.getX() != 0 && offset.getZ() != 0)
+                    offset = new Vec3i(offset.getX(),0,0);
+                BlockPos blockSetOff = CevBlock.add(offset);
 
 
-                    BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(CevBlock,new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
-                    if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                        res = (BlockInteractUtil.tryPlaceBlock(blockSetOff, new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
-                    if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                        res = (BlockInteractUtil.tryPlaceBlock(blockSetOff.add(0,-1,0),new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+                BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(CevBlock,new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+                if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                    res = (BlockInteractUtil.tryPlaceBlock(blockSetOff, new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+                if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                    res = (BlockInteractUtil.tryPlaceBlock(blockSetOff.add(0,-1,0),new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
 
 
-                    if(placeDelay.getValue() == 0)
-                        GetState();
-                }
-                if(lastState == CBState.placeCrystal)
-                {
-                    PlaceCrystalOnBlock(CevBlock);
-                    cooldown = 20;
-                }
-                if(lastState == CBState.breakObi)
-                {
-                    Spark.breakManager.setCurrentBlock(CevBlock);
-                    cooldown = 20;
-                }
-                if(lastState == CBState.breakCrystal)
-                {
-                    BreakCrystal(crystal,CevBlock);
-                    cooldown = 2;
-                }
+                if(placeDelay.getValue() == 0)
+                    GetState();
             }
-            cooldown--;
+            if(lastState == CBState.placeCrystal)
+            {
+                PlaceCrystalOnBlock(CevBlock);
+                cooldown = 20;
+            }
+            if(lastState == CBState.breakObi)
+            {
+                Spark.breakManager.setCurrentBlock(CevBlock);
+                cooldown = 20;
+            }
+            if(lastState == CBState.breakCrystal)
+            {
+                BreakCrystal(crystal,CevBlock);
+                cooldown = 2;
+            }
         }
+        cooldown--;
 
 
 
