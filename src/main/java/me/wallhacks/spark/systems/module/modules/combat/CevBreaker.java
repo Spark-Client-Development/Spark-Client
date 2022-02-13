@@ -67,11 +67,23 @@ public class CevBreaker extends Module {
     BlockPos CevBlock;
     CBState lastState = CBState.standBy;
 
+    @Override
+    public void onDisable() {
+        Spark.breakManager.setCurrentBlock(null);
+        super.onDisable();
+    }
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
 
-        GetCevBreakerBlock();
+        BlockPos pos = GetCevBreakerBlock();
+
+        if(pos == null || (!pos.equals(CevBlock) && CevBlock != null))
+        {
+            setEnabled(false);
+            CevBlock = null;
+            return;
+        }
 
         if(CevBlock != null)
         {
@@ -220,20 +232,15 @@ public class CevBreaker extends Module {
 
     }
 
-    void GetCevBreakerBlock(){
-        BlockPos NewPos = null;
+    BlockPos GetCevBreakerBlock(){
         for(Object o : mc.world.loadedEntityList){
             Entity entity = (Entity)o;
             if(entity instanceof EntityPlayer){
                 EntityPlayer e = (EntityPlayer)entity;
-                // && e.onGround
                 if(AttackUtil.CanAttackPlayer(e,10)) {
 
                     if(!mc.world.getBlockState(PlayerUtil.GetPlayerPosFloored(e)).getBlock().material.isSolid()){
-                        NewPos = PlayerUtil.GetPlayerPosFloored(e).add(0,2,0);
-
-                        if(NewPos.equals(CevBlock))
-                            break;
+                        return PlayerUtil.GetPlayerPosFloored(e).add(0,2,0);
 
                     }
 
@@ -242,7 +249,7 @@ public class CevBreaker extends Module {
             }
 
         }
-        CevBlock = NewPos;
+        return null;
     }
 
 

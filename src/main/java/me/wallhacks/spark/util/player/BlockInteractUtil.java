@@ -107,19 +107,24 @@ public class BlockInteractUtil implements MC {
     public static EnumFacing getDirForPlacingBlockAtPos(BlockPos pos){
 
         for (EnumFacing enumFacing : EnumFacing.values()) {
-            if (mc.world.getBlockState(pos.offset(enumFacing, -1)).getBlock().material.isSolid())
-            {
-
-                if(null != getPointOnBlockFace(pos.offset(enumFacing, -1),enumFacing))
-                    return enumFacing;
-
-
-            }
+            if(canPlaceOnFace(pos,enumFacing))
+                return enumFacing;
         }
 
 
         return null;
 
+    }
+    static boolean canPlaceOnFace(BlockPos pos,EnumFacing enumFacing) {
+        if (mc.world.getBlockState(pos.offset(enumFacing, -1)).getBlock().material.isSolid())
+        {
+
+            if(null != getPointOnBlockFace(pos.offset(enumFacing, -1),enumFacing))
+                return true;
+
+
+        }
+        return false;
     }
 
     public static Vec3d getPointOnBlockFace(BlockPos pos, EnumFacing facing){

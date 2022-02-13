@@ -2,6 +2,7 @@ package me.wallhacks.spark.util.maps;
 
 import java.awt.image.BufferedImage;
 
+import com.github.lunatrius.core.util.vector.Vector2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
@@ -34,6 +35,13 @@ public class SparkMap {
 
         UpdateMapTexture();
     }
+
+    public static Vec2i getWorldPosFromScreenPosOnMap(double zoom, Vector2d pos, double x, double y, double centerX, double centerY) {
+
+        return new Vec2i(SparkMap.getWorldPosFrom2dMapPosRound(SparkMap.get2dMapPosFromWorldPos(pos.x,(int)zoom) + x - centerX, (int) zoom), SparkMap.getWorldPosFrom2dMapPosRound(SparkMap.get2dMapPosFromWorldPos(pos.y,(int)zoom) + y - centerY, (int) zoom));
+
+    }
+
 
     public void UpdateMapTexture()
     {

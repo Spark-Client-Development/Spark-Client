@@ -10,6 +10,7 @@ import me.wallhacks.spark.util.MC;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Mouse;
@@ -35,7 +36,12 @@ public class HudElement extends SettingsHolder implements MC {
         int width();
         int height();
 
+
+
         int snappedElement() default -1;
+
+        int snappedXPos() default 0;
+        int snappedYPos() default 0;
 
         boolean enabled() default false;
         boolean drawBackground() default true;
@@ -97,6 +103,9 @@ public class HudElement extends SettingsHolder implements MC {
     private double percentPosX = getMod().posX();
     private double percentPosY = getMod().posY();
 
+    private int percentPosSnappedX = getMod().snappedXPos();
+    private int percentPosSnappedY = getMod().snappedYPos();
+
     private int width = getMod().width();
     private int height = getMod().height();
 
@@ -105,6 +114,23 @@ public class HudElement extends SettingsHolder implements MC {
     }
     public double getPercentPosY() {
         return percentPosY;
+    }
+
+
+    public int getPercentPosSnappedX() {
+        return percentPosSnappedX;
+    }
+
+    public int getPercentPosSnappedY() {
+        return percentPosSnappedY;
+    }
+
+    public void setPercentPosSnappedX(int percentPosSnappedX) {
+        this.percentPosSnappedX = percentPosSnappedX;
+    }
+
+    public void setPercentPosSnappedY(int percentPosSnappedY) {
+        this.percentPosSnappedY = percentPosSnappedY;
     }
 
     public void setPercentPosX(double percentPosX) {
@@ -151,7 +177,7 @@ public class HudElement extends SettingsHolder implements MC {
 
 
 
-            x = (int) (e.getRenderPosX(getPercentPosX()));
+            x = (int) (e.getRenderPosX(getPercentPosSnappedX()) + width*getPercentPosX());
         }
 
         return x;
@@ -166,7 +192,7 @@ public class HudElement extends SettingsHolder implements MC {
         {
             HudElement e = (HudElement) SystemManager.getHudModules().toArray()[getSnappedElement()];
 
-            y = (int) (e.getRenderPosY(getPercentPosY()));
+            y = (int) (e.getRenderPosY(getPercentPosSnappedY()) + height*getPercentPosY());
         }
 
         return y;
@@ -188,9 +214,9 @@ public class HudElement extends SettingsHolder implements MC {
         if(getSnappedElement() >= 0)
         {
             HudElement e = (HudElement) SystemManager.getHudModules().toArray()[getSnappedElement()];
-            double x = ((1.0 / e.getWidth()) * (posX-e.getRenderPosX()));
-            setPercentPosX(x);
-
+            int x = posX+width*MathHelper.clamp(posX/(mc.displayWidth/2.0),0,1) > e.getCenterRenderPosX() ? 1 : 0;
+            setPercentPosSnappedX(x);
+            setPercentPosX((posX-e.getRenderPosX(x))/(double)width);
         }
         else
         {
@@ -203,9 +229,9 @@ public class HudElement extends SettingsHolder implements MC {
         if(getSnappedElement() >= 0)
         {
             HudElement e = (HudElement) SystemManager.getHudModules().toArray()[getSnappedElement()];
-            double y = ((1.0 / e.getHeight()) * (posY-e.getRenderPosY()));
-            setPercentPosY(y);
-
+            int y = posY+height*MathHelper.clamp(posY/(mc.displayHeight/2.0),0,1) > e.getCenterRenderPosY() ? 1 : 0;
+            setPercentPosSnappedY(y);
+            setPercentPosY((posY-e.getRenderPosY(y))/(double)height);
         }
         else
         {

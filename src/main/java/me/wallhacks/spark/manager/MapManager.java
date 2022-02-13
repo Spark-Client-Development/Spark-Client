@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapManager implements MC {
 
@@ -51,7 +52,7 @@ public class MapManager implements MC {
     String CurrentServer;
     private Map<Integer, Map<Vec2i, SparkMap>> loadedMaps = new HashMap<Integer,Map<Vec2i,SparkMap>>();
 
-    ArrayList<SparkMap> toLoad = new ArrayList<SparkMap>();
+    CopyOnWriteArrayList<SparkMap> toLoad = new CopyOnWriteArrayList<SparkMap>();
 
     public SparkMap getMap(Vec2i mapPos,int dim){
 
@@ -89,10 +90,9 @@ public class MapManager implements MC {
         if(toLoad.size() > 0){
             int max = 0;
             while (toLoad.size() > 0) {
-
+                max++;
                 if(LoadMap(toLoad.get(0)))
-                    max++;
-                toLoad.remove(0);
+                    toLoad.remove(0);
                 if(max > 5)
                     return;
             }
@@ -105,17 +105,15 @@ public class MapManager implements MC {
 
 
     @SubscribeEvent
-    public void onUpdate(ChunkLoadEvent.Load event) {
+    public void onChunk(ChunkLoadEvent.Load event) {
         Chunk c = event.getChunk();
 
         Vec2i mapAtC = SparkMap.getMapPosFromWorldPos(c.getPos().x*16, c.getPos().z*16);
 
         SparkMap M = getMap(mapAtC,getDim());
         if(toLoad.contains(M))
-        {
-            LoadMap(M);
             toLoad.remove(M);
-        }
+
         M.updateMapData(c, mc.world);
 
         //save map to files

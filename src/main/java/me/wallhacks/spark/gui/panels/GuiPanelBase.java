@@ -101,6 +101,10 @@ public class GuiPanelBase extends Gui {
 
 
 
+    public static void drawQuad(int x, int y, int width, int height, int color) {
+        drawRect(x,y,x+width,y+height,color);
+    }
+
     public void drawBackGround(int color){
         drawRect(posX, posY,posX+width,posY+height, color);
 

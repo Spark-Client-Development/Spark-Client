@@ -41,7 +41,7 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
             int finalI = i;
             menus[i] = new GuiPanelButton(() -> {
                     switchToSelected = finalI;
-
+                    panels[switchToSelected].init();
             }
             ,panels[i].getName());
         }

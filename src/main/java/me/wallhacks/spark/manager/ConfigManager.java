@@ -232,6 +232,11 @@ public class ConfigManager {
                                 ((HudElement) holder).setPercentPosY(Double.parseDouble(v));
                             if (n.equalsIgnoreCase("SnappedElement"))
                                 ((HudElement) holder).setSnappedElement(Integer.parseInt(v));
+                            if (n.equalsIgnoreCase("PercentPosSnappedX"))
+                                ((HudElement) holder).setPercentPosSnappedX(Integer.parseInt(v));
+                            if (n.equalsIgnoreCase("PercentPosSnappedY"))
+                                ((HudElement) holder).setPercentPosSnappedY(Integer.parseInt(v));
+
                         }
                         for (Setting<?> setting : holder.getSettings()) {
                             if (n.equalsIgnoreCase(setting.getName()) || n.equalsIgnoreCase(setting.getCategory() + "/" + setting.getName()))
@@ -272,6 +277,9 @@ public class ConfigManager {
                 lines.add("PosPercentX:" + (saveDefaults ? ((HudElement) holder).getMod().posX() : ((HudElement) holder).getPercentPosX()));
                 lines.add("PosPercentY:" + (saveDefaults ? ((HudElement) holder).getMod().posY() : ((HudElement) holder).getPercentPosY()));
                 lines.add("SnappedElement:" + (saveDefaults ? ((HudElement) holder).getMod().snappedElement() : ((HudElement) holder).getSnappedElement()));
+                lines.add("PercentPosSnappedX:" + (saveDefaults ? ((HudElement) holder).getMod().snappedXPos() : ((HudElement) holder).getPercentPosSnappedX()));
+                lines.add("PercentPosSnappedY:" + (saveDefaults ? ((HudElement) holder).getMod().snappedYPos() : ((HudElement) holder).getPercentPosSnappedY()));
+
             }
 
             for (Setting<?> setting : holder.getSettings())

@@ -35,8 +35,8 @@ public class ClientConfig extends ClientSetting {
 
     BooleanSetting RenderShadow = new BooleanSetting("FontShadow",this,false,"ClickGui");
 
-    public BooleanSetting SaveMap = new BooleanSetting("SaveData", this, false, "Maps");
-
+    public BooleanSetting SaveMap = new BooleanSetting("SaveData", this, true, "MapManager");
+    public ColorSetting PlayerOutlineColor = new ColorSetting("HeadOutline", this, new Color(19, 231, 142, 253), "MapManager");
 
 
     public boolean getCustomFontEnabled(){
