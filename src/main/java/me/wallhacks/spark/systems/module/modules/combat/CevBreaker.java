@@ -24,6 +24,7 @@ import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.HardSolidBlockSwitchItem;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecItemSwitchItem;
+import me.wallhacks.spark.util.render.EspUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -40,6 +41,8 @@ import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.*;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
@@ -52,9 +55,12 @@ public class CevBreaker extends Module {
 
 
 
-    IntSetting delay = new IntSetting("Delay",this,1,0,10,"Time");
-    IntSetting breakDelay = new IntSetting("BreakDelay",this,6,0,10,"Time");
-    IntSetting placeDelay = new IntSetting("PlaceDelay",this,2,0,10,"Time");
+    IntSetting delay = new IntSetting("Delay",this,1,0,10);
+    IntSetting breakDelay = new IntSetting("BreakDelay",this,6,0,10);
+    IntSetting placeDelay = new IntSetting("PlaceDelay",this,2,0,10);
+
+    ColorSetting color = new ColorSetting("PlaceDelay",this,new Color(146, 12, 190, 186));
+
 
 
 
@@ -72,6 +78,15 @@ public class CevBreaker extends Module {
         Spark.breakManager.setCurrentBlock(null);
         CevBlock = null;
         super.onDisable();
+    }
+
+
+    @SubscribeEvent
+    void OnRender(RenderWorldLastEvent event) {
+
+        if(CevBlock != null)
+            EspUtil.boundingESPBox(new AxisAlignedBB(CevBlock),color.getValue(),2);
+
     }
 
     @SubscribeEvent
