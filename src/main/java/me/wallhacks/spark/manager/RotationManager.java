@@ -34,10 +34,9 @@ public class RotationManager implements MC {
     }
 
     public boolean rotate(float[] rotation, int yawstep, int stayTicks, boolean allowSendMultiplePackets, boolean instant) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
         if(!cancelNextWalkingUpdate) {
             if(FakeRotationYaw == null)
-                FakeRotationYaw = player.lastReportedYaw;
+                FakeRotationYaw = mc.player.lastReportedYaw;
 
             if(Math.abs(rotation[1]) >= 88 && 92 <= Math.abs(rotation[1]))
                 rotation[0] = FakeRotationYaw;
@@ -53,7 +52,7 @@ public class RotationManager implements MC {
 
             if(instant)
             {
-                player.onUpdateWalkingPlayer();
+                mc.player.onUpdateWalkingPlayer();
                 cancelNextWalkingUpdate = true;
             }
 
@@ -63,7 +62,7 @@ public class RotationManager implements MC {
         }
         else{
             if(allowSendMultiplePackets){
-                player.connection.sendPacket(new CPacketPlayer.Rotation(rotation[0],rotation[1],player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Rotation(rotation[0],rotation[1],mc.player.onGround));
                 return true;
             }
         }
@@ -91,10 +90,8 @@ public class RotationManager implements MC {
 
     @SubscribeEvent
     void OnUpdateWalkingEvent(UpdateWalkingPlayerEvent.Pre event) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-
-        realRotationYaw = player.rotationYaw;
-        realRotationPitch = player.rotationPitch;
+        realRotationYaw = mc.player.rotationYaw;
+        realRotationPitch = mc.player.rotationPitch;
 
         if (cancelNextWalkingUpdate)
         {
@@ -105,10 +102,10 @@ public class RotationManager implements MC {
             if (FakeRotationYaw != null || FakeRotationPitch != null) {
 
                 if(FakeRotationYaw != null)
-                    player.rotationYaw = FakeRotationYaw;
+                    mc.player.rotationYaw = FakeRotationYaw;
 
                 if(FakeRotationPitch != null)
-                    player.rotationPitch = FakeRotationPitch;
+                    mc.player.rotationPitch = FakeRotationPitch;
 
 
 
@@ -133,23 +130,10 @@ public class RotationManager implements MC {
 
         player.rotationYaw = realRotationYaw;
         player.rotationPitch = realRotationPitch;
-
-
     }
 
 
-
-
-
-
-
-
-
-
-    public float[] getLegitRotations(Vec3d vec)
-    {
-        Minecraft mc = Minecraft.getMinecraft();
-
+    public float[] getLegitRotations(Vec3d vec) {
         Vec3d eyesPos = new Vec3d(mc.player.posX,mc.player.posY+mc.player.getEyeHeight(),mc.player.posZ);
 
         double diffX = vec.x - eyesPos.x;

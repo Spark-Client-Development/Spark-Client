@@ -31,7 +31,6 @@ import java.util.List;
 
 @Module.Registration(name = "Surround", description = "Steals from chests")
 public class Surround extends Module {
-    BooleanSetting clientSided = new BooleanSetting("ClientSided",this,true,"General");
     IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,8,"General");
     BooleanSetting bottomFill = new BooleanSetting("BottomFill",this,true,"General");
     ModeSetting SnapToCenter = new ModeSetting("Center",this,"Always",Arrays.asList("Always","Off","ForPlace"),"General");
@@ -158,11 +157,9 @@ public class Surround extends Module {
         boolean isblocked = false;
         List<Entity> l = mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(x));
         for(Entity e : l){
-            if(!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead)
-            {
+            if(!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead) {
                 isblocked = true;
-                if(e instanceof EntityEnderCrystal && (IgnoreCrystals.isOn() || BreakCrystals.isOn()))
-                {
+                if(e instanceof EntityEnderCrystal && (IgnoreCrystals.isOn() || BreakCrystals.isOn())) {
                     crystals.add((EntityEnderCrystal)e);
                 }
                 else
@@ -181,7 +178,7 @@ public class Surround extends Module {
         int lastItem = mc.player.inventory.currentItem;
 
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN),(clientSided.isOn() && !isblocked),false,4,blocksPerTick.getValue() > 1));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN), false,false,4,blocksPerTick.getValue() > 1));
 
 
         if(silentSwitch.isOn())

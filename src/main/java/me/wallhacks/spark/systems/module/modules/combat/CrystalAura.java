@@ -31,6 +31,7 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
+import net.minecraft.network.play.client.CPacketRecipeInfo;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraft.util.EnumFacing;
@@ -104,7 +105,6 @@ public class CrystalAura extends Module {
     ArrayList<PredictedEntity> predictedEnemies = new ArrayList<>();
     PredictedEntity predictedPlayer;
     public static EntityLivingBase targetEntity = null;
-
 
     //targets
     EntityEnderCrystal lastSuccessfulBrokenEntity = null;

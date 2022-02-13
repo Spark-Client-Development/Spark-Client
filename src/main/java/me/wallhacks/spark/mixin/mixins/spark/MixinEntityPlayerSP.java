@@ -384,7 +384,7 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
 
     @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;closeScreen()V"))
     public void closeScreen(EntityPlayerSP player) {
-        if (!PortalChat.INSTANCE.isEnabled()) player.closeScreen();
+        if (!PortalChat.INSTANCE.isEnabled()) mc.player.closeScreen();
     }
 
     @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;displayGuiScreen(Lnet/minecraft/client/gui/GuiScreen;)V"))
