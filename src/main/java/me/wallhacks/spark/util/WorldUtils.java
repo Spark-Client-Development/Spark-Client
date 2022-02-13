@@ -19,12 +19,10 @@ public class WorldUtils implements MC {
         double maxZ = bb.maxZ-0.000000000001;
         double minY = bb.minY+0.000000000001;
 
-        Spark.logger.info(bb.maxX);
-
         Vec3d[] checkFor = new Vec3d[]{new Vec3d(maxX,minY,maxZ),new Vec3d(minX,minY,minZ),new Vec3d(maxX,minY,minZ),new Vec3d(minX,minY,maxZ)};
         ArrayList<BlockPos> occupiedByPlayer = new ArrayList<>();
         for (Vec3d vec : checkFor) {
-            BlockPos floored = PlayerUtil.GetPlayerPosFloored(vec,0.2);
+            BlockPos floored = PlayerUtil.getPlayerPosFloored(vec,0.2);
             if (!occupiedByPlayer.contains(floored))
                 occupiedByPlayer.add(floored);
         }

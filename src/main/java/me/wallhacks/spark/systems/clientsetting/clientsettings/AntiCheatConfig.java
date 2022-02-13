@@ -35,33 +35,33 @@ public class AntiCheatConfig extends ClientSetting {
     }
 
 
-    public ModeSetting AttackSwing = new ModeSetting("AttackSwing",this,"Normal" ,  Arrays.asList("Off","Normal","Packet"), "Attack");
+    public ModeSetting attackSwing = new ModeSetting("AttackSwing",this,"Normal" ,  Arrays.asList("Off","Normal","Packet"), "Attack");
 
-    DoubleSetting CrystalPlaceRange = new DoubleSetting("CrystalPlaceRange",this,4,1,6,0.25, "Crystals");
-    DoubleSetting CrystalBreakRange = new DoubleSetting("CrystalBreakRange",this,4,1,6,0.25, "Crystals");
-    DoubleSetting CrystalWallRange = new DoubleSetting("CrystalWallRange",this,0,0,6,0.25, "Crystals");
-    public ModeSetting CrystalBreakHand = new ModeSetting("BreakHand",this,"Both", Arrays.asList("Both","MainHand","OffHand"), "Crystals");
+    DoubleSetting crystalPlaceRange = new DoubleSetting("CrystalPlaceRange",this,4,1,6,0.25, "Crystals");
+    DoubleSetting crystalBreakRange = new DoubleSetting("CrystalBreakRange",this,4,1,6,0.25, "Crystals");
+    DoubleSetting crystalWallRange = new DoubleSetting("CrystalWallRange",this,0,0,6,0.25, "Crystals");
+    public ModeSetting crystalBreakHand = new ModeSetting("BreakHand",this,"Both", Arrays.asList("Both","MainHand","OffHand"), "Crystals");
 
-    public ModeSetting CrystalBreakSwing = new ModeSetting("BreakSwing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Crystals");
-    public ModeSetting CrystalPlaceSwing = new ModeSetting("CrystalPlaceSwing",this,"Off", Arrays.asList("Off","Normal","Packet"), "Crystals");
-    BooleanSetting CrystalRotate = new BooleanSetting("CrystalRotate",this,true,"Crystals");
-    IntSetting CrystalRotStep = new IntSetting("CrystalRotStep",this,180,45,180,"Crystals");
+    public ModeSetting crystalBreakSwing = new ModeSetting("BreakSwing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Crystals");
+    public ModeSetting crystalPlaceSwing = new ModeSetting("CrystalPlaceSwing",this,"Off", Arrays.asList("Off","Normal","Packet"), "Crystals");
+    BooleanSetting crystalRotate = new BooleanSetting("CrystalRotate",this,true,"Crystals");
+    IntSetting crystalRotStep = new IntSetting("CrystalRotStep",this,180,45,180,"Crystals");
 
 
     public double getCrystalPlaceRange() {
-        return CrystalPlaceRange.getValue();
+        return crystalPlaceRange.getValue();
     }
     public double getCrystalBreakRange() {
-        return CrystalBreakRange.getValue();
+        return crystalBreakRange.getValue();
     }
     public double getCrystalWallRange() {
-        return CrystalWallRange.getValue();
+        return crystalWallRange.getValue();
     }
     public boolean CrystalRotate() {
-        return CrystalRotate.getValue();
+        return crystalRotate.getValue();
     }
     public int getCrystalRotStep() {
-        return CrystalRotStep.getValue();
+        return crystalRotStep.getValue();
     }
     public static AntiCheatConfig INSTANCE;
     public AntiCheatConfig() {

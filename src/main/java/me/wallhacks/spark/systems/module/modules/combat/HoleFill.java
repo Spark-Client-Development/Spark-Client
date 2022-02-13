@@ -68,7 +68,7 @@ public class HoleFill extends Module {
             }
         }
 
-        BlockPos floored = PlayerUtil.GetPlayerPosFloored(MC.mc.player);
+        BlockPos floored = PlayerUtil.getPlayerPosFloored(MC.mc.player);
         List<BlockPos> poses = WorldUtils.getSphere(floored, 5, 3, 1);
         int placed = 0;
         loopBlocks:
@@ -167,7 +167,7 @@ public class HoleFill extends Module {
 
     public boolean isPlayerTryingToGetInHole(EntityPlayer player,BlockPos hole){
         //if player is already in hole no point in filling it
-        if(PlayerUtil.GetPlayerPosFloored(player).equals(hole))
+        if(PlayerUtil.getPlayerPosFloored(player).equals(hole))
             return false;
 
 

@@ -70,8 +70,11 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-
-        mc.entityRenderer.getShaderGroup().deleteShaderGroup();
+        try {
+            mc.entityRenderer.getShaderGroup().deleteShaderGroup();
+        } catch (NullPointerException e) {
+            //ez
+        }
     }
 
     double menuYPos = 0;

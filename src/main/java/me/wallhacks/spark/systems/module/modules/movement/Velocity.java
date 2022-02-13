@@ -47,7 +47,7 @@ public class Velocity extends Module {
         if(p instanceof SPacketEntityVelocity) {
             SPacketEntityVelocity s = (SPacketEntityVelocity)p;
             //prevents arrayindex out of bound exception error
-            if(s.entityID == MC.mc.player.getEntityId()) {
+            if(s.entityID == mc.player.getEntityId()) {
                 float changeX = (float) (s.motionX / 8000.0D - MC.mc.player.motionX);
                 float changeY = (float) (s.motionY / 8000.0D - MC.mc.player.motionY);
                 float changeZ = (float) (s.motionZ / 8000.0D - MC.mc.player.motionZ);

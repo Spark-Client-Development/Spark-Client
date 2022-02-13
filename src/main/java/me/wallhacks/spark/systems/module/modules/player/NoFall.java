@@ -1,21 +1,14 @@
 package me.wallhacks.spark.systems.module.modules.player;
 
-import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
-import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.HardSolidBlockSwitchItem;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.ItemStopFall;
-import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiShulkerBox;
 import net.minecraft.init.Blocks;
-import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -36,7 +29,7 @@ public class NoFall extends Module {
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
         if(!mc.player.onGround && mc.player.fallDistance > 3){
-            BlockPos p = PlayerUtil.GetPlayerPosFloored(mc.player);
+            BlockPos p = PlayerUtil.getPlayerPosFloored(mc.player);
             if(Mode.isValueName("Packet") && (!AntiElytraGlitch.isOn() || !mc.player.isElytraFlying() || mc.world.getBlockState(p.add(0, -3, 0)).getBlock() != Blocks.AIR))
             {
                 mc.player.connection.sendPacket(new CPacketPlayer(true));

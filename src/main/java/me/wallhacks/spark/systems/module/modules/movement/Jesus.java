@@ -1,15 +1,11 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
-import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.block.LiquidCollisionBBEvent;
 import me.wallhacks.spark.event.entity.LiquidPushEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerLivingTickEvent;
-import me.wallhacks.spark.event.player.PlayerMoveEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.PlayerUtil;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityBoat;
@@ -82,7 +78,7 @@ public class Jesus extends Module {
                 }
                 else if(!solidWater)
                 {
-                    if(!mc.gameSettings.keyBindJump.isKeyDown() || mc.world.getBlockState(PlayerUtil.GetPlayerPosFloored(mc.player,0.5)).getBlock() == Blocks.AIR)
+                    if(!mc.gameSettings.keyBindJump.isKeyDown() || mc.world.getBlockState(PlayerUtil.getPlayerPosFloored(mc.player,0.5)).getBlock() == Blocks.AIR)
                         mc.player.setVelocity(mc.player.motionX, 0.11, mc.player.motionZ);
 
                 }

@@ -59,7 +59,7 @@ public class Scaffold extends Module {
 
     void doScaffold() {
 
-        final BlockPos floorPos = PlayerUtil.GetPlayerPosFloored(MC.mc.player,0.2).add(0, -1, 0);
+        final BlockPos floorPos = PlayerUtil.getPlayerPosFloored(MC.mc.player,0.2).add(0, -1, 0);
         final Block floor = MC.mc.world.getBlockState(floorPos).getBlock();
 
 

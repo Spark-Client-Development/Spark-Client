@@ -1,30 +1,15 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
-import me.wallhacks.spark.event.player.PacketReceiveEvent;
-import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerMoveEvent;
-import me.wallhacks.spark.event.player.PlayerPreUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
-import me.wallhacks.spark.systems.setting.settings.IntSetting;
-import me.wallhacks.spark.systems.setting.settings.ModeSetting;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RotationUtil;
-import net.minecraft.entity.MoverType;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.MobEffects;
 import net.minecraft.network.play.client.CPacketEntityAction;
-import net.minecraft.network.play.client.CPacketPlayer;
-import net.minecraft.network.play.server.SPacketExplosion;
-import net.minecraft.network.play.server.SPacketPlayerPosLook;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.Arrays;
 
 @Module.Registration(name = "ElytraFly", description = "fly better")
 public class ElytraFly extends Module {
@@ -40,7 +25,7 @@ public class ElytraFly extends Module {
 
 
             if(autoClose.isOn()){
-                BlockPos p = PlayerUtil.GetPlayerPosFloored(mc.player);
+                BlockPos p = PlayerUtil.getPlayerPosFloored(mc.player);
                 if(mc.world.getBlockState(p.add(0, -5, 0)).getBlock() != Blocks.AIR && mc.player.getTicksElytraFlying() > 40){
                     mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_FALL_FLYING));
                     mc.player.setVelocity(0, 0, 0);

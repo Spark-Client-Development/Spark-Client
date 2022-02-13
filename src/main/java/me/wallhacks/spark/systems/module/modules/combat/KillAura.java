@@ -91,7 +91,7 @@ public class KillAura extends Module {
         if (Math.random() * 100 >= failPercentage.getValue())
             MC.mc.playerController.attackEntity(MC.mc.player, target);
 
-        switch (AntiCheatConfig.getInstance().AttackSwing.getValue()) {
+        switch (AntiCheatConfig.getInstance().attackSwing.getValue()) {
             case "Normal":
                 MC.mc.player.swingArm(EnumHand.MAIN_HAND);
                 break;
