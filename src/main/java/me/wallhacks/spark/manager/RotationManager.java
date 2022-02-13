@@ -25,6 +25,10 @@ public class RotationManager implements MC {
         cancelNextWalkingUpdate = true;
     }
 
+    public void setDoFakeRotationForTicks(int doFakeRotationForTicks) {
+        DoFakeRotationForTicks = doFakeRotationForTicks;
+    }
+
     //just call this method for rotation
     //it return true if rotation was reached
     //yaw step is how fast it rotates and stay ticks is how many ticks after rotation we should keep that rotation

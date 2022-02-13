@@ -38,8 +38,10 @@ public class ConfigManager implements MC {
 
     @SubscribeEvent
     public void onJoin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+        if(mc.currentServerData != null)
         for (Config c : configs) {
-            if (c.loadOnIp.getValue().equalsIgnoreCase(mc.currentServerData.serverIP)) {
+
+            if (c.isServer(mc.currentServerData.serverIP)) {
                 if (loadConfig(c, true))
                 return;
             }

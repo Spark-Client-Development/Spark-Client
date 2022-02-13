@@ -25,9 +25,9 @@ public class MixinPlayerControllerMP implements MC {
 
 
     @Inject(method = "onPlayerDamageBlock", at = @At("HEAD"), cancellable = true)
-    public void onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing, final CallbackInfoReturnable<Boolean> callbackInfoReturnable)
+    public void onPlayerDamageBlockPre(BlockPos posBlock, EnumFacing directionFacing, final CallbackInfoReturnable<Boolean> callbackInfoReturnable)
     {
-        PlayerDamageBlockEvent event = new PlayerDamageBlockEvent(posBlock,directionFacing);
+        PlayerDamageBlockEvent.Pre event = new PlayerDamageBlockEvent.Pre(posBlock,directionFacing);
         Spark.eventBus.post(event);
 
 
@@ -39,6 +39,14 @@ public class MixinPlayerControllerMP implements MC {
             callbackInfoReturnable.cancel();
         }
     }
+    @Inject(method = "onPlayerDamageBlock",at = @At(value = "RETURN"))
+    public void onPlayerDamageBlockPost(BlockPos posBlock, EnumFacing directionFacing, final CallbackInfoReturnable<Boolean> callbackInfoReturnable)
+    {
+        PlayerDamageBlockEvent.Post event = new PlayerDamageBlockEvent.Post(posBlock,directionFacing);
+        Spark.eventBus.post(event);
+
+    }
+
 
 
     @Inject(method = "attackEntity", at = @At(value = "HEAD"),cancellable = true)

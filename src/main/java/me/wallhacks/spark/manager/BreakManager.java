@@ -30,12 +30,12 @@ public class BreakManager implements MC {
     }
 
     public BlockPos block = null;
+    boolean instMine;
 
 
-
-    public void setCurrentBlock(BlockPos pos) {
+    public void setCurrentBlock(BlockPos pos,boolean instMine) {
         block = pos;
-
+        this.instMine = instMine;
     }
 
     @SubscribeEvent
@@ -47,7 +47,7 @@ public class BreakManager implements MC {
 
         IBlockState state = mc.world.getBlockState(block);
 
-        if (is_done(state)) {
+        if (isDone(state)) {
             block = null;
             mc.playerController.resetBlockRemoving();
 
@@ -57,6 +57,7 @@ public class BreakManager implements MC {
 
 
         ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
+
 
 
         Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(block));
@@ -69,7 +70,7 @@ public class BreakManager implements MC {
         if(AntiCheatConfig.getInstance().getBlockRotate())
         {
 
-            if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 4, false, true))
+            if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 6, false, true))
                 return;
 
 
@@ -85,11 +86,18 @@ public class BreakManager implements MC {
         }
 
 
+
+
+
+
     }
 
-    private boolean is_done(IBlockState state) {
+    private boolean isDone(IBlockState state) {
         return state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.AIR || state.getBlock() instanceof BlockLiquid;
     }
 
 
+    public boolean doInstaMine() {
+        return block != null && instMine;
+    }
 }

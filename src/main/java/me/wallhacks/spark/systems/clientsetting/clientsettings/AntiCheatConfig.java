@@ -15,6 +15,10 @@ public class AntiCheatConfig extends ClientSetting {
     DoubleSetting BlockPlaceWallRange = new DoubleSetting("BlockWallRange",this,0,0,5,0.25,"Blocks");
     BooleanSetting BlockStrictRayTrace = new BooleanSetting("NeedsToSeeFace",this,false,"Blocks");
 
+
+
+
+
     BooleanSetting BlockRotate = new BooleanSetting("BlockRotate",this,true,"Blocks");
     IntSetting BlockRotStep = new IntSetting("BlockRotStep",this,180,45,180,"Blocks");
     public ModeSetting PlaceSwing = new ModeSetting("PlaceSwing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Blocks");
@@ -33,6 +37,7 @@ public class AntiCheatConfig extends ClientSetting {
     public int getBlockRotStep() {
         return BlockRotStep.getValue();
     }
+
 
 
     public ModeSetting attackSwing = new ModeSetting("AttackSwing",this,"Normal" ,  Arrays.asList("Off","Normal","Packet"), "Attack");

@@ -56,7 +56,7 @@ public class WayPointCommand extends Command implements MC {
 
 	@Override
 	public String getName() {
-		return "config";
+		return "waypoint";
 	}
 
 }

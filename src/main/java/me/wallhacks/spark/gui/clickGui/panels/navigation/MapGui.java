@@ -82,7 +82,7 @@ public class MapGui extends GuiPanelBase {
 
         if(mWheel != 0)
         {
-            zoom = MathHelper.clamp(zoom+mWheel,20,128);
+            zoom = MathHelper.clamp(zoom+mWheel,20,200);
             if(screenInfoCoords != null)
                 screenInfoCoords = null;
         }

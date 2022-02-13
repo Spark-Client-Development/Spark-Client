@@ -2,9 +2,11 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
+import me.wallhacks.spark.manager.RotationManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.InstaMine;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.CrystalUtil;
@@ -29,10 +31,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class CevBreaker extends Module {
 
 
-    IntSetting delay = new IntSetting("Delay",this,1,0,10,"Time");
-    IntSetting breakDelay = new IntSetting("BreakDelay",this,6,0,10,"Time");
-    IntSetting placeDelay = new IntSetting("PlaceDelay",this,2,0,10,"Time");
+    IntSetting delay = new IntSetting("Delay",this,1,0,10);
+    IntSetting breakDelay = new IntSetting("BreakDelay",this,6,0,10);
+    IntSetting placeDelay = new IntSetting("PlaceDelay",this,2,0,10);
 
+    BooleanSetting insta = new BooleanSetting("InstaMine",this,true);
 
     public static CevBreaker INSTANCE;
 
@@ -58,6 +61,8 @@ public class CevBreaker extends Module {
         if(CevBlock != null)
         {
             GetState();
+
+
 
             if(cooldown <= 0)
             {
@@ -87,7 +92,7 @@ public class CevBreaker extends Module {
                 }
                 if(lastState == CBState.breakObi)
                 {
-                    Spark.breakManager.setCurrentBlock(CevBlock);
+                    Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn());
                     cooldown = 20;
                 }
                 if(lastState == CBState.breakCrystal)

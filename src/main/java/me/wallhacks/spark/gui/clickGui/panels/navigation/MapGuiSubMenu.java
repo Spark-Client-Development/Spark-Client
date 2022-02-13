@@ -27,7 +27,7 @@ public class MapGuiSubMenu extends GuiPanelBase {
     }
 
     GuiPanelButton gotoButton = new GuiPanelButton(() -> {
-        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(mapGui.zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,mapGui.dim),posX-mapGui.offsetX,posY-mapGui.offsetY,posX+width/2,posY+height/2);
+        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(mapGui.zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,mapGui.dim),posX-mapGui.offsetX,posY+mapGui.offsetY,mapGui.posX+mapGui.width/2,mapGui.posY+mapGui.height/2);
 
         BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x,pos.y));
 
@@ -41,7 +41,7 @@ public class MapGuiSubMenu extends GuiPanelBase {
     boolean addingWayPoint = false;
 
     GuiPanelButton addWayPointButton = new GuiPanelButton(() -> {
-        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(mapGui.zoom,new Vec2d(mc.player.posX,mc.player.posZ),posX-mapGui.offsetX,posY-mapGui.offsetY,posX+width/2,posY+height/2);
+        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(mapGui.zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,mapGui.dim),posX-mapGui.offsetX,posY+mapGui.offsetY,mapGui.posX+mapGui.width/2,mapGui.posY+mapGui.height/2);
 
         if(addingWayPoint && inputField.getText().length() > 0)
         {
