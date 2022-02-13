@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Module.Registration(name = "AutoLog", description = "Logs under certain scenarios")
 public class AutoLog extends Module {
 
-    IntSetting logHealth = new IntSetting("Health",this,4,1,20);
+    IntSetting logHealth = new IntSetting("Health",this,4,1,19);
 	IntSetting logTimer = new IntSetting("EnableWaitTimer",this,40,5,120);
 
 
