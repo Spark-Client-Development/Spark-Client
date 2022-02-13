@@ -345,6 +345,8 @@ public class HudElement extends SettingsHolder implements MC {
         draw(deltaTime);
         Time = System.nanoTime();
 
+        GlStateManager.disableLighting();
+        GlStateManager.enableAlpha();
         GlStateManager.color(1f,1f,1f,1f);
 
     }

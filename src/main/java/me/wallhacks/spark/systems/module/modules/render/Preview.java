@@ -236,6 +236,12 @@ public class Preview extends Module {
         GlStateManager.disableDepth();
         RenderHelper.enableStandardItemLighting();
 
+
+
+        GlStateManager.disableAlpha();
+        GlStateManager.enableDepth();
+        GlStateManager.disableCull();
+
         NBTTagCompound tagCompound = shulker.getTagCompound();
         if (tagCompound != null && tagCompound.hasKey("BlockEntityTag", 10))
         {
@@ -263,7 +269,14 @@ public class Preview extends Module {
 
             }
         }
+
+
+
         RenderHelper.disableStandardItemLighting();
+        GlStateManager.enableCull();
+        GlStateManager.enableAlpha();
+
+
         mc.getRenderItem().zLevel = z;
 
         GlStateManager.enableLighting();
