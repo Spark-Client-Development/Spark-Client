@@ -11,10 +11,9 @@ public class GuiIntSettingPanel extends GuiSettingPanel<IntSetting> {
         super(setting);
 
         guiPanelInputField = new GuiPanelInputField(0,0,0,0,0);
-        guiSlider = setting.getMinMax() == null ? null : new GuiSlider((int)setting.getMinMax().x,(int)setting.getMinMax().y);
+        guiSlider = new GuiSlider((int)setting.getMin(),(int)setting.getMax());
 
-        if(guiSlider != null)
-            guiSlider.setValue(setting.getValue());
+        guiSlider.setValue(setting.getValue());
         guiPanelInputField.setText(setting.getValue().toString());
 
 
@@ -27,20 +26,15 @@ public class GuiIntSettingPanel extends GuiSettingPanel<IntSetting> {
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
         super.renderContent(MouseX, MouseY, deltaTime);
 
-        if(guiSlider != null)
+        int rounded = (int)Math.round(guiSlider.getValue());
+        if(rounded != getSetting().getValue())
         {
-            int rounded = (int)Math.round(guiSlider.getValue());
-            if(rounded != getSetting().getValue())
-            {
-                if(guiSlider.isSelected())
-                    getSetting().setNumber(rounded);
-                else
-                    guiSlider.setValue(getSetting().getValue());
+            if(guiSlider.isSelected())
+                getSetting().setNumber(rounded);
+            else
+                guiSlider.setValue(getSetting().getValue());
 
-            }
         }
-
-
 
         if(guiPanelInputField.isFocused())
             try {
@@ -52,8 +46,7 @@ public class GuiIntSettingPanel extends GuiSettingPanel<IntSetting> {
                 if(parse != getSetting().getValue())
                 {
                     getSetting().setNumber(parse);
-                    if(guiSlider != null)
-                        guiSlider.setValue(parse);
+                    guiSlider.setValue(parse);
                 }
 
 
@@ -79,14 +72,9 @@ public class GuiIntSettingPanel extends GuiSettingPanel<IntSetting> {
         guiPanelInputField.renderContent(MouseX, MouseY, deltaTime);
 
         x += inputFieldWidth;
+        guiSlider.setPositionAndSize(posX+x+8,posY+4+ 1 +  fontManager.getTextHeight(),width-x-16,inputFieldHeight);
 
-        if(guiSlider != null)
-        {
-            guiSlider.setPositionAndSize(posX+x+8,posY+4+ 1 +  fontManager.getTextHeight(),width-x-16,inputFieldHeight);
-
-            guiSlider.renderContent(MouseX,MouseY,deltaTime);
-        }
-
+        guiSlider.renderContent(MouseX,MouseY,deltaTime);
 
 
 

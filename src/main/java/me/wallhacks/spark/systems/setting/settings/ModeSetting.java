@@ -63,4 +63,12 @@ public class ModeSetting extends Setting<String> implements EnumSetting {
         }
         return false;
     }
+
+
+    public boolean setValueWithIndex(int value) {
+
+        if(value < 0 || value >= modeNames.size())
+            return false;
+        return setValueString(modeNames.get(value));
+    }
 }

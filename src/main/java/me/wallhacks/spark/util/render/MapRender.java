@@ -1,8 +1,11 @@
 package me.wallhacks.spark.util.render;
 
 import com.github.lunatrius.core.util.vector.Vector2d;
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.manager.FontManager;
 import me.wallhacks.spark.manager.MapManager;
+import me.wallhacks.spark.manager.WaypointManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.util.GuiUtil;
@@ -59,14 +62,37 @@ public class MapRender implements MC {
             }
         }
 
-        if(dim == mc.player.dimension || (dim != 1 && mc.player.dimension != 1)){
 
-            Vec2d pos = ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
-            float OffsetXtoPlayer = (float) (ImageStartX+ImageScaleX * 0.5+offsetX+SparkMap.get2dMapPosFromWorldPos(pos.x-TargetX,ImageScale));
-            float OffsetYtoPlayer = (float) (ImageStartY+ImageScaleY * 0.5+offsetY+SparkMap.get2dMapPosFromWorldPos(pos.y-TargetZ,ImageScale));
 
-            GuiUtil.drawCompleteImageRotated(OffsetXtoPlayer-2,OffsetYtoPlayer-2,4,4,(int)mc.player.rotationYaw+90,ARROW_ICON, Color.WHITE);
+        for (WaypointManager.Waypoint point : Spark.waypointManager.getWayPoints()) {
+
+            if(point.getDim() == dim || (point.getDim() != 1 && dim != 1)){
+
+                Vec2d pos = ConvertPos(point.getLocation2d(),point.getDim(),dim);
+                double x = (ImageStartX+ImageScaleX * 0.5+offsetX+SparkMap.get2dMapPosFromWorldPos(pos.x-TargetX,ImageScale));
+                double y = (ImageStartY+ImageScaleY * 0.5+offsetY+SparkMap.get2dMapPosFromWorldPos(pos.y-TargetZ,ImageScale));
+
+                GL11.glPushMatrix();
+                GlStateManager.translate(x,y,0);
+
+                RenderUtil.drawFilledCircle(0,0,4,new Color(56, 53, 53, 245).getRGB());
+                RenderUtil.drawFilledCircle(0,0,3,point.getColor().getRGB());
+
+                FontManager fontManager = Spark.fontManager;
+                GuiPanelBase.drawQuad(0,0, fontManager.getTextWidth(point.getName()+2),fontManager.getTextHeight()+3,new Color(56, 53, 53, 245).getRGB());
+                fontManager.drawString(point.getName(), 2,2,new Color(239, 224, 224).getRGB());
+
+
+                GL11.glPopMatrix();
+
+
+            }
+
+
+
+
         }
+
 
         if(mc.player.dimension == dim)
         {
@@ -93,6 +119,21 @@ public class MapRender implements MC {
                 }
             }
         }
+
+
+        //arrow
+        if(dim == mc.player.dimension || (dim != 1 && mc.player.dimension != 1)){
+
+            Vec2d pos = ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
+            float OffsetXtoPlayer = (float) (ImageStartX+ImageScaleX * 0.5+offsetX+SparkMap.get2dMapPosFromWorldPos(pos.x-TargetX,ImageScale));
+            float OffsetYtoPlayer = (float) (ImageStartY+ImageScaleY * 0.5+offsetY+SparkMap.get2dMapPosFromWorldPos(pos.y-TargetZ,ImageScale));
+
+            GuiUtil.drawCompleteImageRotated(OffsetXtoPlayer-2,OffsetYtoPlayer-2,4,4,(int)mc.player.rotationYaw+90,ARROW_ICON, Color.WHITE);
+        }
+
+
+
+
 
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);

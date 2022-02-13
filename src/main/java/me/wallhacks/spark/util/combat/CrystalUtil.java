@@ -278,15 +278,11 @@ public class CrystalUtil implements MC {
     }
 
     public static void breakCrystal(EntityEnderCrystal target, BlockPos bestPos){
-        Vec3d pos = target.getPositionEyes(mc.getRenderPartialTicks());
-        if (bestPos != null)
-            pos = CrystalUtil.getRotationPos(false, bestPos, target);
-        else {
-            List<Vec3d> vecs = RaytraceUtil.getVisiblePointsForEntity(target);
-            if (!vecs.isEmpty())
-                pos = PlayerUtil.getClosestPoint(vecs);
-        }
+        Vec3d pos = CrystalUtil.getRotationPos(true, bestPos, target);
 
+
+        if(pos == null)
+            pos = target.getPositionVector();
 
         //rotate if needed
         if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))

@@ -73,10 +73,10 @@ public class Setting<T> {
     }
 
     public String getDefaultValueString() {
-        return getStringOfValue(value);
+        return getStringOfValue(defaultValue);
     }
     public String getValueString() {
-        return getStringOfValue(defaultValue);
+        return getStringOfValue(value);
     }
 
     public SettingsHolder getsettingsHolder() {

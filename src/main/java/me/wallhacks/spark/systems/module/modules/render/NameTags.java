@@ -353,7 +353,7 @@ public class NameTags extends Module {
     public void drawOutlineRoundedRect(int x, int y, int right, int bottom, int color, int radius, double distance, double distanceScale) {
 
 
-        double divisor = MathUtil.lerp(MathHelper.clamp(distance * (scale.getMinMax().y + 1 - scale.getValue()), 1, 90), MathHelper.clamp((scale.getMinMax().y + 1 - scale.getValue()) * 2, 1, distance), scaleByDistance.getValue());
+        double divisor = MathUtil.lerp(MathHelper.clamp(distance * (scale.getMax() + 1 - scale.getValue()), 1, 90), MathHelper.clamp((scale.getMax() + 1 - scale.getValue()) * 2, 1, distance), scaleByDistance.getValue());
 
 
         RenderUtil.drawPolygonOutline(0, 90, (int) (360 / divisor), x, y, radius, 1f, color);

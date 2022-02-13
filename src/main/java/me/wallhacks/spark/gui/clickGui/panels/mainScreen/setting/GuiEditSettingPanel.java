@@ -64,6 +64,8 @@ public class GuiEditSettingPanel extends GuiPanelBase {
                             settings.add(new GuiStringSettingPanel((StringSetting) s));
                         if(s instanceof ListSelectSetting)
                             settings.add(new GuiListSettingPanel((ListSelectSetting) s));
+                        if(s instanceof VectorSetting)
+                            settings.add(new GuiVectorSettingPanel((VectorSetting) s));
                     }
                 }
                 GuiEditSettingPanelGroup g = new GuiEditSettingPanelGroup(group,guiEditSettingPanelHolder,settings);

@@ -48,23 +48,35 @@ public class Surround extends Module {
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38DCB45E, true), "Render");
     ColorSetting outline = new ColorSetting("Outline", this, new Color(0x91F6AB0A, true), "Render");
 
-    public static boolean isPlacing() {
-        return false;
+    public static Surround instance;
+    public Surround(){
+        instance = this;
     }
+
+
+    public boolean isPlacing() {
+        return isEnabled() && isPlacing;
+    }
+
+    boolean isPlacing = true;
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
+
+        isPlacing = false;
+
         if (disable.is("OffGround") && !mc.player.onGround) {
             disable();
             return;
         }
         BlockPos blockUnderPlayer = PlayerUtil.getPlayerPosFloored(mc.player,0.2);
-
         if(!SnapToCenter.isValueName("Off"))
             if(!PlayerUtil.MoveCenter(blockUnderPlayer,SnapToCenter.isValueName("OnPlace")))
                 return;
 
+
         ArrayList<BlockPos> aroundPlayer = new ArrayList<BlockPos>();
+
 
 
         List<BlockPos> occupiedByPlayer = WorldUtils.getBlocksOccupiedByBox(mc.player.boundingBox);
@@ -117,6 +129,10 @@ public class Surround extends Module {
 
                     done = false;
                     BlockInteractUtil.BlockPlaceResult res = Place(p);
+
+                    if(res != BlockInteractUtil.BlockPlaceResult.FAILED)
+                        isPlacing = true;
+
                     if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
                         if (render.getValue())
                             new FadePos(p, outline, fill, true);

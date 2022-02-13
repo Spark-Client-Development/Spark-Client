@@ -74,7 +74,7 @@ public class ArrowCompass extends Module {
 
                 if(MC.mc.player == entity)
                     continue;
-                if(range.getValue() < range.getMinMax().y && range.getValue() < MC.mc.player.getDistance(entity))
+                if(range.getValue() < range.getMax() && range.getValue() < MC.mc.player.getDistance(entity))
                     continue;
 
                 int x = Display.getWidth() / 2 / (MC.mc.gameSettings.guiScale == 0 ? 1 : MC.mc.gameSettings.guiScale);

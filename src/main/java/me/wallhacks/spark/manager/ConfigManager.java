@@ -143,7 +143,7 @@ public class ConfigManager {
     public void SaveConfigConfigs(boolean overrideUnused) {
         FileUtil.write(Spark.ParentPath.getAbsolutePath()+System.getProperty("file.separator")+"config.sex",currentConfig.getConfigName());
         for (Config c : configs) {
-            saveSettingHolder(c,getConfigPath(c)+System.getProperty("file.separator")+"configData.sex",true);
+            saveSettingHolder(c,getConfigPath(c)+System.getProperty("file.separator")+"configData.sex",false);
         }
 
         String configFolder = (Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator")+"configs");
@@ -197,13 +197,13 @@ public class ConfigManager {
             if (system instanceof BaritoneConfig && !baritone) continue;
             if (!(system instanceof BaritoneConfig) && baritone) continue;
 
-            loadSettingHolder(system,FileUtil.read(getSystemSettingFile(system,config)));
+            loadSettingHolder(system,getSystemSettingFile(system,config));
         }
     }
 
-    void loadSettingHolder(SettingsHolder holder,String s) {
+    void loadSettingHolder(SettingsHolder holder,String file) {
         try {
-
+            String s = FileUtil.read(file);
             if (s != null) {
                 String[] List = s.split("\n");
                 for (String var : List) {

@@ -11,8 +11,6 @@ import java.util.ArrayList;
 
 public class ConfigListGui extends GuiPanelBase {
 
-    public final GuiPanelInputField moduleSearchField = new GuiPanelInputField(0,0,0,0,0);
-
 
     public ArrayList<ConfigListItem> configListItems = new ArrayList<>();
 
@@ -25,7 +23,7 @@ public class ConfigListGui extends GuiPanelBase {
 
 
 
-        int spacing = ClientConfig.spacing;
+        int spacing = guiSettings.spacing;
 
         int h = spacing;
         for (ConfigListItem item : configListItems) {

@@ -157,7 +157,7 @@ public class CrystalAura extends Module {
         if (hp.getValue() > mc.player.getHealth()) return true;
         if (shulkerAura.getValue() && ShulkerAura.INSTANCE.isEnabled()) return true;
         if (cevBreaker.getValue() && CevBreaker.INSTANCE.isEnabled()) return true;
-        if (surround.getValue() && Surround.isPlacing()) return true;
+        if (surround.getValue() && Surround.instance.isPlacing()) return true;
         if (eating.getValue() && mc.gameSettings.keyBindUseItem.isKeyDown() && ((mc.player.getHeldItemMainhand().getItem() instanceof ItemFood && mc.player.activeHand == EnumHand.MAIN_HAND) || (mc.player.getHeldItemOffhand().getItem() instanceof ItemFood && mc.player.activeHand == EnumHand.OFF_HAND))) return true;
         if (mining.getValue() && mc.playerController.isHittingBlock) return true;
         return false;
