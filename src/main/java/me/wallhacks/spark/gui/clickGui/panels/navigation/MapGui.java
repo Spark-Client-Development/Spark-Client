@@ -10,12 +10,12 @@ import baritone.api.pathing.goals.Goal;
 import baritone.api.pathing.goals.GoalXZ;
 import baritone.api.utils.BetterBlockPos;
 import com.github.lunatrius.core.util.vector.Vector2d;
-import com.sun.javafx.geom.Vec2d;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.systems.hud.huds.Map;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.maps.SparkMap;
+import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import me.wallhacks.spark.util.render.MapRender;
 import net.minecraft.util.ResourceLocation;
@@ -48,7 +48,7 @@ public class MapGui extends GuiPanelBase {
 
     Vec2i screenInfoCoords;
     GuiPanelButton gotoButton = new GuiPanelButton(() -> {
-        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, MapRender.ConvertPos(new Vector2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim),screenInfoCoords.x-offsetX,screenInfoCoords.y-offsetY,posX+width/2,posY+height/2);
+        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim),screenInfoCoords.x-offsetX,screenInfoCoords.y-offsetY,posX+width/2,posY+height/2);
 
         BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x,pos.y));
 
@@ -59,7 +59,10 @@ public class MapGui extends GuiPanelBase {
 
     },"Goto");
     GuiPanelButton addWayPointButton = new GuiPanelButton(() -> {
-        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, MapRender.ConvertPos(new Vector2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim),screenInfoCoords.x-offsetX,screenInfoCoords.y-offsetY,posX+width/2,posY+height/2);
+        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim),screenInfoCoords.x-offsetX,screenInfoCoords.y-offsetY,posX+width/2,posY+height/2);
+
+        ForWaypoints.waypoints(BaritoneAPI.getProvider().getPrimaryBaritone()).getAllWaypoints();
+
 
 
         ForWaypoints.waypoints(BaritoneAPI.getProvider().getPrimaryBaritone()).addWaypoint(new Waypoint("Test", IWaypoint.Tag.USER,new BetterBlockPos(pos.x,(int)mc.player.posY,pos.y)));
@@ -105,7 +108,7 @@ public class MapGui extends GuiPanelBase {
 
 
 
-        Vector2d pos = MapRender.ConvertPos(new Vector2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
+        Vec2d pos = MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
         MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim);
 
 

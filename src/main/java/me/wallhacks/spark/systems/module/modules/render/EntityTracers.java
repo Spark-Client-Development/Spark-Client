@@ -44,7 +44,7 @@ public class EntityTracers extends Module {
         for(Object o : mc.world.loadedEntityList.toArray()){
 
             Entity entity = (Entity)o;
-            if(range.getValue() < range.getMax() && range.getValue() < mc.player.getDistance(entity))
+            if(range.getValue() < range.getMinMax().y && range.getValue() < mc.player.getDistance(entity))
                 continue;
             if(entity instanceof EntityLivingBase){
                 EntityLivingBase e = (EntityLivingBase)entity;

@@ -68,8 +68,12 @@ public class Configs extends ClickGuiPanel {
         Spark.configManager.Load(true);
         RefreshList();
     }, "Refresh");
-
-
+    public final GuiPanelButton deleteButton = new GuiPanelButton(() -> {
+        DeleteConfig((ConfigManager.Config) guiEditSettingPanel.getCurrentSettingsHolder());
+    }, "Delete");
+    public final GuiPanelButton loadButton = new GuiPanelButton(() -> {
+        LoadConfig((ConfigManager.Config) guiEditSettingPanel.getCurrentSettingsHolder());
+    }, "Load");
 
 
 
@@ -115,7 +119,23 @@ public class Configs extends ClickGuiPanel {
 
         x += ListWidth + guiSettings.spacing;
 
-        guiEditSettingPanel.setPositionAndSize(x,y,ListWidth,height);
+
+        int yh = height;
+        if(guiEditSettingPanel.getCurrentSettingsHolder() instanceof ConfigManager.Config)
+        {
+            deleteButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
+            loadButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
+
+            int bw = (ListWidth-guiSettings.spacing)/2;
+            deleteButton.setPositionAndSize(x,y+yh-searchFieldHeight,bw,searchFieldHeight);
+            loadButton.setPositionAndSize(x+bw+guiSettings.spacing,y+yh-searchFieldHeight,bw,searchFieldHeight);
+
+            deleteButton.renderContent(MouseX, MouseY, deltaTime);
+            loadButton.renderContent(MouseX, MouseY, deltaTime);
+            yh-=searchFieldHeight+guiSettings.spacing;
+        }
+
+        guiEditSettingPanel.setPositionAndSize(x,y,ListWidth,yh);
         guiEditSettingPanel.renderContent(MouseX,MouseY,deltaTime);
 
 

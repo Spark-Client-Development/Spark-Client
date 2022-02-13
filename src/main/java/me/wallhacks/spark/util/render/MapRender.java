@@ -1,7 +1,6 @@
 package me.wallhacks.spark.util.render;
 
 import com.github.lunatrius.core.util.vector.Vector2d;
-import com.sun.javafx.geom.Vec2d;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.manager.MapManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
@@ -9,6 +8,7 @@ import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
+import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -61,7 +61,7 @@ public class MapRender implements MC {
 
         if(dim == mc.player.dimension || (dim != 1 && mc.player.dimension != 1)){
 
-            Vector2d pos = ConvertPos(new Vector2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
+            Vec2d pos = ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
             float OffsetXtoPlayer = (float) (ImageStartX+ImageScaleX * 0.5+offsetX+SparkMap.get2dMapPosFromWorldPos(pos.x-TargetX,ImageScale));
             float OffsetYtoPlayer = (float) (ImageStartY+ImageScaleY * 0.5+offsetY+SparkMap.get2dMapPosFromWorldPos(pos.y-TargetZ,ImageScale));
 
@@ -113,7 +113,7 @@ public class MapRender implements MC {
     }
 
 
-    public static Vector2d ConvertPos(Vector2d pos, int fromDim, int toDim)
+    public static Vec2d ConvertPos(Vec2d pos, int fromDim, int toDim)
     {
         if(toDim != fromDim)
         {

@@ -1,6 +1,7 @@
 package me.wallhacks.spark.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
@@ -47,5 +48,9 @@ public class StringUtil {
             i = i + (c * index++);
 
         return i;
+    }
+
+    public static String getServerName(ServerData data) {
+        return data == null ? "Singleplayer" : data.serverIP;
     }
 }

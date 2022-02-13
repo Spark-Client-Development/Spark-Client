@@ -46,6 +46,7 @@ public class Spark implements MC {
     public static PopManager popManager;
     public static ClickGuiMenuBase clickGuiScreen;
     public static AltManager altManager;
+    public static WaypointManager waypointManager;
     public static BreakManager breakManager;
     public static ThreadManager threadManager;
     public static MapManager mapManager;
@@ -77,6 +78,7 @@ public class Spark implements MC {
         threadManager = new ThreadManager();
         altManager = new AltManager();
         socialManager = new SocialManager();
+        waypointManager = new WaypointManager();
         configManager.Load(false);
         rpcManager = new RPCManager();
         logger.info("Spark client loaded successfully");

@@ -27,7 +27,6 @@ public class ConfigListItem extends GuiPanelBase {
         this.configs = configs;
     }
 
-    GuiPanelButton DeleteButton = new GuiPanelButton(() -> {configs.DeleteConfig(config);},"Delete");
     GuiPanelButton LoadButton = new GuiPanelButton(() -> {configs.LoadConfig(config);},"Load");
 
     GuiPanelButton CopyPastaButton = new GuiPanelButton(() -> {configs.CopyPasteConfig(config);},"Paste");
@@ -63,12 +62,8 @@ public class ConfigListItem extends GuiPanelBase {
 
 
 
-        int FieldSizeX = fontManager.getTextWidth(DeleteButton.getText())+6;
-        x-=FieldSizeX+4;
+        int FieldSizeX = 0;
 
-        DeleteButton.setPositionAndSize(x,y,FieldSizeX,FieldSizeY);
-        DeleteButton.setOverrideColor(guiSettings.getGuiSettingFieldColor());
-        DeleteButton.renderContent(MouseX,MouseY,deltaTime);
 
         LoadButton.setText(loaded ? "Loaded" : "Load");
         FieldSizeX = fontManager.getTextWidth(LoadButton.getText())+6;

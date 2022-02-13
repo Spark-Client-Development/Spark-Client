@@ -194,7 +194,7 @@ public class CevBreaker extends Module {
 
     public void BreakCrystal(EntityEnderCrystal _Target,BlockPos bestPos){
 
-        Vec3d pos = CrystalUtil.getRotationPos(false,bestPos,null);
+        Vec3d pos = CrystalUtil.getRotationPos(true,bestPos,_Target);
 
         //rotate if needed
         if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))

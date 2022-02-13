@@ -41,7 +41,7 @@ public class MixinMinecraft {
         Spark.socialManager.SaveFriends();
         InventoryManager.instance.SaveKits();
         Spark.altManager.saveAlts();
-
+        Spark.waypointManager.Save();
     }
 
     @Inject(method = "shutdown", at = @At("HEAD"))
@@ -50,6 +50,7 @@ public class MixinMinecraft {
         Spark.socialManager.SaveFriends();
         InventoryManager.instance.SaveKits();
         Spark.altManager.saveAlts();
+        Spark.waypointManager.Save();
 
     }
 
