@@ -56,6 +56,8 @@ public class BlockInteractUtil implements MC {
         BlockPos placeOn = pos.offset(face, -1);
         Vec3d hitVec = getPointOnBlockFace(placeOn,face);
 
+        if(hitVec == null)
+            return BlockPlaceResult.FAILED;
 
         EnumHand hand = ItemSwitcher.Switch(switcher,ItemSwitcher.switchType.Both);
         if(hand == null)
@@ -94,6 +96,8 @@ public class BlockInteractUtil implements MC {
 
         Vec3d hitVec = getPointOnBlockFace(placeOn,face);
 
+        if(hitVec == null)
+            return BlockPlaceResult.FAILED;
 
         EnumHand hand = ItemSwitcher.Switch(switcher,ItemSwitcher.switchType.Both);
         if(hand == null)
