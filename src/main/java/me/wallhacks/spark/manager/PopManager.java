@@ -29,33 +29,40 @@ public class PopManager implements MC {
         if (event.getPacket() instanceof SPacketDestroyEntities) {
             SPacketDestroyEntities packetIn = (SPacketDestroyEntities)event.getPacket();
             for(int i = 0; i < packetIn.getEntityIDs().length; ++i) {
-                Entity entity = mc.world.getEntityByID(packetIn.getEntityIDs()[i]);
-                if (entity instanceof EntityPlayer) {
-                    EntityPlayer player = (EntityPlayer)entity;
-                    if(player.getHealth() <= 0.0f) {
-                        if (!player.equals(mc.player) && Notifications.INSTANCE.death.getValue() && Notifications.INSTANCE.isEnabled()) {
-                            if (toAnnouce.containsKey(player)) {
-                                Notification notification = toAnnouce.get(player);
-                                notification.text = getPopString(player);
-                                if (Notifications.notifications.contains(notification)) {
-                                    if (notification.stage >= 2) {
-                                        notification.stage = 2;
-                                        notification.animateTimer.reset();
+
+                try {
+                    Entity entity = mc.world.getEntityByID(packetIn.getEntityIDs()[i]);
+                    if (entity instanceof EntityPlayer) {
+                        EntityPlayer player = (EntityPlayer)entity;
+                        if(player.getHealth() <= 0.0f) {
+                            if (!player.equals(mc.player) && Notifications.INSTANCE.death.getValue() && Notifications.INSTANCE.isEnabled()) {
+                                if (toAnnouce.containsKey(player)) {
+                                    Notification notification = toAnnouce.get(player);
+                                    notification.text = getPopString(player);
+                                    if (Notifications.notifications.contains(notification)) {
+                                        if (notification.stage >= 2) {
+                                            notification.stage = 2;
+                                            notification.animateTimer.reset();
+                                        }
+                                        notification.timer.reset();
+                                    } else {
+                                        notification = new Notification(getDeathString(player));
+                                        toAnnouce.remove(player);
+                                        toAnnouce.put(player, notification);
+                                        Notifications.addNotification(notification);
                                     }
-                                    notification.timer.reset();
                                 } else {
-                                    notification = new Notification(getDeathString(player));
-                                    toAnnouce.remove(player);
-                                    toAnnouce.put(player, notification);
-                                    Notifications.addNotification(notification);
+                                    toAnnouce.put(player, new Notification(getDeathString(player)));
+                                    Notifications.addNotification(toAnnouce.get(player));
                                 }
-                            } else {
-                                toAnnouce.put(player, new Notification(getDeathString(player)));
-                                Notifications.addNotification(toAnnouce.get(player));
                             }
+                            resetPops(player);
                         }
-                        resetPops(player);
                     }
+                }
+                catch (Exception x)
+                {
+
                 }
             }
         }

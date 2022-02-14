@@ -56,6 +56,7 @@ public class AltManager implements MC {
     boolean justLogin;
     Timer statusTimer = new Timer();
 
+
     String key = new RandomString(50).nextString();
 
     public AltManager() {
@@ -127,7 +128,6 @@ public class AltManager implements MC {
                         }
                     }
                 } catch (Exception fucked) {
-                    Spark.logger.info("TEST");
                     fucked.printStackTrace();
                 }
             }
@@ -320,7 +320,6 @@ public class AltManager implements MC {
         SessionUtils.setSkin(playerInfo, playerInfo.getGameProfile().getId());
         player = new EntityOtherPlayerMP(fakeWorld, playerInfo.getGameProfile());
         player.playerInfo = playerInfo;
-        Spark.logger.info(playerInfo.getGameProfile().getId().toString());
     }
 
     public void refresh() {

@@ -2,8 +2,6 @@ package me.wallhacks.spark.systems.setting.settings;
 
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.setting.Setting;
-import me.wallhacks.spark.util.objects.Vec2d;
-import me.wallhacks.spark.util.objects.Vec2i;
 
 import java.util.function.Predicate;
 
@@ -11,15 +9,8 @@ public class IntSetting extends Setting<Integer> implements NumberSetting {
     public IntSetting(String name, SettingsHolder settingsHolder, int value, int min, int max, Predicate<Integer> visible, String settingCategory) {
         super(value, name, settingsHolder,visible,settingCategory);
 
-        this.minmax = new Vec2d(min,max);
-
-    }
-
-    public IntSetting(String name, SettingsHolder settingsHolder, int value, Predicate<Integer> visible, String settingCategory) {
-        super(value, name, settingsHolder,visible,settingCategory);
-
-        this.minmax = null;
-
+        this.min = min;
+        this.max = max;
     }
 
     public IntSetting(String name, SettingsHolder settingsHolder, int value, int min, int max, Predicate<Integer> visible) {
@@ -30,25 +21,22 @@ public class IntSetting extends Setting<Integer> implements NumberSetting {
         this(name,settingsHolder,value,min,max, (Predicate<Integer>) null);
 
     }
-
-    public IntSetting(String name, SettingsHolder settingsHolder, int value) {
-        this(name,settingsHolder,value, (Predicate<Integer>) null, "General");
-
-    }
-
     public IntSetting(String name, SettingsHolder settingsHolder, int value, int min, int max,String settingCategory) {
         this(name,settingsHolder,value,min,max,null,settingCategory);
 
     }
 
-    private final Vec2d minmax;
-
+    private final int min;
+    private final int max;
 
     @Override
-    public Vec2d getMinMax() {
-        return this.minmax;
+    public double getMin() {
+        return this.min;
     }
-
+    @Override
+    public double getMax() {
+        return this.max;
+    }
 
 
     @Override

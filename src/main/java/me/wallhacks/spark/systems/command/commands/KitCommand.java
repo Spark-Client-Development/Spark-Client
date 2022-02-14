@@ -22,7 +22,7 @@ public class KitCommand extends Command {
 		addOption("select", arg -> {
 			if(arg != null){
 				SystemManager.getModule(InventoryManager.class).selectKit(arg);
-				Spark.sendInfo(""+ CommandManager.COLOR1+"Kit "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been deleted!");
+				Spark.sendInfo(""+ CommandManager.COLOR1+"Kit "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been seleted!");
 
 			}
 		}, "<kitname>");

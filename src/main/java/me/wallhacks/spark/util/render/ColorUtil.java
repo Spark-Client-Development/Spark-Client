@@ -5,6 +5,7 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.util.Random;
 
 import static java.awt.Color.RGBtoHSB;
@@ -89,5 +90,13 @@ public class ColorUtil {
 
                 percent
         );
+    }
+
+    public static Color getDimColor(int dim) {
+        return new Color[]{
+                new Color(190, 100, 51, 255),
+                new Color(70, 161, 67, 255),
+                new Color(215, 200, 153, 255)
+        }[dim+1];
     }
 }

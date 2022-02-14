@@ -222,9 +222,7 @@ public class Socials extends ClickGuiPanel {
             {
 
                 Spark.threadManager.execute(() -> {
-                    Spark.logger.info(searchText);
                     UUID uuid = SessionUtils.getid(searchText);
-                    Spark.logger.info(uuid);
                     if(uuid != null) {
                         players.add(new PlayerListItem(new SocialManager.UUIDSocial(uuid)));
                     }

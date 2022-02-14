@@ -14,6 +14,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SocialManager {
 
+    public SocialManager() {
+        LoadFriends();
+    }
+
     private CopyOnWriteArrayList<SocialEntry> friends = new CopyOnWriteArrayList<>();
 
     public void clearFriends() {

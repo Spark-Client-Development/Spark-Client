@@ -9,6 +9,12 @@ import me.wallhacks.spark.util.FileUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.StringUtil;
 import me.wallhacks.spark.util.WorldUtils;
+import me.wallhacks.spark.util.objects.Vec2d;
+import me.wallhacks.spark.util.objects.Vec2i;
+import me.wallhacks.spark.util.render.ColorUtil;
+import me.wallhacks.spark.util.render.MapRender;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
@@ -43,9 +49,10 @@ public class WaypointManager implements MC {
 
         String dir = getWaypointsPath();
         if(FileUtil.exists(dir))
-            FileUtil.deleteFile(dir);
+            FileUtil.deleteDirectory(dir);
 
         for (Waypoint waypoint : wayPoints) {
+
             Spark.configManager.saveSettingHolder(waypoint,getWaypointPath(waypoint),false);
         }
 
@@ -54,14 +61,27 @@ public class WaypointManager implements MC {
         wayPoints.clear();
         if(server == null)
             return;
-
         String dir = getWaypointsPath();
+
+
+
         if(FileUtil.exists(dir))
-        for (String file : FileUtil.listFilesForFolder(dir,fileEx)) {
-            Waypoint waypoint = new Waypoint(file);
-            Spark.configManager.loadSettingHolder(waypoint,getWaypointPath(waypoint));
+        for (String file : FileUtil.listFilesForFolder(dir,"."+fileEx)) {
+
+            Waypoint waypoint = new Waypoint(file.substring(0,file.length()-1-fileEx.length()));
+            Spark.configManager.loadSettingHolder(waypoint,dir+System.getProperty("file.separator")+file);
+
             wayPoints.add(waypoint);
         }
+    }
+
+    public Waypoint getWayPoint(String name){
+        for (Waypoint waypoint : wayPoints) {
+
+            if(waypoint.getName().equalsIgnoreCase(name))
+                return waypoint;
+        }
+        return null;
     }
 
 
@@ -69,6 +89,30 @@ public class WaypointManager implements MC {
         return wayPoints;
     }
 
+
+    public void createWayPoint(Vec2i pos,int dim) {
+        int in = 0;
+
+        while(in < 100)
+        {
+            in++;
+            String name = "WayPoint"+in;
+            if(!createWayPoint(pos,dim,name))
+                continue;
+            return;
+        }
+    }
+    public boolean createWayPoint(Vec2i pos,int dim,String name) {
+        for (Waypoint point : getWayPoints()) {
+            if(point.getName().equalsIgnoreCase(name))
+                return false;
+        }
+        Waypoint w = new Waypoint(name);
+        wayPoints.add(w);
+        w.setDim(dim);
+        w.setPos(pos);
+        return true;
+    }
 
 
     String getWaypointPath(Waypoint wayPoint) {
@@ -83,20 +127,43 @@ public class WaypointManager implements MC {
 
 
     public static class Waypoint extends SettingsHolder {
-        public StringSetting name = new StringSetting("Name",this,"","Display");
+        public StringSetting name = new StringSetting("Name",this,"Name","Display");
 
         ColorSetting color = new ColorSetting("Color",this,new Color(1,1,1),false,"Display");
 
         ModeSetting dim = new ModeSetting("Dim",this,"Overworld", Arrays.asList("Nether","Overworld","End"),"Location");
 
-        IntSetting posX = new IntSetting("PosX",this,0,null,"Location");
-        IntSetting posY = new IntSetting("PosY",this,0,null,"Location");
-        IntSetting posZ = new IntSetting("PosZ",this,0,null,"Location");
+        BooleanSetting hasY = new BooleanSetting("HasY",this,false,"Location");
 
+
+
+        VectorSetting pos = new VectorSetting("Pos",this,new Vec3i(0,0,0),integer -> hasY.isOn(),null,"Location");
+
+
+
+        public boolean hasY() {
+            return hasY.isOn();
+        }
+        public Vec2i getLocation2i()
+        {
+            Vec2d v = MapRender.ConvertPos(new Vec2d(pos.getValue().getX(),pos.getValue().getZ()),dim.getValueIndex()-1,mc.player.dimension);
+            return new Vec2i((int)v.x,(int)v.y);
+        }
+        public Vec2d getLocation2d()
+        {
+            Vec2d v = MapRender.ConvertPos(new Vec2d(pos.getValue().getX(),pos.getValue().getZ()),dim.getValueIndex()-1,mc.player.dimension);
+            return new Vec2d((int)v.x,(int)v.y);
+        }
+        public Vec3i getLocation()
+        {
+            Vec2d v = MapRender.ConvertPos(new Vec2d(pos.getValue().getX(),pos.getValue().getZ()),dim.getValueIndex()-1,mc.player.dimension);
+            return new Vec3i((int)v.x,(int)pos.getValue().getY(),(int)v.y);
+        }
 
 
         public Waypoint(String inName) {
             name.setValue(inName);
+            color.setColor(ColorUtil.generateColor(inName));
         }
 
 
@@ -108,7 +175,27 @@ public class WaypointManager implements MC {
         }
 
 
+        public void setPos(Vec2i v) {
 
+            pos.setValue(new Vec3i(v.x,0,v.y));
+
+        }
+
+        public Color getColor() {
+            return color.getColor();
+        }
+
+        public void setDim(int d) {
+            dim.setValueWithIndex(d+1);
+        }
+
+        public String getDimName() {
+            return dim.getValueName();
+        }
+
+        public int getDim() {
+            return dim.getValueIndex()-1;
+        }
     }
 }
 

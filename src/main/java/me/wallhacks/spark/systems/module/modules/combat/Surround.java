@@ -31,9 +31,6 @@ import java.util.List;
 
 @Module.Registration(name = "Surround", description = "Steals from chests")
 public class Surround extends Module {
-
-
-    BooleanSetting clientSided = new BooleanSetting("ClientSided",this,true,"General");
     IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,8,"General");
     BooleanSetting bottomFill = new BooleanSetting("BottomFill",this,true,"General");
     ModeSetting SnapToCenter = new ModeSetting("Center",this,"Always",Arrays.asList("Always","Off","ForPlace"),"General");
@@ -50,22 +47,38 @@ public class Surround extends Module {
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38DCB45E, true), "Render");
     ColorSetting outline = new ColorSetting("Outline", this, new Color(0x91F6AB0A, true), "Render");
 
+    public static Surround instance;
+    public Surround(){
+        instance = this;
+    }
+
+
+    public boolean isPlacing() {
+        return isEnabled() && isPlacing;
+    }
+
+    boolean isPlacing = true;
+
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
-        if (disable.is("OffGround") && !MC.mc.player.onGround) {
+
+        isPlacing = false;
+
+        if (disable.is("OffGround") && !mc.player.onGround) {
             disable();
             return;
         }
-        BlockPos blockUnderPlayer = PlayerUtil.GetPlayerPosFloored(MC.mc.player,0.2);
-
+        BlockPos blockUnderPlayer = PlayerUtil.getPlayerPosFloored(mc.player,0.2);
         if(!SnapToCenter.isValueName("Off"))
             if(!PlayerUtil.MoveCenter(blockUnderPlayer,SnapToCenter.isValueName("OnPlace")))
                 return;
 
+
         ArrayList<BlockPos> aroundPlayer = new ArrayList<BlockPos>();
 
 
-        List<BlockPos> occupiedByPlayer = WorldUtils.getBlocksOccupiedByBox(MC.mc.player.boundingBox);
+
+        List<BlockPos> occupiedByPlayer = WorldUtils.getBlocksOccupiedByBox(mc.player.boundingBox);
 
 
         for (BlockPos floored : occupiedByPlayer) {
@@ -88,7 +101,7 @@ public class Surround extends Module {
 
         ArrayList<BlockPos> poses = new ArrayList<BlockPos>();
 
-        if(bottomFill.isOn() && MC.mc.player.isJumping)
+        if(bottomFill.isOn() && mc.player.isJumping)
         {
             if (!poses.contains(blockUnderPlayer.add(0,-1,0)))
                 poses.add(blockUnderPlayer.add(0,-1,0));
@@ -100,7 +113,7 @@ public class Surround extends Module {
                 poses.add(p);
         }
 
-        if(bottomFill.isOn() && !MC.mc.player.isJumping) {
+        if(bottomFill.isOn() && !mc.player.isJumping) {
             if (!poses.contains(blockUnderPlayer.add(0,-1,0)))
                 poses.add(blockUnderPlayer.add(0,-1,0));
         }
@@ -108,13 +121,17 @@ public class Surround extends Module {
         int placed = 0;
         boolean done = true;
         for(BlockPos x : poses){
-            if(MC.mc.world.getBlockState(x).getBlock().material.isReplaceable())
+            if(mc.world.getBlockState(x).getBlock().material.isReplaceable())
             {
                 BlockPos p = getBlockPosToPlaceAtBlock(x);
                 if (p != null) {
 
                     done = false;
                     BlockInteractUtil.BlockPlaceResult res = Place(p);
+
+                    if(res != BlockInteractUtil.BlockPlaceResult.FAILED)
+                        isPlacing = true;
+
                     if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
                         if (render.getValue())
                             new FadePos(p, outline, fill, true);
@@ -138,13 +155,11 @@ public class Surround extends Module {
 
         ArrayList<EntityEnderCrystal> crystals = new ArrayList<EntityEnderCrystal>();
         boolean isblocked = false;
-        List<Entity> l = MC.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(x));
+        List<Entity> l = mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(x));
         for(Entity e : l){
-            if(!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead)
-            {
+            if(!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead) {
                 isblocked = true;
-                if(e instanceof EntityEnderCrystal && (IgnoreCrystals.isOn() || BreakCrystals.isOn()))
-                {
+                if(e instanceof EntityEnderCrystal && (IgnoreCrystals.isOn() || BreakCrystals.isOn())) {
                     crystals.add((EntityEnderCrystal)e);
                 }
                 else
@@ -154,20 +169,20 @@ public class Surround extends Module {
 
         if(BreakCrystals.isOn())
             for (EntityEnderCrystal entity : crystals) {
-                MC.mc.player.connection.sendPacket(new CPacketUseEntity(entity));
-                MC.mc.player.swingArm(EnumHand.MAIN_HAND);
+                mc.player.connection.sendPacket(new CPacketUseEntity(entity));
+                mc.player.swingArm(EnumHand.MAIN_HAND);
 
             }
 
 
-        int lastItem = MC.mc.player.inventory.currentItem;
+        int lastItem = mc.player.inventory.currentItem;
 
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN),(clientSided.isOn() && !isblocked),false,4,blocksPerTick.getValue() > 1));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN), false,false,4,blocksPerTick.getValue() > 1));
 
 
         if(silentSwitch.isOn())
-            MC.mc.player.inventory.currentItem = lastItem;
+            mc.player.inventory.currentItem = lastItem;
 
         return res;
 
@@ -186,7 +201,7 @@ public class Surround extends Module {
     }
 
     boolean canPlace(BlockPos p) {
-        List<Entity> l = MC.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(p));
+        List<Entity> l = mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(p));
         for(Entity e : l){
             if(!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead)
             {

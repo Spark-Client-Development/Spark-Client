@@ -40,15 +40,15 @@ public class PlayerUtil implements MC {
         return isInBlocks(entity, entity.getEntityBoundingBox());
     }
 
-    public static BlockPos GetPlayerPosFloored(final Entity p_Player)
+    public static BlockPos getPlayerPosFloored(final Entity p_Player)
     {
         return new BlockPos(Math.floor(p_Player.posX), Math.floor(p_Player.posY), Math.floor(p_Player.posZ));
     }
-    public static BlockPos GetPlayerPosFloored(final Vec3d pos,double h)
+    public static BlockPos getPlayerPosFloored(final Vec3d pos, double h)
     {
         return new BlockPos(Math.floor(pos.x), Math.floor(pos.y+h), Math.floor(pos.z));
     }
-    public static BlockPos GetPlayerPosFloored(final double x,final double y,final double z)
+    public static BlockPos getPlayerPosFloored(final double x, final double y, final double z)
     {
         return new BlockPos(Math.floor(x), Math.floor(y), Math.floor(z));
     }
@@ -61,9 +61,9 @@ public class PlayerUtil implements MC {
 
     public static BlockPos GetPlayerPosHighFloored(final Entity p_Player)
     {
-        return GetPlayerPosFloored(p_Player,0.2);
+        return getPlayerPosFloored(p_Player,0.2);
     }
-    public static BlockPos GetPlayerPosFloored(final Entity p_Player, double y)
+    public static BlockPos getPlayerPosFloored(final Entity p_Player, double y)
     {
         return new BlockPos(Math.floor(p_Player.posX), Math.floor(p_Player.posY+y), Math.floor(p_Player.posZ));
     }

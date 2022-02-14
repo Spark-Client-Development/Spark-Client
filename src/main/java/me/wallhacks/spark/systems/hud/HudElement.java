@@ -337,6 +337,7 @@ public class HudElement extends SettingsHolder implements MC {
         GlStateManager.disableLighting();
         GlStateManager.enableAlpha();
         float deltaTime = (System.nanoTime()-Time)/1000000f;
+        GlStateManager.color(1f,1f,1f,1f);
         if(isInHudEditor())
             Gui.drawRect(getRenderPosX(), getRenderPosY(), getEndRenderPosX(), getEndRenderPosY(), !isSelectedInHudEditor() ? hudSettings.getGuiHudListBackgroundColor().getRGB() : new Color(47, 47, 47, 160).getRGB());
         else if (shouldDrawBackground()) {
@@ -345,6 +346,8 @@ public class HudElement extends SettingsHolder implements MC {
         draw(deltaTime);
         Time = System.nanoTime();
 
+        GlStateManager.disableLighting();
+        GlStateManager.enableAlpha();
         GlStateManager.color(1f,1f,1f,1f);
 
     }

@@ -105,7 +105,7 @@ public class ListSelectSetting<N> extends Setting<Map<N, Boolean>> {
     }
 
     @Override
-    public String getStringOfValue(Map<N, Boolean> value) {
+    protected String getStringOfValue(Map<N, Boolean> value) {
         String list = "";
 
         for (N t : value.keySet())

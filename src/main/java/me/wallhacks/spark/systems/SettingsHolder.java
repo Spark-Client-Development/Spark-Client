@@ -1,6 +1,7 @@
 package me.wallhacks.spark.systems;
 
 import me.wallhacks.spark.systems.setting.Setting;
+import me.wallhacks.spark.util.objects.Vec2i;
 
 import java.util.ArrayList;
 
@@ -34,5 +35,6 @@ public abstract class SettingsHolder {
     public String getName() {
         return "";
     }
+
 
 }

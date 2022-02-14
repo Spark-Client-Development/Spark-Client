@@ -18,6 +18,7 @@ public class CommandManager {
 		new KitCommand();
 		new FriendCommand();
 		new ConfigCommand();
+		new WaypointManager();
 	}
 
 	public static ChatFormatting ErrorColor = ChatFormatting.RED;

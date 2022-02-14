@@ -68,15 +68,15 @@ public class Setting<T> {
     public boolean setValueString(String value) {
     	return false;
     }
-    public String getStringOfValue(T value) {
+    protected String getStringOfValue(T value) {
         return value.toString();
     }
 
     public String getDefaultValueString() {
-        return getStringOfValue(value);
+        return getStringOfValue(defaultValue);
     }
     public String getValueString() {
-        return getStringOfValue(defaultValue);
+        return getStringOfValue(value);
     }
 
     public SettingsHolder getsettingsHolder() {

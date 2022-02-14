@@ -22,8 +22,6 @@ public class CustomFog extends Module {
         event.setRed(mainColor.getColor().getRed()/255f);
         event.setGreen(mainColor.getColor().getGreen()/255f);
         event.setBlue(mainColor.getColor().getBlue()/255f);
-
-
     }
 
     @SubscribeEvent

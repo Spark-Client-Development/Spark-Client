@@ -1,18 +1,7 @@
 package me.wallhacks.spark.gui.clickGui.panels.navigation;
 
-import baritone.Baritone;
-import baritone.BaritoneProvider;
-import baritone.api.BaritoneAPI;
-import baritone.api.cache.IWaypoint;
-import baritone.api.cache.Waypoint;
-import baritone.api.command.datatypes.ForWaypoints;
-import baritone.api.pathing.goals.Goal;
-import baritone.api.pathing.goals.GoalXZ;
-import baritone.api.utils.BetterBlockPos;
-import com.github.lunatrius.core.util.vector.Vector2d;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.systems.hud.huds.Map;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.maps.SparkMap;
 import me.wallhacks.spark.util.objects.Vec2d;
@@ -20,8 +9,6 @@ import me.wallhacks.spark.util.objects.Vec2i;
 import me.wallhacks.spark.util.render.MapRender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.client.config.GuiConfig;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
@@ -41,33 +28,13 @@ public class MapGui extends GuiPanelBase {
     }
 
     int dim = 0;
-    double zoom = 128;
+    double zoom = 128.4;
     double offsetX = 0;
     double offsetY = 0;
 
+    MapGuiSubMenu mapGuiSubMenu = new MapGuiSubMenu(this);
 
     Vec2i screenInfoCoords;
-    GuiPanelButton gotoButton = new GuiPanelButton(() -> {
-        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim),screenInfoCoords.x-offsetX,screenInfoCoords.y-offsetY,posX+width/2,posY+height/2);
-
-        BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x,pos.y));
-
-        screenInfoCoords = null;
-        //close gui
-        mc.displayGuiScreen(null);
-
-
-    },"Goto");
-    GuiPanelButton addWayPointButton = new GuiPanelButton(() -> {
-        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim),screenInfoCoords.x-offsetX,screenInfoCoords.y-offsetY,posX+width/2,posY+height/2);
-
-        ForWaypoints.waypoints(BaritoneAPI.getProvider().getPrimaryBaritone()).getAllWaypoints();
-
-
-
-        ForWaypoints.waypoints(BaritoneAPI.getProvider().getPrimaryBaritone()).addWaypoint(new Waypoint("Test", IWaypoint.Tag.USER,new BetterBlockPos(pos.x,(int)mc.player.posY,pos.y)));
-        screenInfoCoords = null;
-    },"WayPoint");
 
     final ResourceLocation layersIcon = new ResourceLocation("textures/icons/layersicon.png");
     GuiPanelButton dimButton = new GuiPanelButton(() -> {
@@ -100,7 +67,7 @@ public class MapGui extends GuiPanelBase {
 
         if(mWheel != 0)
         {
-            zoom = MathHelper.clamp(zoom+mWheel,20,128);
+            zoom = MathHelper.clamp(zoom+mWheel,20,200);
             if(screenInfoCoords != null)
                 screenInfoCoords = null;
         }
@@ -109,7 +76,7 @@ public class MapGui extends GuiPanelBase {
 
 
         Vec2d pos = MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
-        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim);
+        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true);
 
 
 
@@ -139,18 +106,11 @@ public class MapGui extends GuiPanelBase {
 
         if(screenInfoCoords != null)
         {
-
-            int lenGotoButton = 4+fontManager.getTextWidth(gotoButton.getText());
-            int lenAddWayPointButton = 4+fontManager.getTextWidth(addWayPointButton.getText());
-
-            drawQuad(screenInfoCoords.x,screenInfoCoords.y,6+lenGotoButton+lenAddWayPointButton,15,guiSettings.getGuiScreenBackgroundColor().getRGB());
-            drawQuad(screenInfoCoords.x,screenInfoCoords.y,6+lenGotoButton+lenAddWayPointButton,15,guiSettings.getGuiMainPanelBackgroundColor().getRGB());
+            mapGuiSubMenu.posX = screenInfoCoords.x;
+            mapGuiSubMenu.posY = screenInfoCoords.y;
+            mapGuiSubMenu.renderContent(MouseX, MouseY, deltaTime);
 
 
-            gotoButton.setPositionAndSize(screenInfoCoords.x+2,screenInfoCoords.y+2,lenGotoButton,11);
-            gotoButton.renderContent(MouseX, MouseY, deltaTime);
-            addWayPointButton.setPositionAndSize(screenInfoCoords.x+lenGotoButton+4,screenInfoCoords.y+2,lenAddWayPointButton,11);
-            addWayPointButton.renderContent(MouseX, MouseY, deltaTime);
         }
 
     }

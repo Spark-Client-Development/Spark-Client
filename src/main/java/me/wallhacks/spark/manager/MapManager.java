@@ -111,15 +111,21 @@ public class MapManager implements MC {
         Vec2i mapAtC = SparkMap.getMapPosFromWorldPos(c.getPos().x*16, c.getPos().z*16);
 
         SparkMap M = getMap(mapAtC,getDim());
+
+
         if(toLoad.contains(M))
+        {
+            //don't remove this
+            LoadMap(M);
             toLoad.remove(M);
+
+        }
 
         M.updateMapData(c, mc.world);
 
         //save map to files
         if(ClientConfig.getInstance().SaveMap.isOn())
             Spark.threadManager.execute(() -> {SaveMap(M);});
-
     }
 
 
@@ -171,9 +177,6 @@ public class MapManager implements MC {
     }
     public void SaveMap(SparkMap m){
         String path = getPath(m);
-
-
-
 
         File f = new File(path);
         if (!f.exists())

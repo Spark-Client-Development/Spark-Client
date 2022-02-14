@@ -5,8 +5,8 @@ import me.wallhacks.spark.event.player.EntityAddEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.player.Offhand;
 import me.wallhacks.spark.systems.setting.settings.*;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.CrystalUtil;
@@ -26,7 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
-import net.minecraft.item.ItemEndCrystal;
+import net.minecraft.item.ItemFood;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
@@ -79,7 +79,7 @@ public class CrystalAura extends Module {
     IntSetting breakDelay = new IntSetting("BreakDelay", this, 1, 0, 5, "Time");
     IntSetting placeDelay = new IntSetting("PlaceDelay", this, 1, 0, 5, "Time");
 
-    ModeSetting Switch = new ModeSetting("Switch", this, "Auto", Arrays.asList("Off", "Auto", "Silent", "NoGap"), "Other");
+    ModeSetting switchMode = new ModeSetting("Switch", this, "Auto", Arrays.asList("Off", "Auto", "Silent"), "Other");
 
     BooleanSetting DebugCs = new BooleanSetting("DebugSpeed", this, false, "Other");
     BooleanSetting Debug = new BooleanSetting("Debug", this, false, "Other");
@@ -92,12 +92,17 @@ public class CrystalAura extends Module {
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38DC5E5E, true), "Render");
     ColorSetting outline = new ColorSetting("Outline", this, new Color(0x91F60A51, true), "Render");
 
+    BooleanSetting surround = new BooleanSetting("Surround", this, false, "Pause");
+    BooleanSetting cevBreaker = new BooleanSetting("CEVBreaker", this, true, "Pause");
+    BooleanSetting shulkerAura = new BooleanSetting("ShulkerAura", this, true, "Pause");
+    IntSetting hp = new IntSetting("HP", this, 3, 0, 20, "Pause");
+    BooleanSetting eating = new BooleanSetting("Eating", this, false, "Pause");
+    BooleanSetting mining = new BooleanSetting("Mining", this, false, "Pause");
 
     //enemies predicted
     ArrayList<PredictedEntity> predictedEnemies = new ArrayList<>();
     PredictedEntity predictedPlayer;
     public static EntityLivingBase targetEntity = null;
-
 
     //targets
     EntityEnderCrystal lastSuccessfulBrokenEntity = null;
@@ -126,12 +131,9 @@ public class CrystalAura extends Module {
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
         placeCounterTimer++;
-        if(placeCounterTimer >= 20)
-        {
+        if(placeCounterTimer >= 20) {
             if(DebugCs.isOn())
                 mc.player.sendStatusMessage(new TextComponentString("Ca Speed: "+placeCounter+" c/s"),true);
-
-
 
             placeCounter = 0;
             placeCounterTimer = 0;
@@ -149,6 +151,16 @@ public class CrystalAura extends Module {
         isUpdate = false;
     }
 
+    private boolean shouldPause() {
+        if (hp.getValue() > mc.player.getHealth()) return true;
+        if (shulkerAura.getValue() && ShulkerAura.INSTANCE.isEnabled()) return true;
+        if (cevBreaker.getValue() && CevBreaker.INSTANCE.isEnabled()) return true;
+        if (surround.getValue() && Surround.instance.isPlacing()) return true;
+        if (eating.getValue() && mc.gameSettings.keyBindUseItem.isKeyDown() && ((mc.player.getHeldItemMainhand().getItem() instanceof ItemFood && mc.player.activeHand == EnumHand.MAIN_HAND) || (mc.player.getHeldItemOffhand().getItem() instanceof ItemFood && mc.player.activeHand == EnumHand.OFF_HAND))) return true;
+        if (mining.getValue() && mc.playerController.isHittingBlock) return true;
+        return false;
+    }
+
     //main ca logic
     void ca() {
 
@@ -159,7 +171,7 @@ public class CrystalAura extends Module {
         if (PlacePauseTimer > 0)
             PlacePauseTimer--;
 
-
+        if (shouldPause()) return;
         //get crystal  entity to break
         getCrystalEntityTarget();
         //break that entity if we can
@@ -167,7 +179,6 @@ public class CrystalAura extends Module {
 
 
         //if broke crystal or sent packet and replace is on we can place it
-
         place: {
 
             if(currentCrystalEntity != null)
@@ -242,7 +253,7 @@ public class CrystalAura extends Module {
         if(p instanceof SPacketExplosion) {
             SPacketExplosion ex = (SPacketExplosion)p;
 
-            if (PlayerUtil.GetPlayerPosFloored(ex.getX(),ex.getY()+0.1,ex.getZ()).add(0, -1, 0).equals(currentCrystalBlockPos)) {
+            if (PlayerUtil.getPlayerPosFloored(ex.getX(),ex.getY()+0.1,ex.getZ()).add(0, -1, 0).equals(currentCrystalBlockPos)) {
                 lastSuccessfulBrokenEntity = lastAttackedEntity;
 
                 if(Debug.isOn())
@@ -270,12 +281,12 @@ public class CrystalAura extends Module {
 
 
     void predictTarget() {
-        predictedPlayer = new PredictedEntity(MC.mc.player, prediction.getValue());
+        predictedPlayer = new PredictedEntity(mc.player, prediction.getValue());
         predictedEnemies.clear();
-        for (Entity e : MC.mc.world.loadedEntityList) {
+        for (Entity e : mc.world.loadedEntityList) {
 
             if (e instanceof EntityLivingBase)
-                if (e != MC.mc.player)
+                if (e != mc.player)
                     if (!PlayersOnly.isOn() || e instanceof EntityPlayer)
                         if (AttackUtil.CanAttackEntity((EntityLivingBase) e, 15))
                             predictedEnemies.add(new PredictedEntity((EntityLivingBase) e, prediction.getValue()));
@@ -291,7 +302,7 @@ public class CrystalAura extends Module {
             Vec3d pos = CrystalUtil.getRotationPos(true,currentCrystalBlockPos,currentCrystalEntity);
             if (pos == null)
                 pos = new Vec3d(currentCrystalBlockPos).add(0.5, 1, 0.5);
-            final RayTraceResult result = MC.mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
+            final RayTraceResult result = mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
             EnumFacing facing = (result == null || !currentCrystalBlockPos.equals(result.getBlockPos()) || result.sideHit == null) ? EnumFacing.UP : result.sideHit;
 
             Vec3d v = new Vec3d(currentCrystalBlockPos).add(0.5, 0.5, 0.5).add(new Vec3d(facing.getDirectionVec()).scale(0.5));
@@ -303,10 +314,15 @@ public class CrystalAura extends Module {
             renderVec = facing;
 
             //save old slot
-            int oldSlot = MC.mc.player.inventory.currentItem;
+            int oldSlot = mc.player.inventory.currentItem;
 
-            //offhand
-            EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), Switch.isValueName("Off") ? ItemSwitcher.switchType.NoSwitch : (Switch.isValueName("NoGap") && MC.mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE ? ItemSwitcher.switchType.Offhand : ItemSwitcher.switchType.Both));
+
+
+
+            //update offhand
+            Offhand.instance.update();
+            //hand
+            EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), switchMode.is("Off") || Offhand.instance.handlesCrystal() ? ItemSwitcher.switchType.NoSwitch : ItemSwitcher.switchType.Both);
             if (hand == null)
                 return;
 
@@ -317,22 +333,24 @@ public class CrystalAura extends Module {
 
 
             //send packet
-            MC.mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(currentCrystalBlockPos, facing, hand, (float) v.x, (float) v.y, (float) v.z));
+            mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(currentCrystalBlockPos, facing, hand, (float) v.x, (float) v.y, (float) v.z));
 
             //swing
-            switch (AntiCheatConfig.getInstance().CrystalPlaceSwing.getValue()) {
+            switch (AntiCheatConfig.getInstance().crystalPlaceSwing.getValue()) {
                 case "Normal":
-                    MC.mc.player.swingArm(hand);
+                    mc.player.swingArm(hand);
                     break;
                 case "Packet":
-                    MC.mc.player.connection.sendPacket(new CPacketAnimation(hand));
+                    mc.player.connection.sendPacket(new CPacketAnimation(hand));
                     break;
             }
 
+
+
             //if silent switch we switch back to old slot
-            if (Switch.isValueName("Silent")) {
-                MC.mc.player.inventory.currentItem = oldSlot;
-                MC.mc.playerController.syncCurrentPlayItem();
+            if (switchMode.is("Silent")) {
+                mc.player.inventory.currentItem = oldSlot;
+                mc.playerController.syncCurrentPlayItem();
             }
 
             //apply cooldown/timeout if failed xamount(2by default) places
@@ -361,40 +379,14 @@ public class CrystalAura extends Module {
                     return;
 
                 //weakness thing
-                if (MC.mc.player.isPotionActive(MobEffects.WEAKNESS) && !(MC.mc.player.isPotionActive(MobEffects.STRENGTH) && MC.mc.player.getActivePotionEffect(MobEffects.STRENGTH).getAmplifier() >= 1)) {
+                if (mc.player.isPotionActive(MobEffects.WEAKNESS) && !(mc.player.isPotionActive(MobEffects.STRENGTH) && mc.player.getActivePotionEffect(MobEffects.STRENGTH).getAmplifier() >= 1)) {
                     ItemSwitcher.Switch(new ItemForFightSwitchItem(), ItemSwitcher.switchType.Mainhand);
                 }
 
                 //packets
-                MC.mc.player.connection.sendPacket(new CPacketUseEntity(currentCrystalEntity));
+                mc.player.connection.sendPacket(new CPacketUseEntity(currentCrystalEntity));
 
-                EnumHand hand = EnumHand.MAIN_HAND;
-
-
-                switch (AntiCheatConfig.getInstance().CrystalBreakHand.getValue()) {
-                    case "Both":
-                        if (MC.mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(MC.mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal))
-                            hand = EnumHand.OFF_HAND;
-
-                        break;
-                    case "OffHand":
-                        hand = EnumHand.OFF_HAND;
-                        break;
-                    case "MainHand":
-                        hand = EnumHand.MAIN_HAND;
-                        break;
-                }
-
-
-
-
-                switch (AntiCheatConfig.getInstance().CrystalBreakSwing.getValue()) {
-                    case "Normal":
-                        MC.mc.player.swingArm(hand);
-                        break;
-                    case "Packet":
-                        MC.mc.player.connection.sendPacket(new CPacketAnimation(hand));
-                }
+                CrystalUtil.breakSwing();
 
                 //set last attacked
                 lastAttackedEntity = currentCrystalEntity;
@@ -424,7 +416,7 @@ public class CrystalAura extends Module {
 
 
         float bestValue = 0;
-        for (Object o : MC.mc.world.loadedEntityList.toArray()) {
+        for (Object o : mc.world.loadedEntityList.toArray()) {
 
             if (o instanceof EntityEnderCrystal) {
                 EntityEnderCrystal e = (EntityEnderCrystal) o;
@@ -455,7 +447,7 @@ public class CrystalAura extends Module {
         BlockPos bestPos = null;
         targetEntity = null;
         float bestValue = 0;
-        for (BlockPos pos : WorldUtils.getSphere(PlayerUtil.GetPlayerPosFloored(MC.mc.player), 7, 7, 1)) {
+        for (BlockPos pos : WorldUtils.getSphere(PlayerUtil.getPlayerPosFloored(mc.player), 7, 7, 1)) {
             if (CanPlaceOnBlock(pos)) {
                 ValueForExplodingCrystalAtPoint Value = getValueForCrystalExplodingAtPoint(new Vec3d(pos.getX() + 0.5f, pos.getY() + 1, pos.getZ() + 0.5f), prePlace.getValue());
 
@@ -487,7 +479,7 @@ public class CrystalAura extends Module {
     ValueForExplodingCrystalAtPoint getValueForCrystalExplodingAtPoint(Vec3d pos, boolean prePlace) {
         float bestValue = -1;
 
-        float myhealth = MC.mc.player.getHealth() + MC.mc.player.getAbsorptionAmount();
+        float myhealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
         float selfdam = CrystalUtil.calculateDamageCrystal(pos, predictedPlayer, false);
         PredictedEntity target = null;
 
@@ -518,14 +510,14 @@ public class CrystalAura extends Module {
 
     boolean CanPlaceOnBlock(BlockPos p) {
 
-        final Block block = MC.mc.world.getBlockState(p).getBlock();
+        final Block block = mc.world.getBlockState(p).getBlock();
         if (block == Blocks.OBSIDIAN || block == Blocks.BEDROCK) {
-            final Block floor = MC.mc.world.getBlockState(p.add(0, 1, 0)).getBlock();
-            final Block ceil = MC.mc.world.getBlockState(p.add(0, 2, 0)).getBlock();
+            final Block floor = mc.world.getBlockState(p.add(0, 1, 0)).getBlock();
+            final Block ceil = mc.world.getBlockState(p.add(0, 2, 0)).getBlock();
 
             //in the end crystal have a fire block in them
 
-            if ((floor == Blocks.AIR || (floor == Blocks.FIRE && MC.mc.player.dimension == 1)) && ceil == Blocks.AIR) {
+            if ((floor == Blocks.AIR || (floor == Blocks.FIRE && mc.player.dimension == 1)) && ceil == Blocks.AIR) {
                 double d0 = (double) p.getX();
                 double d1 = (double) p.getY() + 1;
                 double d2 = (double) p.getZ();
@@ -534,7 +526,7 @@ public class CrystalAura extends Module {
                 double d2b = d2 + 1;
 
                 AxisAlignedBB bb = new AxisAlignedBB(d0, d1, d2, d0b, d1b, d2b);
-                for (Entity entity : MC.mc.world.getEntitiesWithinAABBExcludingEntity(null, bb)) {
+                for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, bb)) {
                     if (entity.isDead) continue;
 
                     if (entity instanceof EntityEnderCrystal) {
@@ -625,7 +617,7 @@ public class CrystalAura extends Module {
     public void onRender(RenderWorldLastEvent event) {
         if (currentCrystalBlockPos == null || renderVec == null || !render.is("Fancy")) return;
         AxisAlignedBB render = getFacingVec(renderVec, currentCrystalBlockPos);
-        EspUtil.boundingESPBoxFilled(render, fill.getValue());
-        EspUtil.boundingESPBox(render, outline.getValue(), 2.0f);
+        EspUtil.boundingESPBoxFilled(render, fill.getColor());
+        EspUtil.boundingESPBox(render, outline.getColor(), 2.0f);
     }
 }

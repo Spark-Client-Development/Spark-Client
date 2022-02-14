@@ -57,7 +57,7 @@ public class KillAura extends Module {
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
-        if (!switchMode.is("OnlySword") || MC.mc.player.getHeldItemMainhand().getItem() instanceof ItemSword) {
+        if (!switchMode.is("OnlySword") || mc.player.getHeldItemMainhand().getItem() instanceof ItemSword) {
             killaurTarget = getTarget(killaurTarget);
             if (killaurTarget != null)
                 attack(killaurTarget);
@@ -78,7 +78,7 @@ public class KillAura extends Module {
 
 
         if (delay.isOn()) {
-            if (MC.mc.player.ticksSinceLastSwing <= MC.mc.player.getCooldownPeriod())
+            if (mc.player.ticksSinceLastSwing <= mc.player.getCooldownPeriod())
                 return false;
         } else {
             if (!time.passedMs((int) (1000.0 / cps.getNumber())))
@@ -89,14 +89,14 @@ public class KillAura extends Module {
 
 
         if (Math.random() * 100 >= failPercentage.getValue())
-            MC.mc.playerController.attackEntity(MC.mc.player, target);
+            mc.playerController.attackEntity(mc.player, target);
 
-        switch (AntiCheatConfig.getInstance().AttackSwing.getValue()) {
+        switch (AntiCheatConfig.getInstance().attackSwing.getValue()) {
             case "Normal":
-                MC.mc.player.swingArm(EnumHand.MAIN_HAND);
+                mc.player.swingArm(EnumHand.MAIN_HAND);
                 break;
             case "Packet":
-                MC.mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
+                mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
         }
 
         return true;
@@ -112,11 +112,11 @@ public class KillAura extends Module {
         EntityLivingBase target = null;
 
         //find new target
-        for (Object o : MC.mc.world.loadedEntityList.toArray()) {
+        for (Object o : mc.world.loadedEntityList.toArray()) {
             if (o instanceof EntityLivingBase) {
                 EntityLivingBase e = (EntityLivingBase) o;
                 if (canAttack(e)) {
-                    double thisValue = MC.mc.player.getDistance(e);
+                    double thisValue = mc.player.getDistance(e);
                     if (thisValue < bestValue) {
                         bestValue = thisValue;
                         target = e;
@@ -130,7 +130,7 @@ public class KillAura extends Module {
 
 
     boolean canAttack(EntityLivingBase e) {
-        if (e == MC.mc.player || e.isDead)
+        if (e == mc.player || e.isDead)
             return false;
         if (!PlayerUtil.CanInteractVanillaCheck(e))
             return false;
@@ -144,10 +144,10 @@ public class KillAura extends Module {
         }
 
         if (targetFov.getValue() < 180) {
-            if (Math.abs(RenderUtil.getViewRotations(e.getPositionVector(), MC.mc.player)[0] - MC.mc.player.rotationYaw) > targetFov.getValue())
+            if (Math.abs(RenderUtil.getViewRotations(e.getPositionVector(), mc.player)[0] - mc.player.rotationYaw) > targetFov.getValue())
                 return false;
         }
 
-        return MC.mc.player.getDistance(e) < ((RaytraceUtil.getVisiblePointsForEntity(e).size() > 0) ? range : wallsReach).getFloatValue();
+        return mc.player.getDistance(e) < ((RaytraceUtil.getVisiblePointsForEntity(e).size() > 0) ? range : wallsReach).getFloatValue();
     }
 }

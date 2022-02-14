@@ -3,22 +3,14 @@ package me.wallhacks.spark.systems.setting.settings;
 import com.google.common.base.Predicate;
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.setting.Setting;
-import me.wallhacks.spark.util.objects.Vec2d;
 
 public class DoubleSetting extends Setting<Double> implements NumberSetting {
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, double sliderStep, Predicate<Double> visible, String settingCategory) {
         super(value, name, settingsHolder,visible,settingCategory);
 
         this.sliderStep = sliderStep;
-        this.minmax = new Vec2d(min,max);
-    }
-
-
-    public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double sliderStep, Predicate<Double> visible, String settingCategory) {
-        super(value, name, settingsHolder,visible,settingCategory);
-
-        this.sliderStep = sliderStep;
-        this.minmax = null;
+        this.min = min;
+        this.max = max;
     }
 
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max,Predicate<Double> visible, String settingCategory) {
@@ -53,8 +45,8 @@ public class DoubleSetting extends Setting<Double> implements NumberSetting {
 
 
 
-
-    private final Vec2d minmax;
+    private final double min;
+    private final double max;
 
     private final double sliderStep;
 
@@ -63,11 +55,13 @@ public class DoubleSetting extends Setting<Double> implements NumberSetting {
         return this.sliderStep;
     }
     @Override
-    public Vec2d getMinMax() {
-        return this.minmax;
+    public double getMin() {
+        return this.min;
     }
-
-
+    @Override
+    public double getMax() {
+        return this.max;
+    }
 
     @Override
     public double getNumber() {

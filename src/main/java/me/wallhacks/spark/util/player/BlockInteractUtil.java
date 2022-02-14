@@ -2,6 +2,7 @@ package me.wallhacks.spark.util.player;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityExpBottle;
@@ -55,6 +56,8 @@ public class BlockInteractUtil implements MC {
         BlockPos placeOn = pos.offset(face, -1);
         Vec3d hitVec = getPointOnBlockFace(placeOn,face);
 
+        if(hitVec == null)
+            return BlockPlaceResult.FAILED;
 
         EnumHand hand = ItemSwitcher.Switch(switcher,ItemSwitcher.switchType.Both);
         if(hand == null)
@@ -70,6 +73,47 @@ public class BlockInteractUtil implements MC {
 
         return processRightClickBlockForPlace(placeOn,face,clientSided,hand,hitVec) ? BlockPlaceResult.PLACED : BlockPlaceResult.FAILED;
     }
+
+    public static BlockPlaceResult tryPlaceBlockOnBlock(BlockPos pos, EnumFacing face, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities, int rotationStayTicks, boolean allowSendMultipleRotPacket){
+
+        if(!mc.world.getBlockState(pos).getMaterial().isReplaceable())
+            return BlockPlaceResult.FAILED;
+
+        Item willuse = ItemSwitcher.predictItem(switcher, ItemSwitcher.switchType.Both);
+        if(!(willuse instanceof ItemBlock) && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
+            return BlockPlaceResult.FAILED;
+
+        if(checkEntities && !blockCollisionCheck(pos, ((ItemBlock)willuse).getBlock()))
+            return BlockPlaceResult.FAILED;
+
+        if(face == null)
+            return BlockPlaceResult.FAILED;
+
+        BlockPos placeOn = pos.offset(face, -1);
+
+        if (mc.world.getBlockState(placeOn).getBlock().isReplaceable(mc.world, placeOn))
+            return BlockPlaceResult.FAILED;
+
+        Vec3d hitVec = getPointOnBlockFace(placeOn,face);
+
+        if(hitVec == null)
+            return BlockPlaceResult.FAILED;
+
+        EnumHand hand = ItemSwitcher.Switch(switcher,ItemSwitcher.switchType.Both);
+        if(hand == null)
+            return BlockPlaceResult.FAILED;
+
+        if(AntiCheatConfig.getInstance().getBlockRotate())
+            if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(hitVec), AntiCheatConfig.getInstance().getBlockRotStep(), rotationStayTicks,allowSendMultipleRotPacket))
+                return BlockPlaceResult.WAIT;
+
+
+
+        mc.playerController.syncCurrentPlayItem();
+
+        return processRightClickBlockForPlace(placeOn,face,clientSided,hand,hitVec) ? BlockPlaceResult.PLACED : BlockPlaceResult.FAILED;
+    }
+
 
     public static BlockPos getBlockPosToPlaceAtBlock(BlockPos pos,boolean checkEntities) {
         if(canPlaceBlockAtPos(pos,checkEntities))
