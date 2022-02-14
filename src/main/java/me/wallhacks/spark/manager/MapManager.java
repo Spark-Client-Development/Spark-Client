@@ -126,7 +126,6 @@ public class MapManager implements MC {
         //save map to files
         if(ClientConfig.getInstance().SaveMap.isOn())
             Spark.threadManager.execute(() -> {SaveMap(M);});
-
     }
 
 
@@ -178,9 +177,6 @@ public class MapManager implements MC {
     }
     public void SaveMap(SparkMap m){
         String path = getPath(m);
-
-
-
 
         File f = new File(path);
         if (!f.exists())

@@ -1,20 +1,7 @@
 package me.wallhacks.spark.gui.clickGui.panels.navigation;
 
-import baritone.Baritone;
-import baritone.BaritoneProvider;
-import baritone.api.BaritoneAPI;
-import baritone.api.cache.IWaypoint;
-import baritone.api.cache.Waypoint;
-import baritone.api.command.datatypes.ForWaypoints;
-import baritone.api.pathing.goals.Goal;
-import baritone.api.pathing.goals.GoalXZ;
-import baritone.api.utils.BetterBlockPos;
-import com.github.lunatrius.core.util.vector.Vector2d;
-import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.systems.hud.huds.Map;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.maps.SparkMap;
 import me.wallhacks.spark.util.objects.Vec2d;
@@ -22,8 +9,6 @@ import me.wallhacks.spark.util.objects.Vec2i;
 import me.wallhacks.spark.util.render.MapRender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.client.config.GuiConfig;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
@@ -91,7 +76,7 @@ public class MapGui extends GuiPanelBase {
 
 
         Vec2d pos = MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
-        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim);
+        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true);
 
 
 
