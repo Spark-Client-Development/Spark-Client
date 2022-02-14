@@ -62,7 +62,7 @@ public class ColorSetting extends Setting<SparkColor> {
             } else {
                 speed = 16;
             }
-            Color c = ColorUtil.fromHSB(((System.currentTimeMillis() * speed)/2 % (360 * 32)) / (360f * 32), ColorUtil.getSaturation(getColor()), ColorUtil.getBrightness(getColor()));
+            Color c = ColorUtil.fromHSB(((System.currentTimeMillis() * speed)/2 % (360 * 32)) / (360f * 32), ColorUtil.getSaturation(getValue().color), ColorUtil.getBrightness(getValue().color));
             getValue().color = (new Color(c.getRed(), c.getGreen(), c.getBlue(), getValue().color.getAlpha()));
         }
         return getValue().color;
