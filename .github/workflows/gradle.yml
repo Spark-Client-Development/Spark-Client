@@ -8,7 +8,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -23,15 +22,15 @@ jobs:
           ./gradlew build
       - name: List files
         run: ls
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Spark
-          path: ./build/libs/*Spark-Client-*.jar
-      - name: Prepare Artifact for Discord upload
+      - name: Prepare Artifact for upload
         env:
           RUN_ID: ${{ github.run_number }}
         run: cp ./build/libs/Spark-Client-*.jar ./build/libs/Spark-T${RUN_ID}.jar
+      - name: Upload a Build Artifact to github
+        uses: actions/upload-artifact@v2
+        with:
+          name: Spark
+          path: ./build/libs/Spark-T*.jar
       - name: Upload Artifact to Discord
         uses: sinshutu/upload-to-discord@master
         env:
