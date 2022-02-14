@@ -2,6 +2,7 @@
 ![minecraft](https://img.shields.io/badge/Minecraft-1.12.2-blue)
 [![discord](https://img.shields.io/badge/Discord-Invite-8080c0)](https://discord.gg/7ZbN7JMgS3)
 ![minecraft](https://img.shields.io/badge/Key--bind-Right--shift-purple)
+![compatible](https://img.shields.io/badge/Compatible--with-nothing-red)
 [![baritone](https://img.shields.io/badge/Baritone-v1.2.15-yellow)](https://github.com/cabaletta/baritone)
 [![schematica](https://img.shields.io/badge/Schematica-1.8.0.169-green)](https://github.com/Lunatrius/Schematica)
 
