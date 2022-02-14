@@ -87,7 +87,7 @@ public class GuiCategoryListPanel extends GuiPanelBase {
 
             }
 
-            height = y+50;
+            height = y+5;
 
         }
 

@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glColor4f;
 
 public class RenderUtil implements MC {
     public static void glBillboardDistanceScaled(float x, float y, float z, Entity entity, float scale) {
@@ -66,7 +67,7 @@ public class RenderUtil implements MC {
 
         for (int i = 0; i <= 360; i++)
             glVertex2d( x + Math.sin(((i * Math.PI) / 180)) * radius, y + Math.cos(((i * Math.PI) / 180)) * radius);
-
+        glColor4f(1,1,1,1);
         glEnd();
         glDisable(GL_LINE_SMOOTH);
         glEnable(GL_TEXTURE_2D);

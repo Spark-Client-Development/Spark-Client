@@ -63,7 +63,7 @@ public class MapRender implements MC {
         }
 
 
-
+        FontManager fontManager = Spark.fontManager;
 
         for (WaypointManager.Waypoint point : Spark.waypointManager.getWayPoints()) {
 
@@ -83,7 +83,7 @@ public class MapRender implements MC {
                 RenderUtil.drawFilledCircle(0, 0, hovered ? 4 : 3, new Color(56, 53, 53, 245).getRGB());
                 RenderUtil.drawFilledCircle(0, 0, hovered ? 3 : 2, point.getColor().getRGB());
                 if (hovered) {
-                    FontManager fontManager = Spark.fontManager;
+
                     GuiPanelBase.drawQuad(0, 0, fontManager.getTextWidth(point.getName() + 2), fontManager.getTextHeight() + 3, new Color(56, 53, 53, 245).getRGB());
                     fontManager.drawString(point.getName(), 2, 2, new Color(239, 224, 224).getRGB());
                 }
