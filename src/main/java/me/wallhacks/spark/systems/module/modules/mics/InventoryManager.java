@@ -49,6 +49,7 @@ public class InventoryManager extends Module {
     public InventoryManager() {
         instance = this;
 
+        LoadKits();
     }
 
     public String currentKit;
@@ -298,7 +299,7 @@ public class InventoryManager extends Module {
             String s = FileUtil.read(getKitsFile());
             if(s != null) {
                 String[] List = s.split("\n");
-                SystemManager.getModule(InventoryManager.class).currentKit = List[0];
+                currentKit = List[0];
                 for (int i = 1; i < List.length; i++) {
                     String m = List[i];
                     String[] split = m.split(":");

@@ -64,6 +64,7 @@ public class MapRender implements MC {
 
 
 
+
         for (WaypointManager.Waypoint point : Spark.waypointManager.getWayPoints()) {
 
             if(point.getDim() == dim || (point.getDim() != 1 && dim != 1)){
@@ -109,7 +110,7 @@ public class MapRender implements MC {
                         GL11.glPushMatrix();
                         GlStateManager.translate(x,y,0);
                         GlStateManager.scale(0.3,0.3,0.3);
-                        GuiPanelBase.drawRect(-12,-12,12,12, ClientConfig.getInstance().getMainColor().getRGB());
+                        Gui.drawRect(-12,-12,12,12, ClientConfig.getInstance().getMainColor().getRGB());
                         NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(player.getName());
                         if(info != null)
                             GuiUtil.renderPlayerHead(info,-10,-10,20);
@@ -119,6 +120,7 @@ public class MapRender implements MC {
                 }
             }
         }
+
 
 
         //arrow

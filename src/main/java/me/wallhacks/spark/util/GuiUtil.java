@@ -63,6 +63,7 @@ public class GuiUtil {
             int k3 = 8;
             Gui.drawScaledCustomSizeModalRect(x, y, 40.0F, (float) j3, 8, k3, size, size, 64.0F, 64.0F);
         }
+        GlStateManager.disableBlend();
         GlStateManager.popAttrib();
     }
 

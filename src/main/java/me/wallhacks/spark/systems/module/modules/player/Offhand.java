@@ -29,6 +29,13 @@ import java.util.Arrays;
 
 @Module.Registration(name = "Offhand", description = "puts things in ur offhand")
 public class Offhand extends Module {
+
+    public static Offhand instance;
+    public Offhand(){
+        instance = this;
+    }
+
+
     ModeSetting mode = new ModeSetting("Mode", this, "Totem", Arrays.asList("Totem", "Crystal", "Gapple"));
     ModeSetting fallbackMode = new ModeSetting("FallbackMode", this, "Gapple", Arrays.asList("Totem", "Crystal", "Gapple"));
 
@@ -47,7 +54,7 @@ public class Offhand extends Module {
 
 
     BooleanSetting closeContainer = new BooleanSetting("CloseContainer", this,false,"Swapping");
-    BooleanSetting hotbar = new BooleanSetting("Hotbar", this,false,"Swapping");
+    BooleanSetting hotbar = new BooleanSetting("Hotbar", this,true,"Swapping");
     IntSetting cooldown = new IntSetting("Cooldown", this, 0, 0, 20 ,"Swapping");
 
 
@@ -55,11 +62,25 @@ public class Offhand extends Module {
     private int timer = 0;
 
 
+
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
         if(nullCheck())return;
         timer++;
+        update();
+    }
 
+    public boolean handlesCrystal() {
+        return useCrystal && isEnabled();
+    }
+
+    boolean useCrystal = false;
+
+
+    public void update()
+    {
+
+        useCrystal = false;
 
         //if is not creative
         if (MC.mc.playerController.currentGameType.isSurvivalOrAdventure()) {
@@ -77,7 +98,10 @@ public class Offhand extends Module {
                     }
 
                 } else if (shouldCrystalSwap()) {
-                    swapItems((Items.END_CRYSTAL));
+                    {
+                        useCrystal = true;
+                        swapItems((Items.END_CRYSTAL));
+                    }
                 } else
                     useMode(mode.getValue());
 
@@ -107,6 +131,8 @@ public class Offhand extends Module {
             swapItems((Items.GOLDEN_APPLE));
         }
     }
+
+
 
     private boolean shouldCrystalSwap(){
 

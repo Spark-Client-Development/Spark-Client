@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.player.EntityAddEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.player.Offhand;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
@@ -25,13 +26,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
-import net.minecraft.item.ItemEndCrystal;
 import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemPickaxe;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
-import net.minecraft.network.play.client.CPacketRecipeInfo;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraft.util.EnumFacing;
@@ -318,8 +316,13 @@ public class CrystalAura extends Module {
             //save old slot
             int oldSlot = mc.player.inventory.currentItem;
 
-            //offhand
-            EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), switchMode.is("Off") ? ItemSwitcher.switchType.NoSwitch : ItemSwitcher.switchType.Both);
+
+
+
+            //update offhand
+            Offhand.instance.update();
+            //hand
+            EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), switchMode.is("Off") || Offhand.instance.handlesCrystal() ? ItemSwitcher.switchType.NoSwitch : ItemSwitcher.switchType.Both);
             if (hand == null)
                 return;
 
@@ -341,6 +344,8 @@ public class CrystalAura extends Module {
                     mc.player.connection.sendPacket(new CPacketAnimation(hand));
                     break;
             }
+
+
 
             //if silent switch we switch back to old slot
             if (switchMode.is("Silent")) {
