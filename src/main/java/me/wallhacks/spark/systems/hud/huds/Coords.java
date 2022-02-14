@@ -23,7 +23,7 @@ public class Coords extends AlignedHudElement {
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
         list = new ArrayList<>();
-        double dFactor = mc.world.getBiome(mc.player.getPosition()).getBiomeName().equals("hell") ? 8 : 0.125;
+        double dFactor = mc.world.getBiome(mc.player.getPosition()).getBiomeName().equals("Hell") ? 8 : 0.125;
         if (mode.is("List")) {
             list.add("Z: " + ChatFormatting.WHITE + MathUtil.roundAvoid(mc.player.posZ, 1) + ChatFormatting.GRAY + (dimensional.getValue() ? " (" + MathUtil.roundAvoid(mc.player.posZ * dFactor, 1) + ")" : ""));
             if (y.getValue())

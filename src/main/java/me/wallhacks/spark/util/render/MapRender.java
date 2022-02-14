@@ -132,7 +132,7 @@ public class MapRender implements MC {
             float OffsetXtoPlayer = (float) (ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(pos.x - TargetX, ImageScale));
             float OffsetYtoPlayer = (float) (ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(pos.y - TargetZ, ImageScale));
 
-            GuiUtil.drawCompleteImageRotated(OffsetXtoPlayer - 2, OffsetYtoPlayer - 2, 4, 4, (int) mc.player.rotationYaw + 90, ARROW_ICON, Color.WHITE);
+            GuiUtil.drawCompleteImageRotated(OffsetXtoPlayer - 2, OffsetYtoPlayer - 2, 4, 4, (int) mc.player.rotationYaw + 90, ARROW_ICON, mc.world.getBiome(mc.player.getPosition()).getBiomeName().equals("Hell") ? Color.WHITE : Color.RED);
         }
 
 
