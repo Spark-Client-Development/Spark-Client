@@ -56,6 +56,7 @@ public class AltManager implements MC {
     boolean justLogin;
     Timer statusTimer = new Timer();
 
+
     String key = new RandomString(50).nextString();
 
     public AltManager() {
