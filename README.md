@@ -1,4 +1,4 @@
-![logo](https://github.com/wallhacks0/Spark-Client/blob/master/src/main/resources/spark-logo.png?raw=true)
+![logo](https://github.com/wallhacks0/Spark-Client/blob/master/src/main/resources/spark-banner.png?raw=true)
 ![minecraft](https://img.shields.io/badge/Minecraft-1.12.2-blue)
 [![discord](https://img.shields.io/badge/Discord-Invite-8080c0)](https://discord.gg/7ZbN7JMgS3)
 ![minecraft](https://img.shields.io/badge/Key--bind-Right--shift-purple)
