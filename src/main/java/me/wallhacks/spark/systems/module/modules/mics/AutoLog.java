@@ -5,7 +5,6 @@ import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import me.wallhacks.spark.systems.setting.settings.StringSetting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -13,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Module.Registration(name = "AutoLog", description = "Logs under certain scenarios")
 public class AutoLog extends Module {
 
-    IntSetting logHealth = new IntSetting("Health",this,4,1,20);
+	IntSetting logHealth = new IntSetting("Health",this,4,1,20);
 	IntSetting logTimer = new IntSetting("EnableWaitTimer",this,40,5,120);
 
 
@@ -22,6 +21,7 @@ public class AutoLog extends Module {
 
 	//waits x amount of ticks on relog before kicking again
 	int timer = 0;
+	static boolean allowAutoReconnect = true;
 
 	@SubscribeEvent
 	public void onUpdate(PlayerUpdateEvent event) {
@@ -30,6 +30,7 @@ public class AutoLog extends Module {
 			timer++;
 			return;
 		}
+		allowAutoReconnect = true;
 
 		if (mc.player.getHealth() <= logHealth.getValue()) {
 			Log("Health was: " + ((int)Math.ceil(mc.player.getHealth())));
@@ -42,5 +43,6 @@ public class AutoLog extends Module {
 
 		FMLClientHandler.instance().getClientToServerNetworkManager().closeChannel(new TextComponentString(info));
 		timer = 0;
+		allowAutoReconnect = false;
 	}
 }
