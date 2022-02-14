@@ -83,11 +83,17 @@ public class CevBreaker extends Module {
 
                     BlockInteractUtil.BlockPlaceResult res = place(CevBlock);
                     if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                    {
                         res = place(blockSetOff);
-                    if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                        res = place(blockSetOff.add(0,-1,0));
-                    if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                        res = place(blockSetOff.add(0,-2,0));
+                        if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                        {
+                            res = place(blockSetOff.add(0,-1,0));
+                            if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                                res = place(blockSetOff.add(0,-2,0));
+                        }
+
+                    }
+
 
 
                     if(placeDelay.getValue() == 0)
@@ -118,7 +124,7 @@ public class CevBreaker extends Module {
 
 
     BlockInteractUtil.BlockPlaceResult place(BlockPos p) {
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(CevBlock,new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p,new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
         if(res == BlockInteractUtil.BlockPlaceResult.PLACED)
             if (render.getValue())
                 new FadePos(p, outline, fill, true);
