@@ -4,8 +4,10 @@ import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.setting.Setting;
 import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
+import java.awt.*;
 import java.util.function.Predicate;
 
 public class VectorSetting extends Setting<Vec3i> {
@@ -34,8 +36,8 @@ public class VectorSetting extends Setting<Vec3i> {
     }
 
     @Override
-    public String getValueString() {
-        return getValue().getX()+","+getValue().getY()+","+getValue().getZ();
+    public String getStringOfValue(Vec3i value) {
+        return value.getX()+","+value.getY()+","+value.getZ();
     }
 
     @Override

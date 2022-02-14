@@ -89,7 +89,7 @@ public class ArrowCompass extends Module {
                 //stop z fighting
                 GL11.glTranslatef(0, 0, 0.02f);
 
-                RenderUtil.drawTracerPointer(x, y - this.radius.getValue(), this.size.getValue().floatValue(), 2, 1.5f, getColor(entity), outline.getValue(), outlineWidth.getValue().floatValue(), outlineColor.getValue());
+                RenderUtil.drawTracerPointer(x, y - this.radius.getValue(), this.size.getValue().floatValue(), 2, 1.5f, getColor(entity), outline.getValue(), outlineWidth.getValue().floatValue(), outlineColor.getColor());
 
 
                 GL11.glTranslatef((float) x, (float) y, 0.0f);
@@ -110,7 +110,7 @@ public class ArrowCompass extends Module {
     private Color getColor(EntityPlayer entity){
         //lerp by distance
         if(Spark.socialManager.isFriend(entity))
-            return ClientConfig.getInstance().friendColor.getValue();
+            return ClientConfig.getInstance().friendColor.getColor();
         float l = MathHelper.clamp((PlayerUtil.getDistance(entity.getPositionVector())-5)/40f,0,1);
         return ColorUtil.lerpColor(distantColor.getColor(),closeColor.getColor(), l);
     }

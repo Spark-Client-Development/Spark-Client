@@ -43,7 +43,7 @@ public class MapGui extends GuiPanelBase {
     }
 
     int dim = 0;
-    double zoom = 128;
+    double zoom = 128.4;
     double offsetX = 0;
     double offsetY = 0;
 

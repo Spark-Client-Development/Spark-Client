@@ -7,9 +7,11 @@ import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.InstaMine;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
+import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.CrystalUtil;
+import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
@@ -27,6 +29,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.awt.*;
+
 @Module.Registration(name = "CevBreaker", description = "Steals from chests")
 public class CevBreaker extends Module {
 
@@ -36,6 +40,11 @@ public class CevBreaker extends Module {
     IntSetting placeDelay = new IntSetting("PlaceDelay",this,2,0,10);
 
     BooleanSetting insta = new BooleanSetting("InstaMine",this,true);
+
+    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
+    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x385EDC7B, true), "Render");
+    ColorSetting outline = new ColorSetting("Outline", this, new Color(0x912097C4, true), "Render");
+
 
     public static CevBreaker INSTANCE;
 
@@ -62,8 +71,6 @@ public class CevBreaker extends Module {
         {
             GetState();
 
-
-
             if(cooldown <= 0)
             {
                 if(lastState == CBState.placeObi)
@@ -74,12 +81,13 @@ public class CevBreaker extends Module {
                         offset = new Vec3i(offset.getX(),0,0);
                     BlockPos blockSetOff = CevBlock.add(offset);
 
-
-                    BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(CevBlock,new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+                    BlockInteractUtil.BlockPlaceResult res = place(CevBlock);
                     if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                        res = (BlockInteractUtil.tryPlaceBlock(blockSetOff, new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+                        res = place(blockSetOff);
                     if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                        res = (BlockInteractUtil.tryPlaceBlock(blockSetOff.add(0,-1,0),new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+                        res = place(blockSetOff.add(0,-1,0));
+                    if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                        res = place(blockSetOff.add(0,-2,0));
 
 
                     if(placeDelay.getValue() == 0)
@@ -107,6 +115,16 @@ public class CevBreaker extends Module {
 
 
     }
+
+
+    BlockInteractUtil.BlockPlaceResult place(BlockPos p) {
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(CevBlock,new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+        if(res == BlockInteractUtil.BlockPlaceResult.PLACED)
+            if (render.getValue())
+                new FadePos(p, outline, fill, true);
+        return res;
+    }
+
 
     EntityEnderCrystal crystal;
     void GetState(){
@@ -188,6 +206,9 @@ public class CevBreaker extends Module {
                 mc.player.connection.sendPacket(new CPacketAnimation(hand));
                 break;
         }
+
+        if (render.getValue())
+            new FadePos(bestPos, outline, fill, true);
 
     }
 

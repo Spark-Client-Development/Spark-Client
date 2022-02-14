@@ -612,7 +612,7 @@ public class CrystalAura extends Module {
     public void onRender(RenderWorldLastEvent event) {
         if (currentCrystalBlockPos == null || renderVec == null || !render.is("Fancy")) return;
         AxisAlignedBB render = getFacingVec(renderVec, currentCrystalBlockPos);
-        EspUtil.boundingESPBoxFilled(render, fill.getValue());
-        EspUtil.boundingESPBox(render, outline.getValue(), 2.0f);
+        EspUtil.boundingESPBoxFilled(render, fill.getColor());
+        EspUtil.boundingESPBox(render, outline.getColor(), 2.0f);
     }
 }

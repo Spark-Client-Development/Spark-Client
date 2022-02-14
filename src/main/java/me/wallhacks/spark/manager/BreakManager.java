@@ -30,12 +30,14 @@ public class BreakManager implements MC {
     }
 
     public BlockPos block = null;
+    int ticks = 0;
     boolean instMine;
 
 
     public void setCurrentBlock(BlockPos pos,boolean instMine) {
         block = pos;
         this.instMine = instMine;
+        ticks = 2;
     }
 
     @SubscribeEvent
@@ -47,17 +49,16 @@ public class BreakManager implements MC {
 
         IBlockState state = mc.world.getBlockState(block);
 
-        if (isDone(state)) {
-            block = null;
-            mc.playerController.resetBlockRemoving();
 
+        if(ticks <= 0 || isDone(state))
+        {
+            mc.playerController.resetBlockRemoving();
+            block = null;
             return;
         }
-
-
+        ticks--;
 
         ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
-
 
 
         Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(block));

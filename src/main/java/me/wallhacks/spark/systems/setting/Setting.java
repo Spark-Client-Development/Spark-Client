@@ -68,7 +68,7 @@ public class Setting<T> {
     public boolean setValueString(String value) {
     	return false;
     }
-    public String getStringOfValue(T value) {
+    protected String getStringOfValue(T value) {
         return value.toString();
     }
 
