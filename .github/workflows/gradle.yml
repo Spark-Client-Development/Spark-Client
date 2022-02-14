@@ -27,7 +27,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Spark
-          path: ./build/libs/*-release.jar
+          path: ./build/libs/*Spark-Client-*.jar
       - name: Prepare Artifact for Discord upload
         env:
           RUN_ID: ${{ github.run_number }}
