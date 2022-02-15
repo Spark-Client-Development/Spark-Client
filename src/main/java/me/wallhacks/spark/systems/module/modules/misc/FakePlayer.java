@@ -1,4 +1,4 @@
-package me.wallhacks.spark.systems.module.modules.mics;
+package me.wallhacks.spark.systems.module.modules.misc;
 
 import com.mojang.authlib.GameProfile;
 import me.wallhacks.spark.systems.module.Module;
@@ -19,13 +19,13 @@ public class FakePlayer extends Module {
     @SubscribeEvent
     public void onWorld(WorldEvent.Load event) {
         setEnabled(false);
-
     }
 
     private EntityOtherPlayerMP fakePlayer;
 
     @Override
     public void onEnable() {
+        if (mc.world == null) return;
 
         String name = this.name.getValue();
         UUID id = SessionUtils.getid(name);
@@ -86,13 +86,10 @@ public class FakePlayer extends Module {
     @Override
     public void onDisable() {
         try {
-            if(fakePlayer != null)
+            if (fakePlayer != null)
                 mc.world.removeEntity(fakePlayer);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
-
-
-
-
 
 }

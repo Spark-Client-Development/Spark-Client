@@ -1,7 +1,6 @@
-package me.wallhacks.spark.systems.module.modules.mics;
+package me.wallhacks.spark.systems.module.modules.misc;
 
 import java.util.Arrays;
-import java.util.Random;
 
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.systems.module.Module;

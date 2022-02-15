@@ -1,14 +1,11 @@
-package me.wallhacks.spark.systems.module.modules.mics;
+package me.wallhacks.spark.systems.module.modules.misc;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.InputEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.util.MC;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.UUID;
 
 @Module.Registration(name = "MiddleClick", enabled = true, description = "Middle click players to add them to friends list")
 public class MiddleClick extends Module{
