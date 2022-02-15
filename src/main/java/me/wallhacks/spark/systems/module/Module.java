@@ -161,7 +161,7 @@ public abstract class Module extends SettingsHolder implements MC {
         EXPLOIT("Exploit"),
         WORLD("World"),
         PLAYER("Player"),
-        MICS("Mics");
+        MISC("Misc");
 
         private final String name;
 

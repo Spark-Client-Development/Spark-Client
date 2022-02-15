@@ -1,11 +1,10 @@
-package me.wallhacks.spark.systems.module.modules.mics;
+package me.wallhacks.spark.systems.module.modules.misc;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.FileUtil;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.player.InventoryUtil;
 import net.minecraft.client.gui.inventory.GuiContainer;

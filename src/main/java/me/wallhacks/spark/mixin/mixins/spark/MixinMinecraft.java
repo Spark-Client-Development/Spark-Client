@@ -4,11 +4,8 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.InputEvent;
 import me.wallhacks.spark.event.client.RunTickEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
-import me.wallhacks.spark.manager.AltManager;
-import me.wallhacks.spark.manager.MapManager;
-import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
+import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.crash.CrashReport;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,8 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import javax.annotation.Nullable;
 
 @Mixin({ Minecraft.class })
 public class MixinMinecraft {

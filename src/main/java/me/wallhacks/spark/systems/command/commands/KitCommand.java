@@ -4,7 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.manager.CommandManager;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.command.Command;
-import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
+import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 
 public class KitCommand extends Command {
 

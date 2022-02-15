@@ -1,4 +1,4 @@
-package me.wallhacks.spark.systems.module.modules.mics;
+package me.wallhacks.spark.systems.module.modules.misc;
 
 import java.util.List;
 

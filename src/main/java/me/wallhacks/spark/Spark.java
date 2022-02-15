@@ -2,14 +2,11 @@ package me.wallhacks.spark;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.manager.*;
-import me.wallhacks.spark.systems.module.modules.mics.InventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +15,6 @@ import org.lwjgl.opengl.Display;
 import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.systems.command.CommandHandler;
 import me.wallhacks.spark.util.MC;
-import scala.tools.ant.sabbus.Break;
 
 import java.io.File;
 

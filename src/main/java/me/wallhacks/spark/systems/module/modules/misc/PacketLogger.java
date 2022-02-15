@@ -1,10 +1,9 @@
-package me.wallhacks.spark.systems.module.modules.mics;
+package me.wallhacks.spark.systems.module.modules.misc;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.util.MC;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 

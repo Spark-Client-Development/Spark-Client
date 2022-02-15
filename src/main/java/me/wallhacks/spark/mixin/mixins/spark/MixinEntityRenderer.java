@@ -5,7 +5,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.render.FovModifierEvent;
 import me.wallhacks.spark.event.render.RenderHurtCameraEffectEvent;
 import me.wallhacks.spark.manager.SystemManager;
-import me.wallhacks.spark.systems.module.modules.mics.Putin;
+import me.wallhacks.spark.systems.module.modules.misc.Putin;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.render.CameraUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -76,12 +76,9 @@ public class MixinEntityRenderer  implements MC {
     }
 
     @Inject(method = "orientCamera", at = @At("HEAD"))
-    public void orientCamera(float partialTicks,final CallbackInfo callbackInfo)
-    {
-        if(Putin.instance.isEnabled())
+    public void orientCamera(float partialTicks,final CallbackInfo callbackInfo) {
+        if(Putin.instance != null && Putin.instance.isEnabled())
             GlStateManager.scale(2, 2 * 0.4, 2);
-
-
     }
 
 }

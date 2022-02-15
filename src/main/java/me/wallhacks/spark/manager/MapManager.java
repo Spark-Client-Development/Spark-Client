@@ -97,9 +97,7 @@ public class MapManager implements MC {
                 if(max > 10)
                     return;
             }
-
         }
-
     }
 
 

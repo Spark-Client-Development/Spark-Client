@@ -1,15 +1,9 @@
-package me.wallhacks.spark.systems.module.modules.mics;
+package me.wallhacks.spark.systems.module.modules.misc;
 
-import com.mojang.authlib.GameProfile;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.systems.setting.settings.StringSetting;
-import me.wallhacks.spark.util.SessionUtils;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.sound.sampled.AudioInputStream;
@@ -19,7 +13,6 @@ import javax.sound.sampled.FloatControl;
 import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.util.UUID;
 
 @Module.Registration(name = "Putin", description = "The best module")
 public class Putin extends Module {
