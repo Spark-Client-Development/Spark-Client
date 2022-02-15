@@ -91,9 +91,10 @@ public class MapManager implements MC {
             int max = 0;
             while (toLoad.size() > 0) {
                 max++;
-                LoadMap(toLoad.get(0));
+                if(LoadMap(toLoad.get(0)))
+                    max++;
                 toLoad.remove(0);
-                if(max > 5)
+                if(max > 10)
                     return;
             }
 
