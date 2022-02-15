@@ -17,10 +17,29 @@ import net.minecraft.world.chunk.Chunk;
 public class SparkMap {
 
 
-    public DynamicTexture mapTexture;
+    DynamicTexture mapTexture;
     public ResourceLocation resourceLocation;
-    public BufferedImage bufferedImage;
+    BufferedImage bufferedImage;
 
+    boolean changedImage = false;
+
+
+    public BufferedImage getBufferedImage() {
+        return bufferedImage;
+    }
+
+    public void setBufferedImage(BufferedImage bufferedImage) {
+        this.bufferedImage = bufferedImage;
+        this.changedImage = true;
+    }
+
+    public DynamicTexture getDynamicTexture() {
+        if(changedImage)
+            UpdateMapTexture();
+
+
+        return mapTexture;
+    }
 
     public final Vec2i pos;
     public final int dim;
@@ -34,7 +53,7 @@ public class SparkMap {
         mapTexture = new DynamicTexture(128, 128);
         bufferedImage = new BufferedImage(128, 128, BufferedImage.TYPE_4BYTE_ABGR);
 
-        UpdateMapTexture();
+        changedImage = true;
     }
 
     public static Vec2i getWorldPosFromScreenPosOnMap(double zoom, Vec2d pos, double x, double y, double centerX, double centerY) {
@@ -44,9 +63,10 @@ public class SparkMap {
     }
 
 
-    public void UpdateMapTexture()
+    void UpdateMapTexture()
     {
         mapTexture = new DynamicTexture(bufferedImage);
+        changedImage = false;
     }
 
     public static float getWidthAndHeight(){
@@ -123,7 +143,7 @@ public class SparkMap {
         }
 
 
-        UpdateMapTexture();
+        changedImage = true;
 
     }
 

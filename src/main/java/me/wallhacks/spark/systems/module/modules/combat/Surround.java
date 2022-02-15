@@ -45,7 +45,6 @@ public class Surround extends Module {
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38DCB45E, true), "Render");
-    ColorSetting outline = new ColorSetting("Outline", this, new Color(0x91F6AB0A, true), "Render");
 
     public static Surround instance;
     public Surround(){
@@ -134,7 +133,7 @@ public class Surround extends Module {
 
                     if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
                         if (render.getValue())
-                            new FadePos(p, outline, fill, true);
+                            new FadePos(p, fill, true);
                         placed++;
                     }
                     else if(res == BlockInteractUtil.BlockPlaceResult.WAIT)

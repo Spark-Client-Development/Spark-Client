@@ -87,17 +87,11 @@ public class MapManager implements MC {
 
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
-        if(toLoad.size() > 0){
-            int max = 0;
-            while (toLoad.size() > 0) {
-                max++;
-                if(LoadMap(toLoad.get(0)))
-                    max++;
-                toLoad.remove(0);
-                if(max > 10)
-                    return;
-            }
 
+        while(toLoad.size() > 0){
+            SparkMap m = toLoad.get(0);
+            Spark.threadManager.execute(() -> {LoadMap(m);});
+            toLoad.remove(0);
         }
 
     }
@@ -114,20 +108,24 @@ public class MapManager implements MC {
 
         SparkMap M = getMap(mapAtC,getDim());
 
-
-        if(toLoad.contains(M))
-        {
-            //don't remove this
-            LoadMap(M);
+        boolean needsLoad = toLoad.contains(M);
+        if(needsLoad)
             toLoad.remove(M);
 
-        }
+        Spark.threadManager.execute(() -> {
 
-        M.updateMapData(c, mc.world);
+            //don't remove this
+            if(needsLoad)
+                LoadMap(M);
 
-        //save map to files
-        if(ClientConfig.getInstance().SaveMap.isOn())
-            Spark.threadManager.execute(() -> {SaveMap(M);});
+            M.updateMapData(c, mc.world);
+
+            //save map to files
+            if(ClientConfig.getInstance().SaveMap.isOn())
+                SaveMap(M);
+        });
+
+
     }
 
 
@@ -153,9 +151,11 @@ public class MapManager implements MC {
         return dim;
     }
 
+
+
     public boolean LoadMap(SparkMap m){
 
-        m.bufferedImage = new BufferedImage(128, 128, BufferedImage.TYPE_4BYTE_ABGR);
+        m.setBufferedImage(new BufferedImage(128, 128, BufferedImage.TYPE_4BYTE_ABGR));
 
         File f = new File(getPath(m));
         if (!f.exists())
@@ -165,8 +165,8 @@ public class MapManager implements MC {
 
 
         try {
-            m.bufferedImage = ImageIO.read(f);
-            m.UpdateMapTexture();
+            m.setBufferedImage(ImageIO.read(f));
+
 
             return true;
         } catch (IOException e) {
@@ -195,7 +195,7 @@ public class MapManager implements MC {
         }
 
         try {
-            ImageIO.write(m.bufferedImage, "PNG", f);
+            ImageIO.write(m.getBufferedImage(), "PNG", f);
         } catch (IOException e) {
             System.out.println("Image could not be read");
         }

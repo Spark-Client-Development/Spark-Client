@@ -20,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SearchChunksModule<T extends BlockPos> extends Module {
 
 
-    CopyOnWriteArrayList<ChunkPos> chunksToSearch = new CopyOnWriteArrayList<>();
+    protected CopyOnWriteArrayList<ChunkPos> chunksToSearch = new CopyOnWriteArrayList<>();
 
 
     protected ConcurrentHashMap<Chunk, CopyOnWriteArrayList<T>> found = new ConcurrentHashMap<Chunk,CopyOnWriteArrayList<T>>();

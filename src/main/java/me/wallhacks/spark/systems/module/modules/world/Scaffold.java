@@ -75,7 +75,7 @@ public class Scaffold extends Module {
         {
             if(Place(floorPos) == BlockInteractUtil.BlockPlaceResult.PLACED) {
                 if (render.getValue())
-                    new FadePos(floorPos, outline, fill, true);
+                    new FadePos(floorPos, fill, true);
                 if(mc.gameSettings.keyBindJump.isKeyDown())
                 {
                     lastTowerPlaced.reset();
@@ -122,7 +122,7 @@ public class Scaffold extends Module {
                 if (head.material.isReplaceable())	{
                     if(Place(headPos) != BlockInteractUtil.BlockPlaceResult.FAILED) {
                         if (render.getValue())
-                            new FadePos(headPos, outline, fill, true);
+                            new FadePos(headPos, fill, true);
                         return;
                     }
                 }

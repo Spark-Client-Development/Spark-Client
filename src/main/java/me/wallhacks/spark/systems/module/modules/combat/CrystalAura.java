@@ -90,7 +90,7 @@ public class CrystalAura extends Module {
 
     ModeSetting render = new ModeSetting("Mode", this, "Normal", Arrays.asList("Normal", "Fancy", "Off"), "Render");
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38DC5E5E, true), "Render");
-    ColorSetting outline = new ColorSetting("Outline", this, new Color(0x91F60A51, true), "Render");
+
 
     BooleanSetting surround = new BooleanSetting("Surround", this, false, "Pause");
     BooleanSetting cevBreaker = new BooleanSetting("CEVBreaker", this, true, "Pause");
@@ -204,7 +204,7 @@ public class CrystalAura extends Module {
         }
 
         if (currentCrystalBlockPos != null && render.is("Normal"))
-            new FadePos(currentCrystalBlockPos, outline, fill, 50, true);
+            new FadePos(currentCrystalBlockPos, fill, 50, true);
 
         //rotate every tick to keep looking at crystal
         if (currentCrystalEntity != null || currentCrystalBlockPos != null)
@@ -618,6 +618,6 @@ public class CrystalAura extends Module {
         if (currentCrystalBlockPos == null || renderVec == null || !render.is("Fancy")) return;
         AxisAlignedBB render = getFacingVec(renderVec, currentCrystalBlockPos);
         EspUtil.boundingESPBoxFilled(render, fill.getColor());
-        EspUtil.boundingESPBox(render, outline.getColor(), 2.0f);
+        EspUtil.boundingESPBox(render, fill.getColor().brighter(), 2.0f);
     }
 }

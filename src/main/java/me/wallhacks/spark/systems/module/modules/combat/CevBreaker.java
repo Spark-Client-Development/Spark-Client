@@ -43,7 +43,6 @@ public class CevBreaker extends Module {
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x385EDC7B, true), "Render");
-    ColorSetting outline = new ColorSetting("Outline", this, new Color(0x912097C4, true), "Render");
 
 
     public static CevBreaker INSTANCE;
@@ -127,7 +126,7 @@ public class CevBreaker extends Module {
         BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p,new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
         if(res == BlockInteractUtil.BlockPlaceResult.PLACED)
             if (render.getValue())
-                new FadePos(p, outline, fill, true);
+                new FadePos(p, fill,true);
         return res;
     }
 
@@ -214,7 +213,7 @@ public class CevBreaker extends Module {
         }
 
         if (render.getValue())
-            new FadePos(bestPos, outline, fill, true);
+            new FadePos(bestPos, fill, true);
 
     }
 

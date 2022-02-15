@@ -36,7 +36,6 @@ public class AutoTrap extends Module {
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0xABE50F36, true), "Render");
-    ColorSetting outline = new ColorSetting("Outline", this, new Color(0x914B1212, true), "Render");
 
 
     @SubscribeEvent
@@ -126,7 +125,7 @@ public class AutoTrap extends Module {
             BlockInteractUtil.BlockPlaceResult res = Place(p);
             if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
                 if (render.getValue())
-                    new FadePos(p, outline, fill, true);
+                    new FadePos(p, fill, true);
                 placed++;
             }
             else if(res == BlockInteractUtil.BlockPlaceResult.WAIT)

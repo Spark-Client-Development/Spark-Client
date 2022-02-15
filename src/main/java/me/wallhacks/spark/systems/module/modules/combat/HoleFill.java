@@ -40,7 +40,6 @@ public class HoleFill extends Module {
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x389F5EDC, true), "Render");
-    ColorSetting outline = new ColorSetting("Outline", this, new Color(0x919F0AF6, true), "Render");
     /*
     @Todo: add support for double holes
     */
@@ -134,7 +133,7 @@ public class HoleFill extends Module {
                 if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
                     placed++;
                     if (render.getValue())
-                        new FadePos(posToCheck, outline, fill, true);
+                        new FadePos(posToCheck, fill, true);
                 }
                 else if(res == BlockInteractUtil.BlockPlaceResult.WAIT)
                     return;

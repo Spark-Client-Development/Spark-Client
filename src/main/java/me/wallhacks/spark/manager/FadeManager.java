@@ -39,19 +39,16 @@ public class FadeManager {
                 remove.add(pos.pos);
                 continue;
             }
-            Color outline;
             Color fill;
             if (pos.isFading()) {
                 double percent = Math.min((double) (maxTime - current) / maxTime,1);
-                outline = new Color(pos.outline.getColor().getRed(), pos.outline.getColor().getGreen(), pos.outline.getColor().getBlue(), (int) (pos.outline.getColor().getAlpha() * percent));
                 fill = new Color(pos.fill.getColor().getRed(), pos.fill.getColor().getGreen(), pos.fill.getColor().getBlue(), (int) (pos.fill.getColor().getAlpha() * percent));
             } else {
                 fill = pos.fill.getColor();
-                outline = pos.outline.getColor();
                 pos.fadeTimer.reset();
             }
             EspUtil.drawBox(pos.pos, fill);
-            EspUtil.drawOutline(pos.pos, outline);
+            EspUtil.drawOutline(pos.pos, fill.brighter());
         }
         for (BlockPos r : remove) {
             positions.remove(r);

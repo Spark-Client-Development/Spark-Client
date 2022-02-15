@@ -49,9 +49,18 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
                 if(PlayerUtil.getDistance(c.getPos()) < range + 16)
                 {
 
+
                     for (HoleInfo holeInfo : found.get(c)) {
                         double dis = RenderUtil.getRenderDistance(holeInfo);
                         if(dis < range){
+
+                            //anti fuckup
+                            if(!isBlockHole(holeInfo))
+                            {
+                                chunksToSearch.add(c.getPos());
+                                break;
+                            }
+
                             double d = 1.0/MathHelper.clamp(range,2,10);
                             renderHole(holeInfo,holeInfo.type,holeInfo.length,holeInfo.width, MathHelper.clamp((range-dis)*d,0,1));
                         }
@@ -172,6 +181,27 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
             else if (HoleUtil.isDoubleObsidianHoleZ(potentialHole))
                 addFound(new HoleInfo(potentialHole, Type.Obsidian, 0, 1));
         }
+    }
+
+    boolean isBlockHole(BlockPos potentialHole) {
+        if (!(mc.world.getBlockState(potentialHole).getBlock() instanceof BlockAir)) return false;
+
+        if (HoleUtil.isBedRockHole(potentialHole))
+            return true;
+        else if (HoleUtil.isObsidianHole(potentialHole))
+            return true;
+
+        if (doubles.getValue()) {
+            if (HoleUtil.isDoubleBedrockHoleX(potentialHole))
+                return true;
+            else if (HoleUtil.isDoubleBedrockHoleZ(potentialHole))
+                return true;
+            else if (HoleUtil.isDoubleObsidianHoleX(potentialHole))
+                return true;
+            else if (HoleUtil.isDoubleObsidianHoleZ(potentialHole))
+                return true;
+        }
+        return false;
     }
 
 }
