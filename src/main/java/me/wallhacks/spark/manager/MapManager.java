@@ -118,7 +118,8 @@ public class MapManager implements MC {
             if(needsLoad)
                 LoadMap(M);
 
-            M.updateMapData(c, mc.world);
+            if(mc.world != null)
+                M.updateMapData(c, mc.world);
 
             //save map to files
             if(ClientConfig.getInstance().SaveMap.isOn())
