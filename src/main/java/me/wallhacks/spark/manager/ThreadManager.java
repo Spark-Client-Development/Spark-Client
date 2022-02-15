@@ -3,6 +3,7 @@ package me.wallhacks.spark.manager;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.ThreadEvent;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,8 +22,14 @@ public class ThreadManager {
 
                 while(true)
                 {
-                    ThreadEvent event = new ThreadEvent();
-                    Spark.eventBus.post(event);
+                    try {
+                        ThreadEvent event = new ThreadEvent();
+                        Spark.eventBus.post(event);
+                    }
+                    catch (Exception c)
+                    {
+
+                    }
                 }
             }
 

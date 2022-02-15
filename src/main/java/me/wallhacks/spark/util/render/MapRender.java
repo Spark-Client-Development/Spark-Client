@@ -110,9 +110,7 @@ public class MapRender implements MC {
                         GlStateManager.translate(x,y,0);
                         GlStateManager.scale(0.3,0.3,0.3);
                         Gui.drawRect(-12,-12,12,12, ClientConfig.getInstance().getMainColor().getRGB());
-                        GlStateManager.translate(x, y, 0);
-                        GlStateManager.scale(0.3, 0.3, 0.3);
-                        GuiPanelBase.drawRect(-12, -12, 12, 12, ClientConfig.getInstance().getMainColor().getRGB());
+
                         NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(player.getName());
                         if (info != null)
                             GuiUtil.renderPlayerHead(info, -10, -10, 20);

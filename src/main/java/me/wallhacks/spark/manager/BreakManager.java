@@ -37,7 +37,7 @@ public class BreakManager implements MC {
     public void setCurrentBlock(BlockPos pos,boolean instMine) {
         block = pos;
         this.instMine = instMine;
-        ticks = 2;
+        ticks = 5;
     }
 
     @SubscribeEvent

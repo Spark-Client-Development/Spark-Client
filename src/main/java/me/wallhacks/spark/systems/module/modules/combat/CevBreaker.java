@@ -106,7 +106,6 @@ public class CevBreaker extends Module {
                 if(lastState == CBState.breakObi)
                 {
                     Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn());
-                    cooldown = 20;
                 }
                 if(lastState == CBState.breakCrystal)
                 {

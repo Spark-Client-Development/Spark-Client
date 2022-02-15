@@ -45,6 +45,7 @@ public class Spark implements MC {
     public static WaypointManager waypointManager;
     public static BreakManager breakManager;
     public static ThreadManager threadManager;
+    public static SwitchManager switchManager;
     public static MapManager mapManager;
 
     public static SocialManager socialManager;
@@ -72,6 +73,7 @@ public class Spark implements MC {
         fadeManager = new FadeManager();
         clickGuiScreen = new ClickGuiMenuBase();
         threadManager = new ThreadManager();
+        switchManager = new SwitchManager();
         altManager = new AltManager();
         socialManager = new SocialManager();
         waypointManager = new WaypointManager();

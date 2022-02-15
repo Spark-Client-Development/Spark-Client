@@ -7,8 +7,10 @@ import net.minecraft.util.EnumHand;
 
 public class ItemSwitcher implements MC {
 
-
 	public static EnumHand Switch(SwitchItem switcher,switchType type){
+		return Switch(switcher,type,true);
+	}
+	public static EnumHand Switch(SwitchItem switcher,switchType type,boolean sync){
 		
 		SwitchResult res = getCalculateAction(switcher,type);
 
@@ -16,8 +18,9 @@ public class ItemSwitcher implements MC {
 			return null;
 
 		mc.player.inventory.currentItem = res.slot;
+		if(sync)
+			mc.playerController.syncCurrentPlayItem();
 
-		mc.playerController.syncCurrentPlayItem();
 
 		return res.hand;
 	}
