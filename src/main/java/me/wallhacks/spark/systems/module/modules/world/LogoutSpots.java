@@ -70,7 +70,7 @@ public class LogoutSpots extends Module {
             }
     }
 
-    private class LogoutSpot {
+    public class LogoutSpot {
         double hp;
         UUID uuid;
         AxisAlignedBB box;

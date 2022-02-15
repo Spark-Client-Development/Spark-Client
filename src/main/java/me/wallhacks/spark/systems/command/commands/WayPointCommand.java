@@ -21,7 +21,7 @@ public class WayPointCommand extends Command implements MC {
 
 
 
-				if(Spark.waypointManager.createWayPoint(new Vec2i((int)mc.player.posX,(int)mc.player.posZ),mc.player.dimension,args[0]))
+				if(null != Spark.waypointManager.createWayPoint(new Vec2i((int)mc.player.posX,(int)mc.player.posZ),mc.player.dimension,args[0]))
 				{
 
 					Spark.sendInfo(""+ CommandManager.COLOR1+"Waypoint "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been created!");

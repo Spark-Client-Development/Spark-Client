@@ -39,6 +39,7 @@ public class MapGui extends GuiPanelBase {
     final ResourceLocation layersIcon = new ResourceLocation("textures/icons/layersicon.png");
     GuiPanelButton dimButton = new GuiPanelButton(() -> {
 
+
         if(dim != 1)
         {
             if(dim == 0)

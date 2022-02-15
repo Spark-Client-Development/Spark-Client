@@ -62,7 +62,8 @@ public class NavigationGui extends ClickGuiPanel implements MC {
 
 
     final GuiPanelButton addWayPointButton = new GuiPanelButton(() -> {
-        Spark.waypointManager.createWayPoint(new Vec2i((int)mc.player.posX,(int)mc.player.posZ),mc.player.dimension);
+
+        guiEditSettingPanel.setCurrentSettingsHolder(Spark.waypointManager.createWayPoint(new Vec2i((int)mc.player.posX,(int)mc.player.posZ),mc.player.dimension));
     }, "AddWaypoint");
 
 
@@ -123,10 +124,12 @@ public class NavigationGui extends ClickGuiPanel implements MC {
 
             fontManager.drawString("Waypoints",x+4,y+searchFieldHeight/2-fontManager.getTextHeight()/2, guiSettings.getContrastColor().getRGB());
 
-            guiPanelScroll.setPositionAndSize(x,y + searchFieldHeight + guiSettings.spacing,ListWidth,height-searchFieldHeight-guiSettings.spacing);
+            guiPanelScroll.setPositionAndSize(x,y + searchFieldHeight + guiSettings.spacing,ListWidth,height-searchFieldHeight*2-2*guiSettings.spacing);
             guiPanelScroll.drawBackGround(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
             guiPanelScroll.renderContent(MouseX,MouseY,deltaTime);
 
+            addWayPointButton.setPositionAndSize(x,y+height-searchFieldHeight,ListWidth,searchFieldHeight);
+            addWayPointButton.renderContent(MouseX, MouseY, deltaTime);
 
             x += ListWidth + guiSettings.spacing;
 

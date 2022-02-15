@@ -2,6 +2,7 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.world.LogoutSpots;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
@@ -11,6 +12,7 @@ import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.HardSolidBlockSwitchItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
@@ -56,24 +58,39 @@ public class AutoTrap extends Module {
 
 
 
-        int placed = 0;
 
         for(EntityPlayer e : EnemyList) {
-            ArrayList<BlockPos> needsPlacing = new ArrayList<>();
 
 
+            if(trap(PredictionUtil.PredictedTarget(e,prediction.getValue())))
+                return;
 
-            List<BlockPos> occupiedByPlayer = WorldUtils.getBlocksOccupiedByBox(PredictionUtil.PredictedTarget(e,prediction.getValue()));
+
+        }
+
+        if(logoutSpots.isOn())
+            for(LogoutSpots.LogoutSpot e : LogoutSpots.getLogoutSpots()) {
+                if(trap(e.getBox()))
+                    return;
+            }
+
+    }
+
+    boolean trap(AxisAlignedBB bb) {
+        int placed = 0;
+        ArrayList<BlockPos> needsPlacing = new ArrayList<>();
+
+        List<BlockPos> occupiedByPlayer = WorldUtils.getBlocksOccupiedByBox(bb);
 
 
-            for (BlockPos pos : occupiedByPlayer) {
-                BlockPos[] poses = new BlockPos[]{pos.add(0,-1,0),pos.add(1,1,0),pos.add(0,1,1),pos.add(-1,1,0),pos.add(0,1,-1),pos.add(1,0,0),pos.add(0,0,1),pos.add(-1,0,0),pos.add(0,0,-1)};
+        for (BlockPos pos : occupiedByPlayer) {
+            BlockPos[] poses = new BlockPos[]{pos.add(0,-1,0),pos.add(1,1,0),pos.add(0,1,1),pos.add(-1,1,0),pos.add(0,1,-1),pos.add(1,0,0),pos.add(0,0,1),pos.add(-1,0,0),pos.add(0,0,-1)};
 
-                BlockPos top = pos.add(0,2,0);
-                if(!needsPlacing.contains(top))
-                    needsPlacing.add(top);
+            BlockPos top = pos.add(0,2,0);
+            if(!needsPlacing.contains(top))
+                needsPlacing.add(top);
 
-                if(mc.world.getBlockState(top).getBlock().material.isReplaceable())
+            if(mc.world.getBlockState(top).getBlock().material.isReplaceable())
                 if(!BlockInteractUtil.canPlaceBlockAtPos(top,true)){
 
                     BlockPos[] around = new BlockPos[]{top.add(0,0,1),top.add(0,0,-1),top.add(1,0,0),top.add(-1,0,0)};
@@ -87,40 +104,38 @@ public class AutoTrap extends Module {
                 }
 
 
-                for (BlockPos p : poses) {
-                    if(!needsPlacing.contains(p))
+            for (BlockPos p : poses) {
+                if(!needsPlacing.contains(p))
                     if(mc.world.getBlockState(p).getBlock().material.isReplaceable())
                         needsPlacing.add(p);
-                }
-
-
-
             }
 
-            Collections.sort(needsPlacing, new Comparator<BlockPos>() {
-                @Override
-                public int compare(BlockPos fruit2, BlockPos fruit1)
-                {
-                    return  (int)((PlayerUtil.getDistance(fruit1)-PlayerUtil.getDistance(fruit2))*5);
-                }
-            });
 
-            for(BlockPos p : needsPlacing){
-                BlockInteractUtil.BlockPlaceResult res = Place(p);
-                if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
-                    if (render.getValue())
-                        new FadePos(p, outline, fill, true);
-                    placed++;
-                }
-                else if(res == BlockInteractUtil.BlockPlaceResult.WAIT)
-                    return;
-
-                if(placed >= blocksPerTick.getValue())
-                    return;
-            }
 
         }
 
+        Collections.sort(needsPlacing, new Comparator<BlockPos>() {
+            @Override
+            public int compare(BlockPos fruit2, BlockPos fruit1)
+            {
+                return  (int)((PlayerUtil.getDistance(fruit1)-PlayerUtil.getDistance(fruit2))*5);
+            }
+        });
+
+        for(BlockPos p : needsPlacing){
+            BlockInteractUtil.BlockPlaceResult res = Place(p);
+            if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
+                if (render.getValue())
+                    new FadePos(p, outline, fill, true);
+                placed++;
+            }
+            else if(res == BlockInteractUtil.BlockPlaceResult.WAIT)
+                return true;
+
+            if(placed >= blocksPerTick.getValue())
+                return true;
+        }
+        return placed > 0;
     }
 
 

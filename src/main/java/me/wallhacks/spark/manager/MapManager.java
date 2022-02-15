@@ -2,6 +2,7 @@ package me.wallhacks.spark.manager;
 
 import com.google.common.io.Files;
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.event.player.ChunkLoadEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapManager implements MC {
@@ -50,14 +52,14 @@ public class MapManager implements MC {
 
 
     String CurrentServer;
-    private Map<Integer, Map<Vec2i, SparkMap>> loadedMaps = new HashMap<Integer,Map<Vec2i,SparkMap>>();
+    private ConcurrentHashMap<Integer, ConcurrentHashMap<Vec2i, SparkMap>> loadedMaps = new ConcurrentHashMap<Integer,ConcurrentHashMap<Vec2i,SparkMap>>();
 
     CopyOnWriteArrayList<SparkMap> toLoad = new CopyOnWriteArrayList<SparkMap>();
 
     public SparkMap getMap(Vec2i mapPos,int dim){
 
         if(!loadedMaps.containsKey(dim))
-            loadedMaps.put(dim, new HashMap<Vec2i,SparkMap>());
+            loadedMaps.put(dim, new ConcurrentHashMap<Vec2i,SparkMap>());
         if(!loadedMaps.get(dim).containsKey(mapPos))
         {
             loadedMaps.get(dim).put(mapPos,new SparkMap(mapPos,dim));
@@ -85,14 +87,12 @@ public class MapManager implements MC {
 
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
-
-
         if(toLoad.size() > 0){
             int max = 0;
             while (toLoad.size() > 0) {
                 max++;
-                if(LoadMap(toLoad.get(0)))
-                    toLoad.remove(0);
+                LoadMap(toLoad.get(0));
+                toLoad.remove(0);
                 if(max > 5)
                     return;
             }
@@ -100,6 +100,7 @@ public class MapManager implements MC {
         }
 
     }
+
 
 
 

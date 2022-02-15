@@ -84,6 +84,7 @@ public class AltManager implements MC {
         altList = new AltList();
         altList.setList(this);
         scroll = new GuiPanelScroll(0, 0, 0, 0, altList);
+        scroll.hasScrollBar = false;
     }
     String getAltFile(String name) {
         String base = Spark.ParentPath.getAbsolutePath() + ""+System.getProperty("file.separator")+"alts"+System.getProperty("file.separator")+"";

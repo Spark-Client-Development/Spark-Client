@@ -19,7 +19,7 @@ import java.awt.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class GuiUtil {
+public class GuiUtil implements MC {
     public static void drawCompleteImage(float posX, float posY, float width, float height) {
         GL11.glPushMatrix();
         GL11.glTranslatef(posX, posY, 0.0f);

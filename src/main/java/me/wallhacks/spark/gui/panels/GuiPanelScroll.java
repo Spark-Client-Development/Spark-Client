@@ -1,5 +1,6 @@
 package me.wallhacks.spark.gui.panels;
 
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.math.Vec3d;
@@ -15,9 +16,10 @@ public class GuiPanelScroll extends GuiPanelBase {
 
 
     final GuiPanelBase content;
+    final GuiPanelBase scrollButton = new GuiPanelBase();
 
     public boolean controlWidth = true;
-
+    public boolean hasScrollBar = true;
 
     public double getScroll() {
         return scroll;
@@ -38,6 +40,8 @@ public class GuiPanelScroll extends GuiPanelBase {
 
     }
 
+
+
     @Override
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
         super.renderContent(MouseX,MouseY,deltaTime);
@@ -54,9 +58,31 @@ public class GuiPanelScroll extends GuiPanelBase {
 
             smoothScroll = MathUtil.lerp(smoothScroll,scroll,deltaTime*0.02);
 
+
+
+            if(hasScrollBar && (content.height > height))
+            {
+                scrollButton.width = 8;
+                scrollButton.height = height;
+                scrollButton.posY = posY;
+                scrollButton.posX = posX+width-8;
+                scrollButton.renderContent(MouseX, MouseY, deltaTime);
+
+
+
+                int h = (int) (height * (height/Math.max(height,content.height+0.01)));
+
+                if(scrollButton.isSelected())
+                    scroll = (MouseY-posY-h/2)/(double)(height-h)*( content.height-height);
+
+                int st = (int)((height-h)/Math.max(0.01,content.height-height)*smoothScroll);
+
+                drawQuad(posX+width-8, posY+2+st, 8-2, h-4, ClientConfig.getInstance().getGuiSettingFieldColor().getRGB());
+            }
+
+
+
             GL11.glPushMatrix();
-
-
 
 
             GuiUtil.glScissor(this.posX, this.posY, (this.width), height);
@@ -70,8 +96,14 @@ public class GuiPanelScroll extends GuiPanelBase {
             GL11.glTranslated(0,-smoothScroll,0);
 
 
+
+
+
+
             if(controlWidth)
-                content.width = width;
+                content.width = width + ((hasScrollBar && (content.height > height)) ? -8 : 0);
+
+
 
             content.renderContent(MouseX, MouseY+(int)smoothScroll, deltaTime);
 

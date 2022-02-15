@@ -71,23 +71,24 @@ public class GuiCategoryListPanel extends GuiPanelBase {
 
             for (GuiCategoryPanel category: categoryPanels) {
 
+                if(category.getShownModules() > 0)
+                {
+                    y+=categoryspacing;
 
-                y+=categoryspacing;
+                    category.posX = posX;
+                    category.posY = y;
 
-                category.posX = posX;
-                category.posY = y;
+                    category.width = width;
 
-                category.width = width;
+                    category.renderContent(MouseX,MouseY,deltaTime);
 
-                category.renderContent(MouseX,MouseY,deltaTime);
-
-                y += category.height;
-
+                    y += category.height;
+                }
 
 
             }
 
-            height = y+5;
+            height = y+20-posY;
 
         }
 

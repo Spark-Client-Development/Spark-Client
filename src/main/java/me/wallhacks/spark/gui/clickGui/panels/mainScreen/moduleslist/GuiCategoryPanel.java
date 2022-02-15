@@ -28,6 +28,18 @@ public class GuiCategoryPanel extends GuiPanelBase {
 
     boolean isExtended = true;
 
+    public int getShownModules() {
+        int i = 0;
+        for (GuiModulePanel m: modules) {
+            if(m.module.getName().toLowerCase().contains(guiCategoryListPanel.guiModuleListPanel.moduleSearchField.getText().toLowerCase())) {
+
+                i++;
+            }
+
+        }
+        return i;
+    }
+
     public void renderContent(int MouseX, int MouseY, float deltaTime)
     {
         super.renderContent(MouseX,MouseY,deltaTime);

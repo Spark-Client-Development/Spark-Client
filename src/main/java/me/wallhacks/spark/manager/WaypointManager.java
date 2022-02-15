@@ -90,28 +90,30 @@ public class WaypointManager implements MC {
     }
 
 
-    public void createWayPoint(Vec2i pos,int dim) {
+    public Waypoint createWayPoint(Vec2i pos,int dim) {
         int in = 0;
 
         while(in < 100)
         {
             in++;
             String name = "WayPoint"+in;
-            if(!createWayPoint(pos,dim,name))
+            Waypoint waypoint = createWayPoint(pos,dim,name);
+            if(waypoint == null)
                 continue;
-            return;
+            return waypoint;
         }
+        return null;
     }
-    public boolean createWayPoint(Vec2i pos,int dim,String name) {
+    public Waypoint createWayPoint(Vec2i pos,int dim,String name) {
         for (Waypoint point : getWayPoints()) {
             if(point.getName().equalsIgnoreCase(name))
-                return false;
+                return null;
         }
         Waypoint w = new Waypoint(name);
         wayPoints.add(w);
         w.setDim(dim);
         w.setPos(pos);
-        return true;
+        return w;
     }
 
 

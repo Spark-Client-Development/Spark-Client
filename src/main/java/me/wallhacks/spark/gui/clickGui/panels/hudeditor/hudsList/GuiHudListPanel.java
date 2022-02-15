@@ -53,7 +53,7 @@ public class GuiHudListPanel extends GuiPanelBase {
 
             }
 
-            height = y+50;
+            height = y+20;
 
         }
 
