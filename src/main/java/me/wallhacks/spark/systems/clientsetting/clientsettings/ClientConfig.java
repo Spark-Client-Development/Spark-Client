@@ -16,7 +16,7 @@ public class ClientConfig extends ClientSetting {
 
     StringSetting Prefix = new StringSetting("Prefix",this,".","Commands");
     DoubleSetting fadeTime = new DoubleSetting("FadeTime", this, 0.5, 0.1, 5.0, "Render");
-    public ColorSetting friendColor = new ColorSetting("FriendColor", this, new Color(0x000202), "Render");
+    public ColorSetting friendColor = new ColorSetting("FriendColor", this, new Color(0x35BABA), "Render");
 
     KeySetting bind = new KeySetting("ClickGui",this, Keyboard.KEY_RSHIFT,"ClickGui");
 

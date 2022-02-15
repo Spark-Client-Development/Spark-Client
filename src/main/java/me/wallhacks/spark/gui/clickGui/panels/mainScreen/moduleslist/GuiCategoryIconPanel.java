@@ -33,35 +33,25 @@ public class GuiCategoryIconPanel extends GuiPanelBase {
     {
         super.renderContent(MouseX,MouseY,deltaTime);
 
-        if(true) {
+
+        drawBackGround(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
 
 
+        mc.getTextureManager().bindTexture(this.image);
+
+        Color c = guiSettings.getContrastColor();
 
 
+        if(isCategorySelected())
+            c = c.brighter();
 
 
-            drawBackGround(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
+        GlStateManager.color(c.getRed()/255f,c.getGreen()/255f,c.getBlue()/255f,c.getAlpha()/255f);
 
 
+        GuiUtil.drawCompleteImage(posX, posY, width, height);
 
-
-
-            mc.getTextureManager().bindTexture(this.image);
-
-            Color c = guiSettings.getContrastColor();
-
-
-            if(isCategorySelected())
-                c = c.brighter();
-
-
-            GlStateManager.color(c.getRed()/255f,c.getGreen()/255f,c.getBlue()/255f,c.getAlpha()/255f);
-
-
-            GuiUtil.drawCompleteImage(posX, posY, width, height);
-
-            GlStateManager.color(1,1,1,1);
-        }
+        GlStateManager.color(1,1,1,1);
 
 
     }

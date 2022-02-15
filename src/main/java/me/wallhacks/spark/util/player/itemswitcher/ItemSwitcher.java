@@ -17,10 +17,9 @@ public class ItemSwitcher implements MC {
 
 		mc.player.inventory.currentItem = res.slot;
 
-		
+		mc.playerController.syncCurrentPlayItem();
+
 		return res.hand;
-		
-		
 	}
 
 	//predict what item will switcher switch to
