@@ -35,7 +35,7 @@ public class ChestStealer extends Module {
     private long time;
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
-        if((MC.mc.currentScreen instanceof GuiChest || MC.mc.currentScreen instanceof GuiShulkerBox) && isStealing){
+        if((mc.currentScreen instanceof GuiChest || mc.currentScreen instanceof GuiShulkerBox) && isStealing){
             if(System.currentTimeMillis() - this.time >= delay.getValue()*10)
             {
                 if(isStealing)
@@ -54,11 +54,11 @@ public class ChestStealer extends Module {
 
     int slot = 0;
     void steal(){
-        if (MC.mc.currentScreen instanceof GuiChest || MC.mc.currentScreen instanceof GuiShulkerBox)
+        if (mc.currentScreen instanceof GuiChest || mc.currentScreen instanceof GuiShulkerBox)
         {
-            Container container = ((GuiContainer) MC.mc.currentScreen).inventorySlots;
+            Container container = ((GuiContainer) mc.currentScreen).inventorySlots;
 
-            while(slot < (MC.mc.currentScreen instanceof GuiShulkerBox ? ((GuiShulkerBox) MC.mc.currentScreen).inventory : ((GuiChest) MC.mc.currentScreen).lowerChestInventory).getSizeInventory())
+            while(slot < (mc.currentScreen instanceof GuiShulkerBox ? ((GuiShulkerBox) mc.currentScreen).inventory : ((GuiChest) mc.currentScreen).lowerChestInventory).getSizeInventory())
             {
                 ItemStack l_Stack = container.getSlot(slot).getStack();
 
@@ -66,7 +66,7 @@ public class ChestStealer extends Module {
                 {
                     if(!SystemManager.getModule(InventoryManager.class).isEnabled() || SystemManager.getModule(InventoryManager.class).KeepItemStack(l_Stack))
                     {
-                        MC.mc.playerController.windowClick(container.windowId, slot, 0, ClickType.QUICK_MOVE,  MC.mc.player);
+                        mc.playerController.windowClick(container.windowId, slot, 0, ClickType.QUICK_MOVE,  mc.player);
                         time = System.currentTimeMillis()+(long) (Math.random()*5*delay.getValue());
                         return;
                     }

@@ -42,8 +42,8 @@ public class AutoArmor extends Module {
             type = EntityEquipmentSlot.FEET;
         } else return -1;
 
-        for (int i = 0; i < MC.mc.player.inventoryContainer.getInventory().size(); ++i) {
-            ItemStack s = MC.mc.player.inventoryContainer.getInventory().get(i);
+        for (int i = 0; i < mc.player.inventoryContainer.getInventory().size(); ++i) {
+            ItemStack s = mc.player.inventoryContainer.getInventory().get(i);
             if (s.getItem() != Items.AIR) {
                 if (s.getItem() instanceof ItemArmor) {
                     final ItemArmor armor = (ItemArmor) s.getItem();
@@ -72,31 +72,31 @@ public class AutoArmor extends Module {
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
         counter++;
-        if (counter > delay.getValue() && !(nullCheck() || MC.mc.currentScreen instanceof GuiContainer && !(MC.mc.currentScreen instanceof GuiInventory))) {
+        if (counter > delay.getValue() && !(nullCheck() || mc.currentScreen instanceof GuiContainer && !(mc.currentScreen instanceof GuiInventory))) {
             for (int i = 5; i <= 8; i++) {
                 if (!FastUse.INSTANCE.shouldPause()) {
-                    ItemStack itemStack = MC.mc.player.inventoryContainer.getSlot(i).getStack();
+                    ItemStack itemStack = mc.player.inventoryContainer.getSlot(i).getStack();
                     int armorSlot = findArmorSlot(i, false);
                     if (armorSlot != -1 && armorSlot != i) {
                         if (itemStack.isEmpty()) {
-                            MC.mc.playerController.windowClick(MC.mc.player.inventoryContainer.windowId, armorSlot, 0, ClickType.QUICK_MOVE, MC.mc.player);
-                            MC.mc.playerController.updateController();
+                            mc.playerController.windowClick(mc.player.inventoryContainer.windowId, armorSlot, 0, ClickType.QUICK_MOVE, mc.player);
+                            mc.playerController.updateController();
                         } else
                             InventoryUtil.moveItem(armorSlot, i);
                         counter = 0;
                         break;
                     }
                 } else {
-                    ItemStack itemStack = MC.mc.player.inventoryContainer.getSlot(i).getStack();
+                    ItemStack itemStack = mc.player.inventoryContainer.getSlot(i).getStack();
                     if (itemStack.isEmpty()) {
                         int armorSlot = findArmorSlot(i, true);
                         if (armorSlot == -1) continue;
-                        ItemStack armor = MC.mc.player.inventoryContainer.getInventory().get(armorSlot);
+                        ItemStack armor = mc.player.inventoryContainer.getInventory().get(armorSlot);
                         double dam_left = armor.getMaxDamage() - armor.getItemDamage();
                         double percent = (dam_left / armor.getMaxDamage()) * 100;
                         if (percent < FastUse.INSTANCE.takeOffVal.getValue()) {
-                            MC.mc.playerController.windowClick(MC.mc.player.inventoryContainer.windowId, armorSlot, 0, ClickType.QUICK_MOVE, MC.mc.player);
-                            MC.mc.playerController.updateController();
+                            mc.playerController.windowClick(mc.player.inventoryContainer.windowId, armorSlot, 0, ClickType.QUICK_MOVE, mc.player);
+                            mc.playerController.updateController();
                         }
                     }
                 }

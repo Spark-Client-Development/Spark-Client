@@ -25,10 +25,11 @@ import java.util.List;
 public class AutoTrap extends Module {
 
 
-    IntSetting prediction = new IntSetting("Prediction",this,2,1,8,"General");
-    BooleanSetting silentSwitch = new BooleanSetting("SilentSwitch",this,true,"General");
-    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,8,"General");
-
+    IntSetting prediction = new IntSetting("Prediction",this,2,1,8);
+    BooleanSetting silentSwitch = new BooleanSetting("SilentSwitch",this,true);
+    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,8);
+    BooleanSetting logoutSpots = new BooleanSetting("LogoutSpots", this, false);
+    
 
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
@@ -39,11 +40,11 @@ public class AutoTrap extends Module {
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
         ArrayList<EntityPlayer> EnemyList = new ArrayList<EntityPlayer>();
-        for(Object o : MC.mc.world.loadedEntityList.toArray()){
+        for(Object o : mc.world.loadedEntityList.toArray()){
             if(o instanceof EntityPlayer){
                 {
                     EntityPlayer e = (EntityPlayer)o;
-                    if(AttackUtil.CanAttackPlayer(e,15) && e != MC.mc.player) {
+                    if(AttackUtil.CanAttackPlayer(e,15) && e != mc.player) {
                         EnemyList.add(e);
                     }
                 }
@@ -57,8 +58,7 @@ public class AutoTrap extends Module {
 
         int placed = 0;
 
-        for(EntityPlayer e : EnemyList)
-        {
+        for(EntityPlayer e : EnemyList) {
             ArrayList<BlockPos> needsPlacing = new ArrayList<>();
 
 
@@ -73,7 +73,7 @@ public class AutoTrap extends Module {
                 if(!needsPlacing.contains(top))
                     needsPlacing.add(top);
 
-                if(MC.mc.world.getBlockState(top).getBlock().material.isReplaceable())
+                if(mc.world.getBlockState(top).getBlock().material.isReplaceable())
                 if(!BlockInteractUtil.canPlaceBlockAtPos(top,true)){
 
                     BlockPos[] around = new BlockPos[]{top.add(0,0,1),top.add(0,0,-1),top.add(1,0,0),top.add(-1,0,0)};
@@ -89,7 +89,7 @@ public class AutoTrap extends Module {
 
                 for (BlockPos p : poses) {
                     if(!needsPlacing.contains(p))
-                    if(MC.mc.world.getBlockState(p).getBlock().material.isReplaceable())
+                    if(mc.world.getBlockState(p).getBlock().material.isReplaceable())
                         needsPlacing.add(p);
                 }
 
@@ -127,14 +127,14 @@ public class AutoTrap extends Module {
 
 
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
-        int lastItem = MC.mc.player.inventory.currentItem;
+        int lastItem = mc.player.inventory.currentItem;
 
 
         BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(),true,true,4,false));
 
 
         if(silentSwitch.isOn())
-            MC.mc.player.inventory.currentItem = lastItem;
+            mc.player.inventory.currentItem = lastItem;
 
         return res;
 

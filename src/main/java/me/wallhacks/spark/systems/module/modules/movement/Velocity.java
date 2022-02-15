@@ -1,10 +1,8 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import me.wallhacks.spark.event.entity.LiquidPushEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.util.MC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.EntityFishHook;
@@ -35,6 +33,7 @@ public class Velocity extends Module {
 
     @SubscribeEvent
     public void onPacketGet(PacketReceiveEvent event) {
+        if (nullCheck()) return;
         Packet<?> p = event.getPacket();
 
 
@@ -48,14 +47,14 @@ public class Velocity extends Module {
             SPacketEntityVelocity s = (SPacketEntityVelocity)p;
             //prevents arrayindex out of bound exception error
             if(s.entityID == mc.player.getEntityId()) {
-                float changeX = (float) (s.motionX / 8000.0D - MC.mc.player.motionX);
-                float changeY = (float) (s.motionY / 8000.0D - MC.mc.player.motionY);
-                float changeZ = (float) (s.motionZ / 8000.0D - MC.mc.player.motionZ);
+                float changeX = (float) (s.motionX / 8000.0D - mc.player.motionX);
+                float changeY = (float) (s.motionY / 8000.0D - mc.player.motionY);
+                float changeZ = (float) (s.motionZ / 8000.0D - mc.player.motionZ);
 
 
-                s.motionX = (int) ((MC.mc.player.motionX + changeX*Horizontal.getValue()) * 8000.0D);
-                s.motionY = (int) ((MC.mc.player.motionY + changeY*Vertical.getValue()) * 8000.0D);
-                s.motionZ = (int) ((MC.mc.player.motionZ + changeZ*Horizontal.getValue()) * 8000.0D);
+                s.motionX = (int) ((mc.player.motionX + changeX*Horizontal.getValue()) * 8000.0D);
+                s.motionY = (int) ((mc.player.motionY + changeY*Vertical.getValue()) * 8000.0D);
+                s.motionZ = (int) ((mc.player.motionZ + changeZ*Horizontal.getValue()) * 8000.0D);
 
             }
 

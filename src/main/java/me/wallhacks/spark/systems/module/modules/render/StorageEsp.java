@@ -25,9 +25,9 @@ public class StorageEsp extends Module {
     public void onRender(RenderWorldLastEvent event) {
         GL11.glPushMatrix();
 
-        for(TileEntity o : MC.mc.world.loadedTileEntityList){
+        for(TileEntity o : mc.world.loadedTileEntityList){
 
-            float Alpha = (float) Math.max(0.2f,Math.min(0.6, 0.02f* MC.mc.player.getDistance(o.getPos().getX(),o.getPos().getY(),o.getPos().getZ())));
+            float Alpha = (float) Math.max(0.2f,Math.min(0.6, 0.02f* mc.player.getDistance(o.getPos().getX(),o.getPos().getY(),o.getPos().getZ())));
 
 
 
@@ -64,7 +64,7 @@ public class StorageEsp extends Module {
         try{
 
 
-            AxisAlignedBB B = MC.mc.world.getBlockState(p.getPos()).getSelectedBoundingBox(MC.mc.world, p.getPos());
+            AxisAlignedBB B = mc.world.getBlockState(p.getPos()).getSelectedBoundingBox(mc.world, p.getPos());
 
             if(p instanceof TileEntityChest){
                 TileEntityChest t = (TileEntityChest)p;

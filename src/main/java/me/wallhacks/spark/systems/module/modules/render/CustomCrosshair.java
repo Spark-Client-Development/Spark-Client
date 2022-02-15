@@ -27,7 +27,7 @@ public class CustomCrosshair extends Module {
 	public void onCrosshairRender(RenderGameOverlayEvent.Pre e) {
 		if(e.getType() == ElementType.CROSSHAIRS) {
 			e.setCanceled(true);
-			ScaledResolution src = new ScaledResolution(MC.mc);
+			ScaledResolution src = new ScaledResolution(mc);
 			RenderUtil.drawPolygonOutline(0+rotation, 360+rotation, edges.getValue(), src.getScaledWidth()/2-scale.getValue(), src.getScaledHeight()/2-scale.getValue(), scale.getValue(), width.getValue(), color.getColor().getRGB());
 			rotation = (rotation + speed.getValue() * e.getPartialTicks()) % 360;
 		}

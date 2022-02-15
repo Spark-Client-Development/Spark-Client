@@ -45,7 +45,6 @@ public class CommandHandler {
 	}
 	
 	List<String> possibilities = new ArrayList<>();
-	boolean typedCommand = false;
 	int selected = 0;
 	
 	@SubscribeEvent

@@ -53,12 +53,12 @@ public class SuperheroFX extends Module {
 
     @SubscribeEvent
     public void onRender3D(RenderWorldLastEvent event) {
-        MC.mc.getRenderManager();
-        if (MC.mc.getRenderManager().options != null) {
+        mc.getRenderManager();
+        if (mc.getRenderManager().options != null) {
 
             this.popTexts.forEach(pop -> {
                 GlStateManager.pushMatrix();
-                RenderUtil.glBillboardDistanceScaled((float) pop.pos.x, (float) pop.pos.y, (float) pop.pos.z, MC.mc.player, scale.getFloatValue());
+                RenderUtil.glBillboardDistanceScaled((float) pop.pos.x, (float) pop.pos.y, (float) pop.pos.z, mc.player, scale.getFloatValue());
                 GlStateManager.disableDepth();
                 GlStateManager.translate(-((double) Spark.fontManager.getBadaboom().getStringWidth(pop.getDisplayName()) / 2.0), 0.0, 0.0);
                 Spark.fontManager.getBadaboom().drawText(pop.getDisplayName(), 0, 0, pop.color);
@@ -73,11 +73,11 @@ public class SuperheroFX extends Module {
 
     @SubscribeEvent
     public void onPacketReceive(PacketReceiveEvent event) {
-        if (MC.mc.player == null || MC.mc.world == null) return;
+        if (mc.player == null || mc.world == null) return;
         try {
             if (event.getPacket() instanceof SPacketExplosion) {
                 SPacketExplosion packet = (SPacketExplosion) event.getPacket();
-                if (MC.mc.player.getDistance(packet.getX(), packet.getY(), packet.getZ()) < 20.0 && this.timer.passedMs((long) (this.delay.getValue() * 1000.0f))) {
+                if (mc.player.getDistance(packet.getX(), packet.getY(), packet.getZ()) < 20.0 && this.timer.passedMs((long) (this.delay.getValue() * 1000.0f))) {
                     this.timer.reset();
                     int len = rand.nextInt(extra.getValue());
                     for (int i = 0; i <= len; i++) {
@@ -88,15 +88,15 @@ public class SuperheroFX extends Module {
                 }
             } else if (event.getPacket() instanceof SPacketEntityStatus) {
                 SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
-                if (MC.mc.world != null) {
-                    Entity e = packet.getEntity((World) MC.mc.world);
+                if (mc.world != null) {
+                    Entity e = packet.getEntity((World) mc.world);
                     if (packet.getOpCode() == 35) {
-                        if (MC.mc.player.getDistance(e) < 20.0f) {
+                        if (mc.player.getDistance(e) < 20.0f) {
                             PopupText popupText = new PopupText(ChatFormatting.ITALIC + "POP", e.getPositionVector().add((double) (this.rand.nextInt(2) / 2), 1.0, (double) (this.rand.nextInt(2) / 2)));
                             popTexts.add(popupText);
                         }
                     } else if (packet.getOpCode() == 2) {
-                        if (MC.mc.player.getDistance(e) < 20.0f & e != MC.mc.player) {
+                        if (mc.player.getDistance(e) < 20.0f & e != mc.player) {
                             if (this.timer.passedMs((long) (this.delay.getValue() * 1000.0f))) {
                                 this.timer.reset();
                                 int len = rand.nextInt((int)Math.ceil(extra.getValue()/2.0));
@@ -116,13 +116,13 @@ public class SuperheroFX extends Module {
                     int id = array[i];
                     try {
                     	//wtf is this?
-                        if (MC.mc.world.getEntityByID(id) == null) continue;
+                        if (mc.world.getEntityByID(id) == null) continue;
                     } catch (ConcurrentModificationException exception) {
                         return;
                     }
-                    Entity e = MC.mc.world.getEntityByID(id);
+                    Entity e = mc.world.getEntityByID(id);
                     if (e != null && e.isDead) {
-                        if ((MC.mc.player.getDistance(e) < 20.0f & e != MC.mc.player) && e instanceof EntityPlayer) {
+                        if ((mc.player.getDistance(e) < 20.0f & e != mc.player) && e instanceof EntityPlayer) {
                             for (int t = 0; t <= rand.nextInt(extra.getValue()); t++) {
                                 Vec3d pos = new Vec3d(e.posX + rand.nextInt(2) - 1, e.posY + rand.nextInt(2) - 1, e.posZ + rand.nextInt(2) - 1);
                                 PopupText popupText = new PopupText(ChatFormatting.ITALIC + "" + ChatFormatting.BOLD + "EZ", pos);

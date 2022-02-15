@@ -162,7 +162,7 @@ public class TargetHud extends HudElement {
     private String holeString(EntityPlayer target) {
         if (getTarget() != null) {
             BlockPos pos = new BlockPos(target.posX, target.posY + 0.9, target.posZ);
-            if (!(MC.mc.world.getBlockState(pos).getBlock() instanceof BlockAir)) {
+            if (!(mc.world.getBlockState(pos).getBlock() instanceof BlockAir)) {
                 return (ChatFormatting.DARK_RED + "Burrowed!");
             }
             if (HoleUtil.isInHole(target)) {

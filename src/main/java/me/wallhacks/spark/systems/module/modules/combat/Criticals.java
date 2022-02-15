@@ -20,7 +20,7 @@ public class Criticals extends Module {
     @SubscribeEvent
     void OnUpdateWalkingEvent(AttackEvent.Pre event) {
 
-        if(event.getAttack() instanceof EntityLivingBase && MC.mc.player.onGround)
+        if(event.getAttack() instanceof EntityLivingBase && mc.player.onGround)
         {
             if(reverse.isValueName("ReverseCons") || reverse.isValueName("Reverse")){
                 sendPlayerPos( - 1e-10,false);
@@ -36,7 +36,7 @@ public class Criticals extends Module {
     @SubscribeEvent
     void OnUpdateWalkingEvent(AttackEvent.Post event) {
 
-        if(event.getAttack() instanceof EntityLivingBase && MC.mc.player.onGround)
+        if(event.getAttack() instanceof EntityLivingBase && mc.player.onGround)
         {
             if(reverse.isValueName("ReverseCons")){
                 sendPlayerPos(0,true);
@@ -49,6 +49,6 @@ public class Criticals extends Module {
 
     private void sendPlayerPos(double OffsetY, boolean onGround)
     {
-        MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY+OffsetY, MC.mc.player.posZ, onGround));
+        mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY+OffsetY, mc.player.posZ, onGround));
     }
 }

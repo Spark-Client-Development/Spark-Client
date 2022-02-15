@@ -60,7 +60,7 @@ public class FastUse extends Module {
     @SubscribeEvent
     public final void onUpdateWalkingPlayerEvent(UpdateWalkingPlayerEvent.Pre event) {
         didshit = false;
-        if (bind.isDown() && MC.mc.currentScreen == null)
+        if (bind.isDown() && mc.currentScreen == null)
             useXp();
         shouldPause = didshit;
     }
@@ -68,7 +68,7 @@ public class FastUse extends Module {
     @SubscribeEvent
     public final void onUpdateWalkingPlayerPostEvent(UpdateWalkingPlayerEvent.Post event) {
         if (oldSlot != -1) {
-            MC.mc.player.inventory.currentItem = oldSlot;
+            mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
         }
         shouldPause = didshit;
@@ -77,18 +77,18 @@ public class FastUse extends Module {
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
         if (InventoryUtil.getHeldItem(Items.END_CRYSTAL) && crystal.getValue() || InventoryUtil.getHeldItem(Items.FIREWORKS) && fireworks.getValue())
-            MC.mc.rightClickDelayTimer = 0;
+            mc.rightClickDelayTimer = 0;
         else if(InventoryUtil.getHeldItem(Items.EXPERIENCE_BOTTLE) && exp.getValue()){
-            MC.mc.rightClickDelayTimer = 0;
+            mc.rightClickDelayTimer = 0;
         }
-        else if (Block.getBlockFromItem(MC.mc.player.getHeldItemMainhand().getItem()).getDefaultState().isFullBlock() && blocks.getValue())
-            MC.mc.rightClickDelayTimer = 0;
+        else if (Block.getBlockFromItem(mc.player.getHeldItemMainhand().getItem()).getDefaultState().isFullBlock() && blocks.getValue())
+            mc.rightClickDelayTimer = 0;
     }
 
     int findExpInHotbar() {
         int slot = -1;
         for (int i = 0; i < 9; i++) {
-            if (MC.mc.player.inventory.getStackInSlot(i).getItem() == Items.EXPERIENCE_BOTTLE) {
+            if (mc.player.inventory.getStackInSlot(i).getItem() == Items.EXPERIENCE_BOTTLE) {
                 slot = i;
                 break;
             }
@@ -102,22 +102,22 @@ public class FastUse extends Module {
         if (takeArmorOff()) {
             Spark.rotationManager.setFakePitch(90,2);
             if (switchMode.is("Silent"))
-                MC.mc.player.connection.sendPacket(new CPacketHeldItemChange(findExpInHotbar()));
+                mc.player.connection.sendPacket(new CPacketHeldItemChange(findExpInHotbar()));
             else {
                 if (oldSlot != -1)
-                    oldSlot = MC.mc.player.inventory.currentItem;
-                MC.mc.player.inventory.currentItem = findExpInHotbar();
+                    oldSlot = mc.player.inventory.currentItem;
+                mc.player.inventory.currentItem = findExpInHotbar();
             }
             for (int i = 0; i < packets.getValue(); i++) {
-                MC.mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+                mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
             }
             if (switchMode.is("Silent"))
-                MC.mc.player.connection.sendPacket(new CPacketHeldItemChange(MC.mc.player.inventory.currentItem));
+                mc.player.connection.sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem));
         }
     }
 
     ItemStack getArmor(int first) {
-        return MC.mc.player.inventoryContainer.getInventory().get(first);
+        return mc.player.inventoryContainer.getInventory().get(first);
     }
 
     boolean takeArmorOff() {
@@ -138,8 +138,8 @@ public class FastUse extends Module {
                     }
                     AutoArmor.INSTANCE.counter = 0;
                 }
-                MC.mc.playerController.windowClick(0, slot, 0, ClickType.QUICK_MOVE, MC.mc.player);
-                MC.mc.playerController.updateController();
+                mc.playerController.windowClick(0, slot, 0, ClickType.QUICK_MOVE, mc.player);
+                mc.playerController.updateController();
             }
             if (percent < takeOffVal.getValue()) {
                 done = false;

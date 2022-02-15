@@ -21,9 +21,9 @@ public class NoSlow extends Module {
     }
     @SubscribeEvent
     public void onInput(InputUpdateEvent event){
-        if(MC.mc.player.isHandActive() && !MC.mc.player.isRiding()) {
-            MC.mc.player.movementInput.moveForward /= 0.2;
-            MC.mc.player.movementInput.moveStrafe /= 0.2;
+        if(mc.player.isHandActive() && !mc.player.isRiding()) {
+            mc.player.movementInput.moveForward /= 0.2;
+            mc.player.movementInput.moveStrafe /= 0.2;
         }
     }
 }

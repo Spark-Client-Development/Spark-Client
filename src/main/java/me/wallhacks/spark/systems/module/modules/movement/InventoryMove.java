@@ -26,20 +26,20 @@ public class InventoryMove extends Module {
 
         if(useInventoryMove()) {
 
-            MC.mc.player.movementInput.moveForward = 0;
-            MC.mc.player.movementInput.moveStrafe = 0;
+            mc.player.movementInput.moveForward = 0;
+            mc.player.movementInput.moveStrafe = 0;
 
-            if(Keyboard.isKeyDown(MC.mc.gameSettings.keyBindForward.getKeyCode()))
-                MC.mc.player.movementInput.moveForward += 1;
-            if(Keyboard.isKeyDown(MC.mc.gameSettings.keyBindBack.getKeyCode()))
-                MC.mc.player.movementInput.moveForward  -= 1;
+            if(Keyboard.isKeyDown(mc.gameSettings.keyBindForward.getKeyCode()))
+                mc.player.movementInput.moveForward += 1;
+            if(Keyboard.isKeyDown(mc.gameSettings.keyBindBack.getKeyCode()))
+                mc.player.movementInput.moveForward  -= 1;
 
-            if(Keyboard.isKeyDown(MC.mc.gameSettings.keyBindLeft.getKeyCode()))
-                MC.mc.player.movementInput.moveStrafe += 1;
-            if(Keyboard.isKeyDown(MC.mc.gameSettings.keyBindRight.getKeyCode()))
-                MC.mc.player.movementInput.moveStrafe -= 1;
+            if(Keyboard.isKeyDown(mc.gameSettings.keyBindLeft.getKeyCode()))
+                mc.player.movementInput.moveStrafe += 1;
+            if(Keyboard.isKeyDown(mc.gameSettings.keyBindRight.getKeyCode()))
+                mc.player.movementInput.moveStrafe -= 1;
 
-            MC.mc.player.movementInput.jump = Keyboard.isKeyDown(MC.mc.gameSettings.keyBindJump.getKeyCode());
+            mc.player.movementInput.jump = Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode());
 
         }
 
@@ -50,9 +50,9 @@ public class InventoryMove extends Module {
 
         if(useInventoryMove()) {
             if(Keyboard.isKeyDown(Keyboard.KEY_UP) || Keyboard.isKeyDown(Keyboard.KEY_DOWN))
-                MC.mc.player.rotationPitch = Math.max(-90, Math.min(90, MC.mc.player.rotationPitch+(Keyboard.isKeyDown(Keyboard.KEY_UP) ? -1 : 1)*4));
+                mc.player.rotationPitch = Math.max(-90, Math.min(90, mc.player.rotationPitch+(Keyboard.isKeyDown(Keyboard.KEY_UP) ? -1 : 1)*4));
             if(Keyboard.isKeyDown(Keyboard.KEY_LEFT) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
-                MC.mc.player.rotationYaw += (Keyboard.isKeyDown(Keyboard.KEY_LEFT) ? -1 : 1)*4;
+                mc.player.rotationYaw += (Keyboard.isKeyDown(Keyboard.KEY_LEFT) ? -1 : 1)*4;
         }
 
 
@@ -61,11 +61,11 @@ public class InventoryMove extends Module {
     }
 
     boolean useInventoryMove(){
-        return (MC.mc.currentScreen != null &&
-                !(MC.mc.currentScreen instanceof GuiChat) &&
-                !(MC.mc.currentScreen instanceof GuiEditSign) &&
-                !(MC.mc.currentScreen instanceof GuiScreenBook) &&
-                !(MC.mc.currentScreen instanceof GuiPanelScreen &&
+        return (mc.currentScreen != null &&
+                !(mc.currentScreen instanceof GuiChat) &&
+                !(mc.currentScreen instanceof GuiEditSign) &&
+                !(mc.currentScreen instanceof GuiScreenBook) &&
+                !(mc.currentScreen instanceof GuiPanelScreen &&
                         (GuiPanelBase.FocusedMouse instanceof GuiPanelInputField || GuiPanelBase.FocusedMouse instanceof GuiIntSettingPanel ||
                                 GuiPanelBase.FocusedMouse instanceof GuiDoubleSettingPanel || GuiPanelBase.FocusedMouse instanceof GuiKeySettingPanel)));
     }

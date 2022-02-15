@@ -25,16 +25,16 @@ public class FullBright extends Module {
 
 	@SubscribeEvent
 	public void worldLoadEvent(WorldLoadEvent event) {
-		MC.mc.gameSettings.gammaSetting = 100f;
+		mc.gameSettings.gammaSetting = 100f;
 	}
 
 	@Override
 	public void onEnable() {
-		MC.mc.gameSettings.gammaSetting = 100f;
+		mc.gameSettings.gammaSetting = 100f;
 	}
 
 	@Override
 	public void onDisable() {
-		MC.mc.gameSettings.gammaSetting = 1f;
+		mc.gameSettings.gammaSetting = 1f;
 	}
 }

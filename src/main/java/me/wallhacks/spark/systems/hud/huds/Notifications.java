@@ -44,7 +44,7 @@ public class Notifications extends HudElement {
     public void draw(float deltaTime) {
         setWidth(fontManager.getTextWidth("Notification") + 13);
         super.draw(deltaTime);
-        ScaledResolution sr = new ScaledResolution(MC.mc);
+        ScaledResolution sr = new ScaledResolution(mc);
         if (isInHudEditor()) {
             if (getRenderPosX() + getWidth() / 2 > sr.getScaledWidth() / 2) {
                 Gui.drawRect(getRenderPosX(), getRenderPosY(), getRenderPosX() + 3, getRenderPosY() + 20, HudSettings.getInstance().getGuiHudMainColor().getRGB());

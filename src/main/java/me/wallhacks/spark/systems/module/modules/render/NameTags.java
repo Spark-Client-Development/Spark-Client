@@ -58,19 +58,19 @@ public class NameTags extends Module {
     me.wallhacks.spark.util.objects.Timer timer = new Timer();
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
-        if (nullCheck() || MC.mc.renderEngine == null || MC.mc.getRenderManager().options == null)
+        if (nullCheck() || mc.renderEngine == null || mc.getRenderManager().options == null)
             return;
 
         List<EntityPlayer> nametagEntities = new ArrayList<>();
-        MC.mc.world.playerEntities.stream().filter(entity -> entity != null && entity != MC.mc.getRenderViewEntity()).forEach(nametagEntities::add);
-        nametagEntities.sort((o1,o2) -> Math.round(o2.getDistance(MC.mc.getRenderViewEntity())-o1.getDistance(MC.mc.getRenderViewEntity())));
+        mc.world.playerEntities.stream().filter(entity -> entity != null && entity != mc.getRenderViewEntity()).forEach(nametagEntities::add);
+        nametagEntities.sort((o1,o2) -> Math.round(o2.getDistance(mc.getRenderViewEntity())-o1.getDistance(mc.getRenderViewEntity())));
         List<Entity> remove = new ArrayList<>();
         for (Entity e : healthMap.keySet()) {
             if (!nametagEntities.contains(e)) remove.add(e);
         }
         remove.forEach(entity -> healthMap.remove(entity));
         nametagEntities.forEach(entityPlayer -> {
-            Entity viewEntity = MC.mc.getRenderViewEntity();
+            Entity viewEntity = mc.getRenderViewEntity();
             Vec3d nametagPosition = RenderUtil.interpolateEntityByTicks(entityPlayer, event.getPartialTicks());
 
             double x = nametagPosition.x;
@@ -96,8 +96,8 @@ public class NameTags extends Module {
             double distanceScale = scale.getValue() + (scale.getValue() / 5) * distance * scaleByDistance.getValue();
 
             String nameTag = generateNameTag(entityPlayer);
-            float width = MC.mc.fontRenderer.getStringWidth(nameTag) / 2;
-            float height = MC.mc.fontRenderer.FONT_HEIGHT;
+            float width = mc.fontRenderer.getStringWidth(nameTag) / 2;
+            float height = mc.fontRenderer.FONT_HEIGHT;
 
             GlStateManager.pushMatrix();
             RenderHelper.enableStandardItemLighting();
@@ -148,9 +148,9 @@ public class NameTags extends Module {
             GlStateManager.doPolygonOffset(1.0f, 1500000.0f);
             GlStateManager.popMatrix();
 
-            MC.mc.getRenderViewEntity().posX = posX;
-            MC.mc.getRenderViewEntity().posY = posY;
-            MC.mc.getRenderViewEntity().posZ = posZ;
+            mc.getRenderViewEntity().posX = posX;
+            mc.getRenderViewEntity().posY = posY;
+            mc.getRenderViewEntity().posZ = posZ;
         });
         timer.reset();
     }
@@ -196,7 +196,7 @@ public class NameTags extends Module {
 
         if (durability.getValue() && (itemStack.getItem() instanceof ItemArmor || itemStack.getItem() instanceof ItemTool)) {
             GlStateManager.disableDepth();
-            MC.mc.fontRenderer.drawString(new StringBuilder().insert(0, ((int) (durabilityScaled))).append('%').toString(), (float) (x * 2), (float) y - 8, color, false);
+            mc.fontRenderer.drawString(new StringBuilder().insert(0, ((int) (durabilityScaled))).append('%').toString(), (float) (x * 2), (float) y - 8, color, false);
             GlStateManager.enableDepth();
         }
 
@@ -207,7 +207,7 @@ public class NameTags extends Module {
                     iterator = iterator2;
 
                 else {
-                    MC.mc.fontRenderer.drawString(getEnchantName(enchantment, EnchantmentHelper.getEnchantmentLevel(enchantment, itemStack)), (float) (x * 2), (float) y, -1, false);
+                    mc.fontRenderer.drawString(getEnchantName(enchantment, EnchantmentHelper.getEnchantmentLevel(enchantment, itemStack)), (float) (x * 2), (float) y, -1, false);
 
                     y += 8;
                     iterator = iterator2;
@@ -222,14 +222,14 @@ public class NameTags extends Module {
         GlStateManager.depthMask(true);
         GlStateManager.clear(256);
         RenderHelper.enableStandardItemLighting();
-        MC.mc.getRenderItem().zLevel = -150.0f;
+        mc.getRenderItem().zLevel = -150.0f;
         GlStateManager.disableAlpha();
         GlStateManager.enableDepth();
         GlStateManager.disableCull();
         int scaledFinal = (scaled > 4) ? ((scaled - 4) * 8 / 2) : 0;
-        MC.mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, x, y + scaledFinal);
-        MC.mc.getRenderItem().renderItemOverlays(MC.mc.fontRenderer, itemStack, x, y + scaledFinal);
-        MC.mc.getRenderItem().zLevel = 0.0f;
+        mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, x, y + scaledFinal);
+        mc.getRenderItem().renderItemOverlays(mc.fontRenderer, itemStack, x, y + scaledFinal);
+        mc.getRenderItem().zLevel = 0.0f;
         RenderHelper.disableStandardItemLighting();
         GlStateManager.enableCull();
         GlStateManager.enableAlpha();
@@ -242,7 +242,7 @@ public class NameTags extends Module {
 
     public String generateNameTag(EntityPlayer entityPlayer) {
         try {
-            return (Spark.socialManager.isFriend(entityPlayer) ? TextFormatting.AQUA : "") + entityPlayer.getGameProfile().getName() + generateGamemode(entityPlayer) + TextFormatting.RESET + getPingText(MC.mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime()) + generatePing(entityPlayer) + getHealthText(generateHealth(entityPlayer));
+            return (Spark.socialManager.isFriend(entityPlayer) ? TextFormatting.AQUA : "") + entityPlayer.getGameProfile().getName() + generateGamemode(entityPlayer) + TextFormatting.RESET + getPingText(mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime()) + generatePing(entityPlayer) + getHealthText(generateHealth(entityPlayer));
         } catch (Exception e) {
 
         }
@@ -267,8 +267,8 @@ public class NameTags extends Module {
     }
 
     public String generatePing(EntityPlayer entityPlayer) {
-        if (!MC.mc.isSingleplayer())
-            return ping.getValue() ? " " + MC.mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime() + "ms" : "";
+        if (!mc.isSingleplayer())
+            return ping.getValue() ? " " + mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime() + "ms" : "";
         else
             return ping.getValue() ? " -1 ms" : "";
     }
@@ -286,8 +286,8 @@ public class NameTags extends Module {
             return TextFormatting.RED;
     }
 
-    public String getHealthText(float health) {
-        if (!this.health.getValue())
+    public static String getHealthText(float health) {
+        if (!NameTags.INSTANCE.health.getValue())
             return "";
         if (health <= 4)
             return " " + TextFormatting.RED + health;
@@ -306,8 +306,8 @@ public class NameTags extends Module {
         GlStateManager.doPolygonOffset(1.0f, -1500000.0f);
         GlStateManager.disableLighting();
         GlStateManager.translate((float) x, (float) y + 1.4f, (float) z);
-        GlStateManager.rotate(-MC.mc.getRenderManager().playerViewY, 0.0f, 1.0f, 0.0f);
-        GlStateManager.rotate(MC.mc.getRenderManager().playerViewX, (MC.mc.gameSettings.thirdPersonView == 2) ? -1.0f : 1.0f, 0.0f, (float) 0);
+        GlStateManager.rotate(-mc.getRenderManager().playerViewY, 0.0f, 1.0f, 0.0f);
+        GlStateManager.rotate(mc.getRenderManager().playerViewX, (mc.gameSettings.thirdPersonView == 2) ? -1.0f : 1.0f, 0.0f, (float) 0);
         GlStateManager.scale(-(distanceScale / 100), -(distanceScale / 100), (distanceScale / 100));
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
@@ -322,7 +322,7 @@ public class NameTags extends Module {
         }
         GlStateManager.disableDepth();
         GlStateManager.disableBlend();
-        MC.mc.fontRenderer.drawString(text, (int)-width + 1, (int)-height + 3, -1, false);
+        mc.fontRenderer.drawString(text, (int)-width + 1, (int)-height + 3, -1, false);
     }
 
 

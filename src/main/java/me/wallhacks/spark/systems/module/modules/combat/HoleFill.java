@@ -48,15 +48,15 @@ public class HoleFill extends Module {
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
 
-        BlockPos pos = PlayerUtil.GetPlayerPosHighFloored(MC.mc.player);
+        BlockPos pos = PlayerUtil.GetPlayerPosHighFloored(mc.player);
 
-        if (MC.mc.playerController.getIsHittingBlock())
+        if (mc.playerController.getIsHittingBlock())
             return;
-        if (MC.mc.player.isHandActive() && MC.mc.player.getHeldItemMainhand().getItem() instanceof ItemFood)
+        if (mc.player.isHandActive() && mc.player.getHeldItemMainhand().getItem() instanceof ItemFood)
             return;
 
         ArrayList<EntityPlayer> EnemyList = new ArrayList<EntityPlayer>();
-        for(Object o : MC.mc.world.loadedEntityList.toArray()){
+        for(Object o : mc.world.loadedEntityList.toArray()){
             if(o instanceof EntityPlayer){
                 {
                     EntityPlayer e = (EntityPlayer)o;
@@ -68,19 +68,19 @@ public class HoleFill extends Module {
             }
         }
 
-        BlockPos floored = PlayerUtil.getPlayerPosFloored(MC.mc.player);
+        BlockPos floored = PlayerUtil.getPlayerPosFloored(mc.player);
         List<BlockPos> poses = WorldUtils.getSphere(floored, 5, 3, 1);
         int placed = 0;
         loopBlocks:
         for(BlockPos posToCheck : poses){
-            if (MC.mc.world.getBlockState(posToCheck).getBlock().material.isReplaceable())
+            if (mc.world.getBlockState(posToCheck).getBlock().material.isReplaceable())
             {
                 //can player get in
-                if(!MC.mc.world.getBlockState(posToCheck.add(0,1,0)).getBlock().material.isReplaceable()) continue;
-                if(!MC.mc.world.getBlockState(posToCheck.add(0,2,0)).getBlock().material.isReplaceable()) continue;
+                if(!mc.world.getBlockState(posToCheck.add(0,1,0)).getBlock().material.isReplaceable()) continue;
+                if(!mc.world.getBlockState(posToCheck.add(0,2,0)).getBlock().material.isReplaceable()) continue;
 
                 //is hole
-                if(!MC.mc.world.getBlockState(posToCheck.add(0,-1,0)).getBlock().material.isSolid()) continue;
+                if(!mc.world.getBlockState(posToCheck.add(0,-1,0)).getBlock().material.isSolid()) continue;
 
                 Vec3i[] walls = new Vec3i[]{
                         new Vec3i(1, 0, 0),
@@ -92,7 +92,7 @@ public class HoleFill extends Module {
                 BlockPos doubleHolePos = null;
                 for (Vec3i vec : walls) {
                     BlockPos bp = posToCheck.add(vec);
-                    Block x = MC.mc.world.getBlockState(bp).getBlock();
+                    Block x = mc.world.getBlockState(bp).getBlock();
                     if (x != Blocks.OBSIDIAN && x != Blocks.BEDROCK) {
                         if(doubleHolePos == null && FillDoubles.isOn()) {
 
@@ -107,7 +107,7 @@ public class HoleFill extends Module {
                 for (Vec3i vec1 : walls) {
                     BlockPos wall = doubleHolePos.add(vec1);
                     if(!wall.equals(posToCheck)) {
-                        Block wx = MC.mc.world.getBlockState(wall).getBlock();
+                        Block wx = mc.world.getBlockState(wall).getBlock();
                         if (wx != Blocks.OBSIDIAN && wx != Blocks.BEDROCK)
                             continue loopBlocks;
 
@@ -119,7 +119,7 @@ public class HoleFill extends Module {
 
                 smartChecks:
                 if(smart.isOn()) {
-                    if(isPlayerTryingToGetInHole(MC.mc.player,posToCheck))
+                    if(isPlayerTryingToGetInHole(mc.player,posToCheck))
                         continue loopBlocks;
                     for(EntityPlayer e : EnemyList)
                         if(isPlayerTryingToGetInHole(e,posToCheck)) break smartChecks;
@@ -149,14 +149,14 @@ public class HoleFill extends Module {
 
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
 
-        int lastItem = MC.mc.player.inventory.currentItem;
+        int lastItem = mc.player.inventory.currentItem;
 
 
         BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(),true,true,4));
 
 
         if(Silent.isOn())
-            MC.mc.player.inventory.currentItem = lastItem;
+            mc.player.inventory.currentItem = lastItem;
 
         return res;
 

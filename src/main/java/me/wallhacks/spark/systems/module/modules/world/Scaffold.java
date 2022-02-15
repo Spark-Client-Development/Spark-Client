@@ -49,23 +49,23 @@ public class Scaffold extends Module {
     void OnUpdate(PlayerUpdateEvent event) {
         doScaffold();
 
-        lastPosX = MC.mc.player.posX;
-        lastPosZ = MC.mc.player.posZ;
+        lastPosX = mc.player.posX;
+        lastPosZ = mc.player.posZ;
     }
 
     boolean doTowerCenter() {
-        return (MC.mc.gameSettings.keyBindJump.isKeyDown() && TowerCenter.isOn());
+        return (mc.gameSettings.keyBindJump.isKeyDown() && TowerCenter.isOn());
     }
 
     void doScaffold() {
 
-        final BlockPos floorPos = PlayerUtil.getPlayerPosFloored(MC.mc.player,0.2).add(0, -1, 0);
-        final Block floor = MC.mc.world.getBlockState(floorPos).getBlock();
+        final BlockPos floorPos = PlayerUtil.getPlayerPosFloored(mc.player,0.2).add(0, -1, 0);
+        final Block floor = mc.world.getBlockState(floorPos).getBlock();
 
 
         if(doTowerCenter()){
-            if(MC.mc.player.onGround && PlayerUtil.MoveCenter(floorPos,false)){
-                MC.mc.player.motionY = -0.28f;
+            if(mc.player.onGround && PlayerUtil.MoveCenter(floorPos,false)){
+                mc.player.motionY = -0.28f;
                 return;
             }
         }
@@ -76,7 +76,7 @@ public class Scaffold extends Module {
             if(Place(floorPos) == BlockInteractUtil.BlockPlaceResult.PLACED) {
                 if (render.getValue())
                     new FadePos(floorPos, outline, fill, true);
-                if(MC.mc.gameSettings.keyBindJump.isKeyDown())
+                if(mc.gameSettings.keyBindJump.isKeyDown())
                 {
                     lastTowerPlaced.reset();
 
@@ -86,7 +86,7 @@ public class Scaffold extends Module {
 
                             if(scaffoldPauseTimer.passedMs(TowerPause.getValue()*100))
                             {
-                                MC.mc.player.motionY = -0.28f;
+                                mc.player.motionY = -0.28f;
                                 scaffoldPauseTimer.reset();
                             }
                             else
@@ -109,16 +109,16 @@ public class Scaffold extends Module {
 
 
         //extended
-        int x = (int) Math.round(Math.max(-1,Math.min(1, (MC.mc.player.posX - lastPosX)*20)));
-        int y = (int) Math.round(Math.max(-1,Math.min(1, (MC.mc.player.posZ - lastPosZ)*20)));
+        int x = (int) Math.round(Math.max(-1,Math.min(1, (mc.player.posX - lastPosX)*20)));
+        int y = (int) Math.round(Math.max(-1,Math.min(1, (mc.player.posZ - lastPosZ)*20)));
 
 
 
         for (int i = 1; i <= Extended.getValue()+1; i++) {
             BlockPos headPos = floorPos.add(x*i, 0, y*i);
 
-            if(MC.mc.player.getDistance(headPos.getX()+0.5,headPos.getY()+1,headPos.getZ()+0.5) < 0.8+Extended.getValue()) {
-                final Block head = MC.mc.world.getBlockState(headPos).getBlock();
+            if(mc.player.getDistance(headPos.getX()+0.5,headPos.getY()+1,headPos.getZ()+0.5) < 0.8+Extended.getValue()) {
+                final Block head = mc.world.getBlockState(headPos).getBlock();
                 if (head.material.isReplaceable())	{
                     if(Place(headPos) != BlockInteractUtil.BlockPlaceResult.FAILED) {
                         if (render.getValue())
@@ -135,7 +135,7 @@ public class Scaffold extends Module {
 
 
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
-        int lastItem = MC.mc.player.inventory.currentItem;
+        int lastItem = mc.player.inventory.currentItem;
 
         //prevent falling down
         if(BlockInteractUtil.getDirForPlacingBlockAtPos(x) == null){
@@ -152,7 +152,7 @@ public class Scaffold extends Module {
 
 
         if(Silent.isOn())
-            MC.mc.player.inventory.currentItem = lastItem;
+            mc.player.inventory.currentItem = lastItem;
 
         return res;
 
@@ -162,16 +162,16 @@ public class Scaffold extends Module {
     double getDisToEdge(){
         double dis = 0;
 
-        BlockPos pos = PlayerUtil.GetPlayerPosHighFloored(MC.mc.player);
+        BlockPos pos = PlayerUtil.GetPlayerPosHighFloored(mc.player);
 
-        if(!MC.mc.world.getBlockState(pos.add(1, -1, 0)).getBlock().material.isReplaceable())
-            dis = Math.max(dis, Math.abs(MC.mc.player.posX-(pos.getX()+1)));
-        if(!MC.mc.world.getBlockState(pos.add(-1, -1, 0)).getBlock().material.isReplaceable())
-            dis = Math.max(dis, Math.abs(MC.mc.player.posX-(pos.getX())));
-        if(!MC.mc.world.getBlockState(pos.add(0, -1, 1)).getBlock().material.isReplaceable())
-            dis = Math.max(dis, Math.abs(MC.mc.player.posZ-(pos.getZ()+1)));
-        if(!MC.mc.world.getBlockState(pos.add(0, -1, -1)).getBlock().material.isReplaceable())
-            dis = Math.max(dis, Math.abs(MC.mc.player.posZ-(pos.getZ())));
+        if(!mc.world.getBlockState(pos.add(1, -1, 0)).getBlock().material.isReplaceable())
+            dis = Math.max(dis, Math.abs(mc.player.posX-(pos.getX()+1)));
+        if(!mc.world.getBlockState(pos.add(-1, -1, 0)).getBlock().material.isReplaceable())
+            dis = Math.max(dis, Math.abs(mc.player.posX-(pos.getX())));
+        if(!mc.world.getBlockState(pos.add(0, -1, 1)).getBlock().material.isReplaceable())
+            dis = Math.max(dis, Math.abs(mc.player.posZ-(pos.getZ()+1)));
+        if(!mc.world.getBlockState(pos.add(0, -1, -1)).getBlock().material.isReplaceable())
+            dis = Math.max(dis, Math.abs(mc.player.posZ-(pos.getZ())));
 
         return dis;
     }

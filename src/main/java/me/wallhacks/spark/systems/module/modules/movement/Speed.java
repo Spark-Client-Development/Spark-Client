@@ -61,7 +61,7 @@ public class Speed extends Module {
         if (fullCheck() && !mode.is("OnGround")) {
             Vec3d velocity = getVelocity();
             if (mc.player.onGround && !prevOnGround && (mc.player.moveForward != 0.0 || mc.player.moveStrafing != 0.0)) {
-                MC.mc.player.setSprinting(true);
+                mc.player.setSprinting(true);
                 ++jumps;
                 if (boostStop.getValue()) boostable = false;
                 velocity = new Vec3d(velocity.x, 0.405f, velocity.z);
@@ -82,7 +82,7 @@ public class Speed extends Module {
                 jumps = 0;
                 boostable = false;
             }
-            MC.mc.player.setVelocity(velocity.x, velocity.y, velocity.z);
+            mc.player.setVelocity(velocity.x, velocity.y, velocity.z);
         } else {
             double dX = mc.player.posX - mc.player.prevPosX;
             double dZ = mc.player.posZ - mc.player.prevPosZ;
@@ -239,7 +239,7 @@ public class Speed extends Module {
 
     private boolean fullCheck() {
         try {
-            if (mc.player == null || !isEnabled() || MC.mc.world == null) {
+            if (mc.player == null || !isEnabled() || mc.world == null) {
                 return false;
             } else if (((mc.player.isInLava() || mc.player.isInLava()) && !liquids.getValue()) || (mode.is("OnGround") && PlayerUtil.isOnLiquid())) {
                 return false;
@@ -248,7 +248,7 @@ public class Speed extends Module {
             } else if (!isSafeToSpeed()) {
                 return false;
             } else {
-                return !mc.player.isOnLadder() && mc.player.getRidingEntity() == null && MC.mc.getRenderViewEntity() == MC.mc.player;
+                return !mc.player.isOnLadder() && mc.player.getRidingEntity() == null && mc.getRenderViewEntity() == mc.player;
             }
         } catch (NullPointerException nullPointerException) {
             return false;

@@ -13,11 +13,11 @@ public class ReverseStep extends Module {
     @SubscribeEvent
     public void onUpdateEvent(PlayerLivingTickEvent event) {
 
-        if (!MC.mc.player.onGround || MC.mc.player.isOnLadder() || MC.mc.player.isInWater() || MC.mc.player.isInLava() || MC.mc.player.movementInput.jump || MC.mc.player.noClip) return;
-        if (MC.mc.player.moveForward == 0 && MC.mc.player.moveStrafing == 0) return;
+        if (!mc.player.onGround || mc.player.isOnLadder() || mc.player.isInWater() || mc.player.isInLava() || mc.player.movementInput.jump || mc.player.noClip) return;
+        if (mc.player.moveForward == 0 && mc.player.moveStrafing == 0) return;
 
-        if(MC.mc.player.motionY <= 0)
-            MC.mc.player.motionY = -1;
+        if(mc.player.motionY <= 0)
+            mc.player.motionY = -1;
     }
 
 }

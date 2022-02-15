@@ -19,7 +19,7 @@ public class NoEntityTrace extends Module {
             return false;
 
         if (all.isOn()) return true;
-        Item item = MC.mc.player.getHeldItemMainhand().getItem();
+        Item item = mc.player.getHeldItemMainhand().getItem();
 
         if (item instanceof ItemPickaxe) return true;
 

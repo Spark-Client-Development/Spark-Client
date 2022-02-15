@@ -12,8 +12,8 @@ public class Sprint extends Module {
     @SubscribeEvent
     public void onUpdate(PlayerLivingTickEvent event){
 
-        if(MC.mc.player.movementInput.moveForward >= 0.8F)
-            MC.mc.player.setSprinting(true);
+        if(mc.player.movementInput.moveForward >= 0.8F)
+            mc.player.setSprinting(true);
 
     }
 

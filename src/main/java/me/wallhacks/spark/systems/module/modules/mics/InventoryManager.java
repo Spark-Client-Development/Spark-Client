@@ -68,10 +68,10 @@ public class InventoryManager extends Module {
 
         Item[] inv = new Item[36];
         for (int i = 0; i < Math.min(inv.length,hotbarOnly ? 9 : 36) ; i++) {
-            if(MC.mc.player.inventory.getStackInSlot(i).getItem() == Items.AIR)
+            if(mc.player.inventory.getStackInSlot(i).getItem() == Items.AIR)
                 inv[i] = null;
             else
-                inv[i] = MC.mc.player.inventory.getStackInSlot(i).getItem();
+                inv[i] = mc.player.inventory.getStackInSlot(i).getItem();
         }
         kits.put(name,inv);
     }
@@ -111,7 +111,7 @@ public class InventoryManager extends Module {
     }
 
     boolean canCleaning (){
-        return ((!(MC.mc.currentScreen instanceof GuiContainer) || MC.mc.currentScreen instanceof GuiInventory) && (!onlyIfInventoryOpen.isOn() || MC.mc.currentScreen instanceof GuiInventory));
+        return ((!(mc.currentScreen instanceof GuiContainer) || mc.currentScreen instanceof GuiInventory) && (!onlyIfInventoryOpen.isOn() || mc.currentScreen instanceof GuiInventory));
     }
 
 
@@ -168,7 +168,7 @@ public class InventoryManager extends Module {
 
     void handleSlot(int slot){
         int s = InventoryUtil.getSlotIdFromInventoryId(slot);
-        ItemStack itemStack = (ItemStack) MC.mc.player.inventoryContainer.getInventory().get(s);
+        ItemStack itemStack = (ItemStack) mc.player.inventoryContainer.getInventory().get(s);
 
 
 
@@ -188,7 +188,7 @@ public class InventoryManager extends Module {
                     Item item = perfectInventory()[i];
                     int sloti = InventoryUtil.getSlotIdFromInventoryId(i);
                     if (sloti != s && item != null) {
-                        if (!invenotrySortIsItemSame(item, MC.mc.player.inventoryContainer.getInventory().get(sloti).getItem()))
+                        if (!invenotrySortIsItemSame(item, mc.player.inventoryContainer.getInventory().get(sloti).getItem()))
                             if (invenotrySortIsItemSame(item, itemStack.getItem()))
                                 if (perfectInventory()[slot] == null || !invenotrySortIsItemSame(perfectInventory()[slot], itemStack.getItem())) {
                                     InventoryUtil.moveItem(s, sloti);
@@ -236,10 +236,10 @@ public class InventoryManager extends Module {
 
         if(EquipmentItem instanceof ItemArmor || EquipmentItem instanceof ItemTool || EquipmentItem instanceof ItemSword)
         {
-            for(int i = 0; i < MC.mc.player.inventoryContainer.getInventory().size(); i++){
+            for(int i = 0; i < mc.player.inventoryContainer.getInventory().size(); i++){
 
-                if(MC.mc.player.inventory.getStackInSlot(i) instanceof ItemStack){
-                    ItemStack itemStack = (ItemStack) MC.mc.player.inventoryContainer.getInventory().get(i);
+                if(mc.player.inventory.getStackInSlot(i) instanceof ItemStack){
+                    ItemStack itemStack = (ItemStack) mc.player.inventoryContainer.getInventory().get(i);
 
                     if(itemStack != EquipmentItemStack) {
                         if(!keepComparedTo(EquipmentItemStack,itemStack))

@@ -218,7 +218,7 @@ public class GuiUtil {
     }
 
     public static void glScissor(int x, int y, int width, int height) {
-        ScaledResolution scr = new ScaledResolution(MC.mc);
+        ScaledResolution scr = new ScaledResolution(mc);
         GL11.glScissor((x+ (int) GuiUtil.getGlTransformOffset().x) * scr.getScaleFactor(), (scr.getScaledHeight() - y - height - (int) GuiUtil.getGlTransformOffset().y) * scr.getScaleFactor(), width * scr.getScaleFactor(), height * scr.getScaleFactor());
     }
 

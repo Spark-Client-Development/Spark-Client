@@ -83,18 +83,18 @@ public class Offhand extends Module {
         useCrystal = false;
 
         //if is not creative
-        if (MC.mc.playerController.currentGameType.isSurvivalOrAdventure()) {
-            float hp = MC.mc.player.getHealth() + MC.mc.player.getAbsorptionAmount();
+        if (mc.playerController.currentGameType.isSurvivalOrAdventure()) {
+            float hp = mc.player.getHealth() + mc.player.getAbsorptionAmount();
 
 
-            if ((hp > TotemHp.getValue() && lethalToLocalCheck() && MC.mc.player.fallDistance < 10 && bowCheck()) || (getItemSlot(Items.TOTEM_OF_UNDYING)) == -1 && MC.mc.player.getHeldItemOffhand().getItem() != Items.TOTEM_OF_UNDYING) {
+            if ((hp > TotemHp.getValue() && lethalToLocalCheck() && mc.player.fallDistance < 10 && bowCheck()) || (getItemSlot(Items.TOTEM_OF_UNDYING)) == -1 && mc.player.getHeldItemOffhand().getItem() != Items.TOTEM_OF_UNDYING) {
                 //if we are not in danger of dying
 
                 if (shouldGapSwap()) {
                     swapItems((Items.GOLDEN_APPLE));
 
-                    if (MC.mc.player.getHeldItemMainhand().getItem() instanceof ItemPickaxe) {
-                        MC.mc.playerController.isHittingBlock = true;
+                    if (mc.player.getHeldItemMainhand().getItem() instanceof ItemPickaxe) {
+                        mc.playerController.isHittingBlock = true;
                     }
 
                 } else if (shouldCrystalSwap()) {
@@ -106,7 +106,7 @@ public class Offhand extends Module {
                     useMode(mode.getValue());
 
                 //if we failed to find item
-                if (MC.mc.player.getHeldItemOffhand().getItem() == Items.AIR) {
+                if (mc.player.getHeldItemOffhand().getItem() == Items.AIR) {
                     swapItems((Items.TOTEM_OF_UNDYING));
                 }
             } else {
@@ -115,7 +115,7 @@ public class Offhand extends Module {
             }
 
             //if no totems left we use fallback item
-            if (MC.mc.player.getHeldItemOffhand().getItem() == Items.AIR) {
+            if (mc.player.getHeldItemOffhand().getItem() == Items.AIR) {
                 useMode(fallbackMode.getValue());
             }
         }
@@ -140,7 +140,7 @@ public class Offhand extends Module {
     }
 
     private boolean shouldGapSwap() {
-        if (MC.mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE || gapSwap.getValue().equals("Off") || !MC.mc.gameSettings.keyBindUseItem.isKeyDown()) return false;
+        if (mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE || gapSwap.getValue().equals("Off") || !mc.gameSettings.keyBindUseItem.isKeyDown()) return false;
         switch (gapSwap.getValue()) {
             case "Sword":
                 return hasSword();
@@ -155,18 +155,18 @@ public class Offhand extends Module {
     }
 
     private boolean hasSword() {
-        return MC.mc.player.getHeldItemMainhand().getItem() instanceof ItemSword;
+        return mc.player.getHeldItemMainhand().getItem() instanceof ItemSword;
     }
 
     private boolean hasPick() {
-        return MC.mc.player.getHeldItemMainhand().getItem() instanceof ItemPickaxe;
+        return mc.player.getHeldItemMainhand().getItem() instanceof ItemPickaxe;
     }
 
     private boolean lethalToLocalCheck() {
         if (!CrystalCheck.getValue()) return true;
-        for (Entity entity : MC.mc.world.loadedEntityList) {
-            if (entity instanceof EntityEnderCrystal && MC.mc.player.getDistance(entity) < 8) {
-                if (CrystalUtil.calculateDamageCrystal((EntityEnderCrystal)entity, MC.mc.player, false)*2 >= (MC.mc.player.getHealth() - 2)) {
+        for (Entity entity : mc.world.loadedEntityList) {
+            if (entity instanceof EntityEnderCrystal && mc.player.getDistance(entity) < 8) {
+                if (CrystalUtil.calculateDamageCrystal((EntityEnderCrystal)entity, mc.player, false)*2 >= (mc.player.getHealth() - 2)) {
                     return false;
                 }
             }
@@ -176,15 +176,15 @@ public class Offhand extends Module {
 
     private boolean bowCheck() {
         if (!bowCheck.getValue()) return true;
-        for (Entity entity : MC.mc.world.loadedEntityList) {
-            if (entity instanceof EntityArrow && entity.getDistance(MC.mc.player) < 15) {
+        for (Entity entity : mc.world.loadedEntityList) {
+            if (entity instanceof EntityArrow && entity.getDistance(mc.player) < 15) {
                 if (!((EntityArrow) entity).inGround) {
                     return false;
                 }
             }
             if (entity instanceof EntityPlayer) {
                 EntityPlayer e = (EntityPlayer) entity;
-                if (e.getHeldItemMainhand().getItem() instanceof ItemBow && MC.mc.world.rayTraceBlocks(MC.mc.player.getPositionEyes(MC.mc.getRenderPartialTicks()), entity.getPositionEyes(MC.mc.getRenderPartialTicks())) == null && MC.mc.world.rayTraceBlocks(MC.mc.player.getPositionVector(), entity.getPositionEyes(MC.mc.getRenderPartialTicks())) == null) {
+                if (e.getHeldItemMainhand().getItem() instanceof ItemBow && mc.world.rayTraceBlocks(mc.player.getPositionEyes(mc.getRenderPartialTicks()), entity.getPositionEyes(mc.getRenderPartialTicks())) == null && mc.world.rayTraceBlocks(mc.player.getPositionVector(), entity.getPositionEyes(mc.getRenderPartialTicks())) == null) {
                     return false;
                 }
             }
@@ -193,7 +193,7 @@ public class Offhand extends Module {
     }
 
     public void swapItems(Item input) {
-        if(MC.mc.player.getHeldItemOffhand().getItem() == input)
+        if(mc.player.getHeldItemOffhand().getItem() == input)
             return;
 
         int slot = getItemSlot(input);
@@ -202,16 +202,16 @@ public class Offhand extends Module {
 
 
         //gui is container we can't swap item
-        if (!(MC.mc.currentScreen instanceof GuiInventory) && MC.mc.currentScreen != null && MC.mc.currentScreen instanceof GuiContainer)
+        if (!(mc.currentScreen instanceof GuiInventory) && mc.currentScreen != null && mc.currentScreen instanceof GuiContainer)
         {
             //thats why we close screen or just return
             if(closeContainer.isOn())
-                MC.mc.player.closeScreen();
+                mc.player.closeScreen();
             else
                 return;
         }
 
-        if (timer < cooldown.getValue() && MC.mc.player.inventory.getStackInSlot(slot).getItem() != Items.TOTEM_OF_UNDYING) return;
+        if (timer < cooldown.getValue() && mc.player.inventory.getStackInSlot(slot).getItem() != Items.TOTEM_OF_UNDYING) return;
             timer = 0;
 
         InventoryUtil.moveItem(slot,45);

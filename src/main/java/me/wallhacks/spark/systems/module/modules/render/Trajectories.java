@@ -33,13 +33,13 @@ public class Trajectories extends Module {
         ArrayList<Vec3d> path = new ArrayList<>();
 
         if(RenderForAll.isOn())
-            for(Object o : MC.mc.world.loadedEntityList.toArray()){
+            for(Object o : mc.world.loadedEntityList.toArray()){
                 Entity entity = (Entity)o;
                 if(entity instanceof EntityPlayer)
-                    renderPath(MC.mc.getRenderPartialTicks(),(EntityPlayer)entity);
+                    renderPath(mc.getRenderPartialTicks(),(EntityPlayer)entity);
             }
         else
-            renderPath(MC.mc.getRenderPartialTicks(), MC.mc.player);
+            renderPath(mc.getRenderPartialTicks(), mc.player);
     }
 
     private void renderPath(float partialTicks, EntityPlayer player) {
@@ -142,7 +142,7 @@ public class Trajectories extends Module {
 
             // check for collision
 
-            RayTraceResult res = MC.mc.world.rayTraceBlocks(eyesPos, arrowPos, false, true, false);
+            RayTraceResult res = mc.world.rayTraceBlocks(eyesPos, arrowPos, false, true, false);
             if(res != null)
             {
 

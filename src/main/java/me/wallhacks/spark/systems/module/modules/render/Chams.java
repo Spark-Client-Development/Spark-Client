@@ -141,7 +141,7 @@ public class Chams extends Module {
     }
 
     private void renderShine(RenderLivingEvent event) {
-        MC.mc.getTextureManager().bindTexture(glint.is("Custom") ? CUSTOM : RES_ITEM_GLINT);
+        mc.getTextureManager().bindTexture(glint.is("Custom") ? CUSTOM : RES_ITEM_GLINT);
         if (!texture.getValue())
             GlStateManager.enableTexture2D();
         for (int i = 0; i < 2; ++i) {
@@ -150,7 +150,7 @@ public class Chams extends Module {
             float f8 = 0.33333334f * glintScale.getValue().floatValue();
             GlStateManager.scale(f8, f8, f8);
             GlStateManager.rotate(30.0f - (float) i * 60.0f, 0.0f, 0.0f, 1.0f);
-            GlStateManager.translate(0.0f, ((float) event.getEntity().ticksExisted + MC.mc.getRenderPartialTicks()) * (0.001f + (float) i * 0.003f) * glintSpeed.getValue().floatValue(), 0.0f);
+            GlStateManager.translate(0.0f, ((float) event.getEntity().ticksExisted + mc.getRenderPartialTicks()) * (0.001f + (float) i * 0.003f) * glintSpeed.getValue().floatValue(), 0.0f);
             GlStateManager.matrixMode(GL_MODELVIEW);
             GL11.glTranslatef(0.0f, 0.0f, 0.0f);
             renderModel(event);

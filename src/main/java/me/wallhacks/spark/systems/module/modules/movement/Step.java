@@ -29,9 +29,9 @@ public class Step extends Module {
     public void onUpdateEvent(PlayerUpdateEvent event) {
         ticksSinceLastStep++;
 
-        if (!MC.mc.player.collidedHorizontally) return;
-        if (MC.mc.player.isOnLadder() || MC.mc.player.isInWater() || MC.mc.player.isInLava() || MC.mc.player.movementInput.jump || MC.mc.player.noClip) return;
-        if (MC.mc.player.moveForward == 0 && MC.mc.player.moveStrafing == 0) return;
+        if (!mc.player.collidedHorizontally) return;
+        if (mc.player.isOnLadder() || mc.player.isInWater() || mc.player.isInLava() || mc.player.movementInput.jump || mc.player.noClip) return;
+        if (mc.player.moveForward == 0 && mc.player.moveStrafing == 0) return;
 
         if(cooldown.getValue() > ticksSinceLastStep) return;
 
@@ -40,32 +40,32 @@ public class Step extends Module {
             final double n = get_n();
 
             if (n < 0 || n > height.getValue()) return;
-            if(!MC.mc.player.onGround)
+            if(!mc.player.onGround)
                 return;
             if (n > 1.5) {
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.42, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.78, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.63, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.51, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.9, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 1.21, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 1.45, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 1.43, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.setPosition(MC.mc.player.posX, MC.mc.player.posY + n, MC.mc.player.posZ);
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.42, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.78, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.63, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.51, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.9, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 1.21, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 1.45, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 1.43, mc.player.posZ, mc.player.onGround));
+                mc.player.setPosition(mc.player.posX, mc.player.posY + n, mc.player.posZ);
             }
             else if (n > 1) {
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.41999998688698, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.7531999805212, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 1.00133597911214, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 1.16610926093821, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 1.24918707874468, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 1.1707870772188, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.setPosition(MC.mc.player.posX, MC.mc.player.posY + n, MC.mc.player.posZ);
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.41999998688698, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.7531999805212, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 1.00133597911214, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 1.16610926093821, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 1.24918707874468, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 1.1707870772188, mc.player.posZ, mc.player.onGround));
+                mc.player.setPosition(mc.player.posX, mc.player.posY + n, mc.player.posZ);
             }
             else if (n > 0.5) {
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.41999998688698, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(MC.mc.player.posX, MC.mc.player.posY + 0.7531999805212, MC.mc.player.posZ, MC.mc.player.onGround));
-                MC.mc.player.setPosition(MC.mc.player.posX, MC.mc.player.posY + n, MC.mc.player.posZ);
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.41999998688698, mc.player.posZ, mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.7531999805212, mc.player.posZ, mc.player.onGround));
+                mc.player.setPosition(mc.player.posX, mc.player.posY + n, mc.player.posZ);
             }
             ticksSinceLastStep = 0;
         }
@@ -85,25 +85,25 @@ public class Step extends Module {
             offsetX = 0;
             offsetY = 0;
             offsetZ = 0;
-            MC.mc.player.stepHeight = MC.mc.player.onGround && MC.mc.player.collidedHorizontally && cancelStage == 0 && MC.mc.player.posY % 1 == 0 ? 1.1F : 0.5F;
+            mc.player.stepHeight = mc.player.onGround && mc.player.collidedHorizontally && cancelStage == 0 && mc.player.posY % 1 == 0 ? 1.1F : 0.5F;
             if (cancelStage == -1) {
                 cancelStage = 0;
                 return;
             }
 
-            double yDist = MC.mc.player.posY - previousY;
-            double hDistSq = (MC.mc.player.posX - previousX) * (MC.mc.player.posX - previousX) + (MC.mc.player.posZ - previousZ) * (MC.mc.player.posZ - previousZ);
+            double yDist = mc.player.posY - previousY;
+            double hDistSq = (mc.player.posX - previousX) * (mc.player.posX - previousX) + (mc.player.posZ - previousZ) * (mc.player.posZ - previousZ);
 
             if (yDist > 0.5 && yDist < 1.05 && hDistSq < 1 && cancelStage == 0)
             {
-                MC.mc.player.connection.sendPacket(new CPacketPlayer.Position(previousX, previousY + 0.42, previousZ, false));
-                offsetX = previousX - MC.mc.player.posX;
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(previousX, previousY + 0.42, previousZ, false));
+                offsetX = previousX - mc.player.posX;
                 offsetY = 0.755 - yDist;
-                offsetZ = previousZ - MC.mc.player.posZ;
+                offsetZ = previousZ - mc.player.posZ;
 
                 frozenX = previousX;
                 frozenZ = previousZ;
-                MC.mc.player.stepHeight = 1.05F;
+                mc.player.stepHeight = 1.05F;
                 cancelStage = 1;
             }
 
@@ -112,7 +112,7 @@ public class Step extends Module {
             {
                 case 1:
                     cancelStage = 2;
-                    MC.mc.player.setEntityBoundingBox((MC.mc.player.getEntityBoundingBox().offset(frozenX - MC.mc.player.posX, 0, frozenZ - MC.mc.player.posZ)));
+                    mc.player.setEntityBoundingBox((mc.player.getEntityBoundingBox().offset(frozenX - mc.player.posX, 0, frozenZ - mc.player.posZ)));
                     break;
                 case 2:
                     event.setCanceled(true);
@@ -120,14 +120,14 @@ public class Step extends Module {
                     break;
             }
 
-            previousX = MC.mc.player.posX;
-            previousY = MC.mc.player.posY;
-            previousZ = MC.mc.player.posZ;
+            previousX = mc.player.posX;
+            previousY = mc.player.posY;
+            previousZ = mc.player.posZ;
 
             if (offsetX != 0 || offsetY != 0 || offsetZ != 0) {
-                MC.mc.player.posX += offsetX;
-                MC.mc.player.setEntityBoundingBox((MC.mc.player.getEntityBoundingBox().offset(0, offsetY, 0)));
-                MC.mc.player.posZ += offsetZ;
+                mc.player.posX += offsetX;
+                mc.player.setEntityBoundingBox((mc.player.getEntityBoundingBox().offset(0, offsetY, 0)));
+                mc.player.posZ += offsetZ;
             }
         }
     }
@@ -137,11 +137,11 @@ public class Step extends Module {
     public double get_n() {
         double max_y = -1;
 
-        final AxisAlignedBB grow = MC.mc.player.getEntityBoundingBox().offset(0, 0.05, 0).grow(0.05);
+        final AxisAlignedBB grow = mc.player.getEntityBoundingBox().offset(0, 0.05, 0).grow(0.05);
 
-        if (!MC.mc.world.getCollisionBoxes(MC.mc.player, grow.offset(0, 2, 0)).isEmpty()) return 100;
+        if (!mc.world.getCollisionBoxes(mc.player, grow.offset(0, 2, 0)).isEmpty()) return 100;
 
-        for (final AxisAlignedBB aabb : MC.mc.world.getCollisionBoxes(MC.mc.player, grow)) {
+        for (final AxisAlignedBB aabb : mc.world.getCollisionBoxes(mc.player, grow)) {
 
             if (aabb.maxY > max_y) {
                 max_y = aabb.maxY;
@@ -149,7 +149,7 @@ public class Step extends Module {
 
         }
 
-        return max_y - MC.mc.player.posY;
+        return max_y - mc.player.posY;
 
     }
 }

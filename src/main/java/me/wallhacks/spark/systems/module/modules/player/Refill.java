@@ -29,7 +29,7 @@ public class Refill extends Module {
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
         if (nullCheck()) return;
-        if (MC.mc.currentScreen instanceof GuiContainer) return;
+        if (mc.currentScreen instanceof GuiContainer) return;
 
 
         if (ticksSinceLastRefill < tickDelay.getValue()) {
@@ -90,7 +90,7 @@ public class Refill extends Module {
                 if (!this.isCompatibleStacks(hotbarStack, inventoryStack)) {
                     continue;
                 }
-                final int currentStackSize = MC.mc.player.inventoryContainer.getInventory().get(entry.getKey()).stackSize;
+                final int currentStackSize = mc.player.inventoryContainer.getInventory().get(entry.getKey()).stackSize;
                 if (smallestStackSize <= currentStackSize) {
                     continue;
                 }

@@ -19,7 +19,7 @@ public class PacketLogger extends Module {
     @SubscribeEvent
     public void onServer(PacketReceiveEvent e) {
 
-        if(MC.mc.player == null)
+        if(mc.player == null)
             return;
 
         if(mode.is("server") || mode.is("both"))
@@ -29,7 +29,7 @@ public class PacketLogger extends Module {
 
     @SubscribeEvent
     public void onClient(PacketSendEvent e) {
-        if(MC.mc.player == null)
+        if(mc.player == null)
             return;
 
         if(mode.is("client") || mode.is("both"))

@@ -38,11 +38,11 @@ public class EntityEsp extends Module {
 
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent event) {
-        MC.mc.gameSettings.viewBobbing = false;
+        mc.gameSettings.viewBobbing = false;
 
         GL11.glPushMatrix();
 
-        for(Object o : MC.mc.world.loadedEntityList.toArray()){
+        for(Object o : mc.world.loadedEntityList.toArray()){
 
             Entity entity = (Entity)o;
             if(entity instanceof EntityItem && RenderItems.isOn()){
@@ -61,7 +61,7 @@ public class EntityEsp extends Module {
     public void renderEntityEvent (RenderLivingEvent event) {
 
         Entity entity = event.getEntity();
-        if (MC.mc.player == null || MC.mc.player == entity || MC.mc.world == null) {
+        if (mc.player == null || mc.player == entity || mc.world == null) {
             return;
         }
 
@@ -78,10 +78,10 @@ public class EntityEsp extends Module {
     }
 
     void drawOutline(RenderLivingEvent event, Color color){
-        final boolean fancy = MC.mc.gameSettings.fancyGraphics;
-        final float gamma = MC.mc.gameSettings.gammaSetting;
-        MC.mc.gameSettings.fancyGraphics = false;
-        MC.mc.gameSettings.gammaSetting = 10000.0f;
+        final boolean fancy = mc.gameSettings.fancyGraphics;
+        final float gamma = mc.gameSettings.gammaSetting;
+        mc.gameSettings.fancyGraphics = false;
+        mc.gameSettings.gammaSetting = 10000.0f;
 
         GL11.glPushMatrix();
 
@@ -102,8 +102,8 @@ public class EntityEsp extends Module {
 
         GL11.glPopMatrix();
 
-        MC.mc.gameSettings.fancyGraphics = fancy;
-        MC.mc.gameSettings.gammaSetting = gamma;
+        mc.gameSettings.fancyGraphics = fancy;
+        mc.gameSettings.gammaSetting = gamma;
     }
 
 
