@@ -35,9 +35,11 @@ import java.awt.*;
 public class CevBreaker extends Module {
 
 
-    IntSetting delay = new IntSetting("Delay",this,1,0,10);
-    IntSetting breakDelay = new IntSetting("BreakDelay",this,6,0,10);
-    IntSetting placeDelay = new IntSetting("PlaceDelay",this,2,0,10);
+
+    IntSetting breakBlockDelay = new IntSetting("breakBlockDelay",this,1,0,10);
+    IntSetting placeBlockDelay = new IntSetting("placeBlockDelay",this,1,0,10);
+    IntSetting breakCrystalDelay = new IntSetting("breakCrystalDelay",this,6,0,10);
+    IntSetting placeCrystalDelay = new IntSetting("placeCrystalDelay",this,1,0,10);
 
     BooleanSetting insta = new BooleanSetting("InstaMine",this,true);
 
@@ -51,72 +53,101 @@ public class CevBreaker extends Module {
         INSTANCE = this;
     }
 
-    enum CBState {
-        placeObi,placeCrystal,breakObi,breakCrystal,standBy
-    }
+
     int cooldown = 0;
 
 
     BlockPos CevBlock;
-    CBState lastState = CBState.standBy;
+
 
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
 
-        GetCevBreakerBlock();
+        BlockPos pos = GetCevBreakerBlock();
 
-        if(CevBlock != null)
+        if(pos == null || (CevBlock != null && !CevBlock.equals(pos)))
         {
-            GetState();
-
-            if(cooldown <= 0)
-            {
-                if(lastState == CBState.placeObi)
-                {
-                    Vec3d CevBlockPos = new Vec3d(CevBlock).add(0.5,1,0.5);
-                    Vec3i offset = new Vec3i(Math.floor(Math.max(-1,Math.min(CevBlockPos.x-mc.player.posX, 1))),0,Math.floor(Math.max(-1,Math.min(CevBlockPos.y-mc.player.posZ, 1))));
-                    if(offset.getX() != 0 && offset.getZ() != 0)
-                        offset = new Vec3i(offset.getX(),0,0);
-                    BlockPos blockSetOff = CevBlock.add(offset);
-
-                    BlockInteractUtil.BlockPlaceResult res = place(CevBlock);
-                    if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                    {
-                        res = place(blockSetOff);
-                        if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                        {
-                            res = place(blockSetOff.add(0,-1,0));
-                            if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                                res = place(blockSetOff.add(0,-2,0));
-                        }
-
-                    }
+            CevBlock = null;
+            disable();
+            return;
+        }
+        CevBlock = pos;
 
 
+        if(cooldown <= 0)
+            doCev();
+        else
+            cooldown--;
 
-                    if(placeDelay.getValue() == 0)
-                        GetState();
-                }
-                if(lastState == CBState.placeCrystal)
-                {
-                    placeCrystalOnBlock(CevBlock);
-                    cooldown = 20;
-                }
-                if(lastState == CBState.breakObi)
-                {
-                    Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn());
-                }
-                if(lastState == CBState.breakCrystal)
-                {
-                    CrystalUtil.breakCrystal(crystal,CevBlock);
-                    cooldown = 2;
+
+    }
+
+    void doCev() {
+        EntityEnderCrystal crystal = null;
+
+        for(Object o : mc.world.loadedEntityList){
+            Entity entity = (Entity)o;
+            if(entity instanceof EntityEnderCrystal){
+                EntityEnderCrystal e = (EntityEnderCrystal)entity;
+                if(e.isEntityAlive() && PlayerUtil.getPlayerPosFloored(e).add(0,-1,0).equals(CevBlock)){
+                    crystal = e;
                 }
             }
-            cooldown--;
         }
+        boolean isBlockThere = (mc.world.getBlockState(CevBlock).getBlock().material.isSolid());
+        boolean isCrystalThere = (crystal != null);
 
 
+
+
+
+        if(isCrystalThere && (!isBlockThere || (CevBlock.equals(InstaMine.instance.pos) && InstaMine.instance.hasSwitched)))
+        {
+            if(CrystalUtil.breakCrystal(crystal,CevBlock))
+                cooldown = placeBlockDelay.getValue();
+
+            //break crystal
+        }
+        else if(isCrystalThere && isBlockThere)
+        {
+            cooldown = breakCrystalDelay.getValue();
+            Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),cooldown+2);
+
+            //break obi
+
+        }
+        else if(!isCrystalThere && isBlockThere)
+        {
+
+            if(placeCrystalOnBlock(CevBlock))
+                cooldown = breakBlockDelay.getValue();
+            //place crystal
+
+        }
+        else if(!isCrystalThere && !isBlockThere)
+        {
+            Vec3d CevBlockPos = new Vec3d(CevBlock).add(0.5,1,0.5);
+            Vec3i offset = new Vec3i(Math.floor(Math.max(-1,Math.min(CevBlockPos.x-mc.player.posX, 1))),0,Math.floor(Math.max(-1,Math.min(CevBlockPos.y-mc.player.posZ, 1))));
+            if(offset.getX() != 0 && offset.getZ() != 0)
+                offset = new Vec3i(offset.getX(),0,0);
+            BlockPos blockSetOff = CevBlock.add(offset);
+
+            BlockInteractUtil.BlockPlaceResult res = place(CevBlock);
+            if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+            {
+                res = place(blockSetOff);
+                if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                {
+                    res = place(blockSetOff.add(0,-1,0));
+                    if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                        res = place(blockSetOff.add(0,-2,0));
+                }
+            }
+            else if(res == BlockInteractUtil.BlockPlaceResult.PLACED)
+                cooldown = placeCrystalDelay.getValue();
+            //place obi
+        }
 
     }
 
@@ -130,51 +161,9 @@ public class CevBreaker extends Module {
     }
 
 
-    EntityEnderCrystal crystal;
-    void GetState(){
 
-        boolean isBlockThere = (mc.world.getBlockState(CevBlock).getBlock().material.isSolid());
-        crystal = null;
-        double d0 = (double)CevBlock.getX();
-        double d1 = (double)CevBlock.getY();
-        double d2 = (double)CevBlock.getZ();
-        for(Object o : mc.world.loadedEntityList){
-            Entity entity = (Entity)o;
-            if(entity instanceof EntityEnderCrystal){
-                EntityEnderCrystal e = (EntityEnderCrystal)entity;
-                if(e.isEntityAlive() && PlayerUtil.getPlayerPosFloored(e).add(0,-1,0).equals(CevBlock)){
-                    crystal = e;
-                }
-            }
-        }
-        boolean isCrystalThere = (crystal != null);
-        CBState state = CBState.standBy;
-        if(isCrystalThere && !isBlockThere)
-            state = CBState.breakCrystal;
-        else if(isCrystalThere && isBlockThere)
-            state = CBState.breakObi;
-        else if(!isCrystalThere && isBlockThere)
-            state = CBState.placeCrystal;
-        else if(!isCrystalThere && !isBlockThere)
-            state = CBState.placeObi;
 
-        if(isCrystalThere && isBlockThere && InstaMine.instance.isEnabled() && InstaMine.instance.pos == CevBlock && delay.getValue() == 0)
-            state = CBState.breakCrystal;
-
-        if(lastState != state){
-            cooldown = delay.getValue();
-            if(lastState == CBState.placeObi)
-                cooldown = placeDelay.getValue();
-            if(lastState == CBState.breakObi)
-                cooldown = breakDelay.getValue();
-
-        }
-        lastState = state;
-
-    }
-    
-
-    public void placeCrystalOnBlock(BlockPos bestPos){
+    public boolean placeCrystalOnBlock(BlockPos bestPos){
 
         Vec3d pos = CrystalUtil.getRotationPos(false,bestPos,null);
         final RayTraceResult result = mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
@@ -190,12 +179,12 @@ public class CevBreaker extends Module {
         //offhand
         EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.switchType.Both);
         if (hand == null)
-            return;
+            return false;
 
 
         //rotate if needed
         if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
-            return;
+            return false;
 
 
         //send packet
@@ -214,9 +203,10 @@ public class CevBreaker extends Module {
         if (render.getValue())
             new FadePos(bestPos, fill, true);
 
+        return true;
     }
 
-    void GetCevBreakerBlock(){
+    BlockPos GetCevBreakerBlock(){
         BlockPos NewPos = null;
         for(Object o : mc.world.loadedEntityList){
             Entity entity = (Entity)o;
@@ -238,7 +228,7 @@ public class CevBreaker extends Module {
             }
 
         }
-        CevBlock = NewPos;
+        return NewPos;
     }
 
 

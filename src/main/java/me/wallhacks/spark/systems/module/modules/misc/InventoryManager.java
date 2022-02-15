@@ -7,10 +7,14 @@ import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.FileUtil;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.player.InventoryUtil;
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.gui.inventory.GuiShulkerBox;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
@@ -26,7 +30,7 @@ public class InventoryManager extends Module {
 
 
     BooleanSetting onlyIfInventoryOpen = new BooleanSetting("OnlyInInventory", this, true, "Cleaning");
-    IntSetting delay = new IntSetting("Delay", this, 5, 10, 20, "Cleaning");
+    IntSetting delay = new IntSetting("Delay", this, 20, 5, 50, "Cleaning");
 
     BooleanSetting SortInventory = new BooleanSetting("SortInventory", this, false, "Sort");
 
@@ -35,6 +39,16 @@ public class InventoryManager extends Module {
 
     ItemListSelectSetting useless = new ItemListSelectSetting("Useless", this, new Item[]{Item.getItemFromBlock(Blocks.NETHERRACK), Items.ROTTEN_FLESH
     }, "Remove");
+
+
+    BooleanSetting autoSteal = new BooleanSetting("Auto", this, false,"Stealer");
+    IntSetting stealDelay = new IntSetting("Delay", this, 20, 5, 50,"Stealer");
+    BooleanSetting stealKitNeeded = new BooleanSetting("OnlyForKit", this, false,"Stealer");
+
+
+    public boolean isAuto() {
+        return autoSteal.isOn();
+    }
 
 
     HashMap<String,Item[]> kits = new HashMap<>();
@@ -50,6 +64,8 @@ public class InventoryManager extends Module {
 
         LoadKits();
     }
+
+
 
     public String currentKit;
 
@@ -117,18 +133,32 @@ public class InventoryManager extends Module {
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
 
+        if(!timer.passedMs(0))
+            return;
 
-        if(canCleaning())
-        {
-            if(isDoneCleaning()){
-                if(onlyIfInventoryOpen.isOn())
-                    return;
-            }
-            Clean();
-
+        if((mc.currentScreen instanceof GuiChest || mc.currentScreen instanceof GuiShulkerBox) && isStealing){
+            if(isStealing)
+                handleContainer();
         }
         else
-            curSlotIndex = 0;
+        {
+            isStealing = false;
+
+
+            if(canCleaning())
+            {
+                if(isDoneCleaning()){
+                    if(onlyIfInventoryOpen.isOn())
+                        return;
+                }
+                Clean();
+
+            }
+            else
+                curSlotIndex = 0;
+        }
+
+
 
 
 
@@ -148,10 +178,6 @@ public class InventoryManager extends Module {
             curSlotIndex = 0;
 
         while (!isDoneCleaning()) {
-            if(!timer.passedMs(0))
-                return;
-
-
             handleSlot(curSlotIndex);
 
 
@@ -174,7 +200,7 @@ public class InventoryManager extends Module {
         if(!KeepItemStack(itemStack))
         {
             InventoryUtil.throwItem(s);
-            timer.delayRandom(delay.getValue(),50);
+            timer.delayRandom(delay.getValue()*10,delay.getValue()*3);
         }
         else if(SortInventory.isOn()) {
 
@@ -191,7 +217,7 @@ public class InventoryManager extends Module {
                             if (invenotrySortIsItemSame(item, itemStack.getItem()))
                                 if (perfectInventory()[slot] == null || !invenotrySortIsItemSame(perfectInventory()[slot], itemStack.getItem())) {
                                     InventoryUtil.moveItem(s, sloti);
-                                    timer.delayRandom(delay.getValue(), 50);
+                                    timer.delayRandom(delay.getValue()*10, delay.getValue()*3);
                                     break;
                                 }
                     }
@@ -224,6 +250,22 @@ public class InventoryManager extends Module {
     }
 
 
+    public int itemNeededInPerfectKit(ItemStack itemStack){
+
+        if (perfectInventory() != null) {
+
+            for (int i = 0; i < perfectInventory().length; i++) {
+
+                Item item = perfectInventory()[i];
+                int sloti = InventoryUtil.getSlotIdFromInventoryId(i);
+                if (item != null && mc.player.inventoryContainer.getInventory().get(sloti).getItem() != item && item == itemStack.getItem()) {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
 
 
 
@@ -245,8 +287,6 @@ public class InventoryManager extends Module {
                             return false;
 
                     }
-
-
 
                 }
             }
@@ -278,6 +318,77 @@ public class InventoryManager extends Module {
         return true;
     }
 
+
+
+
+
+
+
+    boolean isStealing = false;
+
+    public void StartSteal(){
+        isStealing = true;
+        timer.delayRandom(stealDelay.getValue()*10,stealDelay.getValue()*3);
+    }
+
+
+    void handleContainer(){
+        if (mc.currentScreen instanceof GuiChest || mc.currentScreen instanceof GuiShulkerBox)
+        {
+            Container container = ((GuiContainer) mc.currentScreen).inventorySlots;
+
+            ArrayList<Integer> list = new ArrayList<>();
+
+            int slots = (mc.currentScreen instanceof GuiShulkerBox ? ((GuiShulkerBox) mc.currentScreen).inventory : ((GuiChest) mc.currentScreen).lowerChestInventory).getSizeInventory();
+
+            int slot = 0;
+            while(slot < slots)
+            {
+                ItemStack l_Stack = container.getSlot(slot).getStack();
+
+                if (!l_Stack.isEmpty() && l_Stack.getItem() != Items.AIR)
+                {
+                    if(KeepItemStack(l_Stack))
+                    {
+                        int i = itemNeededInPerfectKit(l_Stack);
+
+                        if(i >= 0)
+                        {
+                            int convert = i;
+                            if(convert < 9)
+                                convert+=27;
+                            else
+                                convert-=9;
+
+
+                            InventoryUtil.moveItemInContainer(slot,convert + slots);
+                            timer.delayRandom(stealDelay.getValue(),stealDelay.getValue()*3);
+                            return;
+
+                        }
+                        else
+                            list.add(slot);
+                    }
+                }
+                slot++;
+
+            }
+
+            if(!stealKitNeeded.isOn())
+            while (list.size() > 0)
+            {
+                mc.playerController.windowClick(container.windowId, list.get(0), 0, ClickType.QUICK_MOVE,  mc.player);
+                timer.delayRandom(stealDelay.getValue()*10,stealDelay.getValue()*5);
+                return;
+            }
+
+
+
+            isStealing = false;
+            slot = 0;
+
+        }
+    }
 
 
 

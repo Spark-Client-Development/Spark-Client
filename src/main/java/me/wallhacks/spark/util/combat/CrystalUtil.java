@@ -277,7 +277,7 @@ public class CrystalUtil implements MC {
         return damage;
     }
 
-    public static void breakCrystal(EntityEnderCrystal target, BlockPos bestPos){
+    public static boolean breakCrystal(EntityEnderCrystal target, BlockPos bestPos){
         Vec3d pos = CrystalUtil.getRotationPos(true, bestPos, target);
 
 
@@ -286,12 +286,13 @@ public class CrystalUtil implements MC {
 
         //rotate if needed
         if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
-            return;
+            return false;
 
         mc.player.connection.sendPacket(new CPacketUseEntity(target));
 
         //swing
         breakSwing();
+        return true;
     }
 
     public static void breakSwing() {
