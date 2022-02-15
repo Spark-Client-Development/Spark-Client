@@ -71,6 +71,7 @@
     "spark.MixinRenderPlayer",
     "spark.MixinWorld",
     "spark.MixinPlayerControllerMP",
+    "spark.MixinGuiMultiplayer",
     "baritone.MixinAnvilChunkLoader",
     "baritone.MixinBitArray",
     "baritone.MixinBlockStateContainer",
