@@ -56,6 +56,43 @@ public class RenderUtil implements MC {
         GlStateManager.scale(-scale, -scale, scale);
     }
 
+    public static void drawRect(float x, float y, float w, float h, int color) {
+        float lvt52;
+        float pdrawRect2 = x + w;
+        float pdrawRect3 = y + h;
+        if (x < pdrawRect2) {
+            lvt52 = x;
+            x = pdrawRect2;
+            pdrawRect2 = lvt52;
+        }
+
+        if (y < pdrawRect3) {
+            lvt52 = y;
+            y = pdrawRect3;
+            pdrawRect3 = lvt52;
+        }
+
+        float lvt53 = (float) (color >> 24 & 255) / 255.0F;
+        float lvt61 = (float) (color >> 16 & 255) / 255.0F;
+        float lvt71 = (float) (color >> 8 & 255) / 255.0F;
+        float lvt81 = (float) (color & 255) / 255.0F;
+        Tessellator lvt91 = Tessellator.getInstance();
+        BufferBuilder lvt101 = lvt91.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(lvt61, lvt71, lvt81, lvt53);
+        lvt101.begin(7, DefaultVertexFormats.POSITION);
+        lvt101.pos(x, pdrawRect3, 0.0D).endVertex();
+        lvt101.pos(pdrawRect2, pdrawRect3, 0.0D).endVertex();
+        lvt101.pos(pdrawRect2, y, 0.0D).endVertex();
+        lvt101.pos(x, y, 0.0D).endVertex();
+        lvt91.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
+
+
     public static void drawFilledCircle(int x, int y, double radius, int color) {
         glEnable(GL_BLEND);
         glEnable(GL_ALPHA_TEST);

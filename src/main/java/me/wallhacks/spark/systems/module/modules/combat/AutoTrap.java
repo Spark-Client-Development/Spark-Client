@@ -35,7 +35,7 @@ public class AutoTrap extends Module {
 
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0xABE50F36, true), "Render");
+    ColorSetting fill = new ColorSetting("Color", this, new Color(0xABE50F36, true), "Render");
 
 
     @SubscribeEvent

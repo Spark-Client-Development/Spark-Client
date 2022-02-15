@@ -44,7 +44,7 @@ public class Surround extends Module {
     BooleanSetting silentSwitch = new BooleanSetting("SilentSwitch",this,true,"ItemSwitch");
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38DCB45E, true), "Render");
+    ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DCB45E, true), "Render");
 
     public static Surround instance;
     public Surround(){

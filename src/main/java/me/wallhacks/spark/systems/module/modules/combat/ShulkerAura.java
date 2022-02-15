@@ -49,6 +49,7 @@ public class ShulkerAura extends Module {
     public ShulkerAura() {
         INSTANCE = this;
     }
+
     @Override
     public void onEnable() {
         AntiCheatConfig cfg = AntiCheatConfig.getInstance();
@@ -129,10 +130,11 @@ public class ShulkerAura extends Module {
         }
         boolean disable = true;
         for (EntityPlayer e : mc.world.playerEntities) {
-            if (new BlockPos(e.posX, e.posY + 2, e.posZ).equals(targetPos)) {
-                disable = false;
-                break;
-            }
+            if (!e.isDead)
+                if (new BlockPos(e.posX, e.posY + 2, e.posZ).equals(targetPos)) {
+                    disable = false;
+                    break;
+                }
         }
         if (disable) {
             Spark.sendInfo("No more target in the trap");

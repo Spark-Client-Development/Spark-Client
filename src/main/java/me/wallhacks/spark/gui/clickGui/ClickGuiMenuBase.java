@@ -1,5 +1,6 @@
 package me.wallhacks.spark.gui.clickGui;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.configs.Configs;
 import me.wallhacks.spark.gui.clickGui.panels.navigation.NavigationGui;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
@@ -10,6 +11,8 @@ import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import me.wallhacks.spark.gui.clickGui.panels.hudeditor.HudEditor;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.SystemsScreen;
@@ -35,7 +38,6 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
         guiSettings = ClientConfig.getInstance();
         menus = new GuiPanelButton[panels.length];
 
-
         for (int i = 0; i < panels.length; i++)
         {
             int finalI = i;
@@ -53,7 +55,7 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
     @Override
     public void initGui() {
         super.initGui();
-
+        Spark.eventBus.register(this);
         menuYPos = hidden;
 
         mc.entityRenderer.loadShader(new ResourceLocation("shaders/post/blur.json"));
@@ -66,10 +68,17 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
         getPanel().tick();
     }
 
+    @SubscribeEvent
+    public void onCrosshairRender(RenderGameOverlayEvent.Pre e) {
+        if (e.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS) {
+            e.setCanceled(true);
+        }
+    }
 
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
+        Spark.eventBus.unregister(this);
         try {
             mc.entityRenderer.getShaderGroup().deleteShaderGroup();
         } catch (NullPointerException e) {

@@ -33,8 +33,7 @@ public class Scaffold extends Module {
 
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x385EDC5E, true), "Render");
-    ColorSetting outline = new ColorSetting("Outline", this, new Color(0x910AF60A, true), "Render");
+    ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC5E, true), "Render");
 
 
 

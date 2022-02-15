@@ -89,7 +89,7 @@ public class CrystalAura extends Module {
 
 
     ModeSetting render = new ModeSetting("Mode", this, "Normal", Arrays.asList("Normal", "Fancy", "Off"), "Render");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38DC5E5E, true), "Render");
+    ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DC5E5E, true), "Render");
 
 
     BooleanSetting surround = new BooleanSetting("Surround", this, false, "Pause");

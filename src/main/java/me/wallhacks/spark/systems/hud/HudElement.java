@@ -186,7 +186,7 @@ public class HudElement extends SettingsHolder implements MC {
         int y = (int)((mc.displayHeight/2 - getHeight())*percentPosY);
 
         if(mc.currentScreen instanceof GuiChat && percentPosY > 0.5)
-            y -= 20;
+            y -= 18;
 
         if(getSnappedElement() >= 0)
         {

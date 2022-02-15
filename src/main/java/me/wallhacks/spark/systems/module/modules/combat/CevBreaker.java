@@ -42,7 +42,7 @@ public class CevBreaker extends Module {
     BooleanSetting insta = new BooleanSetting("InstaMine",this,true);
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x385EDC7B, true), "Render");
+    ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC7B, true), "Render");
 
 
     public static CevBreaker INSTANCE;

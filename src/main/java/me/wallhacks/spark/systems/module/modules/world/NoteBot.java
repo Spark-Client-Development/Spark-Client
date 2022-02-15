@@ -8,6 +8,8 @@ import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
+import me.wallhacks.spark.systems.setting.settings.ColorSetting;
+import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.player.RotationUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -24,6 +26,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,6 +36,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -40,12 +44,13 @@ import java.util.zip.ZipInputStream;
 @Module.Registration(name = "NoteBot", description = "Makes music with noteblocks")
 public class NoteBot extends Module {
     public static NoteBot INSTANCE;
-
     public NoteBot() {
         INSTANCE = this;
     }
 
     BooleanSetting tune = new BooleanSetting("Tune", this, false);
+    BooleanSetting render = new BooleanSetting("Render", this, false);
+    ColorSetting color = new ColorSetting("Color", this, new Color(0x940DEA7C, true));
     private final Map<Sound, Byte> soundBytes = new HashMap<Sound, Byte>();
     private final List<SoundEntry> soundEntries = new ArrayList<SoundEntry>();
     private final List<BlockPos> posList = new ArrayList<BlockPos>();
@@ -63,7 +68,7 @@ public class NoteBot extends Module {
     private boolean tuned;
 
     public static Map<Sound, BlockPos[]> setUpSoundMap() {
-        BlockPos var0 = NoteBot.mc.player.getPosition();
+        BlockPos var0 = mc.player.getPosition();
         LinkedHashMap<Sound, BlockPos[]> result = new LinkedHashMap<Sound, BlockPos[]>();
         HashMap atomicSounds = new HashMap();
         Arrays.asList(Sound.values()).forEach(sound -> {
@@ -76,9 +81,9 @@ public class NoteBot extends Module {
                 for (int z = -6; z < 6; ++z) {
                     Sound sound2;
                     int soundByte;
-                    BlockPos pos = NoteBot.mc.player.getPosition().add(x, y, z);
-                    Block block = NoteBot.mc.world.getBlockState(pos).getBlock();
-                    if (!(NoteBot.distanceSqToCenter(pos) < 27.040000000000003) || block != Blocks.NOTEBLOCK || (soundByte = ((AtomicInteger) atomicSounds.get(sound2 = NoteBot.getSoundFromBlockState(NoteBot.mc.world.getBlockState(pos.down())))).getAndIncrement()) >= 25)
+                    BlockPos pos = mc.player.getPosition().add(x, y, z);
+                    Block block = mc.world.getBlockState(pos).getBlock();
+                    if (!(NoteBot.distanceSqToCenter(pos) < 27.040000000000003) || block != Blocks.NOTEBLOCK || (soundByte = ((AtomicInteger) atomicSounds.get(sound2 = NoteBot.getSoundFromBlockState(mc.world.getBlockState(pos.down())))).getAndIncrement()) >= 25)
                         continue;
                     result.get(sound2)[soundByte] = pos;
                 }
@@ -88,9 +93,9 @@ public class NoteBot extends Module {
     }
 
     private static double distanceSqToCenter(BlockPos pos) {
-        double var1 = Math.abs(NoteBot.mc.player.posX - (double) pos.getX() - 0.5);
-        double var3 = Math.abs(NoteBot.mc.player.posY + (double) NoteBot.mc.player.getEyeHeight() - (double) pos.getY() - 0.5);
-        double var5 = Math.abs(NoteBot.mc.player.posZ - (double) pos.getZ() - 0.5);
+        double var1 = Math.abs(mc.player.posX - (double) pos.getX() - 0.5);
+        double var3 = Math.abs(mc.player.posY + (double) mc.player.getEyeHeight() - (double) pos.getY() - 0.5);
+        double var5 = Math.abs(mc.player.posZ - (double) pos.getZ() - 0.5);
         return var1 * var1 + var3 * var3 + var5 * var5;
     }
 
@@ -318,16 +323,16 @@ public class NoteBot extends Module {
     private void tunePost() {
         if (tuneStage == 0 && currentPos != null) {
             EnumFacing facing = getFacing(this.currentPos);
-            NoteBot.mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, currentPos, facing));
-            NoteBot.mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, currentPos, facing));
+            mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, currentPos, facing));
+            mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, currentPos, facing));
         } else if (currentPos != null) {
             posPitch.get(currentPos).decrementAndGet();
-            NoteBot.mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(currentPos, getFacing(currentPos), EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
+            mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(currentPos, getFacing(currentPos), EnumHand.MAIN_HAND, 0.0f, 0.0f, 0.0f));
         }
     }
 
     private void resetTuning() {
-        if (NoteBot.mc.world == null || NoteBot.mc.player == null) {
+        if (mc.world == null || mc.player == null) {
             disable();
             return;
         }
@@ -395,7 +400,7 @@ public class NoteBot extends Module {
             if (pos == null) continue;
             if (i != 0) {
                 float[] rotations = RotationUtil.getViewRotations(new Vec3d((float) pos.getX() + 0.5f, (float) pos.getY() + 0.5f, (float) pos.getZ() + 0.5f), mc.player);
-                NoteBot.mc.player.connection.sendPacket(new CPacketPlayer.Rotation(rotations[0], rotations[1], NoteBot.mc.player.onGround));
+                mc.player.connection.sendPacket(new CPacketPlayer.Rotation(rotations[0], rotations[1], mc.player.onGround));
             }
             clickNoteBlock(pos);
         }
@@ -408,9 +413,9 @@ public class NoteBot extends Module {
                 for (int z = -6; z < 6; ++z) {
                     Sound sound;
                     byte soundByte;
-                    BlockPos pos = NoteBot.mc.player.getPosition().add(x, y, z);
-                    Block block = NoteBot.mc.world.getBlockState(pos).getBlock();
-                    if (!(pos.distanceSqToCenter(NoteBot.mc.player.posX, NoteBot.mc.player.posY + (double) NoteBot.mc.player.getEyeHeight(), NoteBot.mc.player.posZ) < 27.0) || block != Blocks.NOTEBLOCK || (soundByte = soundBytes.get(sound = NoteBot.getSoundFromBlockState(NoteBot.mc.world.getBlockState(pos.down()))).byteValue()) > 25)
+                    BlockPos pos = mc.player.getPosition().add(x, y, z);
+                    Block block = mc.world.getBlockState(pos).getBlock();
+                    if (!(pos.distanceSqToCenter(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ) < 27.0) || block != Blocks.NOTEBLOCK || (soundByte = soundBytes.get(sound = NoteBot.getSoundFromBlockState(mc.world.getBlockState(pos.down()))).byteValue()) > 25)
                         continue;
                     soundEntries.add(new SoundEntry(pos, new SoundRegister(sound, soundByte)));
                     soundBytes.replace(sound, (byte) (soundByte + 1));
@@ -428,8 +433,10 @@ public class NoteBot extends Module {
 
     private void clickNoteBlock(BlockPos pos) {
         EnumFacing facing = getFacing(pos);
-        NoteBot.mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, facing));
-        NoteBot.mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, pos, facing));
+        if (render.getValue())
+            new FadePos(pos, color);
+        mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, facing));
+        mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, pos, facing));
     }
 
     private BlockPos getRegisterPos(SoundRegister register) {
