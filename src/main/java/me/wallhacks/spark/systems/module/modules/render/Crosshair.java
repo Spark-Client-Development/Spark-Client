@@ -6,6 +6,7 @@ import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.render.ColorUtil;
 import me.wallhacks.spark.util.render.RenderUtil;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -56,12 +57,13 @@ public class Crosshair extends Module {
 
 			if(attackIndicator.getValue()) {
 				float f = mc.player.getCooledAttackStrength(0.0F);
-				if(f < 1.0F) {
-					int k = (int)(f * 20.0F);
+				if (f < 1.0F) {
+					int k = (int) (f * 20.0F);
 					RenderUtil.drawRect((resolution.getScaledWidth() / 2) - (10), ((resolution.getScaledHeight() / 2) + gap.getFloatValue() + length.getFloatValue() + (moving() ? 2 : 0) + 2), k, 2, color);
 					RenderUtil.drawOutlineLine((resolution.getScaledWidth() / 2) - (10), (resolution.getScaledHeight() / 2) + gap.getFloatValue() + length.getFloatValue() + (moving() ? 2 : 0) + 2, (resolution.getScaledWidth() / 2) - (10) + k, (resolution.getScaledHeight() / 2) + gap.getFloatValue() + length.getFloatValue() + (moving() ? 2 : 0) + 4, 1.0f, black);
 				}
 			}
+			ColorUtil.glColor(new Color(255, 255, 255));
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
 		}
 	}

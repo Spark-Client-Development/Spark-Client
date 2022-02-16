@@ -7,6 +7,7 @@ import me.wallhacks.spark.systems.hud.AlignedHudElement;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
+import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.render.ColorUtil;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.module.Module;
@@ -25,7 +26,7 @@ public class ModuleList extends AlignedHudElement {
     DoubleSetting difference = new DoubleSetting("RainbowDifference", this, 20.0D, 1.0D, 100.0D,v -> mode.is("Rainbow") ,"Color");
 
 
-    ArrayList<String> list = new ArrayList<>();
+    ArrayList<Pair<String, Integer>> list = new ArrayList<>();
 
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
@@ -59,10 +60,12 @@ public class ModuleList extends AlignedHudElement {
         }
 
         list = new ArrayList<>();
-
+        int i = 0;
         for (Module mod : modules) {
-            if (mod.isEnabled() && mod.isVisible())
-                list.add(mod.getName());
+            if (mod.isEnabled() && mod.isVisible()) {
+                list.add(new Pair<>(mod.getName(), getColor(i * 10, mod.getName())));
+                i++;
+            }
         }
     }
 
@@ -72,8 +75,7 @@ public class ModuleList extends AlignedHudElement {
         drawList(list);
     }
 
-    @Override
-    public int getColor(int x, int y, String text) {
+    public int getColor(int y, String text) {
         y/=fontManager.getTextHeight();
         switch (mode.getValue()) {
             case "AlphaStep":

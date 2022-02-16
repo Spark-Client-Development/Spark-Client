@@ -1,9 +1,13 @@
 package me.wallhacks.spark.systems.hud;
 
+import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.util.objects.Pair;
 import net.minecraft.client.gui.Gui;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 
 public abstract class AlignedHudElement extends HudElement {
 
@@ -11,13 +15,8 @@ public abstract class AlignedHudElement extends HudElement {
         return hudSettings.getGuiHudListBackgroundColor().getRGB();
     }
 
-    protected int getColor(int x, int y, String text) {
-        return hudSettings.getGuiHudSecondColor().getRGB();
-    }
-
-    protected void drawList(ArrayList<String> l) {
-
-        ArrayList<String> list = new ArrayList(l);
+    protected void drawList(ArrayList<Pair<String, Integer>> l) {
+        ArrayList<Pair<String, Integer>> list = new ArrayList<>(l);
 
         if (!alignTop())
             Collections.reverse(list);
@@ -28,8 +27,8 @@ public abstract class AlignedHudElement extends HudElement {
 
 
         int biggestMod = -1;
-        for (String string : list) {
-            int widthstring = fontManager.getTextWidth(string);
+        for (Pair<String, Integer> pair : list) {
+            int widthstring = fontManager.getTextWidth(pair.getKey());
             if (biggestMod < widthstring)
                 biggestMod = widthstring;
         }
@@ -38,23 +37,20 @@ public abstract class AlignedHudElement extends HudElement {
         setWidth((biggestMod > 0 ? biggestMod : 30) + 3);
 
         int h = 0;
-        for (String string : list) {
-            int widthstring = fontManager.getTextWidth(string);
+        for (Pair<String, Integer> pair : list) {
+            int widthstring = fontManager.getTextWidth(pair.getKey());
 
             int y = startY + h;
             int x = startX + (alignLeft() ? 0 : -widthstring);
 
-            int color = getColor(x, h, string);
-
             Gui.drawRect(x, y, x + widthstring + 2, y + fontManager.getTextHeight() + 2, getBackgroundColor());
             if (!alignLeft())
-                Gui.drawRect(x - 1, y, x, y + fontManager.getTextHeight() + 2, color);
+                Gui.drawRect(x - 1, y, x, y + fontManager.getTextHeight() + 2, pair.getValue());
             else
-                Gui.drawRect(x + widthstring + 2, y, x + widthstring + 3, y + fontManager.getTextHeight() + 2, color);
+                Gui.drawRect(x + widthstring + 2, y, x + widthstring + 3, y + fontManager.getTextHeight() + 2, pair.getValue());
 
-            fontManager.drawString(string, x + 1, y + 2, color);
+            fontManager.drawString(pair.getKey(), x + 1, y + 2, pair.getValue());
             h += fontManager.getTextHeight() + 2;
-
             if (biggestMod < widthstring)
                 biggestMod = widthstring;
         }
