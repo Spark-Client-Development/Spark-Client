@@ -24,6 +24,15 @@ public class RotationManager implements MC {
     public void setCancelNextWalkingUpdate(){
         cancelNextWalkingUpdate = true;
     }
+    public boolean sendPosPacketAndCancelNextUpdatePacket(Vec3d pos)
+    {
+        mc.player.connection.sendPacket(new CPacketPlayer.Position(pos.x,pos.y,pos.z,mc.player.onGround));
+
+        setCancelNextWalkingUpdate();
+
+
+        return true;
+    }
 
     public void setDoFakeRotationForTicks(int doFakeRotationForTicks) {
         DoFakeRotationForTicks = doFakeRotationForTicks;
