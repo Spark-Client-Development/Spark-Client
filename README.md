@@ -5,6 +5,7 @@
 ![compatible](https://img.shields.io/badge/Compatible--with-nothing-red)
 [![baritone](https://img.shields.io/badge/Baritone-v1.2.15-yellow)](https://github.com/cabaletta/baritone)
 [![schematica](https://img.shields.io/badge/Schematica-1.8.0.169-green)](https://github.com/Lunatrius/Schematica)
+[![youtube](https://img.shields.io/badge/Youtube-Spark--Client-red)](https://www.youtube.com/channel/UCemSksrWY2ccY4weJCty9iQ)
 
 # Spark-Client
 spark client is a utility mod for anarchy servers. This includes hacker vs hacker pvp, exploring anarchy servers, building and more.
@@ -27,3 +28,7 @@ Most of the client is original, but we have used a few sources of inspiration:<b
 # Contributing
 feel free to make a pull request I will take a look if I have the time however keep code formatted properly with `lowerCamelCase` for method names and value names. Also take your time to properly test your code for bugs before making the pull request>
 url![image](https://user-images.githubusercontent.com/69912957/153882908-6766df65-a19b-4a1f-8ed2-ed8dbb1cf710.png)
+
+# Media
+- Entity Speed bypass showcase <br>
+[![Entity Speed](https://img.youtube.com/vi/Y9SH_jEfxrU/0.jpg)](https://www.youtube.com/watch?v=Y9SH_jEfxrU)
