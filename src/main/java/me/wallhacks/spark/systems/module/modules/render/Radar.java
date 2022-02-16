@@ -26,7 +26,7 @@ import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import java.awt.*;
 
 @Module.Registration(name = "Radar", description = "Render arrows to show close players")
-public class ArrowCompass extends Module {
+public class Radar extends Module {
 
 
     private final IntSetting range = new IntSetting("Range", this,260, 25, 260,"General");
@@ -55,10 +55,10 @@ public class ArrowCompass extends Module {
     @SubscribeEvent
     public void onRender2D(RenderGameOverlayEvent event) {
 
-        if(mc.player.rotationPitch < 0 && tilt.getValue() >= 90)
+        if(mc.renderViewEntity.rotationPitch < 0 && tilt.getValue() >= 90)
             return;
 
-        float tilt = Math.max(0, Math.min(90 - mc.player.rotationPitch, this.tilt.getValue()));
+        float tilt = Math.max(0, Math.min(90 - mc.renderViewEntity.rotationPitch, this.tilt.getValue()));
 
 
 
@@ -79,7 +79,7 @@ public class ArrowCompass extends Module {
 
                 int x = Display.getWidth() / 2 / (mc.gameSettings.guiScale == 0 ? 1 : mc.gameSettings.guiScale);
                 int y = Display.getHeight() / 2 / (mc.gameSettings.guiScale == 0 ? 1 : mc.gameSettings.guiScale);
-                float yaw = this.getRotations(entity) - (mc.player.rotationYaw);
+                float yaw = this.getRotations(entity) - (mc.renderViewEntity.rotationYaw);
 
                 GL11.glTranslatef((float) x, (float) y, 0.0f);
                 GL11.glRotatef(tilt, 1.0f, 0.0f, 0.0f);
@@ -112,24 +112,14 @@ public class ArrowCompass extends Module {
         if(Spark.socialManager.isFriend(entity))
             return ClientConfig.getInstance().friendColor.getColor();
         float l = MathHelper.clamp((PlayerUtil.getDistance(entity.getPositionVector())-5)/40f,0,1);
-        return ColorUtil.lerpColor(distantColor.getColor(),closeColor.getColor(), l);
+        return ColorUtil.lerpColor(closeColor.getColor(), distantColor.getColor(), l);
     }
 
 
     private float getRotations(EntityLivingBase ent) {
         float partialTicks = mc.getRenderPartialTicks();
-        double x = (ent.posX+(ent.posX-ent.lastTickPosX)*partialTicks) - (mc.player.posX+(mc.player.posX- mc.player.lastTickPosX)*partialTicks);
-        double z = (ent.posZ+(ent.posZ-ent.lastTickPosZ)*partialTicks) - (mc.player.posZ+(mc.player.posZ- mc.player.lastTickPosZ)*partialTicks);
+        double x = (ent.posX+(ent.posX-ent.lastTickPosX)*partialTicks) - (mc.renderViewEntity.posX+(mc.renderViewEntity.posX- mc.renderViewEntity.lastTickPosX)*partialTicks);
+        double z = (ent.posZ+(ent.posZ-ent.lastTickPosZ)*partialTicks) - (mc.renderViewEntity.posZ+(mc.renderViewEntity.posZ- mc.renderViewEntity.lastTickPosZ)*partialTicks);
         return (float) (-(Math.atan2(x, z) * 57.29577951308232));
     }
-
-    private Vec3d getEntityRenderPosition(Entity entity) {
-        double partial = mc.getRenderPartialTicks();
-        double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partial - mc.getRenderManager().viewerPosX;
-        double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partial - mc.getRenderManager().viewerPosY;
-        double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partial - mc.getRenderManager().viewerPosZ;
-        return new Vec3d(x, y, z);
-    }
-
-
 }

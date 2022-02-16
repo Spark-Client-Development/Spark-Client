@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class AntiRotate extends Module {
     @SubscribeEvent
     public void onPacketReceive(PacketReceiveEvent event) {
+        if (nullCheck()) return;
         if (event.getPacket() instanceof SPacketPlayerPosLook) {
             SPacketPlayerPosLook p = event.getPacket();
             p.yaw = mc.player.rotationYaw;

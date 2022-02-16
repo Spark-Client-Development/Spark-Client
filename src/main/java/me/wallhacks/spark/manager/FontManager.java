@@ -4,6 +4,7 @@ import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.GameFontRenderer;
 import net.minecraft.client.Minecraft;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
+import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 import java.io.InputStream;
@@ -76,7 +77,7 @@ public class FontManager implements MC {
 
     private static Font getClientFont(final String fontName, final float size) {
         try {
-            final InputStream inputStream = FontManager.class.getResourceAsStream("/fonts/" + fontName);
+            final InputStream inputStream = FontManager.class.getResourceAsStream("/assets/minecraft/fonts/" + fontName);
             Font awtClientFont = Font.createFont(0, inputStream);
             awtClientFont = awtClientFont.deriveFont(0, size);
             inputStream.close();
