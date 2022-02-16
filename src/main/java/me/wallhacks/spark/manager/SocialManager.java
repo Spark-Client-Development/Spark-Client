@@ -98,14 +98,14 @@ public class SocialManager {
             String s = FileUtil.read(getFriendsFile());
             if (s != null) {
                 String[] List = s.split("\n");
-                Spark.socialManager.clearFriends();
+                clearFriends();
                 for (String var : List) {
                     String[] parts = var.split("/");
                     if (parts.length == 2) {
                         if(parts[0] == "ING")
-                            Spark.socialManager.addFriend(parts[1]);
+                            addFriend(parts[1]);
                         else
-                            Spark.socialManager.addFriend(new UUIDSocial(UUID.fromString(parts[1])));
+                            addFriend(new UUIDSocial(UUID.fromString(parts[1])));
 
 
                     }

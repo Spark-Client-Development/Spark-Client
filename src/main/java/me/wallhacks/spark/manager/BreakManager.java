@@ -6,6 +6,7 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.player.UpdateWalkingPlayerEvent;
 import me.wallhacks.spark.event.render.RenderEntityEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
+import me.wallhacks.spark.systems.module.modules.exploit.InstaMine;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
@@ -34,10 +35,19 @@ public class BreakManager implements MC {
     boolean instMine;
 
 
-    public void setCurrentBlock(BlockPos pos,boolean instMine) {
+    public void setCurrentBlock(BlockPos pos,boolean instMine,int keepTicks) {
+
+
+
+
         block = pos;
         this.instMine = instMine;
-        ticks = 5;
+        ticks = keepTicks;
+
+
+
+
+
     }
 
     @SubscribeEvent

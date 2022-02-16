@@ -1,7 +1,7 @@
 package me.wallhacks.spark.mixin.mixins.spark;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import me.wallhacks.spark.systems.module.modules.misc.ChestStealer;
 
 @Mixin({ GuiScreen.class })
 public class MixinGuiScreen {
@@ -55,7 +54,7 @@ public class MixinGuiScreen {
         {
             GuiContainer screen = (GuiContainer)mc.currentScreen;
 
-            ChestStealer instance = ChestStealer.getInstance();
+            InventoryManager instance = InventoryManager.instance;
             if(instance.isEnabled() && instance.isAuto())
                 instance.StartSteal();
 
@@ -71,7 +70,7 @@ public class MixinGuiScreen {
         Minecraft mc = Minecraft.getMinecraft();
         if(mc.currentScreen instanceof GuiShulkerBox || mc.currentScreen instanceof GuiChest)
         if(button.id == 66){
-            ChestStealer.getInstance().StartSteal();
+            InventoryManager.instance.StartSteal();
         }
     }
 

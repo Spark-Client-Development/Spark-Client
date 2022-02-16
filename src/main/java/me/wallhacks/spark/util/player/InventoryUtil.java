@@ -116,6 +116,25 @@ public class InventoryUtil implements MC {
 
         mc.playerController.updateController();
     }
+
+    public static void moveItemInContainer(int slot,int slot2){
+
+
+        GuiContainer container = mc.currentScreen instanceof GuiContainer ? (GuiContainer)mc.currentScreen : null;
+
+        int winId = container != null ? container.inventorySlots.windowId : 0;
+
+
+
+        mc.playerController.windowClick(winId, slot, 0, ClickType.PICKUP,  mc.player);
+        mc.playerController.windowClick(winId, slot2, 0, ClickType.PICKUP,  mc.player);
+
+        mc.playerController.windowClick(winId, slot, 0, ClickType.PICKUP,  mc.player);
+
+        mc.playerController.updateController();
+    }
+
+
     public static Item[] getListOfItems(){
         ArrayList<Item> bs = new ArrayList<Item>();
 
@@ -139,6 +158,7 @@ public class InventoryUtil implements MC {
 
         return interSlot;
     }
+
 
     public static Map<Integer, ItemStack> getInventory() {
         return getInvSlots(9, 35);

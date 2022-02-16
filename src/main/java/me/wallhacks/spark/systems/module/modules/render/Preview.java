@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
@@ -169,11 +170,11 @@ public class Preview extends Module {
 
         if(mapdata == null)
         {
-            mc.fontRenderer.drawStringWithShadow("§4No MapData!", x, y+15 , -1);
+            mc.fontRenderer.drawStringWithShadow(ChatFormatting.RED +"No MapData!", x, y+15 , -1);
 
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            mc.fontRenderer.drawStringWithShadow("§4Move map to inventory", x*2, y*2+50 , -1);
-            mc.fontRenderer.drawStringWithShadow("§4to get data from server!", x*2, y*2+60 , -1);
+            mc.fontRenderer.drawStringWithShadow(ChatFormatting.RED +"Move map to inventory", x*2, y*2+50 , -1);
+            mc.fontRenderer.drawStringWithShadow(ChatFormatting.RED +"to get data from server!", x*2, y*2+60 , -1);
         }
 
 
