@@ -59,6 +59,10 @@ public class FreecamEntity extends EntityPlayerSP {
         return potion != MobEffects.BLINDNESS && mc.player.isPotionActive(potion);
     }
 
+    public MovementInput getDummyInput() {
+        return dummyInput;
+    }
+
     @Nullable
     public PotionEffect getActivePotionEffect(Potion potionIn) {
         return mc.player.getActivePotionEffect(potionIn);
