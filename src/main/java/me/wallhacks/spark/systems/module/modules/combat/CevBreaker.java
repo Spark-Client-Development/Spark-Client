@@ -75,13 +75,16 @@ public class CevBreaker extends Module {
         CevBlock = pos;
 
 
-        if(cooldown <= 0)
-            doCev();
-        else
+        if(cooldown > 0)
             cooldown--;
+        else
+            doCev();
+
+
 
 
     }
+    boolean isMiningBlock = false;
 
     void doCev() {
         EntityEnderCrystal crystal = null;
@@ -104,6 +107,14 @@ public class CevBreaker extends Module {
 
         if(isCrystalThere && (!isBlockThere || (CevBlock.equals(InstaMine.instance.pos) && InstaMine.instance.hasSwitched)))
         {
+            if(isMiningBlock)
+            {
+                isMiningBlock = false;
+                cooldown = breakCrystalDelay.getValue();
+                if(cooldown > 0)
+                    return;
+            }
+
             if(CrystalUtil.breakCrystal(crystal,CevBlock))
                 cooldown = placeBlockDelay.getValue();
 
@@ -111,9 +122,9 @@ public class CevBreaker extends Module {
         }
         else if(isCrystalThere && isBlockThere)
         {
-            cooldown = breakCrystalDelay.getValue();
-            Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),cooldown+2);
 
+            Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),3);
+            isMiningBlock = true;
             //break obi
 
         }
