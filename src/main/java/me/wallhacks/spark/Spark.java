@@ -47,6 +47,7 @@ public class Spark implements MC {
     public static ThreadManager threadManager;
     public static SwitchManager switchManager;
     public static MapManager mapManager;
+    public static DataTrackingManager dataTrackingManager;
 
     public static SocialManager socialManager;
 
@@ -76,6 +77,7 @@ public class Spark implements MC {
         switchManager = new SwitchManager();
         altManager = new AltManager();
         socialManager = new SocialManager();
+        dataTrackingManager = new DataTrackingManager();
         waypointManager = new WaypointManager();
         configManager.Load(false);
         rpcManager = new RPCManager();

@@ -17,6 +17,7 @@ import java.lang.annotation.Target;
 public abstract class Module extends SettingsHolder implements MC {
 
 
+
     private final String name = getMod().name();
     private final String description = getMod().description();
     private int bind = getMod().bind();
@@ -107,15 +108,8 @@ public abstract class Module extends SettingsHolder implements MC {
             this.isEnabled = true;
             onEnable();
             if (isEnabled)
-                if (Notifications.INSTANCE.toggle.getValue() && !muted) {
-                    if (not == null || !Notifications.notifications.contains(not)) {
-                        not = new Notification(name + " " + TextFormatting.GREEN + "enabled");
-                        Notifications.addNotification(not);
-                    } else {
-                        not.text = name + " " + TextFormatting.GREEN + "enabled";
-                        not.timer.reset();
-                        not.stage = 2;
-                    }
+                if (!muted) {
+                    Notifications.addNotification(new Notification(name + " " + TextFormatting.GREEN + "enabled",modId));
                 }
 
         }
@@ -132,14 +126,8 @@ public abstract class Module extends SettingsHolder implements MC {
             onDisable();
             if (!isEnabled)
                 if (Notifications.INSTANCE.toggle.getValue() && !muted) {
-                    if (not == null || !Notifications.notifications.contains(not)) {
-                        not = new Notification(name + " " + TextFormatting.RED + "disabled");
-                        Notifications.addNotification(not);
-                    } else {
-                        not.text = name + " " + TextFormatting.RED + "disabled";
-                        not.timer.reset();
-                        not.stage = 2;
-                    }
+                    Notifications.addNotification(new Notification(name + " " + TextFormatting.RED + "disabled",modId));
+
                 }
         }
     }
