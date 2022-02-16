@@ -7,8 +7,16 @@ import java.util.ArrayList;
 
 public abstract class SettingsHolder {
 
+    static int lastId = 0;
+    public final int modId;
+
+
+
     public SettingsHolder(){
         settings = new ArrayList<Setting<?>>();
+
+        modId = lastId;
+        lastId++;
     }
 
     private ArrayList<Setting<?>> settings;

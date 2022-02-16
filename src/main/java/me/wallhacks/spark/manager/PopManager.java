@@ -36,25 +36,7 @@ public class PopManager implements MC {
                         EntityPlayer player = (EntityPlayer)entity;
                         if(player.getHealth() <= 0.0f) {
                             if (!player.equals(mc.player) && Notifications.INSTANCE.death.getValue() && Notifications.INSTANCE.isEnabled()) {
-                                if (toAnnouce.containsKey(player)) {
-                                    Notification notification = toAnnouce.get(player);
-                                    notification.text = getPopString(player);
-                                    if (Notifications.notifications.contains(notification)) {
-                                        if (notification.stage >= 2) {
-                                            notification.stage = 2;
-                                            notification.animateTimer.reset();
-                                        }
-                                        notification.timer.reset();
-                                    } else {
-                                        notification = new Notification(getDeathString(player));
-                                        toAnnouce.remove(player);
-                                        toAnnouce.put(player, notification);
-                                        Notifications.addNotification(notification);
-                                    }
-                                } else {
-                                    toAnnouce.put(player, new Notification(getDeathString(player)));
-                                    Notifications.addNotification(toAnnouce.get(player));
-                                }
+                                Notifications.addNotification(new Notification(getDeathString(player),player.getEntityId()));
                             }
                             resetPops(player);
                         }
@@ -73,25 +55,7 @@ public class PopManager implements MC {
                     EntityPlayer player = (EntityPlayer) packet.getEntity(mc.world);
                     popTotem(player);
                     if (!player.equals(mc.player) && player.isEntityAlive() && Notifications.INSTANCE.pop.getValue() && Notifications.INSTANCE.isEnabled()) {
-                        if (toAnnouce.containsKey(player)) {
-                            Notification notification = toAnnouce.get(player);
-                            notification.text = getPopString(player);
-                            if (Notifications.notifications.contains(notification)) {
-                                if (notification.stage >= 2) {
-                                    notification.stage = 2;
-                                    notification.animateTimer.reset();
-                                }
-                                notification.timer.reset();
-                            } else {
-                                notification = new Notification(getPopString(player));
-                                toAnnouce.remove(player);
-                                toAnnouce.put(player, notification);
-                                Notifications.addNotification(notification);
-                            }
-                        } else {
-                            toAnnouce.put(player, new Notification(getPopString(player)));
-                            Notifications.addNotification(toAnnouce.get(player));
-                        }
+                        Notifications.addNotification(new Notification(getPopString(player),player.getEntityId()));
                     }
                 }
             } catch (Exception ignored) {

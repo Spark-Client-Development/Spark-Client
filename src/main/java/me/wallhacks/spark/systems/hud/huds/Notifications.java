@@ -10,7 +10,9 @@ import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,9 +35,34 @@ public class Notifications extends HudElement {
         return 20;
     }
 
-    public static void addNotification(Notification notification) {
+
+
+
+    public static void addNotification(Notification notificationToAdd) {
         if (INSTANCE.isEnabled())
-            notifications.add(notification);
+        {
+            if(notificationToAdd.id != -1)
+            {
+                for (Notification notification : notifications) {
+
+                    if(notification.id == notificationToAdd.id)
+                    {
+                        notification.text = notificationToAdd.text;
+                        if (notification.stage >= 2) {
+                            notification.stage = 2;
+                            notification.animateTimer.reset();
+                        }
+                        notification.timer.reset();
+                        return;
+                    }
+
+
+                }
+            }
+
+            notifications.add(notificationToAdd);
+
+        }
     }
 
 
@@ -55,8 +82,11 @@ public class Notifications extends HudElement {
             }
         } else {
             AtomicInteger count = new AtomicInteger();
+
             notifications.removeIf(notification -> notification.stage == 5);
-            notifications.forEach(notification -> {
+            for (Notification notification : notifications){
+
+
                 if (!notification.didOffset) {
                     notification.didOffset = true;
                     notification.offset = count.get();
@@ -102,11 +132,12 @@ public class Notifications extends HudElement {
                         Gui.drawRect(getRenderPosX() + (notification.stage == 0 ? 0 : notification.stage == 1 ? notification.animateX : notification.stage == 2 ? 10 + fontManager.getTextWidth(notification.text) : notification.stage == 3 ? 10 + fontManager.getTextWidth(notification.text) - notification.animateX : 0), getRenderPosY() + notification.offset, getRenderPosX() + (notification.stage == 0 ? notification.animateX : notification.stage == 4 ? 13 + fontManager.getTextWidth(notification.text) - notification.animateX : 13 + fontManager.getTextWidth(notification.text)), getRenderPosY() + 20 + notification.offset, HudSettings.getInstance().getGuiHudMainColor().getRGB());
                     }
                 }
-                boolean up = mode.is("Auto") ? (getRenderPosY() > 0.5) : mode.is("Up");
+                boolean up = mode.is("Auto") ? (!alignTop()) : mode.is("Up");
 
                 count.addAndGet(up ? -24 : 24);
 
-            });
+            }
+
 
         }
     }
