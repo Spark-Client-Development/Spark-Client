@@ -113,7 +113,7 @@ public class MapManager implements MC {
             toLoad.remove(M);
 
         Spark.threadManager.execute(() -> {
-
+            if (mc.world == null) return;
             //don't remove this
             if(needsLoad)
                 LoadMap(M);

@@ -5,7 +5,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.render.FovModifierEvent;
 import me.wallhacks.spark.event.render.RenderHurtCameraEffectEvent;
 import me.wallhacks.spark.manager.SystemManager;
-import me.wallhacks.spark.systems.module.modules.misc.Putin;
+import me.wallhacks.spark.systems.module.modules.exploit.Putin;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.render.CameraUtil;
 import net.minecraft.client.entity.EntityPlayerSP;

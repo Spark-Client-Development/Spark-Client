@@ -8,6 +8,7 @@ import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import net.minecraft.client.gui.GuiDownloadTerrain;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.network.play.server.SPacketSetPassengers;
@@ -32,7 +33,7 @@ public class EntitySpeed extends Module {
             if (dev.getValue()) {
                 boolean x = (riding.posX >= 0);
                 boolean z = (riding.posZ >= 0);
-                boolean s = Math.abs(riding.posZ) - Math.abs(riding.posX) < 1.5;
+                boolean s = Math.abs(Math.abs(riding.posZ) - Math.abs(riding.posX)) < 1.5;
                 if (s) {
                     if (x == z) {
                         riding.posX = riding.posZ;
@@ -47,8 +48,9 @@ public class EntitySpeed extends Module {
             riding.rotationYaw = yaw;
             final boolean movingForward = forward != 0.0;
             final boolean movingStrafe = strafe != 0.0;
-            if (bypass.getValue() && !mc.gameSettings.keyBindSneak.isKeyDown())
+            if (bypass.getValue() && !mc.gameSettings.keyBindSneak.isKeyDown()) {
                 mc.player.connection.sendPacket(new CPacketUseEntity(riding, EnumHand.MAIN_HAND));
+            }
             if (!movingForward && !movingStrafe) {
                 riding.motionX = 0.0;
                 riding.motionZ = 0.0;

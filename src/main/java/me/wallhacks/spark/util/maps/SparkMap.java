@@ -163,7 +163,7 @@ public class SparkMap {
         if(worldIn.provider.isNether())
         {
             h = 122;
-            while (true){
+            while (true) {
                 iblockstate = chunk.getBlockState(x, h, z);
                 blockpos$mutableblockpos.setPos(x, h,z);
 
