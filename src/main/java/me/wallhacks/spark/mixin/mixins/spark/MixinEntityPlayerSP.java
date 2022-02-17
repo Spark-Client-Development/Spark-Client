@@ -391,5 +391,4 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
     public void closeScreen(Minecraft minecraft, GuiScreen screen) {
         if (!PortalChat.INSTANCE.isEnabled()) mc.displayGuiScreen(screen);
     }
-
 }

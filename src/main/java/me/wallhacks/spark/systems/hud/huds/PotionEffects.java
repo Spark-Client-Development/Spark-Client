@@ -19,7 +19,7 @@ public class PotionEffects extends AlignedHudElement {
     public void draw(float partialTicks) {
         ArrayList<Pair<String, Integer>> potions = new ArrayList<>();
         mc.player.getActivePotionEffects().forEach(effect -> {
-            potions.add(new Pair<>(ChatFormatting.WHITE + I18n.format(effect.getPotion().getName()) + " " + (effect.getAmplifier() + 1) + " " + ChatFormatting.GRAY + Potion.getPotionDurationString(effect, 1.0f), new Color(effect.getPotion().getLiquidColor()).getRGB()));
+            potions.add(new Pair<>(ChatFormatting.GRAY + I18n.format(effect.getPotion().getName()) + " " + (effect.getAmplifier() + 1) + " " + ChatFormatting.WHITE + Potion.getPotionDurationString(effect, 1.0f), new Color(effect.getPotion().getLiquidColor()).getRGB()));
         });
         Collections.sort(potions, new Comparator<Pair<String, Integer>>() {
             @Override
@@ -27,7 +27,7 @@ public class PotionEffects extends AlignedHudElement {
                 return fontManager.getTextWidth((String) s2.getKey()) - fontManager.getTextWidth((String) s1.getKey());
             }
         });
-        if (potions.isEmpty()) potions.add(new Pair<>(ChatFormatting.WHITE + "No active potions", HudSettings.getInstance().getGuiHudMainColor().getRGB()));
+        if (potions.isEmpty()) potions.add(new Pair<>(ChatFormatting.GRAY + "No active potions", HudSettings.getInstance().getGuiHudMainColor().getRGB()));
         drawList(potions);
     }
 }

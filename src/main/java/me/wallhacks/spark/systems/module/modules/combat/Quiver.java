@@ -72,7 +72,7 @@ public class Quiver extends Module {
             timer = 0;
             this.stage++;
         } else if (stage == 3) {
-            if (timer > 5) {
+            if (timer > 4) {
                 this.stage++;
             }
         } else if (stage == 4) {
