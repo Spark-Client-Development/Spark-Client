@@ -4,6 +4,8 @@ import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.systems.hud.AlignedHudElement;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.util.GuiUtil;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -24,12 +26,22 @@ public class ArmorHud extends AlignedHudElement {
             }
         }
 
+
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.enableTexture2D();
+        mc.getRenderItem().zLevel = 200.0f;
+
+
         for (int i = 5; i <= 8; i++) {
             ItemStack s = mc.player.inventoryContainer.getSlot(i).getStack();
             if (!s.isEmpty()) {
+
                 mc.renderItem.renderItemAndEffectIntoGUI(s, getRenderPosX() + 15 * (i - 5), getRenderPosY());
                 mc.renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, s, getRenderPosX() + 15 * (i - 5), getRenderPosY(), null);
+
             }
         }
+        mc.getRenderItem().zLevel = 0.0f;
+        RenderHelper.disableStandardItemLighting();
     }
 }

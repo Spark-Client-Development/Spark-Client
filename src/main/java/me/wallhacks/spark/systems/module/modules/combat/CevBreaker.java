@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -39,7 +40,9 @@ public class CevBreaker extends Module {
     IntSetting breakCrystalDelay = new IntSetting("breakCrystalDelay",this,6,0,10);
     IntSetting placeCrystalDelay = new IntSetting("placeCrystalDelay",this,1,0,10);
 
+
     BooleanSetting insta = new BooleanSetting("InstaMine",this,true);
+    BooleanSetting smartCrystalPlayer = new BooleanSetting("SmartCrystal",this,true,aBoolean -> insta.isOn());
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC7B, true), "Render");
@@ -118,20 +121,20 @@ public class CevBreaker extends Module {
 
             //break crystal
         }
-        else if(isCrystalThere && isBlockThere)
-        {
-
-            Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),3);
-            isMiningBlock = true;
-            //break obi
-
-        }
-        else if(!isCrystalThere && isBlockThere)
+        else if(!isCrystalThere && (!smartCrystalPlayer.isOn() || !insta.isOn() || PacketMine.instance.ticksFromDone() < 4) && isBlockThere)
         {
 
             if(placeCrystalOnBlock(CevBlock))
                 cooldown = breakBlockDelay.getValue();
             //place crystal
+
+        }
+        else if(isBlockThere)
+        {
+
+            Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),3);
+            isMiningBlock = true;
+            //break obi
 
         }
         else if(!isCrystalThere && !isBlockThere)
