@@ -16,6 +16,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -388,7 +389,7 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
     }
 
     @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;displayGuiScreen(Lnet/minecraft/client/gui/GuiScreen;)V"))
-    public void closeScreen(Minecraft minecraft, GuiScreen screen) {
-        if (!PortalChat.INSTANCE.isEnabled()) mc.displayGuiScreen(screen);
+    public void displayGuiScreen(Minecraft minecraft, GuiScreen screen) {
+        if (!PortalChat.INSTANCE.isEnabled()) mc.displayGuiScreen((GuiScreen) null);
     }
 }

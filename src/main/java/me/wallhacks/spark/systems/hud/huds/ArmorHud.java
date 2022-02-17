@@ -7,7 +7,7 @@ import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-@HudElement.Registration(name = "FPS", description = "Shows you your fps", posX = 0.5, posY = 0.1, width = 62, height = 16)
+@HudElement.Registration(name = "ArmorHud", description = "Shows you your fps", posX = 0.5, posY = 0.1, width = 62, height = 16)
 public class ArmorHud extends AlignedHudElement {
     ResourceLocation[] armor = new ResourceLocation[] {
             new ResourceLocation("textures/icons/armor/helmet.png"),

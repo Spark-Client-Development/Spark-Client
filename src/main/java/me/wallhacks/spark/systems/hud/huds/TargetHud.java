@@ -2,16 +2,13 @@ package me.wallhacks.spark.systems.hud.huds;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.manager.DataTrackingManager;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.StringUtil;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.HoleUtil;
-import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.render.ColorUtil;
 import net.minecraft.block.BlockAir;
@@ -103,11 +100,6 @@ public class TargetHud extends HudElement {
 
 
             Gui.drawRect((int)getRenderPosX(), (int)getRenderPosY() + getHeight() - 3, (int)getRenderPosX() + (int)(smoothPercent*getWidth()), (int)getRenderPosY() + getHeight(), original.isOn() ? HudSettings.getInstance().getGuiHudMainColor().getRGB() : healthColor.getRGB());
-
-
-            for (PotionEffect o : Spark.dataTrackingManager.potionEffectsForLiving(target)) {
-                Spark.logger.info(o.getEffectName()+" "+o.getAmplifier());
-            }
 
             GlStateManager.enableTexture2D();
             RenderHelper.enableStandardItemLighting();
