@@ -1,12 +1,8 @@
 package me.wallhacks.spark.manager;
 
-import baritone.api.utils.BlockUtils;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
-import me.wallhacks.spark.event.player.UpdateWalkingPlayerEvent;
-import me.wallhacks.spark.event.render.RenderEntityEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
-import me.wallhacks.spark.systems.module.modules.exploit.InstaMine;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
@@ -14,14 +10,10 @@ import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.ItemForMineSwitchItem;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.init.Blocks;
-import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

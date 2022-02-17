@@ -7,7 +7,7 @@ import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-@HudElement.Registration(name = "FPS", description = "Shows you your fps", posX = 0.5, posY = 0.1, width = 62, height = 16)
+@HudElement.Registration(name = "ArmorHud", description = "Shows you your fps", posX = 0.5, posY = 0.1, width = 62, height = 16)
 public class ArmorHud extends AlignedHudElement {
     ResourceLocation[] armor = new ResourceLocation[] {
             new ResourceLocation("textures/icons/armor/helmet.png"),
@@ -19,11 +19,16 @@ public class ArmorHud extends AlignedHudElement {
     public void draw(float delta) {
         for (int i = 5; i <= 8; i++) {
             ItemStack s = mc.player.inventoryContainer.getSlot(i).getStack();
+            if (s.isEmpty()) {
+                GuiUtil.drawCompleteImage(getRenderPosX() + 15 * (i - 5), getRenderPosY(), 16, 16, armor[i-5], HudSettings.getInstance().getGuiHudMainColor());
+            }
+        }
+
+        for (int i = 5; i <= 8; i++) {
+            ItemStack s = mc.player.inventoryContainer.getSlot(i).getStack();
             if (!s.isEmpty()) {
                 mc.renderItem.renderItemAndEffectIntoGUI(s, getRenderPosX() + 15 * (i - 5), getRenderPosY());
                 mc.renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, s, getRenderPosX() + 15 * (i - 5), getRenderPosY(), null);
-            } else {
-                GuiUtil.drawCompleteImage(getRenderPosX() + 15 * (i - 5), getRenderPosY(), 16, 16, armor[i-5], HudSettings.getInstance().getGuiHudMainColor());
             }
         }
     }

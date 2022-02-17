@@ -46,6 +46,7 @@ public class AntiCheatConfig extends ClientSetting {
     DoubleSetting crystalBreakRange = new DoubleSetting("CrystalBreakRange",this,4,1,6,0.25, "Crystals");
     DoubleSetting crystalWallRange = new DoubleSetting("CrystalWallRange",this,0,0,6,0.25, "Crystals");
     public ModeSetting crystalBreakHand = new ModeSetting("BreakHand",this,"Both", Arrays.asList("Both","MainHand","OffHand"), "Crystals");
+    public ModeSetting antiWeakness = new ModeSetting("AntiWeakness",this,"Normal", Arrays.asList("Silent","Normal","Off"), "Crystals");
 
     public ModeSetting crystalBreakSwing = new ModeSetting("BreakSwing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Crystals");
     public ModeSetting crystalPlaceSwing = new ModeSetting("CrystalPlaceSwing",this,"Off", Arrays.asList("Off","Normal","Packet"), "Crystals");

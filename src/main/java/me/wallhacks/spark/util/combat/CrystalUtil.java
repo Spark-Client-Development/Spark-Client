@@ -5,6 +5,8 @@ import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
+import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
+import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.ItemForFightSwitchItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.DestroyBlockProgress;
@@ -288,10 +290,32 @@ public class CrystalUtil implements MC {
         if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
             return false;
 
-        mc.player.connection.sendPacket(new CPacketUseEntity(target));
 
+        return sendAttackPackets(target);
+    }
+
+    public static boolean sendAttackPackets(EntityEnderCrystal target) {
+
+        int last = mc.player.inventory.currentItem;
+        //weakness thing
+        if (mc.player.isPotionActive(MobEffects.WEAKNESS) && !(mc.player.isPotionActive(MobEffects.STRENGTH) && mc.player.getActivePotionEffect(MobEffects.STRENGTH).getAmplifier() >= 1)) {
+            if(ItemSwitcher.Switch(new ItemForFightSwitchItem(), AntiCheatConfig.getInstance().antiWeakness.is("Off") ? ItemSwitcher.switchType.NoSwitch : ItemSwitcher.switchType.Mainhand) == null)
+                return false;
+
+
+        }
+
+
+        mc.player.connection.sendPacket(new CPacketUseEntity(target));
         //swing
         breakSwing();
+
+        if(AntiCheatConfig.getInstance().antiWeakness.is("Silent"))
+        {
+            mc.player.inventory.currentItem = last;
+            mc.playerController.syncCurrentPlayItem();
+        }
+
         return true;
     }
 
