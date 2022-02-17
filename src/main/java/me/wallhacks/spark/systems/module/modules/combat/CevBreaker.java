@@ -2,10 +2,8 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
-import me.wallhacks.spark.manager.RotationManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.systems.module.modules.exploit.InstaMine;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -105,7 +103,7 @@ public class CevBreaker extends Module {
 
 
 
-        if(isCrystalThere && (!isBlockThere || (CevBlock.equals(InstaMine.instance.pos) && InstaMine.instance.hasSwitched)))
+        if(isCrystalThere && !isBlockThere)
         {
             if(isMiningBlock)
             {
@@ -224,13 +222,30 @@ public class CevBreaker extends Module {
             if(entity instanceof EntityPlayer){
                 EntityPlayer e = (EntityPlayer)entity;
                 // && e.onGround
-                if(AttackUtil.CanAttackPlayer(e,10)) {
+                if(AttackUtil.canAttackPlayer(e,10)) {
 
-                    if(!mc.world.getBlockState(PlayerUtil.getPlayerPosFloored(e)).getBlock().material.isSolid()){
-                        NewPos = PlayerUtil.getPlayerPosFloored(e).add(0,2,0);
+                    BlockPos floored = PlayerUtil.getPlayerPosFloored(e);
 
-                        if(NewPos.equals(CevBlock))
-                            break;
+                    if(!mc.world.getBlockState(floored).getBlock().material.isSolid()){
+                        if(!mc.world.getBlockState(floored.add(0,1,0)).getBlock().material.isSolid()){
+
+
+                            if(mc.world.getBlockState(floored.add(0,2,0)).getBlock() != Blocks.BEDROCK){
+
+                                if(mc.world.getBlockState(floored.add(0,3,0)).getBlock() == Blocks.AIR){
+                                    if(mc.world.getBlockState(floored.add(0,4,0)).getBlock() == Blocks.AIR){
+                                        NewPos = PlayerUtil.getPlayerPosFloored(e).add(0,2,0);
+
+                                        if(NewPos.equals(CevBlock))
+                                            break;
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
 
                     }
 

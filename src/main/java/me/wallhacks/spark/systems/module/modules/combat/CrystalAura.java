@@ -288,7 +288,7 @@ public class CrystalAura extends Module {
             if (e instanceof EntityLivingBase)
                 if (e != mc.player)
                     if (!PlayersOnly.isOn() || e instanceof EntityPlayer)
-                        if (AttackUtil.CanAttackEntity((EntityLivingBase) e, 15))
+                        if (AttackUtil.canAttackEntity((EntityLivingBase) e, 15))
                             predictedEnemies.add(new PredictedEntity((EntityLivingBase) e, prediction.getValue()));
         }
     }

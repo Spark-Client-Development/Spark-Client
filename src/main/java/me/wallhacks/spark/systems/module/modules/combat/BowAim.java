@@ -143,7 +143,7 @@ public class BowAim extends Module implements MC {
 				EntityLivingBase e = (EntityLivingBase)entity;
 				if(PlayersOnly.isOn() && !(e instanceof EntityPlayer))
 					continue;
-				if(AttackUtil.CanAttackEntity(e,100)) {
+				if(AttackUtil.canAttackEntity(e,100)) {
 					double thisDis = mc.player.getDistance(e);
 					if(mc.player.canEntityBeSeen(e))
 					{

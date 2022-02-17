@@ -11,25 +11,28 @@ import net.minecraft.item.ItemStack;
 public class AttackUtil implements MC {
 
     public static boolean canAttackPlayer(EntityPlayer player){
+        if(player == null || player.isDead || player.getHealth() + player.getAbsorptionAmount() <= 0)
+            return false;
         if (player == mc.player)
             return false;
         return !Spark.socialManager.isFriend(player.getName());
     }
 
-    public static boolean CanAttackPlayer(EntityPlayer e,double dis){
+    public static boolean canAttackPlayer(EntityPlayer e, double dis){
 
         if(mc.player.getDistance(e) > dis)
             return false;
         return canAttackPlayer(e);
     }
 
-    public static boolean CanAttackEntity(EntityLivingBase e,double dis){
+    public static boolean canAttackEntity(EntityLivingBase e, double dis){
+        if(e instanceof EntityPlayer)
+            return canAttackPlayer((EntityPlayer) e,dis);
         if(e == null || e.isDead || e.getHealth() + e.getAbsorptionAmount() <= 0)
             return false;
         if(mc.player.getDistance(e) > dis)
             return false;
-        if(e instanceof EntityPlayer)
-            return canAttackPlayer((EntityPlayer) e);
+
         return true;
     }
 

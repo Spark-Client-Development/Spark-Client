@@ -3,7 +3,6 @@ package me.wallhacks.spark.systems.module.modules.combat;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.world.LogoutSpots;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.PredictionUtil;
@@ -45,7 +44,7 @@ public class AutoTrap extends Module {
             if(o instanceof EntityPlayer){
                 {
                     EntityPlayer e = (EntityPlayer)o;
-                    if(AttackUtil.CanAttackPlayer(e,15) && e != mc.player) {
+                    if(AttackUtil.canAttackPlayer(e,15) && e != mc.player) {
                         EnemyList.add(e);
                     }
                 }
