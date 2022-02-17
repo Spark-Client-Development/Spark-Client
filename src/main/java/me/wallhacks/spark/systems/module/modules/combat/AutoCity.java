@@ -15,6 +15,7 @@ import me.wallhacks.spark.util.combat.CrystalUtil;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
+import me.wallhacks.spark.util.player.RaytraceUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecItemSwitchItem;
@@ -29,10 +30,7 @@ import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
@@ -71,19 +69,11 @@ public class AutoCity extends Module {
 
         Spark.breakManager.setCurrentBlock(target, insta.isOn(), 2);
 
+        if(CanPlaceOnBlock(crystalTarget,true))
+            placeCrystalOnBlock(crystalTarget);
     }
 
-    @SubscribeEvent
-    void OnUpdate(PacketSendEvent.Post event) {
 
-        if(event.getPacket() instanceof CPacketPlayerDigging)
-        {
-            CPacketPlayerDigging digging = event.getPacket();
-            if(digging.getAction() == CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK)
-                if(digging.getPosition().equals(target))
-                    placeCrystalOnBlock(crystalTarget);
-        }
-    }
 
 
     public boolean placeCrystalOnBlock(BlockPos bestPos){
@@ -163,18 +153,13 @@ public class AutoCity extends Module {
 
                         if (b.material.isSolid() && Spark.breakManager.canBreak(p)) {
 
-                            final Block top = mc.world.getBlockState(p.add(0, 1, 0)).getBlock();
-                            final Block bottom = mc.world.getBlockState(p.add(0, -1, 0)).getBlock();
-                            final Block away = mc.world.getBlockState(p.add(p.getX() - floored.getX(), 0, p.getZ() - floored.getZ())).getBlock();
-                            final Block awayTop = mc.world.getBlockState(p.add(p.getX() - floored.getX(), 1, p.getZ() - floored.getZ())).getBlock();
-                            final Block awayBottom = mc.world.getBlockState(p.add(p.getX() - floored.getX(), -1, p.getZ() - floored.getZ())).getBlock();
+                            BlockPos cPos = p.add(p.getX() - floored.getX(), -1, p.getZ() - floored.getZ());
 
 
 
 
-                            boolean awayPlaceAble = (away == Blocks.AIR && awayTop == Blocks.AIR && (awayBottom == Blocks.BEDROCK || awayBottom == Blocks.OBSIDIAN));
 
-                            if (awayPlaceAble) {
+                            if (CanPlaceOnBlock(cPos,false)) {
 
                                 if(target != null)
                                 {
@@ -207,6 +192,52 @@ public class AutoCity extends Module {
         }
         target = bestPos;
         crystalTarget = bestPosForCrystal;
+
+    }
+
+
+
+    boolean CanPlaceOnBlock(BlockPos p,boolean entityCheck) {
+
+        final Block block = mc.world.getBlockState(p).getBlock();
+        if (block == Blocks.OBSIDIAN || block == Blocks.BEDROCK) {
+            final Block floor = mc.world.getBlockState(p.add(0, 1, 0)).getBlock();
+            final Block ceil = mc.world.getBlockState(p.add(0, 2, 0)).getBlock();
+
+            //in the end crystal have a fire block in them
+
+            if ((floor == Blocks.AIR || (floor == Blocks.FIRE && mc.player.dimension == 1)) && ceil == Blocks.AIR) {
+                double d0 = (double) p.getX();
+                double d1 = (double) p.getY() + 1;
+                double d2 = (double) p.getZ();
+                double d0b = d0 + 1;
+                double d1b = d1 + 2;
+                double d2b = d2 + 1;
+
+                AxisAlignedBB bb = new AxisAlignedBB(d0, d1, d2, d0b, d1b, d2b);
+
+                if(entityCheck)
+                    for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, bb)) {
+                        if (entity.isDead) continue;
+
+                        return false;
+
+
+                    }
+
+
+                Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(p));
+
+                if (PlayerUtil.getDistance(p) > (pos != null ? AntiCheatConfig.getInstance().getCrystalPlaceRange() : AntiCheatConfig.getInstance().getCrystalWallRange()))
+                    return false;
+
+                return true;
+
+            }
+        }
+
+        return false;
+
 
     }
 

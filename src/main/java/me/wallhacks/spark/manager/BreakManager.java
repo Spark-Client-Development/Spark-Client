@@ -45,10 +45,12 @@ public class BreakManager implements MC {
         {
             if(pos.equals(PacketMine.instance.pos))
             {
-                if(PacketMine.instance.noSwitch() && PacketMine.instance.ticksFromDone() < 3)
+                if(PacketMine.instance.ticksFromDone() < 3)
+                {
                     ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
+                    return PacketMine.instance.tryMine();
+                }
 
-                return PacketMine.instance.tryMine();
             }
         }
 
@@ -88,16 +90,21 @@ public class BreakManager implements MC {
             facing = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ),pos,false).sideHit;
 
 
-        if(!instMine || (PacketMine.instance.ticksFromDone() < 3 && PacketMine.instance.noSwitch()))
+
+        if(!instMine || PacketMine.instance.ticksFromDone() < 3)
         {
-            ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
 
             if(AntiCheatConfig.getInstance().getBlockRotate())
             {
                 if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 6, false, true))
                     return;
             }
+
+            ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
         }
+
+
+
 
 
 

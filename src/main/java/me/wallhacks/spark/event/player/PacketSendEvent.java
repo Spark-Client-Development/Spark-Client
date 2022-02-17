@@ -18,16 +18,5 @@ public class PacketSendEvent extends Event {
         return (T) p;
     }
 
-    public static class Post extends Event {
-        public Post(Packet<?> p){
-            this.p = p;
-        }
 
-        final Packet<?> p;
-
-        @SuppressWarnings("unchecked")
-        public <T extends Packet<?>> T getPacket() {
-            return (T) p;
-        }
-    }
 }
