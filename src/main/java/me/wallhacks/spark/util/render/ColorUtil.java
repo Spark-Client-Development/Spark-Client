@@ -1,11 +1,14 @@
 package me.wallhacks.spark.util.render;
 
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Random;
 
 import static java.awt.Color.RGBtoHSB;
@@ -37,6 +40,8 @@ public class ColorUtil {
         int b = random.nextInt(200) + 55;
         return new Color(r, g, b);
     }
+
+
 
     public static float getHue(Color color) {
         return RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null)[0];
@@ -99,4 +104,6 @@ public class ColorUtil {
                 new Color(215, 200, 153, 255)
         }[dim+1];
     }
+
+
 }

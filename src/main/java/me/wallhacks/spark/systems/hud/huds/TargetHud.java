@@ -2,12 +2,14 @@ package me.wallhacks.spark.systems.hud.huds;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.manager.DataTrackingManager;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.StringUtil;
+import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.HoleUtil;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.player.PlayerUtil;
@@ -26,6 +28,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -90,8 +93,21 @@ public class TargetHud extends HudElement {
                 x = fontManager.drawString("Distance " + StringUtil.fmt(PlayerUtil.getDistance(target.getPositionVector()), 1) + "m", x + 8, getRenderPosY() + 56 + 2, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
             }
 
+
+            int y = getEndRenderPosY()+10;
+            for (PotionEffect e : Spark.dataTrackingManager.potionEffectsForLiving(target)) {
+                fontManager.drawString(e.getEffectName()+" "+e.getAmplifier(), getRenderPosX() + 40, y, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
+                y+=16;
+
+            }
+
+
             Gui.drawRect((int)getRenderPosX(), (int)getRenderPosY() + getHeight() - 3, (int)getRenderPosX() + (int)(smoothPercent*getWidth()), (int)getRenderPosY() + getHeight(), original.isOn() ? HudSettings.getInstance().getGuiHudMainColor().getRGB() : healthColor.getRGB());
 
+
+            for (PotionEffect o : Spark.dataTrackingManager.potionEffectsForLiving(target)) {
+                Spark.logger.info(o.getEffectName()+" "+o.getAmplifier());
+            }
 
             GlStateManager.enableTexture2D();
             RenderHelper.enableStandardItemLighting();
@@ -106,6 +122,7 @@ public class TargetHud extends HudElement {
                 mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, (int)getRenderPosX() + getWidth()-20, (int)getRenderPosY() +  + 62 - (offset * 15), "");
 
             }
+
 
             GlStateManager.color(1,1,1,1);
             RenderHelper.disableStandardItemLighting();
@@ -160,7 +177,7 @@ public class TargetHud extends HudElement {
     }
 
     private String holeString(EntityPlayer target) {
-        if (getTarget() != null) {
+        if (target != null) {
             BlockPos pos = new BlockPos(target.posX, target.posY + 0.9, target.posZ);
             if (!(mc.world.getBlockState(pos).getBlock() instanceof BlockAir)) {
                 return (ChatFormatting.DARK_RED + "Burrowed!");
@@ -186,7 +203,7 @@ public class TargetHud extends HudElement {
         double closest = useRange.isOn() ? range.getValue() : Double.MAX_VALUE;
         for (Entity entity : mc.world.loadedEntityList) {
             if (entity instanceof EntityPlayer) {
-                if (entity != mc.player) {
+                if (AttackUtil.canAttackPlayer((EntityPlayer)entity)) {
                     if (mc.player.getDistance(entity) > closest)
                         continue;
                     double pDist = mc.player.getDistance(entity);
