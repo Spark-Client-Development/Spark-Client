@@ -109,7 +109,7 @@ public abstract class Module extends SettingsHolder implements MC {
             onEnable();
             if (isEnabled)
                 if (!muted) {
-                    Notifications.addNotification(new Notification(name + " " + TextFormatting.GREEN + "enabled",modId));
+                    Notifications.addNotification(new Notification(name + " " + TextFormatting.GREEN + "enabled",this));
                 }
 
         }
@@ -126,7 +126,7 @@ public abstract class Module extends SettingsHolder implements MC {
             onDisable();
             if (!isEnabled)
                 if (Notifications.INSTANCE.toggle.getValue() && !muted) {
-                    Notifications.addNotification(new Notification(name + " " + TextFormatting.RED + "disabled",modId));
+                    Notifications.addNotification(new Notification(name + " " + TextFormatting.RED + "disabled",this));
 
                 }
         }

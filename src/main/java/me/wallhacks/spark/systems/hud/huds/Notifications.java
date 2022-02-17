@@ -41,11 +41,11 @@ public class Notifications extends HudElement {
     public static void addNotification(Notification notificationToAdd) {
         if (INSTANCE.isEnabled())
         {
-            if(notificationToAdd.id != -1)
+            if(notificationToAdd.id != null)
             {
                 for (Notification notification : notifications) {
 
-                    if(notification.id == notificationToAdd.id)
+                    if(notificationToAdd.id.equals(notification.id))
                     {
                         notification.text = notificationToAdd.text;
                         if (notification.stage >= 2) {

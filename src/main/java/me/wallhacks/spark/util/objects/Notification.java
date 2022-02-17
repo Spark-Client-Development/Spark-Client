@@ -3,13 +3,13 @@ package me.wallhacks.spark.util.objects;
 public class Notification {
     public Timer timer;
     public String text;
-    public final int id;
+    public final Object id;
     public int animateX = 0;
     public int stage;
     public int offset;
     public boolean didOffset;
     public Timer animateTimer = new Timer();
-    public Notification(String text,int id) {
+    public Notification(String text,Object id) {
         animateTimer.reset();
         timer = new Timer();
         didOffset = false;
@@ -20,6 +20,6 @@ public class Notification {
     }
     public Notification(String text)
     {
-        this(text,-1);
+        this(text,null);
     }
 }

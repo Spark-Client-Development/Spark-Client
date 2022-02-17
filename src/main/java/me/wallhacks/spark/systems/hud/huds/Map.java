@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class Map extends HudElement {
 
     IntSetting size = new IntSetting("GuiSize",this,100,50,128);
-    IntSetting zoom = new IntSetting("MapSize",this,100,50,128);
+    IntSetting zoom = new IntSetting("MapSize",this,200,200,600);
 
     @Override
     public void draw(float deltaTime) {

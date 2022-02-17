@@ -3,57 +3,68 @@ package me.wallhacks.spark.util.maps;
 import java.awt.image.BufferedImage;
 
 import com.github.lunatrius.core.util.vector.Vector2d;
+import me.wallhacks.spark.util.objects.MapImage;
 import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 public class SparkMap {
 
 
-    DynamicTexture mapTexture;
-    public ResourceLocation resourceLocation;
-    BufferedImage bufferedImage;
+    MapImage image;
 
-    boolean changedImage = false;
-
+    public boolean isEmpty() {
+        return image == null;
+    }
+    public ResourceLocation getResourceLocation(int lod)
+    {
+        return image.getResourceLocation(lod);
+    }
 
     public BufferedImage getBufferedImage() {
-        return bufferedImage;
+        return image.getBufferedImage();
     }
+
 
     public void setBufferedImage(BufferedImage bufferedImage) {
-        this.bufferedImage = bufferedImage;
-        this.changedImage = true;
+        if(image == null)
+            image = new MapImage();
+        image.setBufferedImage(bufferedImage);
     }
 
-    public DynamicTexture getDynamicTexture() {
-        if(changedImage)
-            UpdateMapTexture();
-
-
-        return mapTexture;
+    public boolean updateMapTextures(){
+        if(!isEmpty() && image.isChangedImage())
+        {
+            image.UpdateMapTextures();
+            return true;
+        }
+        return false;
     }
+
+
+
+
 
     public final Vec2i pos;
     public final int dim;
 
     static final int scale = 2;
-
+    public SparkMap(final Vec3i p){
+        this(new Vec2i(p.getX(),p.getZ()),p.getY());
+    }
     public SparkMap(final Vec2i p,final int d){
         pos = p;
         dim = d;
 
-        mapTexture = new DynamicTexture(128, 128);
-        bufferedImage = new BufferedImage(128, 128, BufferedImage.TYPE_4BYTE_ABGR);
-
-        changedImage = true;
     }
 
     public static Vec2i getWorldPosFromScreenPosOnMap(double zoom, Vec2d pos, double x, double y, double centerX, double centerY) {
@@ -63,14 +74,10 @@ public class SparkMap {
     }
 
 
-    void UpdateMapTexture()
-    {
-        mapTexture = new DynamicTexture(bufferedImage);
-        changedImage = false;
-    }
+
 
     public static float getWidthAndHeight(){
-        return 128*scale;
+        return MapImage.size*scale;
     }
 
     public static double get2dMapPosFromWorldPos(double x,int MapScale){
@@ -95,10 +102,10 @@ public class SparkMap {
     }
 
     public Vec2i getStartPos(){
-        return new Vec2i(pos.x*128*scale,pos.y*128*scale);
+        return new Vec2i(pos.x*MapImage.size*scale,pos.y*MapImage.size*scale);
     }
     public Vec2i getEndPos(){
-        return new Vec2i(pos.x*128*scale+128*scale,pos.y*128*scale+128*scale);
+        return new Vec2i(pos.x*MapImage.size*scale+MapImage.size*scale,pos.y*MapImage.size*scale+MapImage.size*scale);
     }
     public boolean isPosInMap(int x,int z){
 
@@ -116,6 +123,7 @@ public class SparkMap {
     public void updateMapData(Chunk chunk,World worldIn)
     {
 
+
         int x = chunk.getPos().x * 16;
         int z = chunk.getPos().z * 16;
         int j1 = 16;
@@ -130,20 +138,22 @@ public class SparkMap {
 
         if (!chunk.isEmpty())
         {
+            if(image == null)
+                image = new MapImage();
 
             for (int x1 = 0; x1 < 16/scale; x1++) {
                 for (int z1 = 0; z1 < 16/scale; z1++) {
                     int mapC = getMapColorAtPos(x+x1*scale, z+z1*scale, worldIn);
 
-                    bufferedImage.setRGB(x/scale+x1-(pos.x*128), z/scale+z1-(pos.y*128), mapC);
+                    image.setRGB(x/scale+x1-(pos.x*MapImage.size), z/scale+z1-(pos.y*MapImage.size), mapC);
 
 
                 }
             }
+
+            image.setChangedImage();
         }
 
-
-        changedImage = true;
 
     }
 
@@ -243,7 +253,7 @@ public class SparkMap {
 
         if (j / 4 == 0)
         {
-            j = (scale + scale / 128 & 1) * 8 + 16 << 24;
+            j = (scale + scale / MapImage.size & 1) * 8 + 16 << 24;
         }
         else
         {

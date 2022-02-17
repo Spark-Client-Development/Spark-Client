@@ -21,14 +21,14 @@ public class MapGui extends GuiPanelBase {
     void resetValues() {
         dim = mc.player.dimension;
 
-        zoom = 128;
+        zoom = 256.5;;
         offsetX = 0;
         offsetY = 0;
         screenInfoCoords = null;
     }
 
     int dim = 0;
-    double zoom = 128.6;
+    double zoom = 256.5;
     double offsetX = 0;
     double offsetY = 0;
 
@@ -64,11 +64,11 @@ public class MapGui extends GuiPanelBase {
 
 
 
-        double mWheel = zoom*deltaTime*(Mouse.getDWheel())*0.0002;
+        double mWheel = zoom*deltaTime*(Mouse.getDWheel())*0.00008;
 
         if(mWheel != 0)
         {
-            zoom = MathHelper.clamp(zoom+mWheel,20,200);
+            zoom = MathHelper.clamp(zoom+mWheel,25,900);
             if(screenInfoCoords != null)
                 screenInfoCoords = null;
         }

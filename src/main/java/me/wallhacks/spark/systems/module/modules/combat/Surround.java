@@ -63,7 +63,8 @@ public class Surround extends Module {
 
         isPlacing = false;
 
-        if (disable.is("OffGround") && !mc.player.onGround) {
+        //PlayerUtil.isInBlocks(mc.player) checks if we are in blocks
+        if (disable.is("OffGround") && !PlayerUtil.isInBlocks(mc.player) && !mc.player.onGround) {
             disable();
             return;
         }

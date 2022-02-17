@@ -1,6 +1,7 @@
 package me.wallhacks.spark.manager;
 
 import com.google.common.io.Files;
+import io.netty.util.internal.ConcurrentSet;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.event.player.ChunkLoadEvent;
@@ -12,10 +13,13 @@ import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
+import me.wallhacks.spark.util.objects.MapImage;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemMap;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.MapDecoration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -30,6 +34,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -52,22 +57,33 @@ public class MapManager implements MC {
 
 
     String CurrentServer;
-    private ConcurrentHashMap<Integer, ConcurrentHashMap<Vec2i, SparkMap>> loadedMaps = new ConcurrentHashMap<Integer,ConcurrentHashMap<Vec2i,SparkMap>>();
 
-    CopyOnWriteArrayList<SparkMap> toLoad = new CopyOnWriteArrayList<SparkMap>();
+    private ConcurrentHashMap<Vec3i,SparkMap> loadedMaps = new ConcurrentHashMap<Vec3i,SparkMap>();
 
-    public SparkMap getMap(Vec2i mapPos,int dim){
+    ConcurrentSet<Vec3i> toLoad = new ConcurrentSet<Vec3i>();
+    ConcurrentSet<ChunkPos> chunksToLoad = new ConcurrentSet<>();
 
-        if(!loadedMaps.containsKey(dim))
-            loadedMaps.put(dim, new ConcurrentHashMap<Vec2i,SparkMap>());
-        if(!loadedMaps.get(dim).containsKey(mapPos))
-        {
-            loadedMaps.get(dim).put(mapPos,new SparkMap(mapPos,dim));
-            if(!toLoad.contains(loadedMaps.get(dim).get(mapPos)))
-                toLoad.add(loadedMaps.get(dim).get(mapPos));
+    ConcurrentSet<Vec3i> toSave = new ConcurrentSet<Vec3i>();
+
+
+    ConcurrentHashMap<Vec3i,Integer> mapsUsed = new ConcurrentHashMap<Vec3i,Integer>();
+
+
+    public SparkMap getMap(Vec2i mapPos,int dim)
+    {
+        return getMap(new Vec3i(mapPos.x,dim,mapPos.y));
+    }
+    public SparkMap getMap(Vec3i mapPos){
+
+        if(!loadedMaps.containsKey(mapPos)) {
+            toLoad.add(mapPos);
+            loadedMaps.put(mapPos, new SparkMap(mapPos));
         }
 
-        return loadedMaps.get(dim).get(mapPos);
+        mapsUsed.put(mapPos,20*12);
+
+
+        return loadedMaps.get(mapPos);
 
     }
 
@@ -77,6 +93,10 @@ public class MapManager implements MC {
         if(!serv.equals(CurrentServer))
         {
             loadedMaps.clear();
+            mapsUsed.clear();
+            toSave.clear();
+            toLoad.clear();
+            chunksToLoad.clear();
             CurrentServer = serv;
         }
 
@@ -86,13 +106,81 @@ public class MapManager implements MC {
 
 
     @SubscribeEvent
+    public void onThread(ThreadEvent event) {
+
+        if (toLoad.size() > 0) {
+            Vec3i v = toLoad.iterator().next();
+            toLoad.remove(v);
+
+            SparkMap map = getMap(v);
+            if (map != null)
+                LoadMap(map);
+
+
+        }
+
+        else if (chunksToLoad.size() > 0) {
+            ChunkPos p = chunksToLoad.iterator().next();
+            chunksToLoad.remove(p);
+            Chunk c = mc.world.getChunk(p.x,p.z);
+            if(c != null)
+            {
+                Vec2i mapAtC = SparkMap.getMapPosFromWorldPos(c.getPos().x*16, c.getPos().z*16);
+                Vec3i mapPos = (new Vec3i(mapAtC.x,getDim(),mapAtC.y));
+
+                SparkMap M = getMap(mapPos);
+                if(toLoad.contains(mapPos)) {
+                    toLoad.remove(mapPos);
+                    LoadMap(M);
+                }
+                if(mc.world != null)
+                    M.updateMapData(c, mc.world);
+                //save map to files
+                toSave.add(mapPos);
+            }
+        }
+
+        else if (toSave.size() > 0) {
+            Vec3i v = toSave.iterator().next();
+            toSave.remove(v);
+
+            if (ClientConfig.getInstance().SaveMap.isOn()) {
+                SparkMap map = getMap(v);
+                if (map != null)
+                    SaveMap(map);
+            }
+
+
+        }
+
+    }
+
+    @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
 
-        while(toLoad.size() > 0){
-            SparkMap m = toLoad.get(0);
-            Spark.threadManager.execute(() -> {LoadMap(m);});
-            toLoad.remove(0);
+        Set<Vec3i> unused = mapsUsed.keySet();
+        for (Vec3i map : unused) {
+            int i = mapsUsed.get(map);
+
+            if(i <= 0)
+            {
+                mapsUsed.remove(map);
+                loadedMaps.remove(map);
+            }
+            else
+            {
+                mapsUsed.put(map,i-1);
+            }
         }
+        for (SparkMap map : loadedMaps.values())
+        {
+            if(map.updateMapTextures())
+                break;
+        }
+
+
+
+
 
     }
 
@@ -104,28 +192,7 @@ public class MapManager implements MC {
     public void onChunk(ChunkLoadEvent.Load event) {
         Chunk c = event.getChunk();
 
-        Vec2i mapAtC = SparkMap.getMapPosFromWorldPos(c.getPos().x*16, c.getPos().z*16);
-
-        SparkMap M = getMap(mapAtC,getDim());
-
-        boolean needsLoad = toLoad.contains(M);
-        if(needsLoad)
-            toLoad.remove(M);
-
-        Spark.threadManager.execute(() -> {
-            if (mc.world == null) return;
-            //don't remove this
-            if(needsLoad)
-                LoadMap(M);
-
-            if(mc.world != null)
-                M.updateMapData(c, mc.world);
-
-            //save map to files
-            if(ClientConfig.getInstance().SaveMap.isOn())
-                SaveMap(M);
-        });
-
+        chunksToLoad.add(c.getPos());
 
     }
 
@@ -156,18 +223,14 @@ public class MapManager implements MC {
 
     public boolean LoadMap(SparkMap m){
 
-        m.setBufferedImage(new BufferedImage(128, 128, BufferedImage.TYPE_4BYTE_ABGR));
-
         File f = new File(getPath(m));
         if (!f.exists())
             return false;
 
-
-
-
         try {
-            m.setBufferedImage(ImageIO.read(f));
-
+            BufferedImage image = ImageIO.read(f);
+            if(image != null && image.getHeight() == MapImage.size && image.getWidth() == MapImage.size)
+                m.setBufferedImage(image);
 
             return true;
         } catch (IOException e) {
@@ -180,6 +243,9 @@ public class MapManager implements MC {
     }
     public void SaveMap(SparkMap m){
         String path = getPath(m);
+
+        if(m.isEmpty())
+            return;
 
         File f = new File(path);
         if (!f.exists())

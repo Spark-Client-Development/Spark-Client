@@ -144,7 +144,6 @@ public class InventoryManager extends Module {
         {
             isStealing = false;
 
-
             if(canCleaning())
             {
                 if(isDoneCleaning()){
@@ -179,9 +178,12 @@ public class InventoryManager extends Module {
 
         while (!isDoneCleaning()) {
             handleSlot(curSlotIndex);
-
-
+            //we need this check here LOL
             curSlotIndex++;
+            if(!timer.passedMs(0))
+                return;
+
+
         }
 
 
@@ -195,7 +197,8 @@ public class InventoryManager extends Module {
         int s = InventoryUtil.getSlotIdFromInventoryId(slot);
         ItemStack itemStack = (ItemStack) mc.player.inventoryContainer.getInventory().get(s);
 
-
+        if(itemStack.getItem() == null || itemStack.getItem() == Items.AIR)
+            return;
 
         if(!KeepItemStack(itemStack))
         {
@@ -207,8 +210,6 @@ public class InventoryManager extends Module {
             if (perfectInventory() != null) {
 
                 for (int i = 0; i < perfectInventory().length; i++) {
-
-
 
                     Item item = perfectInventory()[i];
                     int sloti = InventoryUtil.getSlotIdFromInventoryId(i);
@@ -258,7 +259,7 @@ public class InventoryManager extends Module {
 
                 Item item = perfectInventory()[i];
                 int sloti = InventoryUtil.getSlotIdFromInventoryId(i);
-                if (item != null && mc.player.inventoryContainer.getInventory().get(sloti).getItem() != item && item == itemStack.getItem()) {
+                if (item != null && !invenotrySortIsItemSame(mc.player.inventoryContainer.getInventory().get(sloti).getItem(),item) && invenotrySortIsItemSame(item,itemStack.getItem())) {
                     return i;
                 }
             }

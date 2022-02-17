@@ -36,7 +36,7 @@ public class PopManager implements MC {
                         EntityPlayer player = (EntityPlayer)entity;
                         if(player.getHealth() <= 0.0f) {
                             if (!player.equals(mc.player) && Notifications.INSTANCE.death.getValue() && Notifications.INSTANCE.isEnabled()) {
-                                Notifications.addNotification(new Notification(getDeathString(player),player.getEntityId()));
+                                Notifications.addNotification(new Notification(getDeathString(player),player));
                             }
                             resetPops(player);
                         }
@@ -55,7 +55,7 @@ public class PopManager implements MC {
                     EntityPlayer player = (EntityPlayer) packet.getEntity(mc.world);
                     popTotem(player);
                     if (!player.equals(mc.player) && player.isEntityAlive() && Notifications.INSTANCE.pop.getValue() && Notifications.INSTANCE.isEnabled()) {
-                        Notifications.addNotification(new Notification(getPopString(player),player.getEntityId()));
+                        Notifications.addNotification(new Notification(getPopString(player),player));
                     }
                 }
             } catch (Exception ignored) {

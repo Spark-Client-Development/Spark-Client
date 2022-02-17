@@ -17,24 +17,30 @@ public class SwitchManager implements MC {
         Spark.eventBus.register(this);
     }
 
-    boolean doSwitchTo = false;
+    int doSwitchTo = 4;
     int switchToSlot = 0;
 
     public void setDoSwitchToSlot(int switchToSlot){
-        this.doSwitchTo = true;
+        this.doSwitchTo = 5;
         this.switchToSlot = switchToSlot;
     }
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
 
-        if(doSwitchTo)
+        if(doSwitchTo >= 0)
         {
-            doSwitchTo = false;
-            mc.player.inventory.currentItem = switchToSlot;
-            mc.playerController.syncCurrentPlayItem();
+            if(doSwitchTo == 0)
+            {
+                mc.player.inventory.currentItem = switchToSlot;
+                mc.playerController.syncCurrentPlayItem();
+            }
+            doSwitchTo--;
+
         }
     }
+
+
 
 
 }

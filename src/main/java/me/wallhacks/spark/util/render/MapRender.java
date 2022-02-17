@@ -11,6 +11,7 @@ import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
+import me.wallhacks.spark.util.objects.MapImage;
 import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.client.gui.Gui;
@@ -20,6 +21,7 @@ import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.MapDecoration;
 import org.lwjgl.opengl.GL11;
 
@@ -48,17 +50,31 @@ public class MapRender implements MC {
         Vec2i WholeMapEndPos = SparkMap.getMapPosFrom2dMapPos(centerX + ImageScaleX, centerY + ImageScaleY, ImageScale);
 
 
+        int lod = MapImage.lods-(int)MathHelper.clamp((
+                ImageScale*MapImage.lods*5/MapImage.size
+        ),1, MapImage.lods);
+
         for (int x = WholeMapStartPos.x; x <= WholeMapEndPos.x; x++) {
             for (int y = WholeMapStartPos.y; y <= WholeMapEndPos.y; y++) {
 
 
                 SparkMap map = MapManager.instance.getMap(new Vec2i(x, y), dim);
 
-                float x_ = map.getStartPos().x * (ImageScale / SparkMap.getWidthAndHeight()) - centerX;
-                float y_ = map.getStartPos().y * (ImageScale / SparkMap.getWidthAndHeight()) - centerY;
+                if(!map.isEmpty())
+                {
+                    ResourceLocation location = map.getResourceLocation(lod);
 
+                    if(location != null)
+                    {
+                        float x_ = map.getStartPos().x * (ImageScale / SparkMap.getWidthAndHeight()) - centerX;
+                        float y_ = map.getStartPos().y * (ImageScale / SparkMap.getWidthAndHeight()) - centerY;
 
-                RenderMap(map, ImageStartX + x_, ImageStartY + y_, ImageScale);
+                        mc.getTextureManager().bindTexture(location);
+
+                        GuiUtil.drawCompleteImage(ImageStartX + x_, ImageStartY + y_, ImageScale, ImageScale);
+                    }
+                }
+
             }
         }
 
@@ -139,15 +155,7 @@ public class MapRender implements MC {
         GL11.glPopMatrix();
     }
 
-    public static void RenderMap(SparkMap m, float ImageStartX, float ImageStartY, int ImageScale) {
 
-
-
-        m.resourceLocation = mc.getTextureManager().getDynamicTextureLocation("temp", m.getDynamicTexture());
-        mc.getTextureManager().bindTexture(m.resourceLocation);
-
-        GuiUtil.drawCompleteImage(ImageStartX, ImageStartY, ImageScale, ImageScale);
-    }
 
 
     public static Vec2d ConvertPos(Vec2d pos, int fromDim, int toDim) {
