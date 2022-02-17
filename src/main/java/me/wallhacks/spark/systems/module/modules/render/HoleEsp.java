@@ -24,6 +24,8 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Module.Registration(name = "HoleEsp", description = "shows holes near you")
 public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
@@ -45,12 +47,13 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
 
         int range = this.range.getValue();
 
-            for (Chunk c: found.keySet()) {
-                if(PlayerUtil.getDistance(c.getPos()) < range + 16)
+        for (Chunk c: found.keySet()) {
+            if(PlayerUtil.getDistance(c.getPos()) < range + 16)
+            {
+                if(found.get(c) != null)
                 {
-
-
-                    for (HoleInfo holeInfo : found.get(c)) {
+                    ArrayList<HoleInfo> info = new ArrayList<>(found.get(c));
+                    for (HoleInfo holeInfo : info) {
                         double dis = RenderUtil.getRenderDistance(holeInfo);
                         if(dis < range){
 
@@ -69,6 +72,9 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
                 }
 
             }
+
+        }
+
 
     }
 

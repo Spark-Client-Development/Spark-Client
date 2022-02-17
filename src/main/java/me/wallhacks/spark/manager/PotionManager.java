@@ -14,14 +14,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.*;
 
-public class DataTrackingManager implements MC {
+public class PotionManager implements MC {
 
-    ConcurrentSet<Item> toTrack = new ConcurrentSet<>();
-    HashMap<Item, Integer> inventoryItems = new HashMap<>();
+
+
     HashMap<Integer, Collection<PotionEffect>> potionMap = new HashMap<Integer, Collection<PotionEffect>>();
 
-    public DataTrackingManager() {
-        Spark.eventBus.register(this);
+    public PotionManager() {
         MixPotions();
     }
 
@@ -46,6 +45,9 @@ public class DataTrackingManager implements MC {
 
         possiblePotions.add(new PotionEffect(MobEffects.WEAKNESS, 10, 0));
 
+
+        possiblePotions.add(new PotionEffect(MobEffects.ABSORPTION, 10, 0));
+
         long limit = 1 << possiblePotions.size(); // this is 2^length
 
         for (long l = 1; l < limit; l++) {
@@ -59,47 +61,6 @@ public class DataTrackingManager implements MC {
         }
 
     }
-
-
-    public int getAmountOfItem(Item item) {
-        if (!inventoryItems.containsKey(item))
-            inventoryItems.put(item, getItems(item));
-        toTrack.add(item);
-        return inventoryItems.get(item);
-    }
-
-    int getItems(Item itemToSearch) {
-        int l = 0;
-        for (int i = 0; i < mc.player.inventory.getSizeInventory(); i++) {
-
-            if (mc.player.inventory.getStackInSlot(i) instanceof ItemStack) {
-                if (mc.player.inventory.getStackInSlot(i).getItem() == itemToSearch) {
-                    l += mc.player.inventory.getStackInSlot(i).stackSize;
-                }
-            }
-        }
-        return l;
-    }
-
-
-    @SubscribeEvent
-    void OnUpdate(PlayerUpdateEvent event) {
-
-        Set<Item> set = inventoryItems.keySet();
-        for (Item item : toTrack) {
-            inventoryItems.put(item, getItems(item));
-            set.remove(item);
-        }
-
-        for (Item item : set) {
-            inventoryItems.remove(item);
-        }
-
-        //populate
-        toTrack.clear();
-
-    }
-
 
     public Collection<PotionEffect> potionEffectsForLiving(EntityLivingBase entity) {
         int i = ((Integer) entity.dataManager.get(EntityLivingBase.POTION_EFFECTS)).intValue();

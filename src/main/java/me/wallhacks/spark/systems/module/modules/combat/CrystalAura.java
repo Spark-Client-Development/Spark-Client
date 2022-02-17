@@ -102,7 +102,7 @@ public class CrystalAura extends Module {
     //enemies predicted
     ArrayList<PredictedEntity> predictedEnemies = new ArrayList<>();
     PredictedEntity predictedPlayer;
-    public static EntityLivingBase targetEntity = null;
+    EntityLivingBase targetEntity = null;
 
     //targets
     EntityEnderCrystal lastSuccessfulBrokenEntity = null;
@@ -457,6 +457,10 @@ public class CrystalAura extends Module {
 
         currentCrystalBlockPos = bestPos;
 
+    }
+
+    public EntityLivingBase getTarget() {
+        return (isEnabled() ? targetEntity : null);
     }
 
 

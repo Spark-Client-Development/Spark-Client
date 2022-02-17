@@ -1,9 +1,13 @@
 package me.wallhacks.spark.manager;
 
+import baritone.api.utils.BlockUtils;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
+import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.WorldUtils;
+import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
@@ -27,7 +31,7 @@ public class BreakManager implements MC {
     boolean instMine;
 
 
-    public void setCurrentBlock(BlockPos pos,boolean instMine,int keepTicks) {
+    public boolean setCurrentBlock(BlockPos pos,boolean instMine,int keepTicks) {
 
 
 
@@ -37,8 +41,20 @@ public class BreakManager implements MC {
         ticks = keepTicks;
 
 
+        if(instMine || PacketMine.instance.isEnabled())
+        {
+            if(pos.equals(PacketMine.instance.pos))
+            {
+                if(PacketMine.instance.noSwitch() && PacketMine.instance.ticksFromDone() < 3)
+                    ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
+
+                return PacketMine.instance.tryMine();
+            }
+        }
 
 
+
+        return false;
 
     }
 
@@ -60,24 +76,29 @@ public class BreakManager implements MC {
         }
         ticks--;
 
-        ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
+
 
 
         Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(block));
         EnumFacing facing = EnumFacing.UP;
+
         if(pos == null)
             pos = new Vec3d(block.getX()+0.5,block.getY()+0.5,block.getZ()+0.5);
         else
             facing = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ),pos,false).sideHit;
 
-        if(AntiCheatConfig.getInstance().getBlockRotate())
+
+        if(!instMine || (PacketMine.instance.ticksFromDone() < 3 && PacketMine.instance.noSwitch()))
         {
+            ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
 
-            if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 6, false, true))
-                return;
-
-
+            if(AntiCheatConfig.getInstance().getBlockRotate())
+            {
+                if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 6, false, true))
+                    return;
+            }
         }
+
 
 
 
@@ -102,5 +123,12 @@ public class BreakManager implements MC {
 
     public boolean doInstaMine() {
         return block != null && instMine;
+    }
+
+    public boolean canBreak(BlockPos p) {
+        if(!WorldUtils.canBreak(p))
+            return false;
+        Vec3d vec = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(p));
+        return PlayerUtil.getDistance(p) < (vec == null ? AntiCheatConfig.getInstance().getBlockPlaceWallRange() : AntiCheatConfig.getInstance().getBlockPlaceRange());
     }
 }

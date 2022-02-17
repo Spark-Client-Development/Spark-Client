@@ -57,6 +57,13 @@ public class SocialManager {
 
 
 
+    public SocialEntry getSocial(String name){
+        UUID id = SessionUtils.fromString(name);
+        if(id != null)
+            return (new UUIDSocial(id));
+        else
+            return(new INGSocial(name));
+    }
 
     public void addFriend(String name){
         UUID id = SessionUtils.fromString(name);

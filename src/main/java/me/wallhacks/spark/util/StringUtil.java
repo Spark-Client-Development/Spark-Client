@@ -1,7 +1,10 @@
 package me.wallhacks.spark.util;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+import me.wallhacks.spark.Spark;
 import net.minecraft.block.Block;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
@@ -52,5 +55,29 @@ public class StringUtil {
 
     public static String getServerName(ServerData data) {
         return data == null ? "Singleplayer" : data.serverIP;
+    }
+
+    public static String getDeathString(EntityPlayer player,int pops) {
+        if (Spark.socialManager.isFriend(player.getName())) {
+            return "you just let " + ChatFormatting.AQUA + player.getName() + ChatFormatting.RESET + " die after popping "
+                    + ChatFormatting.RED + ChatFormatting.BOLD
+                    + pops + ChatFormatting.RESET + (pops == 1 ? " totem" : " totems");
+        } else {
+            return ChatFormatting.RED + player.getName() + ChatFormatting.RESET + " just died after popping "
+                    + ChatFormatting.RED + ChatFormatting.BOLD
+                    + pops + ChatFormatting.RESET + (pops == 1 ? " totem" : " totems");
+        }
+    }
+
+    public static String getPopString(EntityPlayer player,int pops) {
+        if (Spark.socialManager.isFriend(player.getName())) {
+            return "ur friend " + ChatFormatting.AQUA + player.getName() + ChatFormatting.RESET + " has now popped "
+                    + ChatFormatting.RED + ChatFormatting.BOLD
+                    + pops + ChatFormatting.RESET + (pops == 1 ? " totem" : " totems") + " go help them";
+        } else {
+            return ChatFormatting.RED + player.getName() + ChatFormatting.RESET + " has now popped "
+                    + ChatFormatting.RED + ChatFormatting.BOLD
+                    + pops + ChatFormatting.RESET + (pops == 1 ? " totem" : " totems");
+        }
     }
 }

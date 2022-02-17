@@ -30,6 +30,11 @@ import java.util.Arrays;
 @Module.Registration(name = "KillAura", description = "Superior module litarly best ever")
 public class KillAura extends Module {
 
+    public static KillAura instance;
+    public KillAura() {
+        instance = this;
+    }
+
     IntSetting targetFov = new IntSetting("TargetFov", this, 180, 45, 180, "Targeting");
 
     DoubleSetting range = new DoubleSetting("Range", this, 4, 0, 6, 0.25, "Targeting");
@@ -53,7 +58,13 @@ public class KillAura extends Module {
     IntSetting StayTicks = new IntSetting("StayTicks", this, 1, 0, 5, "Rotation");
 
 
-    public static EntityLivingBase killaurTarget = null;
+    EntityLivingBase killaurTarget = null;
+
+
+    public EntityLivingBase getTarget() {
+        return (isEnabled() ? killaurTarget : null);
+    }
+
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {

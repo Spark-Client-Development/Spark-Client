@@ -92,7 +92,7 @@ public class TargetHud extends HudElement {
 
 
             int y = getEndRenderPosY()+10;
-            for (PotionEffect e : Spark.dataTrackingManager.potionEffectsForLiving(target)) {
+            for (PotionEffect e : Spark.potionManager.potionEffectsForLiving(target)) {
                 fontManager.drawString(e.getEffectName()+" "+e.getAmplifier(), getRenderPosX() + 40, y, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
                 y+=16;
 
@@ -189,8 +189,8 @@ public class TargetHud extends HudElement {
 
     public EntityPlayer getTarget() {
 
-        if (CrystalAura.targetEntity instanceof EntityPlayer) return (EntityPlayer) CrystalAura.targetEntity;
-        if (KillAura.killaurTarget instanceof EntityPlayer) return (EntityPlayer) KillAura.killaurTarget;
+        if (CrystalAura.instance.getTarget() instanceof EntityPlayer) return (EntityPlayer) CrystalAura.instance.getTarget();
+        if (KillAura.instance.getTarget() instanceof EntityPlayer) return (EntityPlayer) KillAura.instance.getTarget();
         EntityPlayer returnEntity = null;
         double closest = useRange.isOn() ? range.getValue() : Double.MAX_VALUE;
         for (Entity entity : mc.world.loadedEntityList) {
