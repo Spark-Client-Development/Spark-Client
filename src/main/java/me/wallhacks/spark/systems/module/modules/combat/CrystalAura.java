@@ -378,15 +378,10 @@ public class CrystalAura extends Module {
                 if (!rotate(true))
                     return;
 
-                //weakness thing
-                if (mc.player.isPotionActive(MobEffects.WEAKNESS) && !(mc.player.isPotionActive(MobEffects.STRENGTH) && mc.player.getActivePotionEffect(MobEffects.STRENGTH).getAmplifier() >= 1)) {
-                    ItemSwitcher.Switch(new ItemForFightSwitchItem(), ItemSwitcher.switchType.Mainhand);
-                }
 
-                //packets
-                mc.player.connection.sendPacket(new CPacketUseEntity(currentCrystalEntity));
 
-                CrystalUtil.breakSwing();
+
+                CrystalUtil.sendAttackPackets(currentCrystalEntity);
 
                 //set last attacked
                 lastAttackedEntity = currentCrystalEntity;
