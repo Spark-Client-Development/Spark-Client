@@ -23,6 +23,7 @@ import me.wallhacks.spark.systems.setting.settings.ItemListSelectSetting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Module.Registration(name = "InventoryManager", description = "Steals from chests")
@@ -52,11 +53,16 @@ public class InventoryManager extends Module {
 
 
     HashMap<String,Item[]> kits = new HashMap<>();
+    List<String> kitNames = new ArrayList<>();
 
     public Map<String, Item[]> getKits() {
         return kits;
 
     }
+    
+    public List<String> getKitNames() {
+		return kitNames;
+	}
 
     public static InventoryManager instance;
     public InventoryManager() {
@@ -89,13 +95,16 @@ public class InventoryManager extends Module {
                 inv[i] = mc.player.inventory.getStackInSlot(i).getItem();
         }
         kits.put(name,inv);
+        kitNames.add(name);
     }
     public void setKit(String name,Item[] inv){
         kits.put(name,inv);
+        kitNames.add(name);
         refreshSelected();
     }
     public void deleteKit(String name){
         kits.remove(name);
+        kitNames.remove(name);
         refreshSelected();
     }
     public void refreshSelected() {

@@ -89,4 +89,8 @@ public class Spark implements MC {
     public static void sendInfo(String msg) {
         mc.player.sendMessage(new TextComponentString(ChatFormatting.DARK_PURPLE + "[Spark.Sex]" + ChatFormatting.GRAY + " " + msg));
     }
+    
+    public static void sendError(String msg) {
+    	sendInfo(CommandManager.ErrorColor + msg);
+    }
 }

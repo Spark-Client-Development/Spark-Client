@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.mojang.realmsclient.gui.ChatFormatting;
+
 import me.wallhacks.spark.systems.command.Command;
 import me.wallhacks.spark.systems.command.commands.*;
 

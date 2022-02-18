@@ -25,7 +25,7 @@ public class KitCommand extends Command {
 				Spark.sendInfo(""+ CommandManager.COLOR1+"Kit "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been seleted!");
 
 			}
-		}, "<kitname>");
+		}, InventoryManager.instance.getKitNames());
 
 		addOption("delete", arg -> {
 			if(arg != null){
