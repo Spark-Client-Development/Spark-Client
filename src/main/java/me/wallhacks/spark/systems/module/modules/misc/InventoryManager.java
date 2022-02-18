@@ -30,7 +30,7 @@ public class InventoryManager extends Module {
 
 
     BooleanSetting onlyIfInventoryOpen = new BooleanSetting("OnlyInInventory", this, true, "Cleaning");
-    IntSetting delay = new IntSetting("Delay", this, 20, 5, 50, "Cleaning");
+    IntSetting delay = new IntSetting("Delay", this, 5, 0, 30, "Cleaning");
 
     BooleanSetting SortInventory = new BooleanSetting("SortInventory", this, false, "Sort");
 
@@ -42,7 +42,7 @@ public class InventoryManager extends Module {
 
 
     BooleanSetting autoSteal = new BooleanSetting("Auto", this, false,"Stealer");
-    IntSetting stealDelay = new IntSetting("Delay", this, 20, 5, 50,"Stealer");
+    IntSetting stealDelay = new IntSetting("Delay", this, 5, 0, 30,"Stealer");
     BooleanSetting stealKitNeeded = new BooleanSetting("OnlyForKit", this, false,"Stealer");
 
 
@@ -363,7 +363,7 @@ public class InventoryManager extends Module {
 
 
                             InventoryUtil.moveItemInContainer(slot,convert + slots);
-                            timer.delayRandom(stealDelay.getValue(),stealDelay.getValue()*3);
+                            timer.delayRandom(stealDelay.getValue()*10,stealDelay.getValue()*3);
                             return;
 
                         }
@@ -379,7 +379,7 @@ public class InventoryManager extends Module {
             while (list.size() > 0)
             {
                 mc.playerController.windowClick(container.windowId, list.get(0), 0, ClickType.QUICK_MOVE,  mc.player);
-                timer.delayRandom(stealDelay.getValue()*10,stealDelay.getValue()*5);
+                timer.delayRandom(stealDelay.getValue()*10,stealDelay.getValue()*3);
                 return;
             }
 

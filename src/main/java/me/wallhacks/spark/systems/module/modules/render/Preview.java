@@ -239,7 +239,7 @@ public class Preview extends Module {
 
 
 
-        GlStateManager.disableAlpha();
+
         GlStateManager.enableDepth();
         GlStateManager.disableCull();
 
