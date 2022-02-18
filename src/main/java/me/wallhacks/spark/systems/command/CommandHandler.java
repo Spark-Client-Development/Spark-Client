@@ -17,6 +17,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
+import me.wallhacks.spark.systems.command.Command.Option;
 
 public class CommandHandler {
 	
@@ -37,7 +38,7 @@ public class CommandHandler {
 					argsList.remove(0);
 					command.run(argsList.toArray(new String[0]));
 				} else {
-					Spark.sendInfo(CommandManager.ErrorColor+"Invalid command!");
+					Spark.sendError("Invalid command!");
 				}
 				e.setCanceled(true);
 			}
@@ -55,22 +56,9 @@ public class CommandHandler {
 			if(!message.isEmpty()) {
 				String prefix = ClientConfig.getInstance().getChatPrefix();
 				if(message.startsWith(prefix)) {
-					String commandLine = message.substring(prefix.length());
-					List<String> possibilities = new ArrayList<>();
-					String command = commandLine.substring(0, Math.max(commandLine.indexOf(" "),0));
-					if(!CommandManager.COMMANDUSAGES.containsKey(command)) {
-						for(String usage : CommandManager.COMMANDUSAGES.keySet()) {
-							if(usage.startsWith(commandLine)) {
-								possibilities.add(usage);
-							}
-						}
-					} else {
-						for(String usage : CommandManager.COMMANDUSAGES.get(command)) {
-							if(usage.startsWith(commandLine.substring(command.length()+1))) {
-								possibilities.add(usage);
-							}
-						}
-					}
+					String commandLine = message.substring(prefix.length()).toLowerCase();
+					List<String> possibilities = getAutoCompleteForLine(commandLine);
+					String command = commandLine.substring(0, Math.max(commandLine.lastIndexOf(" "),0));
 					if(!possibilities.isEmpty()) {
 						Collections.sort(possibilities);
 						int width = chat.fontRenderer.getStringWidth(Collections.max(possibilities.subList(0, MathHelper.clamp(10, 0, possibilities.size())), (o1,o2) -> {return chat.fontRenderer.getStringWidth(o1) - chat.fontRenderer.getStringWidth(o2);})) + 1; 
@@ -84,10 +72,10 @@ public class CommandHandler {
 							}
 							Gui.drawRect(chat.inputField.x+xOffset-2, actualY, chat.inputField.x+xOffset+width, actualY+10, (selected == i && possibilities.size() > 1 ? new Color(50, 50, 50, 240).getRGB() : new Color(0, 0, 0, 220).getRGB()));
 							chat.fontRenderer.drawStringWithShadow(possibilities.get(i), chat.inputField.x+xOffset, actualY + 1, new Color(100, 100, 100).getRGB());
-							chat.fontRenderer.drawStringWithShadow(commandLine.substring(Math.max(message.indexOf(" "),0)), chat.inputField.x+xOffset, actualY + 1, Color.WHITE.getRGB());
-							this.possibilities = possibilities;
+							chat.fontRenderer.drawStringWithShadow(commandLine.substring(Math.max(message.lastIndexOf(" "),0)), chat.inputField.x+xOffset, actualY + 1, Color.WHITE.getRGB());
 						}
 					}
+					this.possibilities = possibilities;
 				}
 			}
 		}
@@ -102,13 +90,16 @@ public class CommandHandler {
 				String prefix = ClientConfig.getInstance().getChatPrefix();
 				if(message.startsWith(prefix)) {
 					String commandLine = message.substring(prefix.length());
-					String command = commandLine.substring(0, Math.max(commandLine.indexOf(" "),0));
+					String command = commandLine.substring(0, Math.max(commandLine.lastIndexOf(" "),0));
 					if(Keyboard.isKeyDown(Keyboard.KEY_TAB)) {
 						String autoComplete;
 						if(command.isEmpty()) {
 							autoComplete = prefix + possibilities.get(selected) + " ";
 						} else {
 							autoComplete = prefix + command + " " + possibilities.get(selected);
+							if(!getAutoCompleteForLine(command + " " + possibilities.get(selected) + " ").isEmpty()) {
+								autoComplete += " ";
+							}
 							if(autoComplete.contains("<")) {
 								autoComplete = autoComplete.substring(0, autoComplete.indexOf("<"));
 							}
@@ -135,6 +126,72 @@ public class CommandHandler {
 		}
 
 
+	}
+
+	//Sorry, not motivated enough to make the code more cleaner...
+	//Have fun with these bunch of if-else statements!
+	private List<String> getAutoCompleteForLine(String commandLine) {
+		String[] commandArgs = commandLine.trim().split(" ");
+		List<String> possibilities = new ArrayList<>();
+		if(commandArgs.length > 0 && commandArgs.length < 3) {
+			Command command = CommandManager.COMMANDSBYNAME.get(commandArgs[0]);
+			if(command != null) {
+				if(commandLine.endsWith(" ") || commandArgs.length > 1) {
+					List<Option> options = command.getOptions();
+					for(Option option : options) {
+						String oname = option.getName();
+						if(oname != null) {
+							if(commandArgs.length > 1) {
+								if(oname.equals(commandArgs[1])) {
+									List<String> usages = option.getUsages();
+									if(!usages.isEmpty() && commandLine.endsWith(" ")) {
+										if(commandArgs.length > 2) {
+											for(String usage : usages) {
+												if(!usage.startsWith("<")) {
+													if(usage.startsWith(commandArgs[2])) {
+														possibilities.add(usage);
+													}
+												}
+											}
+										} else {
+											for(String usage : usages) {
+												possibilities.add(usage);
+											}
+										}
+									}
+								} else if(oname.startsWith(commandArgs[1])){
+									possibilities.add(oname);
+								}
+							} else {
+								possibilities.add(oname);
+							}
+						} else {
+							List<String> usages = option.getUsages();
+							if(commandArgs.length > 2) {
+								for(String usage : usages) {
+									if(usage.startsWith(commandArgs[2])) {
+										possibilities.add(usage);
+									}
+								}
+							} else {
+								for(String usage : usages) {
+									possibilities.add(usage);
+								}
+							}
+						}
+					}
+				} else {
+					possibilities.add(command.getName());
+				}
+			} else if(commandArgs.length == 1){
+				for(String c : CommandManager.COMMANDSBYNAME.keySet()) {
+					if(c.startsWith(commandLine)) {
+						possibilities.add(c);
+					}
+				}
+			}
+		}
+		return possibilities;
 	}
 
 
