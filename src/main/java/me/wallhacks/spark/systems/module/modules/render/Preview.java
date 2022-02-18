@@ -203,6 +203,7 @@ public class Preview extends Module {
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
 
+        RenderHelper.enableStandardItemLighting();
 
 
         float z = mc.getRenderItem().zLevel;
@@ -232,16 +233,9 @@ public class Preview extends Module {
         // text
         mc.fontRenderer.drawStringWithShadow(toolTip, x, y , -1);
 
-
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
-        RenderHelper.enableStandardItemLighting();
-
-
-
-
+        GlStateManager.enableRescaleNormal();
         GlStateManager.enableDepth();
-        GlStateManager.disableCull();
+
 
         NBTTagCompound tagCompound = shulker.getTagCompound();
         if (tagCompound != null && tagCompound.hasKey("BlockEntityTag", 10))
@@ -271,17 +265,8 @@ public class Preview extends Module {
             }
         }
 
-
-
         RenderHelper.disableStandardItemLighting();
-        GlStateManager.enableCull();
-        GlStateManager.enableAlpha();
-
-
         mc.getRenderItem().zLevel = z;
-
-        GlStateManager.enableLighting();
-
 
         GlStateManager.enableDepth();
 

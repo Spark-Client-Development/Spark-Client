@@ -2,6 +2,7 @@ package me.wallhacks.spark.manager;
 
 import baritone.api.utils.BlockUtils;
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
@@ -15,6 +16,8 @@ import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.ItemForMineSwit
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.network.play.server.SPacketMultiBlockChange;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -59,6 +62,27 @@ public class BreakManager implements MC {
         return false;
 
     }
+    @SubscribeEvent
+    public void onPacketGet(PacketReceiveEvent event) {
+        if (event.getPacket() instanceof SPacketMultiBlockChange) {
+            for (SPacketMultiBlockChange.BlockUpdateData pos : ((SPacketMultiBlockChange) event.getPacket()).getChangedBlocks()) {
+
+                blockChanged(pos.getPos(),pos.getBlockState());
+            }
+        } else if (event.getPacket() instanceof SPacketBlockChange) {
+            blockChanged(((SPacketBlockChange) event.getPacket()).getBlockPosition(),((SPacketBlockChange) event.getPacket()).blockState);
+        }
+    }
+    protected void blockChanged(BlockPos p,IBlockState state) {
+        if (block == null)
+            return;
+        if(block.equals(p) && isDone(state))
+        {
+            mc.playerController.resetBlockRemoving();
+            block = null;
+            return;
+        }
+    }
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
@@ -91,7 +115,7 @@ public class BreakManager implements MC {
 
 
 
-        if(!instMine || PacketMine.instance.ticksFromDone() < 3)
+        if(!(instMine || PacketMine.instance.isEnabled()) || PacketMine.instance.ticksFromDone() < 3)
         {
 
             if(AntiCheatConfig.getInstance().getBlockRotate())

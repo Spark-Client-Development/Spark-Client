@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.exploit.AntiCity;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
@@ -47,151 +48,137 @@ public class AutoCity extends Module {
 
 
     BlockPos target;
-    BlockPos crystalTarget;
 
-
-    BooleanSetting insta = new BooleanSetting("Insta", this, true);
-
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0xABE50F36, true), "Render");
 
 
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
 
-        GetBreakeBlock();
+        BlockPos pos = GetBreakeBlock();
 
-        if (target == null) {
+        if(pos == null || (target != null && !target.equals(pos)))
+        {
+
+            if(target == null)
+                Spark.sendInfo("Autocity has no target!");
+            else
+                Spark.sendInfo("Autocity has lost target!");
+            target = null;
+
             disable();
             return;
         }
+        target = pos;
 
-        Spark.breakManager.setCurrentBlock(target, insta.isOn(), 2);
+        Spark.breakManager.setCurrentBlock(target, false, 2);
 
-        if(CanPlaceOnBlock(crystalTarget,true))
-            placeCrystalOnBlock(crystalTarget);
+
+    }
+
+    public BlockPos getTarget() {
+        return isEnabled() ? target : null;
     }
 
 
 
 
-    public boolean placeCrystalOnBlock(BlockPos bestPos){
 
-        Vec3d pos = CrystalUtil.getRotationPos(false,bestPos,null);
-        final RayTraceResult result = mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
-        EnumFacing facing = (result == null || !bestPos.equals(result.getBlockPos()) || result.sideHit == null) ? EnumFacing.UP : result.sideHit;
+    BlockPos GetBreakeBlock(){
 
-        Vec3d v = new Vec3d(bestPos).add(0.5, 0.5, 0.5).add(new Vec3d(facing.getDirectionVec()).scale(0.5));
-
-        if (result != null && bestPos.equals(result.getBlockPos()) && result.hitVec != null)
-            v = result.hitVec;
-        if (bestPos.getY() >= 254)
-            facing = EnumFacing.EAST;
-
-        //offhand
-        EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.switchType.Both);
-        if (hand == null)
-            return false;
-
-
-        //rotate if needed
-        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
-            return false;
-
-
-        //send packet
-        mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(bestPos, facing, hand, (float) v.x, (float) v.y, (float) v.z));
-
-        //swing
-        switch (AntiCheatConfig.getInstance().crystalPlaceSwing.getValue()) {
-            case "Normal":
-                mc.player.swingArm(hand);
-                break;
-            case "Packet":
-                mc.player.connection.sendPacket(new CPacketAnimation(hand));
-                break;
-        }
-
-        if (render.getValue())
-            new FadePos(bestPos, fill, true);
-
-        return true;
-    }
-
-
-
-    void GetBreakeBlock(){
         BlockPos bestPos = null;
-        BlockPos bestPosForCrystal = null;
-        float biggestDis = Float.MAX_VALUE;
+        float floatBest = 0;
 
-        entityLoop:
+        loop:
         for(Entity entity : mc.world.loadedEntityList){
-
             if(entity instanceof EntityPlayer){
-                EntityPlayer e = (EntityPlayer)entity;
-                // && e.onGround
-                if(AttackUtil.canAttackPlayer(e,10)) {
+                {
+                    EntityPlayer e = (EntityPlayer)entity;
+                    if(AttackUtil.canAttackPlayer(e,10)) {
 
-                    BlockPos floored = PlayerUtil.getPlayerPosFloored(e);
-
-                    ArrayList<BlockPos> surround = new ArrayList<BlockPos>();
-                    surround.add(floored.add(0,0,1));
-                    surround.add(floored.add(0,0,-1));
-                    surround.add(floored.add(1,0,0));
-                    surround.add(floored.add(-1,0,0));
-
-                    for(BlockPos p : surround){
-                        if (!mc.world.getBlockState(p).getBlock().material.isSolid())
-                            continue entityLoop;
-                    }
-
-                    for(BlockPos p : surround) {
-
-                        final Block b = mc.world.getBlockState(p).getBlock();
-
-                        if (b.material.isSolid() && Spark.breakManager.canBreak(p)) {
-
-                            BlockPos cPos = p.add(p.getX() - floored.getX(), -1, p.getZ() - floored.getZ());
+                        BlockPos pos = PlayerUtil.getPlayerPosFloored(e);
 
 
+                        ArrayList<BlockPos> surround = new ArrayList<BlockPos>();
+                        surround.add(pos.add(0,0,1));
+                        surround.add(pos.add(0,0,-1));
+                        surround.add(pos.add(1,0,0));
+                        surround.add(pos.add(-1,0,0));
 
 
-
-                            if (CanPlaceOnBlock(cPos,false)) {
-
-                                if(target != null)
-                                {
-                                    if(p.equals(target))
-                                    {
-                                        bestPos = p;
-                                        bestPosForCrystal = p.add(p.getX() - floored.getX(), -1, p.getZ() - floored.getZ());
-                                        break entityLoop;
-                                    }
-                                    else
-                                        continue entityLoop;
-                                }
-
-                                float dis = PlayerUtil.getDistance(p);
-
-                                if (dis < biggestDis) {
-                                    biggestDis = dis;
-                                    bestPos = p;
-                                    bestPosForCrystal = p.add(p.getX() - floored.getX(), -1, p.getZ() - floored.getZ());
-                                }
-
+                        //check is player is in burrow
+                        final Block feet = mc.world.getBlockState(pos).getBlock();
+                        if(feet.material.isOpaque() && Spark.breakManager.canBreak(pos))
+                        {
+                            if(pos.equals(target))
+                                return pos;
+                            //burrow case
+                            float value = 10 - PlayerUtil.getDistance(pos);
+                            if(value > floatBest){
+                                floatBest = value;
+                                bestPos = pos;
                             }
 
+                            continue loop;
+                        }
+
+                        //if player is exposed no need to city
+                        for(BlockPos p : surround){
+                            if (mc.world.getBlockState(p).getBlock() == Blocks.AIR)
+                                continue loop;
+                        }
+
+                        for(BlockPos p : surround){
+
+                            final Block pb = mc.world.getBlockState(p).getBlock();
+
+                            if (pb != Blocks.AIR && pb != Blocks.BEDROCK && Spark.breakManager.canBreak(p))
+                            {
+
+                                final Block top = mc.world.getBlockState(p.add(0,1,0)).getBlock();
+                                final Block bottom = mc.world.getBlockState(p.add(0,-1,0)).getBlock();
+                                final Block away = mc.world.getBlockState(p.add(p.getX()-pos.getX(),0,p.getZ()-pos.getZ())).getBlock();
+                                final Block awaytop = mc.world.getBlockState(p.add(p.getX()-pos.getX(),1,p.getZ()-pos.getZ())).getBlock();
+                                final Block awaybottom = mc.world.getBlockState(p.add(p.getX()-pos.getX(),-1,p.getZ()-pos.getZ())).getBlock();
+
+
+                                float value = 0;
+
+
+
+                                boolean placeAble = (top == Blocks.AIR && (bottom == Blocks.BEDROCK || bottom == Blocks.OBSIDIAN));
+                                boolean awayPlaceAble = (away == Blocks.AIR && awaytop == Blocks.AIR && (awaybottom == Blocks.BEDROCK || awaybottom == Blocks.OBSIDIAN));
+
+                                if(placeAble){
+                                    value += 10;
+                                    if(awayPlaceAble)
+                                        value += 10;
+                                }
+                                else if(awayPlaceAble)
+                                    value += 25;
+
+
+
+                                value -= PlayerUtil.getDistance(p);
+
+                                if(p.equals(target))
+                                    return p;
+
+                                if(value > floatBest){
+                                    floatBest = value;
+                                    bestPos = p;
+                                }
+
+
+                            }
 
                         }
                     }
                 }
             }
-
         }
-        target = bestPos;
-        crystalTarget = bestPosForCrystal;
+
+        return bestPos;
 
     }
 

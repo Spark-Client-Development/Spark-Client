@@ -2,6 +2,7 @@ package me.wallhacks.spark.util.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
+import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
@@ -52,7 +53,7 @@ public class CrystalUtil implements MC {
                 net.minecraft.block.Block block = blockState.getBlock();
 
                 if ((blockState.getCollisionBoundingBox(mc.world, blockPos) != Block.NULL_AABB) &&
-                        block.canCollideCheck(blockState, false) && (getBlocks().contains(block) || !shouldIgnore) && (!isBreakBlock(blockPos) || !preplace)) {
+                        block.canCollideCheck(blockState, false) && (!shouldIgnore || getBlocks().contains(block)) && (!preplace || !isBreakBlock(blockPos))) {
                     return true;
                 }
 
@@ -130,7 +131,7 @@ public class CrystalUtil implements MC {
                     blockState = mc.world.getBlockState(blockPos);
                     block = blockState.getBlock();
 
-                    if (block.canCollideCheck(blockState, false) && (getBlocks().contains(block) || !shouldIgnore) && (!isBreakBlock(blockPos) || !preplace)) {
+                    if (block.canCollideCheck(blockState, false) && (!shouldIgnore || getBlocks().contains(block)) && (!preplace || !isBreakBlock(blockPos))) {
                         return true;
                     }
                 }
@@ -141,9 +142,17 @@ public class CrystalUtil implements MC {
     }
 
     private static boolean isBreakBlock(BlockPos pos) {
-        for (DestroyBlockProgress progress : mc.renderGlobal.damagedBlocks.values()) {
-            if (progress.getPosition().equals(pos)) return true;
+        if(pos.equals(PacketMine.instance.pos))
+        {
+            return true;
         }
+        if(mc.playerController.isHittingBlock && pos.equals(mc.playerController.currentBlock))
+        {
+            return true;
+        }
+        /*for (DestroyBlockProgress progress : mc.renderGlobal.damagedBlocks.values()) {
+            if (progress.getPosition().equals(pos)) return true;
+        }*/
         return false;
     }
 

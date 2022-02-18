@@ -295,7 +295,7 @@ public class CrystalAura extends Module {
 
 
     void doPlace() {
-        if (PlacePauseTimer <= 0 && DelayTimer >= placeDelay.getValue() && currentCrystalBlockPos != null) {
+        if (PlacePauseTimer <= 0 && DelayTimer >= placeDelay.getValue() && currentCrystalBlockPos != null && CanPlaceOnBlock(currentCrystalBlockPos,true)) {
             //place crystal
 
             //get point for rotations
@@ -443,7 +443,7 @@ public class CrystalAura extends Module {
         targetEntity = null;
         float bestValue = 0;
         for (BlockPos pos : WorldUtils.getSphere(PlayerUtil.getPlayerPosFloored(mc.player), 7, 7, 1)) {
-            if (CanPlaceOnBlock(pos)) {
+            if (CanPlaceOnBlock(pos,false)) {
                 ValueForExplodingCrystalAtPoint Value = getValueForCrystalExplodingAtPoint(new Vec3d(pos.getX() + 0.5f, pos.getY() + 1, pos.getZ() + 0.5f), prePlace.getValue());
 
                 if (Value.value > bestValue) {
@@ -479,7 +479,7 @@ public class CrystalAura extends Module {
         float bestValue = -1;
 
         float myhealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
-        float selfdam = CrystalUtil.calculateDamageCrystal(pos, predictedPlayer, false);
+        float selfdam = CrystalUtil.calculateDamageCrystal(pos, predictedPlayer, prePlace);
         PredictedEntity target = null;
 
         if (selfdam + 2 < myhealth || !NoSuicide.isOn())
@@ -507,7 +507,11 @@ public class CrystalAura extends Module {
 
 
 
-    boolean CanPlaceOnBlock(BlockPos p) {
+    boolean CanPlaceOnBlock(BlockPos p,boolean canReallyPlace) {
+
+        //prevent place on block we mining
+        if(AutoCity.INSTANCE.isEnabled() && p.equals(AutoCity.INSTANCE.GetBreakeBlock()))
+            return false;
 
         final Block block = mc.world.getBlockState(p).getBlock();
         if (block == Blocks.OBSIDIAN || block == Blocks.BEDROCK) {
@@ -529,6 +533,8 @@ public class CrystalAura extends Module {
                     if (entity.isDead) continue;
 
                     if (entity instanceof EntityEnderCrystal) {
+                        if(!canReallyPlace && entity.getPosition().equals(p.add(0,1,0)))
+                            continue;
                         if (lastAttackedEntity != null && lastAttackedEntity == currentCrystalEntity && lastAttackedEntity.getPosition().equals(entity.getPosition()))
                             continue;
                     }

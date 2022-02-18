@@ -51,6 +51,8 @@ public class CombatManager implements MC {
 
     @SubscribeEvent
     public void onPacketReceive(PacketReceiveEvent event) {
+        if(nullCheck())
+            return;
         if (event.getPacket() instanceof SPacketEntityStatus) {
             SPacketEntityStatus packet = event.getPacket();
             if (packet.getOpCode() == 35 && packet.getEntity(mc.world) instanceof EntityPlayer) {

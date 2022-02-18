@@ -70,7 +70,13 @@ public class CevBreaker extends Module {
 
         if(pos == null || (CevBlock != null && !CevBlock.equals(pos)))
         {
+
+            if(CevBlock == null)
+                Spark.sendInfo("Cevbreaker has no target!");
+            else
+                Spark.sendInfo("Cevbreaker has lost target!");
             CevBlock = null;
+
             disable();
             return;
         }
@@ -229,6 +235,7 @@ public class CevBreaker extends Module {
 
     BlockPos GetCevBreakerBlock(){
         BlockPos NewPos = null;
+        double bestDistance = Double.MAX_VALUE;
         for(Object o : mc.world.loadedEntityList){
             Entity entity = (Entity)o;
             if(entity instanceof EntityPlayer){
@@ -246,10 +253,18 @@ public class CevBreaker extends Module {
 
                                 if(mc.world.getBlockState(floored.add(0,3,0)).getBlock() == Blocks.AIR){
                                     if(mc.world.getBlockState(floored.add(0,4,0)).getBlock() == Blocks.AIR){
-                                        NewPos = PlayerUtil.getPlayerPosFloored(e).add(0,2,0);
+                                        BlockPos p = PlayerUtil.getPlayerPosFloored(e).add(0,2,0);
 
-                                        if(NewPos.equals(CevBlock))
-                                            break;
+
+                                        if(p.equals(CevBlock))
+                                            return p;
+
+                                        float dis = PlayerUtil.getDistance(p);
+                                        if(dis < bestDistance)
+                                        {
+                                            bestDistance = dis;
+                                            NewPos = p;
+                                        }
 
                                     }
 
