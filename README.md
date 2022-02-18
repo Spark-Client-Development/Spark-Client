@@ -10,6 +10,7 @@
 # Spark-Client
 spark client is a utility mod for anarchy servers. This includes hacker vs hacker pvp, exploring anarchy servers, building and more.
 
+
 # Usage
 - Download the latest version from the [releases](https://github.com/wallhacks0/spark-client/releases/) tab
 - Download and install forge 1.12.2 from the official [forge website](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.12.2.html)
