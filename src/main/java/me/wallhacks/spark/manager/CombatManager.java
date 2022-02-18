@@ -14,8 +14,11 @@ import me.wallhacks.spark.util.StringUtil;
 import me.wallhacks.spark.util.objects.Notification;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SPacketDestroyEntities;
+import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketEntityStatus;
 import net.minecraft.network.play.server.SPacketUpdateHealth;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -49,15 +52,21 @@ public class CombatManager implements MC {
     @SubscribeEvent
     public void onPacketReceive(PacketReceiveEvent event) {
         if (event.getPacket() instanceof SPacketEntityStatus) {
-            SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
-            try {
-                if (packet.getOpCode() == 35 && packet.getEntity(mc.world) instanceof EntityPlayer) {
-                    handlePop((EntityPlayer) packet.getEntity(mc.world));
+            SPacketEntityStatus packet = event.getPacket();
+            if (packet.getOpCode() == 35 && packet.getEntity(mc.world) instanceof EntityPlayer) {
+                handlePop((EntityPlayer) packet.getEntity(mc.world));
+            }
+        }
+        if (event.getPacket() instanceof SPacketEntityMetadata) {
+            SPacketEntityMetadata packet = event.getPacket();
+            if(mc.world.getEntityByID(packet.getEntityId()) instanceof EntityPlayer)
+            {
+                for (EntityDataManager.DataEntry v : packet.getDataManagerEntries()) {
+                    if (v.getKey().equals(EntityLivingBase.HEALTH) && (float)v.getValue() <= 0) {
+                        handleDeath((EntityPlayer) mc.world.getEntityByID(packet.getEntityId()));
+                    }
                 }
-                if (packet.getOpCode() == 3 && packet.getEntity(mc.world) instanceof EntityPlayer) {
-                    handleDeath((EntityPlayer) packet.getEntity(mc.world));
-                }
-            } catch (Exception ignored) {
+
             }
         }
     }
@@ -70,13 +79,13 @@ public class CombatManager implements MC {
         int diedAfterPops = getTotemPops(player);
 
 
-        //detect if we killed him
+
         if(mc.player != player)
         {
             if (Notifications.INSTANCE.death.getValue() && Notifications.INSTANCE.isEnabled())
                 Notifications.addNotification(new Notification(StringUtil.getDeathString(player,diedAfterPops),player));
 
-
+            //detect if we killed him/her
             Module killedWith = null;
 
             if(player.equals(CrystalAura.instance.getTarget()))
@@ -92,7 +101,7 @@ public class CombatManager implements MC {
             {
                 if(AutoGG.instance.isEnabled())
                     AutoGG.instance.onKilledPlayer(player,diedAfterPops);
-                //looks like we killed it :(
+                //looks like we killed him/her :(
                 kills.add(new Kill(Spark.socialManager.getSocial(player.getName()),killedWith));
             }
         }

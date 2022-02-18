@@ -26,7 +26,7 @@ public class Crosshair extends Module {
 	public DoubleSetting length = new DoubleSetting("Length",this,  10.0, 0.0, 20.0);
 	public DoubleSetting thick = new DoubleSetting("Thick", this, 10.0, 0.0, 20.0);
 	public DoubleSetting gap = new DoubleSetting("Gap", this, 10.0, 0.0, 20.0);
-	public ColorSetting colour = new ColorSetting("Colour", this, new Color(0xD83535), false);
+	public ColorSetting colour = new ColorSetting("Color", this, new Color(0xD83535), false);
 	
 	@SubscribeEvent
 	public void onCrosshairRender(RenderGameOverlayEvent.Pre e) {
