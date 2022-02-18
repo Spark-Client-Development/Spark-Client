@@ -8,10 +8,8 @@ import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.hud.InfoHudElement;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 
-@HudElement.Registration(name = "BaritoneGoal", description = "Shows the current baritone goal", posX = 0.0, posY = 0.5, width = 30, height = 12)
+@HudElement.Registration(name = "BaritoneGoal", description = "Shows the current baritone goal", posX = 0.0, posY = 0.65, width = 30, height = 12)
 public class BaritoneGoal extends InfoHudElement {
-    BooleanSetting optifine = new BooleanSetting("Optifine", this, false);
-
     @Override
     public void draw(float deltaTime) {
     	String Goal = "not active";
