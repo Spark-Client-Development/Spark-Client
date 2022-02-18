@@ -57,6 +57,7 @@ public class AltManager implements MC {
     Timer statusTimer = new Timer();
 
 
+
     String key = new RandomString(50).nextString();
 
     public AltManager() {
