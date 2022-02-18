@@ -26,6 +26,7 @@ public class MixinNetworkManager {
         }
     }
 
+
     @Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
     public void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet<?> p_channelRead0_2_, final CallbackInfo callbackInfo) {
             PacketReceiveEvent event = new PacketReceiveEvent(p_channelRead0_2_);

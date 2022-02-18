@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -39,7 +40,10 @@ public class CevBreaker extends Module {
     IntSetting breakCrystalDelay = new IntSetting("breakCrystalDelay",this,6,0,10);
     IntSetting placeCrystalDelay = new IntSetting("placeCrystalDelay",this,1,0,10);
 
+
     BooleanSetting insta = new BooleanSetting("InstaMine",this,true);
+    BooleanSetting smartCrystalPlayer = new BooleanSetting("SmartCrystal",this,true,aBoolean -> insta.isOn());
+    BooleanSetting predictBreak = new BooleanSetting("PredictBlockBreak",this,false,aBoolean -> insta.isOn());
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC7B, true), "Render");
@@ -102,39 +106,7 @@ public class CevBreaker extends Module {
 
 
 
-
-        if(isCrystalThere && !isBlockThere)
-        {
-            if(isMiningBlock)
-            {
-                isMiningBlock = false;
-                cooldown = breakCrystalDelay.getValue();
-                if(cooldown > 0)
-                    return;
-            }
-
-            if(CrystalUtil.breakCrystal(crystal,CevBlock))
-                cooldown = placeBlockDelay.getValue();
-
-            //break crystal
-        }
-        else if(isCrystalThere && isBlockThere)
-        {
-
-            Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),3);
-            isMiningBlock = true;
-            //break obi
-
-        }
-        else if(!isCrystalThere && isBlockThere)
-        {
-
-            if(placeCrystalOnBlock(CevBlock))
-                cooldown = breakBlockDelay.getValue();
-            //place crystal
-
-        }
-        else if(!isCrystalThere && !isBlockThere)
+        if(!isCrystalThere && !isBlockThere)
         {
             Vec3d CevBlockPos = new Vec3d(CevBlock).add(0.5,1,0.5);
             Vec3i offset = new Vec3i(Math.floor(Math.max(-1,Math.min(CevBlockPos.x-mc.player.posX, 1))),0,Math.floor(Math.max(-1,Math.min(CevBlockPos.y-mc.player.posZ, 1))));
@@ -157,6 +129,46 @@ public class CevBreaker extends Module {
                 cooldown = placeCrystalDelay.getValue();
             //place obi
         }
+
+        if(!isCrystalThere && (!smartCrystalPlayer.isOn() || !insta.isOn() || PacketMine.instance.ticksFromDone() < 4) && isBlockThere)
+        {
+
+            if(placeCrystalOnBlock(CevBlock))
+                cooldown = breakBlockDelay.getValue();
+            //place crystal
+
+        }
+        else if(isBlockThere)
+        {
+            isMiningBlock = true;
+            if(Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),3))
+            {
+                isMiningBlock = false;
+                cooldown = breakCrystalDelay.getValue();
+                if(cooldown > 0)
+                    return;
+            }
+            //break obi
+
+        }
+
+        if(isCrystalThere && (!isBlockThere || (predictBreak.isOn() && CevBlock.equals(PacketMine.instance.pos) && PacketMine.instance.shouldBeGone)))
+        {
+            if(isMiningBlock)
+            {
+                isMiningBlock = false;
+                cooldown = breakCrystalDelay.getValue();
+                if(cooldown > 0)
+                    return;
+            }
+
+            if(CrystalUtil.breakCrystal(crystal,CevBlock))
+                cooldown = placeBlockDelay.getValue();
+
+            //break crystal
+        }
+
+
 
     }
 
@@ -258,5 +270,13 @@ public class CevBreaker extends Module {
     }
 
 
-
+    public boolean isInAttackZone(EntityPlayer player) {
+        if(isEnabled() && CevBlock != null)
+        {
+            BlockPos floored = PlayerUtil.getPlayerPosFloored(player);
+            if(floored.add(0,2,0).equals(CevBlock))
+                return true;
+        }
+        return false;
+    }
 }

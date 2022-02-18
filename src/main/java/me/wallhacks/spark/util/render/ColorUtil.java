@@ -60,7 +60,7 @@ public class ColorUtil {
         float red = to.getRed()   * blending   +   from.getRed()   * inverse_blending;
         float green = to.getGreen() * blending   +   from.getGreen() * inverse_blending;
         float blue = to.getBlue()  * blending   +   from.getBlue()  * inverse_blending;
-        float alpha = to.getBlue()  * blending   +   from.getBlue()  * inverse_blending;
+        float alpha = to.getAlpha()  * blending   +   from.getAlpha()  * inverse_blending;
 
         return new Color (red / 255, green / 255, blue / 255,alpha/255);
     }

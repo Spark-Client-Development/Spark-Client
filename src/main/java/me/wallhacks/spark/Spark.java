@@ -39,7 +39,7 @@ public class Spark implements MC {
     public static KeyManager keyManager;
     public static FontManager fontManager;
     public static CommandManager commandManager;
-    public static PopManager popManager;
+    public static CombatManager popManager;
     public static ClickGuiMenuBase clickGuiScreen;
     public static AltManager altManager;
     public static WaypointManager waypointManager;
@@ -47,7 +47,8 @@ public class Spark implements MC {
     public static ThreadManager threadManager;
     public static SwitchManager switchManager;
     public static MapManager mapManager;
-    public static DataTrackingManager dataTrackingManager;
+    public static PotionManager potionManager;
+    public static ItemTrackerManager dataTrackingManager;
 
     public static SocialManager socialManager;
 
@@ -67,8 +68,9 @@ public class Spark implements MC {
         fontManager = new FontManager();
         systemManager = new SystemManager();
         tickManager = new TickManager();
-        popManager = new PopManager();
+        popManager = new CombatManager();
         commandManager = new CommandManager();
+        potionManager = new PotionManager();
         mapManager = new MapManager();
         breakManager = new BreakManager();
         fadeManager = new FadeManager();
@@ -77,7 +79,7 @@ public class Spark implements MC {
         switchManager = new SwitchManager();
         altManager = new AltManager();
         socialManager = new SocialManager();
-        dataTrackingManager = new DataTrackingManager();
+        dataTrackingManager = new ItemTrackerManager();
         waypointManager = new WaypointManager();
         configManager.Load(false);
         rpcManager = new RPCManager();

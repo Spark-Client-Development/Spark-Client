@@ -292,4 +292,14 @@ public class ShulkerAura extends Module {
 
         return true;
     }
+
+    public boolean isInAttackZone(EntityPlayer player) {
+        if(isEnabled() && targetPos != null)
+        {
+            BlockPos floored = PlayerUtil.getPlayerPosFloored(player);
+            if(floored.add(0,2,0).equals(targetPos))
+                return true;
+        }
+        return false;
+    }
 }

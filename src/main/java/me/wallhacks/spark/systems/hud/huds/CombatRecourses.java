@@ -8,7 +8,9 @@ import me.wallhacks.spark.systems.hud.AlignedHudElement;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.util.objects.Pair;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class CombatRecourses extends AlignedHudElement {
     BooleanSetting totems = new BooleanSetting("Totems", this, true);
     BooleanSetting crystals = new BooleanSetting("Crystals", this, true);
     BooleanSetting gaps = new BooleanSetting("Gaps", this, true);
+    BooleanSetting obsidian = new BooleanSetting("Obsidian", this, true);
     ArrayList<Pair<String, Integer>> render = new ArrayList<>();
 
     @Override
@@ -47,6 +50,10 @@ public class CombatRecourses extends AlignedHudElement {
         if (gaps.getValue()) {
             int gaps = Spark.dataTrackingManager.getAmountOfItem(Items.GOLDEN_APPLE);
             resources.add(new Pair<>(ChatFormatting.GRAY + "Gaps: " + ChatFormatting.WHITE + gaps, color));
+        }
+        if (obsidian.getValue()) {
+            int gaps = Spark.dataTrackingManager.getAmountOfItem(Item.getItemFromBlock(Blocks.OBSIDIAN));
+            resources.add(new Pair<>(ChatFormatting.GRAY + "Obsidian: " + ChatFormatting.WHITE + gaps, color));
         }
         Collections.sort(resources, new Comparator<Pair<String, Integer>>() {
             @Override

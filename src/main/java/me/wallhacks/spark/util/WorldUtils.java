@@ -2,6 +2,8 @@ package me.wallhacks.spark.util;
 
 import me.wallhacks.spark.Spark;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -67,4 +69,15 @@ public class WorldUtils implements MC {
     }
 
 
+    public static boolean canBreak(BlockPos pos) {
+
+        final IBlockState blockState = mc.world.getBlockState(pos);
+        final Block block = blockState.getBlock();
+
+        if(block == Blocks.AIR)
+            return false;
+
+        float f = block.getBlockHardness(blockState, mc.world, pos);
+        return f != -1 & f > 0.1;
+    }
 }

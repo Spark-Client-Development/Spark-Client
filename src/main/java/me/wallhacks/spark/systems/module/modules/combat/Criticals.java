@@ -18,7 +18,7 @@ public class Criticals extends Module {
 
 
     @SubscribeEvent
-    void OnUpdateWalkingEvent(AttackEvent.Pre event) {
+    void onAttackEventPre(AttackEvent.Pre event) {
 
         if(event.getAttack() instanceof EntityLivingBase && mc.player.onGround)
         {
@@ -34,7 +34,7 @@ public class Criticals extends Module {
 
     }
     @SubscribeEvent
-    void OnUpdateWalkingEvent(AttackEvent.Post event) {
+    void onAttackEventPost(AttackEvent.Post event) {
 
         if(event.getAttack() instanceof EntityLivingBase && mc.player.onGround)
         {

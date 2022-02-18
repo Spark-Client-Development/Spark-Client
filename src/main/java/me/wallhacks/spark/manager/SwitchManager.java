@@ -19,10 +19,12 @@ public class SwitchManager implements MC {
 
     int doSwitchTo = 4;
     int switchToSlot = 0;
+    int fromSlot = 0;
 
-    public void setDoSwitchToSlot(int switchToSlot){
-        this.doSwitchTo = 5;
+    public void setDoSwitchToSlot(int switchToSlot,int delay){
+        this.doSwitchTo = delay;
         this.switchToSlot = switchToSlot;
+        this.fromSlot = mc.player.inventory.currentItem;
     }
 
     @SubscribeEvent
@@ -30,7 +32,7 @@ public class SwitchManager implements MC {
 
         if(doSwitchTo >= 0)
         {
-            if(doSwitchTo == 0)
+            if(doSwitchTo == 0 && fromSlot == mc.player.inventory.currentItem)
             {
                 mc.player.inventory.currentItem = switchToSlot;
                 mc.playerController.syncCurrentPlayItem();

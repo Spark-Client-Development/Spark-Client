@@ -17,4 +17,6 @@ public class PacketSendEvent extends Event {
 	public <T extends Packet<?>> T getPacket() {
         return (T) p;
     }
+
+
 }
