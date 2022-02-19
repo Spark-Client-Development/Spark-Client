@@ -10,7 +10,7 @@ public class KitCommand extends Command {
 
 	public KitCommand() {
 		super();
-		addOption("put", arg -> {
+		addOption("create", arg -> {
 			if(arg != null){
 				SystemManager.getModule(InventoryManager.class).setKitFromInventory(arg,false);
 				Spark.sendInfo(""+ CommandManager.COLOR1+"Kit "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been copied from inventory!");

@@ -20,6 +20,7 @@ public class CommandManager {
 		new FriendCommand();
 		new ConfigCommand();
 		new WaypointManager();
+		new NoteBotCommand();
 	}
 
 	public static ChatFormatting ErrorColor = ChatFormatting.RED;

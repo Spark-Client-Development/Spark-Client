@@ -3,9 +3,10 @@ package me.wallhacks.spark.systems.module.modules.world;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
+import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.player.UpdateWalkingPlayerEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
+import me.wallhacks.spark.systems.command.commands.NoteBotCommand;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
@@ -24,6 +25,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
@@ -35,6 +37,8 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,7 +58,8 @@ public class NoteBot extends Module {
     private final Map<Sound, Byte> soundBytes = new HashMap<Sound, Byte>();
     private final List<SoundEntry> soundEntries = new ArrayList<SoundEntry>();
     private final List<BlockPos> posList = new ArrayList<BlockPos>();
-    private final File file = new File(Spark.ParentPath, "\\notebot");
+    private final Path path = Spark.ParentPath.toPath().resolve("songs");
+    private final File file = new File(path.toString());
     private IRegister[] registers;
     private int soundIndex;
     private int index;
@@ -207,6 +212,11 @@ public class NoteBot extends Module {
         return state.getMaterial() == Material.WOOD ? Sound.WOOD : Sound.NONE;
     }
 
+    public File getNoteBotDir() {
+        return file;
+    }
+
+
     @Override
     public void onEnable() {
         if (nullCheck()) {
@@ -229,7 +239,7 @@ public class NoteBot extends Module {
 
     public void setSong(String song) {
         try {
-            registers = NoteBot.createRegister(new File("wallnet/notebot/" + song));
+            registers = NoteBot.createRegister(new File(file.getAbsolutePath(), song));
             Spark.sendInfo("Loaded: " + song);
         } catch (Exception e) {
             Spark.sendInfo("An Error occurred with " + song);
@@ -264,24 +274,29 @@ public class NoteBot extends Module {
     }
 
     @SubscribeEvent
-    public void onUpdateWalkingPlayerEventPre(UpdateWalkingPlayerEvent.Pre event) {
+    public void onUpdateWalkingPlayerEventPre(PlayerUpdateEvent event) {
         if (tune.getValue()) {
-            tunePre();
+            tune();
         } else if (isEnabled()) {
             noteBotPre();
-        }
-    }
-
-    @SubscribeEvent
-    public void onUpdateWalkingPlayerEventPost(UpdateWalkingPlayerEvent.Post event) {
-        if (tune.getValue()) {
-            tunePost();
-        } else if (isEnabled()) {
             noteBotPost();
         }
     }
 
-    private void tunePre() {
+    public static EnumFacing getFacing(BlockPos pos) {
+        for (EnumFacing facing : EnumFacing.values()) {
+            RayTraceResult rayTraceResult = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) pos.getX() + 0.5 + (double) facing.getDirectionVec().getX() * 1.0 / 2.0, (double) pos.getY() + 0.5 + (double) facing.getDirectionVec().getY() * 1.0 / 2.0, (double) pos.getZ() + 0.5 + (double) facing.getDirectionVec().getZ() * 1.0 / 2.0), false, true, false);
+            if (rayTraceResult != null && (rayTraceResult.typeOfHit != RayTraceResult.Type.BLOCK || !rayTraceResult.getBlockPos().equals(pos)))
+                continue;
+            return facing;
+        }
+        if ((double) pos.getY() > mc.player.posY + (double) mc.player.getEyeHeight()) {
+            return EnumFacing.DOWN;
+        }
+        return EnumFacing.UP;
+    }
+
+    private void tune() {
         currentPos = null;
         if (tuneStage == 1 && getAtomicBlockPos(null) == null) {
             if (tuned) {
@@ -305,22 +320,6 @@ public class NoteBot extends Module {
                 Spark.rotationManager.rotate(RotationUtil.getViewRotations(new Vec3d(currentPos).add(0.5, 0.5, 0.5), mc.player), AntiCheatConfig.getInstance().getBlockRotStep(), 2, true);
             }
         }
-    }
-
-    public static EnumFacing getFacing(BlockPos pos) {
-        for (EnumFacing facing : EnumFacing.values()) {
-            RayTraceResult rayTraceResult = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) pos.getX() + 0.5 + (double) facing.getDirectionVec().getX() * 1.0 / 2.0, (double) pos.getY() + 0.5 + (double) facing.getDirectionVec().getY() * 1.0 / 2.0, (double) pos.getZ() + 0.5 + (double) facing.getDirectionVec().getZ() * 1.0 / 2.0), false, true, false);
-            if (rayTraceResult != null && (rayTraceResult.typeOfHit != RayTraceResult.Type.BLOCK || !rayTraceResult.getBlockPos().equals(pos)))
-                continue;
-            return facing;
-        }
-        if ((double) pos.getY() > mc.player.posY + (double) mc.player.getEyeHeight()) {
-            return EnumFacing.DOWN;
-        }
-        return EnumFacing.UP;
-    }
-
-    private void tunePost() {
         if (tuneStage == 0 && currentPos != null) {
             EnumFacing facing = getFacing(this.currentPos);
             mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, currentPos, facing));
@@ -450,15 +449,16 @@ public class NoteBot extends Module {
     public void downloadSongs() {
         new Thread(() -> {
             try {
-                File songFile = new File(file, "songs.zip");
+                File songFile = new File(Spark.ParentPath, "songs.zip");
                 FileChannel fileChannel = new FileOutputStream(songFile).getChannel();
                 ReadableByteChannel readableByteChannel = Channels.newChannel(new URL("https://github.com/wallhacks0/notebotArchive/raw/main/songs.zip").openStream());
                 fileChannel.transferFrom(readableByteChannel, 0L, Long.MAX_VALUE);
-                NoteBot.unzip(songFile, file);
+                NoteBot.unzip(songFile, Spark.ParentPath);
                 songFile.deleteOnExit();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
+            NoteBotCommand.INSTANCE.refresh();
         }).start();
     }
 
