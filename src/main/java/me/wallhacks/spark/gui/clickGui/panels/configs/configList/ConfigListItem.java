@@ -38,9 +38,6 @@ public class ConfigListItem extends GuiPanelBase {
 
 
 
-        super.renderContent(MouseX, MouseY, deltaTime);
-
-
 
         boolean loaded = Spark.configManager.getCurrentConfig() == config;
 

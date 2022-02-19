@@ -23,6 +23,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 public class HudElement extends SettingsHolder implements MC {
+
+
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     public @interface Registration {
@@ -55,7 +57,17 @@ public class HudElement extends SettingsHolder implements MC {
         this.fontManager = Spark.fontManager;
     }
 
-    int snappedElement = getMod().snappedElement();
+    public void resetPos() {
+        percentPosX = getMod().posX();
+        percentPosY = getMod().posY();
+
+        percentPosSnappedX = getMod().snappedXPos();
+        percentPosSnappedY = getMod().snappedYPos();
+
+        snappedElement = getMod().snappedElement();
+    }
+
+
     boolean drawBackground = getMod().drawBackground();
 
     public int getSnappedElement() {
@@ -105,6 +117,8 @@ public class HudElement extends SettingsHolder implements MC {
 
     private int percentPosSnappedX = getMod().snappedXPos();
     private int percentPosSnappedY = getMod().snappedYPos();
+
+    int snappedElement = getMod().snappedElement();
 
     private int width = getMod().width();
     private int height = getMod().height();

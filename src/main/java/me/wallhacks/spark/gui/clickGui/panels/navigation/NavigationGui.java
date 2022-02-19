@@ -69,27 +69,6 @@ public class NavigationGui extends ClickGuiPanel implements MC {
 
 
 
-    public final GuiPanelButton deleteButton = new GuiPanelButton(() -> {
-        WaypointManager.Waypoint waypoint = (WaypointManager.Waypoint) guiEditSettingPanel.getCurrentSettingsHolder();
-
-        Spark.waypointManager.getWayPoints().remove(waypoint);
-        if(guiEditSettingPanel.getCurrentSettingsHolder() == waypoint)
-            guiEditSettingPanel.setCurrentSettingsHolder(null);
-    }, "Delete");
-    public final GuiPanelButton gotoButton = new GuiPanelButton(() -> {
-        WaypointManager.Waypoint waypoint = (WaypointManager.Waypoint) guiEditSettingPanel.getCurrentSettingsHolder();
-
-        Vec3i v = waypoint.getLocation();
-
-        Spark.sendInfo("Going to "+waypoint.getName());
-
-        if(waypoint.hasY())
-            BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalBlock(new BlockPos(v.getX(),v.getY(),v.getZ())));
-        else
-            BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(v.getX(),v.getZ()));
-
-        mc.displayGuiScreen(null);
-    }, "Goto");
 
 
 
@@ -135,20 +114,10 @@ public class NavigationGui extends ClickGuiPanel implements MC {
 
 
             int yh = height;
-            if(guiEditSettingPanel.getCurrentSettingsHolder() instanceof WaypointManager.Waypoint)
-            {
-                deleteButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
-                gotoButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
 
-                int bw = (ListWidth-guiSettings.spacing)/2;
-                deleteButton.setPositionAndSize(x,y+yh-searchFieldHeight,bw,searchFieldHeight);
-                gotoButton.setPositionAndSize(x+bw+guiSettings.spacing,y+yh-searchFieldHeight,bw,searchFieldHeight);
 
-                deleteButton.renderContent(MouseX, MouseY, deltaTime);
-                gotoButton.renderContent(MouseX, MouseY, deltaTime);
-                yh-=searchFieldHeight+guiSettings.spacing;
-            }
-
+            if(!Spark.waypointManager.getWayPoints().contains(guiEditSettingPanel.getCurrentSettingsHolder()))
+                guiEditSettingPanel.setCurrentSettingsHolder(null);
             guiEditSettingPanel.setPositionAndSize(x,y,ListWidth,yh);
             guiEditSettingPanel.renderContent(MouseX,MouseY,deltaTime);
 

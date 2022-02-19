@@ -482,6 +482,10 @@ public class GuiPanelInputField extends GuiPanelBase {
             int l1 = l + this.fontRenderer.getTextWidth(s.substring(0, k));
             this.drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + this.fontRenderer.getTextHeight());
         }
+
+        backGroundColor = ClientConfig.getInstance().getGuiSubPanelBackgroundColor().getRGB();
+        textColor = ClientConfig.getInstance().getContrastColor().getRGB();
+
         super.renderContent(MouseX, MouseY, deltaTime);
     }
 

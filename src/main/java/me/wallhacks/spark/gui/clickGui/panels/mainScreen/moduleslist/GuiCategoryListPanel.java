@@ -68,11 +68,14 @@ public class GuiCategoryListPanel extends GuiPanelBase {
             int y = posY;
 
 
+            int shownC = 0;
 
             for (GuiCategoryPanel category: categoryPanels) {
 
                 if(category.getShownModules() > 0)
                 {
+                    shownC++;
+
                     y+=categoryspacing;
 
                     category.posX = posX;
@@ -88,7 +91,7 @@ public class GuiCategoryListPanel extends GuiPanelBase {
 
             }
 
-            height = y+20-posY;
+            height = y+(shownC*8)-posY;
 
         }
 

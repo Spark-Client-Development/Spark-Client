@@ -1,10 +1,12 @@
 package me.wallhacks.spark.systems.command.commands;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.KitSettingGui;
 import me.wallhacks.spark.manager.CommandManager;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.command.Command;
 import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
+import net.minecraft.client.Minecraft;
 
 public class KitCommand extends Command {
 
@@ -33,17 +35,18 @@ public class KitCommand extends Command {
 				Spark.sendInfo(""+ CommandManager.COLOR1+"Kit "+CommandManager.COLOR2+arg+ ""+CommandManager.COLOR1+" has been deleted!");
 
 			}
-		}, "<kitname>");
+		}, InventoryManager.instance.getKitNames());
 
 		addOption("list", arg -> {
 
-			String currentKit = SystemManager.getModule(InventoryManager.class).currentKit;
+			String currentKit = InventoryManager.instance.currentKit;
 
 			Spark.sendInfo(""+CommandManager.COLOR1+"Kit List:");
 			for (String kit : SystemManager.getModule(InventoryManager.class).getKits().keySet()) {
 				Spark.sendInfo(""+CommandManager.COLOR1+" - "+(kit.equals(currentKit) ? "*" : "")+CommandManager.COLOR2+kit);
 			}
 		});
+
 
 	}
 

@@ -4,6 +4,8 @@ package me.wallhacks.spark.gui.panels;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiEditModuleSettings;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Mouse;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiKeySettingPanel;
 import me.wallhacks.spark.manager.FontManager;
@@ -12,9 +14,28 @@ import java.io.IOException;
 
 public class GuiPanelScreen extends GuiScreen {
 
-    final GuiScreen lastScreen;
+    protected final GuiScreen lastScreen;
 
     protected final FontManager fontManager;
+
+    @SubscribeEvent
+    public void onCrosshairRender(RenderGameOverlayEvent.Pre e) {
+        if (e.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS) {
+            e.setCanceled(true);
+        }
+    }
+
+    @Override
+    public void initGui() {
+        Spark.eventBus.register(this);
+        super.initGui();
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Spark.eventBus.unregister(this);
+        super.onGuiClosed();
+    }
 
     public GuiPanelScreen() {
         this(null);

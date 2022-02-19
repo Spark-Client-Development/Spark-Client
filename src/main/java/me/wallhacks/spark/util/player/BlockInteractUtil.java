@@ -10,6 +10,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
@@ -40,12 +41,12 @@ public class BlockInteractUtil implements MC {
         if(switcher != null)
         {
             willuse = ItemSwitcher.predictItem(switcher, ItemSwitcher.switchType.Both);
-            if(!(willuse instanceof ItemBlock) && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
+            if(!(willuse instanceof ItemBlock) && !(willuse instanceof ItemSkull) && willuse != Items.SKULL && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
                 return BlockPlaceResult.FAILED;
         }
 
 
-        if(checkEntities && !blockCollisionCheck(pos,willuse == null ? null : ((ItemBlock)willuse).getBlock()))
+        if(checkEntities && !blockCollisionCheck(pos,willuse == null || !(willuse instanceof ItemBlock) ? null : ((ItemBlock)willuse).getBlock()))
             return BlockPlaceResult.FAILED;
 
         EnumFacing face = getDirForPlacingBlockAtPos(pos);
@@ -80,7 +81,7 @@ public class BlockInteractUtil implements MC {
             return BlockPlaceResult.FAILED;
 
         Item willuse = ItemSwitcher.predictItem(switcher, ItemSwitcher.switchType.Both);
-        if(!(willuse instanceof ItemBlock) && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
+        if(!(willuse instanceof ItemBlock) && !(willuse instanceof ItemSkull) && willuse != Items.SKULL && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
             return BlockPlaceResult.FAILED;
 
         if(checkEntities && !blockCollisionCheck(pos, ((ItemBlock)willuse).getBlock()))

@@ -6,6 +6,7 @@ import me.wallhacks.spark.gui.clickGui.ClickGuiPanel;
 import me.wallhacks.spark.gui.clickGui.panels.configs.configList.ConfigListGui;
 import me.wallhacks.spark.gui.clickGui.panels.configs.configList.ConfigListItem;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiEditSettingPanel;
+import me.wallhacks.spark.gui.clickGui.panels.navigation.waypointlist.WayPointItem;
 import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListGui;
 import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListItem;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
@@ -14,6 +15,7 @@ import me.wallhacks.spark.gui.panels.GuiPanelInputField;
 import me.wallhacks.spark.gui.panels.GuiPanelScroll;
 import me.wallhacks.spark.manager.ConfigManager;
 import me.wallhacks.spark.manager.SocialManager;
+import me.wallhacks.spark.manager.WaypointManager;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.SessionUtils;
@@ -37,7 +39,7 @@ public class Configs extends ClickGuiPanel {
     @Override
     public void init() {
         super.init();
-        RefreshList();
+
     }
 
     @Override
@@ -47,7 +49,7 @@ public class Configs extends ClickGuiPanel {
 
 
 
-    public final ConfigListGui configListGui = new ConfigListGui();
+    public final ConfigListGui configListGui = new ConfigListGui(this);
     public final GuiPanelScroll guiPanelScroll = new GuiPanelScroll(0, 0, 0, 0,configListGui);
 
     public final GuiEditSettingPanel guiEditSettingPanel = new GuiEditSettingPanel();
@@ -59,21 +61,15 @@ public class Configs extends ClickGuiPanel {
         while(!Spark.configManager.createConfig(new ConfigManager.Config("Config"+i)))
             i++;
 
-        RefreshList();
         guiEditSettingPanel.setCurrentSettingsHolder(Spark.configManager.getConfigs().get(Spark.configManager.getConfigs().size()-1));
 
     }, "Create Config");
     public final GuiPanelButton refreshButton = new GuiPanelButton(() -> {
         Spark.configManager.SaveConfigConfigs(false);
         Spark.configManager.Load(true);
-        RefreshList();
+
     }, "Refresh");
-    public final GuiPanelButton deleteButton = new GuiPanelButton(() -> {
-        DeleteConfig((ConfigManager.Config) guiEditSettingPanel.getCurrentSettingsHolder());
-    }, "Delete");
-    public final GuiPanelButton loadButton = new GuiPanelButton(() -> {
-        LoadConfig((ConfigManager.Config) guiEditSettingPanel.getCurrentSettingsHolder());
-    }, "Load");
+
 
 
 
@@ -121,20 +117,10 @@ public class Configs extends ClickGuiPanel {
 
 
         int yh = height;
-        if(guiEditSettingPanel.getCurrentSettingsHolder() instanceof ConfigManager.Config)
-        {
-            deleteButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
-            loadButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
 
-            int bw = (ListWidth-guiSettings.spacing)/2;
-            deleteButton.setPositionAndSize(x,y+yh-searchFieldHeight,bw,searchFieldHeight);
-            loadButton.setPositionAndSize(x+bw+guiSettings.spacing,y+yh-searchFieldHeight,bw,searchFieldHeight);
 
-            deleteButton.renderContent(MouseX, MouseY, deltaTime);
-            loadButton.renderContent(MouseX, MouseY, deltaTime);
-            yh-=searchFieldHeight+guiSettings.spacing;
-        }
-
+        if(!Spark.configManager.getConfigs().contains(guiEditSettingPanel.getCurrentSettingsHolder()))
+            guiEditSettingPanel.setCurrentSettingsHolder(null);
         guiEditSettingPanel.setPositionAndSize(x,y,ListWidth,yh);
         guiEditSettingPanel.renderContent(MouseX,MouseY,deltaTime);
 
@@ -190,24 +176,15 @@ public class Configs extends ClickGuiPanel {
     public void LoadConfig(ConfigManager.Config config) {
         Spark.configManager.loadConfig(config,true);
     }
-    public void DeleteConfig(ConfigManager.Config config) {
-        if(guiEditSettingPanel.getCurrentSettingsHolder() == config)
-            guiEditSettingPanel.setCurrentSettingsHolder(null);
-        Spark.configManager.deleteConfig(config);
-        RefreshList();
-    }
+
     public void EditConfig(ConfigManager.Config config) {
         guiEditSettingPanel.setCurrentSettingsHolder(config);
     }
 
 
-    void RefreshList() {
 
-        configListGui.configListItems.clear();
-        for (ConfigManager.Config c : Spark.configManager.getConfigs()) {
-            configListGui.configListItems.add(new ConfigListItem(c,this));
-        }
-    }
+
+
 
 
 

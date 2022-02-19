@@ -16,6 +16,24 @@ public class SettingScreen<T extends Setting> extends GuiPanelScreen {
         this.setting = setting;
     }
 
+    @Override
+    public void initGui() {
+        super.initGui();
+        mc.entityRenderer.loadShader(new ResourceLocation("shaders/post/blur.json"));
+
+
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        try {
+            mc.entityRenderer.getShaderGroup().deleteShaderGroup();
+        } catch (NullPointerException e) {
+            //ez
+        }
+    }
+
     final static ResourceLocation settingIcon = new ResourceLocation("textures/icons/settingsicon.png");
 
     protected int settingPosX = 0;

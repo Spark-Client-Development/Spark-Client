@@ -3,6 +3,8 @@ package me.wallhacks.spark.mixin.mixins.spark;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.InputEvent;
 import me.wallhacks.spark.event.client.RunTickEvent;
+import me.wallhacks.spark.event.player.PlayerIsPotionActiveEvent;
+import me.wallhacks.spark.event.player.RightClickEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 import net.minecraft.client.Minecraft;
@@ -32,20 +34,22 @@ public class MixinMinecraft {
 
     @Inject(method = "crashed", at = @At("HEAD"))
     public void crashed(CrashReport crash, CallbackInfo callbackInfo) {
-        Spark.configManager.Save();
-        Spark.socialManager.SaveFriends();
-        InventoryManager.instance.SaveKits();
-        Spark.altManager.saveAlts();
-        Spark.waypointManager.Save();
+        Spark.save();
+    }
+
+    @Inject(method = "rightClickMouse", at = @At("HEAD"),cancellable = true)
+    public void rightClickMouse(CallbackInfo callbackInfo) {
+        RightClickEvent event = new RightClickEvent();
+        Spark.eventBus.post(event);
+
+        if (event.isCanceled())
+            callbackInfo.cancel();
+
     }
 
     @Inject(method = "shutdown", at = @At("HEAD"))
     public void shutdown(CallbackInfo callbackInfo) {
-        Spark.configManager.Save();
-        Spark.socialManager.SaveFriends();
-        InventoryManager.instance.SaveKits();
-        Spark.altManager.saveAlts();
-        Spark.waypointManager.Save();
+        Spark.save();
 
     }
 

@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class GuiPanelButton extends GuiPanelBase {
 
-    final Runnable action;
+    Runnable action;
 
     public GuiPanelButton(Runnable action, String text) {
         super();
@@ -28,6 +28,10 @@ public class GuiPanelButton extends GuiPanelBase {
         this.text = text;
     }
 
+    public void setAction(Runnable action) {
+        this.action = action;
+    }
+
     public boolean drawLine = false;
 
 
@@ -36,7 +40,8 @@ public class GuiPanelButton extends GuiPanelBase {
     @Override
     public void onClickDown(int MouseButton, int MouseX, int MouseY) {
         super.onClickDown(MouseButton, MouseX, MouseY);
-        action.run();
+        if(action != null)
+            action.run();
     }
 
     @Override

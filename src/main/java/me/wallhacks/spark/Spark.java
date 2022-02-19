@@ -1,7 +1,9 @@
 package me.wallhacks.spark;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.manager.*;
+import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
@@ -55,6 +57,7 @@ public class Spark implements MC {
     @Mod.Instance
     public static Spark instance;
 
+
     @EventHandler
     public void init(FMLInitializationEvent event) {
         ParentPath = new File(Minecraft.getMinecraft().gameDir.getParent(), Spark.MODID);
@@ -85,6 +88,16 @@ public class Spark implements MC {
         rpcManager = new RPCManager();
         logger.info("Spark client loaded successfully");
     }
+
+    public static void save() {
+        Spark.configManager.Save();
+        Spark.socialManager.SaveFriends();
+        InventoryManager.instance.SaveKits();
+        Spark.altManager.saveAlts();
+        Spark.waypointManager.Save();
+
+    }
+
 
     public static void sendInfo(String msg) {
         mc.player.sendMessage(new TextComponentString(ChatFormatting.DARK_PURPLE + "[Spark.Sex]" + ChatFormatting.GRAY + " " + msg));

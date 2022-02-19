@@ -176,8 +176,6 @@ public class ConfigManager implements MC {
     public void Save() {
 
         SaveConfigConfigs(true);
-
-
         SaveFromConfig(currentConfig, false);
 
     }

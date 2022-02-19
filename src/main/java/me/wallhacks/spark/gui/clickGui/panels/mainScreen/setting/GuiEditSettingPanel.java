@@ -1,14 +1,27 @@
 package me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting;
 
+import baritone.api.BaritoneAPI;
+import baritone.api.pathing.goals.GoalBlock;
+import baritone.api.pathing.goals.GoalXZ;
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.*;
+import me.wallhacks.spark.gui.clickGui.panels.navigation.waypointlist.WayPointItem;
+import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.KitSettingGui;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.manager.ConfigManager;
+import me.wallhacks.spark.manager.WaypointManager;
+import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.util.ResourceLocation;
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.setting.Setting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
 
@@ -74,9 +87,61 @@ public class GuiEditSettingPanel extends GuiPanelBase {
             }
 
 
+            buttonFunction = null;
+            if(currentSettingsHolder instanceof InventoryManager)
+            {
+                buttonFunction = buttonFunction = new GuiPanelButton[] {
+                        new GuiPanelButton(() -> {
+                    mc.displayGuiScreen(new KitSettingGui(Spark.clickGuiScreen));
+                },"Kit Editor")};
+            }
+            if(currentSettingsHolder instanceof HudElement)
+            {
+                buttonFunction = new GuiPanelButton[] {
+                        new GuiPanelButton(() -> {
+                            HudElement h = (HudElement)currentSettingsHolder;
+                            h.resetPos();
+                        },"Reset Location")
+                };
 
+            }
+            if(currentSettingsHolder instanceof ConfigManager.Config)
+            {
+                buttonFunction = new GuiPanelButton[] {
+                        new GuiPanelButton(() -> {
+                            Spark.configManager.deleteConfig((ConfigManager.Config) currentSettingsHolder);
+                        },"Delete"),
+                        new GuiPanelButton(() -> {
+                            Spark.configManager.loadConfig((ConfigManager.Config) currentSettingsHolder,true);
+                        },"Load")
+                };
 
+            }
+            if(currentSettingsHolder instanceof WaypointManager.Waypoint)
+            {
+                buttonFunction = new GuiPanelButton[] {
+                        new GuiPanelButton(() -> {
+                            WaypointManager.Waypoint waypoint = (WaypointManager.Waypoint) currentSettingsHolder;
 
+                            Spark.waypointManager.getWayPoints().remove(waypoint);
+                        }, "Delete"),
+                        new GuiPanelButton(() -> {
+                            WaypointManager.Waypoint waypoint = (WaypointManager.Waypoint) currentSettingsHolder;
+
+                            Vec3i v = waypoint.getLocation();
+
+                            Spark.sendInfo("Going to "+waypoint.getName());
+
+                            if(waypoint.hasY())
+                                BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalBlock(new BlockPos(v.getX(),v.getY(),v.getZ())));
+                            else
+                                BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(v.getX(),v.getZ()));
+
+                            mc.displayGuiScreen(null);
+                        }, "Goto")
+                };
+
+            }
 
         }
     }
@@ -87,6 +152,7 @@ public class GuiEditSettingPanel extends GuiPanelBase {
     GuiEditModuleSettings guiEditModuleSettings = new GuiEditModuleSettings(this);
     GuiPanelScroll guiPanelScroll = new GuiPanelScroll(posX, posY, width, height,guiEditSettingPanelHolder);
 
+    GuiPanelButton[] buttonFunction;
 
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
 
@@ -110,11 +176,28 @@ public class GuiEditSettingPanel extends GuiPanelBase {
 
         if(currentSettingsHolder instanceof Module)
         {
-            Yoffset += guiEditModuleSettings.height + guiSettings.spacing;
-            guiEditModuleSettings.setPositionAndSize(posX,posY+height-18,guiPanelScroll.width,18);
 
+
+
+
+            guiEditModuleSettings.setPositionAndSize(posX,posY+height-18,guiPanelScroll.width,18);
+            Yoffset += guiEditModuleSettings.height + guiSettings.spacing;
             guiEditModuleSettings.renderContent(MouseX,MouseY,deltaTime);
 
+
+        }
+
+        if(buttonFunction != null && buttonFunction.length > 0)
+        {
+
+
+            int w = guiPanelScroll.width/buttonFunction.length-(guiSettings.spacing*(buttonFunction.length-1)/2);
+            for (int i = 0; i < buttonFunction.length; i++) {
+                buttonFunction[i].setPositionAndSize(posX+i*(w+guiSettings.spacing),posY+height-Yoffset-18,w,18);
+
+                buttonFunction[i].renderContent(MouseX,MouseY,deltaTime);
+            }
+            Yoffset += buttonFunction[0].height + guiSettings.spacing;
         }
 
         guiPanelScroll.setPositionAndSize(posX,posY+18+ guiSettings.spacing,width,height-18-guiSettings.spacing-Yoffset);

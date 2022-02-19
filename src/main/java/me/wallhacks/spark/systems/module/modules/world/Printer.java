@@ -104,8 +104,8 @@ public class Printer extends Module {
                         if (res == BlockInteractUtil.BlockPlaceResult.PLACED)
                         {
                             if(render.getValue())
-                                cooldown = delay.getValue();
-                            new FadePos(p, fill, true);
+                                new FadePos(p, fill, true);
+                            cooldown = delay.getValue();
                         }
 
 

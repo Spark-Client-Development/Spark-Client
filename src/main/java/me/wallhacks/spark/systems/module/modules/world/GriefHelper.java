@@ -80,8 +80,8 @@ public class GriefHelper extends Module {
                                                     if (res == BlockInteractUtil.BlockPlaceResult.PLACED)
                                                     {
                                                         if(render.getValue())
-                                                            cooldown = delay.getValue();
-                                                        new FadePos(place, fill, true);
+                                                            new FadePos(place, fill, true);
+                                                        cooldown = delay.getValue();
                                                     }
 
 

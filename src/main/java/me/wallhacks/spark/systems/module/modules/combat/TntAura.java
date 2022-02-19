@@ -65,7 +65,7 @@ public class TntAura extends Module {
 
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC7B, true), "Render");
+    ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DC865E, true), "Render");
 
 
 

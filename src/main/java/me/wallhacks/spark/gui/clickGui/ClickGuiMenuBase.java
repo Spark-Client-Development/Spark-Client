@@ -55,7 +55,6 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
     @Override
     public void initGui() {
         super.initGui();
-        Spark.eventBus.register(this);
         menuYPos = hidden;
 
         mc.entityRenderer.loadShader(new ResourceLocation("shaders/post/blur.json"));
@@ -63,28 +62,23 @@ public class ClickGuiMenuBase extends GuiPanelScreen {
         getPanel().init();
 
     }
-    @Override
-    public void updateScreen() {
-        getPanel().tick();
-    }
-
-    @SubscribeEvent
-    public void onCrosshairRender(RenderGameOverlayEvent.Pre e) {
-        if (e.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS) {
-            e.setCanceled(true);
-        }
-    }
 
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        Spark.eventBus.unregister(this);
         try {
             mc.entityRenderer.getShaderGroup().deleteShaderGroup();
         } catch (NullPointerException e) {
             //ez
         }
     }
+    @Override
+    public void updateScreen() {
+        getPanel().tick();
+    }
+
+
+
 
     double menuYPos = 0;
     int hidden = -40;

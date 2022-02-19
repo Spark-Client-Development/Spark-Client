@@ -104,9 +104,21 @@ public class InventoryManager extends Module {
         refreshSelected();
     }
     public void deleteKit(String name){
+
         kits.remove(name);
         kitNames.remove(name);
         refreshSelected();
+    }
+    public boolean createEmptyKit(String name){
+        for (int i = 0; i < 300; i++) {
+            String newN = name+(i == 0 ? "" : i);
+            if(!kits.containsKey(newN))
+            {
+                setKit(newN,new Item[36]);
+                return true;
+            }
+        }
+        return false;
     }
     public void refreshSelected() {
         if(kits.size() <= 0)
