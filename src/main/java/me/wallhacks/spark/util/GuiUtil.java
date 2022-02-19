@@ -228,12 +228,7 @@ public class GuiUtil implements MC {
             if (!clicked) hover = true;
             color = ColorUtil.fromHSB(ColorUtil.getHue(color), (float) Math.min(1, ColorUtil.getSaturation(color) + (clicked ? 0.4 : 0.2)), (float) Math.max(0, ColorUtil.getBrightness(color) - (clicked ? 0.2 : 0.0)));
         }
-        Gui.drawRect(left + 1, top + 1, right - 1, bottom - 1, color.getRGB());
-        Color outline = ColorUtil.fromHSB(ColorUtil.getHue(color), (float) Math.min(1, ColorUtil.getSaturation(color) + (hover ? 0.2 : 0.1)), ColorUtil.getBrightness(color));
-        Gui.drawRect(left, top, left + 1, bottom, outline.getRGB());
-        Gui.drawRect(right - 1, top, right, bottom, outline.getRGB());
-        Gui.drawRect(left + 1, top, right - 1, top + 1, outline.getRGB());
-        Gui.drawRect(left + 1, bottom - 1, right - 1, bottom, outline.getRGB());
+        Gui.drawRect(left, top, right, bottom, color.getRGB());
         Spark.fontManager.drawString(text, left + (right - left)/2 - Spark.fontManager.getTextWidth(text)/2, top + (bottom - top) / 2 - Spark.fontManager.getTextHeight() / 2, -1);
         return hover;
     }
