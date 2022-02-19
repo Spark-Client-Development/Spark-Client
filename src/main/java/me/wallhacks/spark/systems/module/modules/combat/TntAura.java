@@ -8,6 +8,7 @@ import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
+import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.CrystalUtil;
 import me.wallhacks.spark.util.combat.HoleUtil;
@@ -24,6 +25,9 @@ import net.minecraft.block.BlockObsidian;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.item.EntityExpBottle;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -52,8 +56,13 @@ public class TntAura extends Module {
 
     BlockPos targetFloorPos;
 
-    BooleanSetting closeTop = new BooleanSetting("CloseTop", this, true);
+    BooleanSetting closeTop = new BooleanSetting("CloseTop", this, false);
     BooleanSetting extraHeight = new BooleanSetting("ExtraHeight", this, false);
+
+    BooleanSetting pause = new BooleanSetting("Pause", this, true);
+
+    IntSetting delay = new IntSetting("Delay",this,4,0,10);
+
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC7B, true), "Render");
@@ -70,6 +79,7 @@ public class TntAura extends Module {
         return extraHeight.isOn() ? 3 : 2;
     }
 
+    int cooldown = 0;
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
@@ -90,16 +100,39 @@ public class TntAura extends Module {
         }
         targetFloorPos = newPos;
 
+        if(cooldown > 0)
+        {
+            cooldown--;
+            return;
+        }
+
+        if(pause.isOn())
+        {
+            //pause if tnt is exploding
+            List<Entity> l = mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetFloorPos));
+            for(Entity e : l){
+                if(e instanceof EntityTNTPrimed)
+                {
+                    EntityTNTPrimed tnt = (EntityTNTPrimed)e;
+
+                    if(tnt.ticksExisted > 60)
+                        return;
+                }
+            }
+        }
+
 
         BlockPos targetPos = targetFloorPos.add(0,getH(),0);
 
-        ArrayList<BlockPos> surround = new ArrayList<BlockPos>();
-        surround.add(targetPos.add(0,0,1));
-        surround.add(targetPos.add(0,0,-1));
-        surround.add(targetPos.add(1,0,0));
-        surround.add(targetPos.add(-1,0,0));
+        ArrayList<BlockPos> toPlace = new ArrayList<BlockPos>();
+        for (BlockPos s : WorldUtils.getSurroundBlocks(targetPos)) {
+            toPlace.add(s.add(0,0,0));
+            toPlace.add(s.add(0,-1,0));
+            toPlace.add(s.add(0,-2,0));
+        }
 
-        Collections.sort(surround, new Comparator<BlockPos>() {
+        //sort by distance
+        Collections.sort(toPlace, new Comparator<BlockPos>() {
             @Override
             public int compare(BlockPos fruit2, BlockPos fruit1)
             {
@@ -107,22 +140,14 @@ public class TntAura extends Module {
             }
         });
 
-        for (BlockPos pos : surround) {
+        for (BlockPos pos : toPlace) {
             if(mc.world.getBlockState(pos).getBlock().material.isReplaceable())
             {
                 BlockInteractUtil.BlockPlaceResult res = place(pos,new HardSolidBlockSwitchItem());
-                if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                if(res != BlockInteractUtil.BlockPlaceResult.FAILED)
                 {
-                    res = place(pos.add(0,-1,0),new HardSolidBlockSwitchItem());
-                    if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                    {
-                        res = place(pos.add(0,-2,0),new HardSolidBlockSwitchItem());
-                        if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
-                            res = place(pos.add(0,-3,0),new HardSolidBlockSwitchItem());
-                    }
-
+                    return;
                 }
-                return;
             }
 
         }
@@ -159,6 +184,8 @@ public class TntAura extends Module {
                 return;
 
             BlockInteractUtil.processRightClickBlock(targetPos,facing,true,hand,pos);
+
+            cooldown = delay.getValue();
         }
         else
             place(targetPos,new SpecBlockSwitchItem(Blocks.TNT));
@@ -227,12 +254,24 @@ public class TntAura extends Module {
         return NewPos;
     }
 
+    public boolean blockNeedsToBeEmpty(BlockPos p) {
+        if(isEnabled() && targetFloorPos != null)
+        {
+            for (int i = 0; i < getH(); i++) {
+                if(p.equals(targetFloorPos.add(0,i,0)))
+                    return true;
+            }
+
+        }
+        return false;
+    }
 
     public boolean isInAttackZone(EntityPlayer player) {
         if(isEnabled() && targetFloorPos != null)
         {
             BlockPos floored = PlayerUtil.getPlayerPosFloored(player);
-            if(floored.equals(targetFloorPos))
+            //second check if for if they are jumping
+            if(floored.equals(targetFloorPos) || floored.add(0,-1,0).equals(targetFloorPos))
                 return true;
         }
         return false;

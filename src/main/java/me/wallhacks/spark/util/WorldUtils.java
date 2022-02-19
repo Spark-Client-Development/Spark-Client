@@ -80,4 +80,25 @@ public class WorldUtils implements MC {
         float f = block.getBlockHardness(blockState, mc.world, pos);
         return f != -1 & f > 0.1;
     }
+
+    public static BlockPos[] getSurroundBlocks(BlockPos pos) {
+        return new BlockPos[]{
+                pos.add(0,0,1),
+                pos.add(0,0,-1),
+                pos.add(1,0,0),
+                pos.add(-1,0,0),
+        };
+    }
+    public static BlockPos[] getNeightboursBlocks(BlockPos pos) {
+        return new BlockPos[]{
+                pos.add(0,0,1),
+                pos.add(0,0,-1),
+                pos.add(1,0,0),
+                pos.add(-1,0,0),
+                pos.add(0,1,0),
+                pos.add(0,-1,0),
+        };
+    }
+
+
 }

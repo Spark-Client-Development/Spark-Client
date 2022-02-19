@@ -2,6 +2,7 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.world.GriefHelper;
 import me.wallhacks.spark.systems.module.modules.world.LogoutSpots;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
@@ -121,6 +122,10 @@ public class AutoTrap extends Module {
         });
 
         for(BlockPos p : needsPlacing){
+            if(p.equals(CevBreaker.INSTANCE.GetCevBreakerBlock()))
+                continue;
+            if(TntAura.INSTANCE.blockNeedsToBeEmpty(p))
+                continue;
             BlockInteractUtil.BlockPlaceResult res = Place(p);
             if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
                 if (render.getValue())

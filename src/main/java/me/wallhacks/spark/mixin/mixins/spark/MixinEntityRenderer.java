@@ -6,6 +6,7 @@ import me.wallhacks.spark.event.render.FovModifierEvent;
 import me.wallhacks.spark.event.render.RenderHurtCameraEffectEvent;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.modules.exploit.Putin;
+import me.wallhacks.spark.systems.module.modules.render.CameraNoClip;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.render.CameraUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -14,6 +15,8 @@ import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -81,4 +84,12 @@ public class MixinEntityRenderer  implements MC {
             GlStateManager.scale(2, 2 * 0.4, 2);
     }
 
+    @Redirect(method = "orientCamera", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/WorldClient;rayTraceBlocks(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/RayTraceResult;"), expect = 0)
+    public RayTraceResult rayTraceBlocks(WorldClient worldClient, Vec3d start, Vec3d end)
+    {
+        if (CameraNoClip.INSTANCE.isEnabled())
+            return null;
+        else
+            return worldClient.rayTraceBlocks(start, end);
+    }
 }
