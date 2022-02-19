@@ -12,13 +12,13 @@ import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 public class BaritoneGoal extends InfoHudElement {
     @Override
     public void draw(float deltaTime) {
-    	String Goal = "not active";
+        String Goal = "not active";
         if (BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().isPathing()) {
-        	if (!(BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().getGoal() instanceof GoalComposite))
-        		Goal = BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().getGoal().toString();
-        	else
-        		Goal = "multiple goals";
-        		
+            if (!(BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().getGoal() instanceof GoalComposite))
+                Goal = BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().getGoal().toString();
+            else
+                Goal = "multiple goals";
+
         }
 
         setInfo(String.format(ChatFormatting.GRAY + "Baritone: %s%s", ChatFormatting.WHITE, Goal));
