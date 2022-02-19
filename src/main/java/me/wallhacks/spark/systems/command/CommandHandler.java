@@ -128,12 +128,12 @@ public class CommandHandler {
 
 	}
 
-	//Sorry, not motivated enough to make the code more cleaner...
+	//Sorry, not motivated enough to make the code cleaner...
 	//Have fun with these bunch of if-else statements!
 	private List<String> getAutoCompleteForLine(String commandLine) {
 		String[] commandArgs = commandLine.trim().split(" ");
 		List<String> possibilities = new ArrayList<>();
-		if(commandArgs.length > 0 && commandArgs.length < 3) {
+		if(commandArgs.length > 0 && commandArgs.length < 3 || (commandArgs.length < 4 && !commandLine.endsWith(" "))) {
 			Command command = CommandManager.COMMANDSBYNAME.get(commandArgs[0]);
 			if(command != null) {
 				if(commandLine.endsWith(" ") || commandArgs.length > 1) {
@@ -144,7 +144,7 @@ public class CommandHandler {
 							if(commandArgs.length > 1) {
 								if(oname.equals(commandArgs[1])) {
 									List<String> usages = option.getUsages();
-									if(!usages.isEmpty() && commandLine.endsWith(" ")) {
+									if(!usages.isEmpty() && (commandLine.endsWith(" ") || commandArgs.length > 2)) {
 										if(commandArgs.length > 2) {
 											for(String usage : usages) {
 												if(!usage.startsWith("<")) {
@@ -193,7 +193,6 @@ public class CommandHandler {
 		}
 		return possibilities;
 	}
-
 
 }
 
