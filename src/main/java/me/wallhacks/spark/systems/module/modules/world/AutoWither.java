@@ -39,7 +39,6 @@ import java.util.Arrays;
 @Module.Registration(name = "AutoWither", description = "Steals from chests")
 public class AutoWither extends Module {
 
-
     ModeSetting witherPlaceMode = new ModeSetting("Place", this, "Toggle", Arrays.asList("Toggle","ClickSkull","Walk"), "Place");
     IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,10,"Place");
 
@@ -167,6 +166,9 @@ public class AutoWither extends Module {
         super.onEnable();
 
         placeWither = null;
+
+        if(nullCheck())
+            return;
 
         if(witherPlaceMode.isValueName("Toggle"))
         {

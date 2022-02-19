@@ -57,11 +57,8 @@ public class ModeSetting extends Setting<String> implements EnumSetting {
 
     @Override
     public boolean setValueString(String value) {
-        if(modeNames.contains(value)) {
-            setValue(value);
-            return true;
-        }
-        return false;
+         setValue(value);
+         return true;
     }
 
 
