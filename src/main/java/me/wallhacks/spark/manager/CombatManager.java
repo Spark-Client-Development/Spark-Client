@@ -4,10 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.systems.module.modules.combat.CevBreaker;
-import me.wallhacks.spark.systems.module.modules.combat.CrystalAura;
-import me.wallhacks.spark.systems.module.modules.combat.KillAura;
-import me.wallhacks.spark.systems.module.modules.combat.ShulkerAura;
+import me.wallhacks.spark.systems.module.modules.combat.*;
 import me.wallhacks.spark.systems.module.modules.misc.AutoGG;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.StringUtil;
@@ -98,13 +95,17 @@ public class CombatManager implements MC {
                 killedWith = CevBreaker.INSTANCE;
             else if(ShulkerAura.INSTANCE.isInAttackZone(player))
                 killedWith = ShulkerAura.INSTANCE;
+            else if(TntAura.INSTANCE.isInAttackZone(player))
+                killedWith = TntAura.INSTANCE;
 
             if(killedWith != null)
             {
+                Kill kill = new Kill(Spark.socialManager.getSocial(player.getName()),killedWith);
+
                 if(AutoGG.instance.isEnabled())
-                    AutoGG.instance.onKilledPlayer(player,diedAfterPops);
+                    AutoGG.instance.onKilledPlayer(kill,player);
                 //looks like we killed him/her :(
-                kills.add(new Kill(Spark.socialManager.getSocial(player.getName()),killedWith));
+                kills.add(kill);
             }
         }
 

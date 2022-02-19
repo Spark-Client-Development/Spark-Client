@@ -42,6 +42,8 @@ public class Printer extends Module {
 
 
     IntSetting delay = new IntSetting("Delay",this,0,0,8,"General");
+    BooleanSetting render = new BooleanSetting("Render", this, true, "General");
+    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x389F5EDC, true), "General");
 
 
     int cooldown = 0;
@@ -96,9 +98,17 @@ public class Printer extends Module {
                 if(b != Blocks.AIR)
                 {
 
-                    if(BlockInteractUtil.tryPlaceBlock(worldpos, new SpecBlockSwitchItem(b), true, true, 4, false) != BlockInteractUtil.BlockPlaceResult.FAILED)
+                    BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(p, new SpecBlockSwitchItem(Blocks.TNT), true, true, 4, false);
+                    if(res != BlockInteractUtil.BlockPlaceResult.FAILED)
                     {
-                        cooldown = delay.getValue();
+                        if (res == BlockInteractUtil.BlockPlaceResult.PLACED)
+                        {
+                            if(render.getValue())
+                                cooldown = delay.getValue();
+                            new FadePos(p, fill, true);
+                        }
+
+
                         return;
                     }
 

@@ -15,6 +15,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
@@ -47,8 +48,8 @@ public class InventoryManager extends Module {
     BooleanSetting stealKitNeeded = new BooleanSetting("OnlyForKit", this, false,"Stealer");
 
 
-    public boolean isAuto() {
-        return autoSteal.isOn();
+    public boolean isAuto(GuiContainer container) {
+        return autoSteal.isOn() && !(container instanceof GuiChest && ((GuiChest)container).lowerChestInventory.getDisplayName().getUnformattedComponentText().equals("Ender Chest"));
     }
 
 

@@ -55,10 +55,10 @@ public class MixinGuiScreen {
             GuiContainer screen = (GuiContainer)mc.currentScreen;
 
             InventoryManager instance = InventoryManager.instance;
-            if(instance.isEnabled() && instance.isAuto())
+            if(instance.isEnabled() && instance.isAuto(screen))
                 instance.StartSteal();
 
-            if(instance.isEnabled() && !instance.isAuto())
+            if(instance.isEnabled() && !instance.isAuto(screen))
                 screen.buttonList.add(new GuiButton(66, screen.width/2+5, (screen.height-screen.getYSize())/2 - 6, 40, 12, "Steal"));
 
         }
