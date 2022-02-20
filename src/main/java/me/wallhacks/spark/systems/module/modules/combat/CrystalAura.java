@@ -322,6 +322,8 @@ public class CrystalAura extends Module {
             //update offhand
             Offhand.instance.update();
             //hand
+
+
             EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), switchMode.is("Off") || Offhand.instance.handlesCrystal() ? ItemSwitcher.switchType.NoSwitch : ItemSwitcher.switchType.Both);
             if (hand == null)
                 return;

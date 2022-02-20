@@ -1,6 +1,7 @@
 package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
+import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.WorldUtils;
