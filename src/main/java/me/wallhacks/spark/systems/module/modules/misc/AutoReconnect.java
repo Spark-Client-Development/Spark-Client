@@ -21,9 +21,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 public class AutoReconnect extends Module {
     IntSetting time = new IntSetting("Time in seconds",this,4,0,180);
     BooleanSetting NoReconnectOnAutoLog = new BooleanSetting("Don't reconnect after AutoLog", this, true);
-    
+
     boolean inAutoReconnectScreen = false;
-    ServerData server;
+    ServerData server = null;
 
     GuiScreen gui;
     int ticks = 0;
@@ -31,44 +31,49 @@ public class AutoReconnect extends Module {
 
     @SubscribeEvent
     public void clientTick(ClientTickEvent event) {
-    	if (inAutoReconnectScreen) {
-    		ticks++;
+        if (inAutoReconnectScreen) {
+            ticks++;
 
-    		if (ticks % 40 == 0) { //  every second
-				seconds--;
-    			List<GuiButton> buttons = gui.buttonList;
-				if (buttons.size() > 0)
-					buttons.get(0).displayString = "Reconnecting in " + String.valueOf(seconds);
+            if (ticks % 40 == 0) { //  every second
+                seconds--;
+                List<GuiButton> buttons = gui.buttonList;
+                if (buttons.size() > 0)
+                    buttons.get(0).displayString = "Reconnecting in " + String.valueOf(seconds);
 
-				if (seconds == 0) {
-					FMLClientHandler.instance().connectToServer(new GuiMainMenu(), server);
-					ticks = 0;
-					inAutoReconnectScreen = false;
-				}
-    		}
-    	}
+                if (seconds == 0) {
+                    FMLClientHandler.instance().connectToServer(new GuiMainMenu(), server);
+                    ticks = 0;
+                    inAutoReconnectScreen = false;
+                }
+            }
+        }
     }
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
-    	server = Minecraft.getMinecraft().getCurrentServerData();
+        server = Minecraft.getMinecraft().getCurrentServerData();
     }
 
     @SubscribeEvent
     public void onGuiInit(final InitGuiEvent.Post event) {
-    	if (event.getGui() instanceof GuiDisconnected) {
-    		if (AutoLog.allowAutoReconnect || !NoReconnectOnAutoLog.getValue()) {
-    			inAutoReconnectScreen = true;
-    			ticks = 1;
-    			seconds = time.getValue();
-    			gui = event.getGui();
+        if (event.getGui() instanceof GuiDisconnected) {
+            // If the server is offline worldUnload is never triggered, but you can ask for the server in GuiDisconnected (this doesn't seem to work when a normal kick happens)
+            ServerData tempServer = Minecraft.getMinecraft().getCurrentServerData();
+            if (tempServer != null)
+                server = tempServer;
 
-    			List<GuiButton> buttons = gui.buttonList;
-				if (buttons.size() > 0)
-					buttons.get(0).displayString = "Reconnecting in " + String.valueOf(seconds);
-    		}
-    	} else if (event.getGui() instanceof GuiMainMenu){
-    		inAutoReconnectScreen = false;
-    	}
+            if ((AutoLog.allowAutoReconnect || !NoReconnectOnAutoLog.getValue()) && server != null) {
+                inAutoReconnectScreen = true;
+                ticks = 1;
+                seconds = time.getValue();
+                gui = event.getGui();
+
+                List<GuiButton> buttons = gui.buttonList;
+                if (buttons.size() > 0)
+                    buttons.get(0).displayString = "Reconnecting in " + String.valueOf(seconds);
+            }
+        } else {
+            inAutoReconnectScreen = false;
+        }
     }
 }
