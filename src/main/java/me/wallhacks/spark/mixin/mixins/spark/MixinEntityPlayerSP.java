@@ -3,9 +3,10 @@ package me.wallhacks.spark.mixin.mixins.spark;
 import com.mojang.authlib.GameProfile;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.*;
+import me.wallhacks.spark.systems.module.modules.movement.NoSlow;
+import me.wallhacks.spark.systems.module.modules.movement.Step;
 import me.wallhacks.spark.systems.module.modules.player.PortalChat;
 import me.wallhacks.spark.util.MC;
-import me.wallhacks.spark.util.objects.FreecamEntity;
 import me.wallhacks.spark.util.render.CameraUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -16,7 +17,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -36,8 +36,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import me.wallhacks.spark.systems.module.modules.movement.NoSlow;
-import me.wallhacks.spark.systems.module.modules.movement.Step;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Arrays;
@@ -166,15 +164,15 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
             double d4 = z;
             if ((type == MoverType.SELF || type == MoverType.PLAYER) && this.onGround && this.isSneaking() && _this instanceof EntityPlayer) {
                 double d5 = 0.05;
-                while (x != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(x, (double)(-this.stepHeight), 0.0)).isEmpty()) {
+                while (x != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(x, (double) (-this.stepHeight), 0.0)).isEmpty()) {
                     x = x < 0.05 && x >= -0.05 ? 0.0 : (x > 0.0 ? (x -= 0.05) : (x += 0.05));
                     d2 = x;
                 }
-                while (z != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(0.0, (double)(-this.stepHeight), z)).isEmpty()) {
+                while (z != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(0.0, (double) (-this.stepHeight), z)).isEmpty()) {
                     z = z < 0.05 && z >= -0.05 ? 0.0 : (z > 0.0 ? (z -= 0.05) : (z += 0.05));
                     d4 = z;
                 }
-                while (x != 0.0 && z != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(x, (double)(-this.stepHeight), z)).isEmpty()) {
+                while (x != 0.0 && z != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(x, (double) (-this.stepHeight), z)).isEmpty()) {
                     x = x < 0.05 && x >= -0.05 ? 0.0 : (x > 0.0 ? (x -= 0.05) : (x += 0.05));
                     d2 = x;
                     z = z < 0.05 && z >= -0.05 ? 0.0 : (z > 0.0 ? (z -= 0.05) : (z += 0.05));
@@ -186,14 +184,14 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
             if (y != 0.0) {
                 int l = list1.size();
                 for (int k = 0; k < l; ++k) {
-                    y = ((AxisAlignedBB)list1.get(k)).calculateYOffset(this.getEntityBoundingBox(), y);
+                    y = ((AxisAlignedBB) list1.get(k)).calculateYOffset(this.getEntityBoundingBox(), y);
                 }
                 this.setEntityBoundingBox(this.getEntityBoundingBox().offset(0.0, y, 0.0));
             }
             if (x != 0.0) {
                 int l5 = list1.size();
                 for (int j5 = 0; j5 < l5; ++j5) {
-                    x = ((AxisAlignedBB)list1.get(j5)).calculateXOffset(this.getEntityBoundingBox(), x);
+                    x = ((AxisAlignedBB) list1.get(j5)).calculateXOffset(this.getEntityBoundingBox(), x);
                 }
                 if (x != 0.0) {
                     this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, 0.0, 0.0));
@@ -202,7 +200,7 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
             if (z != 0.0) {
                 int i6 = list1.size();
                 for (int k5 = 0; k5 < i6; ++k5) {
-                    z = ((AxisAlignedBB)list1.get(k5)).calculateZOffset(this.getEntityBoundingBox(), z);
+                    z = ((AxisAlignedBB) list1.get(k5)).calculateZOffset(this.getEntityBoundingBox(), z);
                 }
                 if (z != 0.0) {
                     this.setEntityBoundingBox(this.getEntityBoundingBox().offset(0.0, 0.0, z));
@@ -225,38 +223,38 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
                 double d8 = y;
                 int k1 = list.size();
                 for (int j1 = 0; j1 < k1; ++j1) {
-                    d8 = ((AxisAlignedBB)list.get(j1)).calculateYOffset(axisalignedbb3, d8);
+                    d8 = ((AxisAlignedBB) list.get(j1)).calculateYOffset(axisalignedbb3, d8);
                 }
                 axisalignedbb2 = axisalignedbb2.offset(0.0, d8, 0.0);
                 double d18 = d2;
                 int i2 = list.size();
                 for (int l1 = 0; l1 < i2; ++l1) {
-                    d18 = ((AxisAlignedBB)list.get(l1)).calculateXOffset(axisalignedbb2, d18);
+                    d18 = ((AxisAlignedBB) list.get(l1)).calculateXOffset(axisalignedbb2, d18);
                 }
                 axisalignedbb2 = axisalignedbb2.offset(d18, 0.0, 0.0);
                 double d19 = d4;
                 int k2 = list.size();
                 for (int j2 = 0; j2 < k2; ++j2) {
-                    d19 = ((AxisAlignedBB)list.get(j2)).calculateZOffset(axisalignedbb2, d19);
+                    d19 = ((AxisAlignedBB) list.get(j2)).calculateZOffset(axisalignedbb2, d19);
                 }
                 axisalignedbb2 = axisalignedbb2.offset(0.0, 0.0, d19);
                 AxisAlignedBB axisalignedbb4 = this.getEntityBoundingBox();
                 double d20 = y;
                 int i3 = list.size();
                 for (int l2 = 0; l2 < i3; ++l2) {
-                    d20 = ((AxisAlignedBB)list.get(l2)).calculateYOffset(axisalignedbb4, d20);
+                    d20 = ((AxisAlignedBB) list.get(l2)).calculateYOffset(axisalignedbb4, d20);
                 }
                 axisalignedbb4 = axisalignedbb4.offset(0.0, d20, 0.0);
                 double d21 = d2;
                 int k3 = list.size();
                 for (int j3 = 0; j3 < k3; ++j3) {
-                    d21 = ((AxisAlignedBB)list.get(j3)).calculateXOffset(axisalignedbb4, d21);
+                    d21 = ((AxisAlignedBB) list.get(j3)).calculateXOffset(axisalignedbb4, d21);
                 }
                 axisalignedbb4 = axisalignedbb4.offset(d21, 0.0, 0.0);
                 double d22 = d4;
                 int i4 = list.size();
                 for (int l3 = 0; l3 < i4; ++l3) {
-                    d22 = ((AxisAlignedBB)list.get(l3)).calculateZOffset(axisalignedbb4, d22);
+                    d22 = ((AxisAlignedBB) list.get(l3)).calculateZOffset(axisalignedbb4, d22);
                 }
                 axisalignedbb4 = axisalignedbb4.offset(0.0, 0.0, d22);
                 double d23 = d18 * d18 + d19 * d19;
@@ -274,7 +272,7 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
                 }
                 int k4 = list.size();
                 for (int j4 = 0; j4 < k4; ++j4) {
-                    y = ((AxisAlignedBB)list.get(j4)).calculateYOffset(this.getEntityBoundingBox(), y);
+                    y = ((AxisAlignedBB) list.get(j4)).calculateYOffset(this.getEntityBoundingBox(), y);
                 }
                 this.setEntityBoundingBox(this.getEntityBoundingBox().offset(0.0, y, 0.0));
                 if (d14 * d14 + d7 * d7 >= x * x + z * z) {
@@ -291,9 +289,9 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
             this.collidedVertically = d3 != y;
             this.onGround = this.collidedVertically && d3 < 0.0;
             this.collided = this.collidedHorizontally || this.collidedVertically;
-            int j6 = MathHelper.floor((double)this.posX);
-            int i1 = MathHelper.floor((double)(this.posY - (double)0.2f));
-            int k6 = MathHelper.floor((double)this.posZ);
+            int j6 = MathHelper.floor((double) this.posX);
+            int i1 = MathHelper.floor((double) (this.posY - (double) 0.2f));
+            int k6 = MathHelper.floor((double) this.posZ);
             BlockPos blockpos = new BlockPos(j6, i1, k6);
             IBlockState iblockstate = this.world.getBlockState(blockpos);
             if (iblockstate.getMaterial() == Material.AIR && ((block1 = (iblockstate1 = this.world.getBlockState(blockpos1 = blockpos.down())).getBlock()) instanceof BlockFence || block1 instanceof BlockWall || block1 instanceof BlockFenceGate)) {
@@ -321,14 +319,14 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
                 if (block != null && this.onGround) {
                     block.onEntityWalk(this.world, blockpos, _this);
                 }
-                this.distanceWalkedModified = (float)((double)this.distanceWalkedModified + (double)MathHelper.sqrt((double)(d15 * d15 + d17 * d17)) * 0.6);
-                this.distanceWalkedOnStepModified = (float)((double)this.distanceWalkedOnStepModified + (double)MathHelper.sqrt((double)(d15 * d15 + d16 * d16 + d17 * d17)) * 0.6);
-                if (this.distanceWalkedOnStepModified > (float)this.nextStepDistance && iblockstate.getMaterial() != Material.AIR) {
-                    this.nextStepDistance = (int)this.distanceWalkedOnStepModified + 1;
+                this.distanceWalkedModified = (float) ((double) this.distanceWalkedModified + (double) MathHelper.sqrt((double) (d15 * d15 + d17 * d17)) * 0.6);
+                this.distanceWalkedOnStepModified = (float) ((double) this.distanceWalkedOnStepModified + (double) MathHelper.sqrt((double) (d15 * d15 + d16 * d16 + d17 * d17)) * 0.6);
+                if (this.distanceWalkedOnStepModified > (float) this.nextStepDistance && iblockstate.getMaterial() != Material.AIR) {
+                    this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
                     if (this.isInWater()) {
                         Entity entity = this.isBeingRidden() && this.getControllingPassenger() != null ? this.getControllingPassenger() : _this;
                         float f = entity == _this ? 0.35f : 0.4f;
-                        float f1 = MathHelper.sqrt((double)(entity.motionX * entity.motionX * (double)0.2f + entity.motionY * entity.motionY + entity.motionZ * entity.motionZ * (double)0.2f)) * f;
+                        float f1 = MathHelper.sqrt((double) (entity.motionX * entity.motionX * (double) 0.2f + entity.motionY * entity.motionY + entity.motionZ * entity.motionZ * (double) 0.2f)) * f;
                         if (f1 > 1.0f) {
                             f1 = 1.0f;
                         }
@@ -342,9 +340,8 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
             }
             try {
                 this.doBlockCollisions();
-            }
-            catch (Throwable throwable) {
-                CrashReport crashreport = CrashReport.makeCrashReport((Throwable)throwable, (String)"Checking entity block collision");
+            } catch (Throwable throwable) {
+                CrashReport crashreport = CrashReport.makeCrashReport((Throwable) throwable, (String) "Checking entity block collision");
                 CrashReportCategory crashreportcategory = crashreport.makeCategory("Entity being checked for collision");
                 this.addEntityCrashInfo(crashreportcategory);
                 throw new ReportedException(crashreport);

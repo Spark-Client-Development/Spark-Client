@@ -23,7 +23,9 @@ public class FastSwim extends Module {
 
     @SubscribeEvent
     public void onMove(PlayerMoveEvent event) {
+        if (event.isCanceled()) return;
         if ((mc.player.isInWater() || mc.player.isInLava()) && !mc.player.onGround) {
+            event.setCanceled(true);
             boolean jump = mc.player.movementInput.jump;
             boolean sneak = mc.player.movementInput.sneak;
             mc.player.setSprinting(true);

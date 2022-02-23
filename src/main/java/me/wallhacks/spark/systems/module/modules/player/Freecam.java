@@ -3,6 +3,7 @@ package me.wallhacks.spark.systems.module.modules.player;
 import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
+import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.event.render.OpaqueCubeEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
@@ -81,6 +82,11 @@ public class Freecam extends Module {
         if (event.getPacket() instanceof SPacketRespawn) {
             disable();
         }
+    }
+
+    @SubscribeEvent
+    public void onSneakEvent(SneakEvent event) {
+        event.setCanceled(true);
     }
 
     @SubscribeEvent

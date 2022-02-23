@@ -14,7 +14,6 @@ public class PacketLogger extends Module {
 
     ModeSetting mode = new ModeSetting("Mode",this,"client", Arrays.asList("client","server","both"));
 
-
     @SubscribeEvent
     public void onServer(PacketReceiveEvent e) {
 

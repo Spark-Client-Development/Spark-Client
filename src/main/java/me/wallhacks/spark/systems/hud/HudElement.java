@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Mouse;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 
 import java.awt.*;
@@ -189,8 +188,9 @@ public class HudElement extends SettingsHolder implements MC {
         {
             HudElement e = (HudElement) SystemManager.getHudModules().toArray()[getSnappedElement()];
 
-
-
+            //test
+            if (e == this) return x;
+            
             x = (int) (e.getRenderPosX(getPercentPosSnappedX()) + width*getPercentPosX());
         }
 

@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.util.MC;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +31,7 @@ public abstract class MixinEntityPlayer implements MC {
 
     @Inject(method = "isWearing", at = @At("RETURN"), cancellable = true)
     public void isWearing(EnumPlayerModelParts part, CallbackInfoReturnable<Boolean> cir) {
-        if (mc.currentScreen instanceof GuiMainMenu)
+        if (mc.world != null)
             cir.setReturnValue(true);
     }
 }

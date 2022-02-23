@@ -14,12 +14,11 @@ public class StringSetting extends Setting<String> {
 
     public StringSetting(String name, SettingsHolder settingsHolder, String value, String settingCategory) {
         this(name, settingsHolder,value,null,settingCategory);
-
-
     }
 
-
-
+    public StringSetting(String name, SettingsHolder settingsHolder, String value) {
+        this(name, settingsHolder,value,null, "General");
+    }
 
     @Override
     public boolean setValueString(String value) {

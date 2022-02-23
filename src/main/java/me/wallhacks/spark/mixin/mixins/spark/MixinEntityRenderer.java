@@ -76,7 +76,7 @@ public class MixinEntityRenderer  implements MC {
             return;
         }
         player.turn(yaw, pitch);
-    }
+    }    
 
     @Inject(method = "orientCamera", at = @At("HEAD"))
     public void orientCamera(float partialTicks,final CallbackInfo callbackInfo) {

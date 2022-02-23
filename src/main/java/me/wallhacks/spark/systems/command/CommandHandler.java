@@ -56,7 +56,7 @@ public class CommandHandler {
 			if(!message.isEmpty()) {
 				String prefix = ClientConfig.getInstance().getChatPrefix();
 				if(message.startsWith(prefix)) {
-					String commandLine = message.substring(prefix.length()).toLowerCase();
+					String commandLine = message.substring(prefix.length());
 					List<String> possibilities = getAutoCompleteForLine(commandLine);
 					String command = commandLine.substring(0, Math.max(commandLine.lastIndexOf(" "),0));
 					if(!possibilities.isEmpty()) {

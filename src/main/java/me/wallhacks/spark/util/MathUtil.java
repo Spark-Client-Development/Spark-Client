@@ -20,6 +20,11 @@ public class MathUtil {
         return current;
 
     }
+
+    public static double square(double value) {
+        return value*value;
+    }
+
     public static float lerp(float current,float target,float lerp){
         current -= (current-target)*Math.min(lerp, 1);
 

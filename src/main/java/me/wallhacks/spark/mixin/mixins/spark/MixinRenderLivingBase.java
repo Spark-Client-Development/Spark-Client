@@ -2,6 +2,7 @@ package me.wallhacks.spark.mixin.mixins.spark;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.render.RenderLivingEvent;
+import me.wallhacks.spark.util.MC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.model.ModelBase;
@@ -15,14 +16,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value={RenderLivingBase.class})
-public abstract class MixinRenderLivingBase {
+public abstract class MixinRenderLivingBase implements MC {
     @Shadow
     protected ModelBase mainModel;
 
     @Inject(method = {"renderModel"}, at={@At(value="INVOKE", target="Lnet/minecraft/client/model/ModelBase;render(Lnet/minecraft/entity/Entity;FFFFFF)V")}, cancellable=true)
     public void renderModel(EntityLivingBase entityLivingBase, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, CallbackInfo info) {
         RenderLivingEvent event = new RenderLivingEvent(entityLivingBase, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, mainModel);
-        if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu) return;
+        if (mc.world == null) return;
         Spark.eventBus.post(event);
         if (event.isCanceled()) {
             info.cancel();

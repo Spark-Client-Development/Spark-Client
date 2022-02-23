@@ -4,13 +4,16 @@ import me.wallhacks.spark.event.entity.LiquidPushEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.systems.module.Module;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketEntityStatus;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
@@ -31,13 +34,11 @@ public class Velocity extends Module {
         if (noWater.getValue() && event.getEntity() == mc.player) event.setCanceled(true);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onPacketGet(PacketReceiveEvent event) {
         if (nullCheck()) return;
         Packet<?> p = event.getPacket();
-
-
-        if(p instanceof SPacketExplosion && (!Speed.INSTANCE.isEnabled() || !Speed.INSTANCE.boost.getValue())) {
+        if(p instanceof SPacketExplosion) {
             SPacketExplosion ex = (SPacketExplosion)p;
             ex.motionX = (float) (Horizontal.getValue() * ex.motionX);
             ex.motionY = (float) (Vertical.getValue() * ex.motionY);

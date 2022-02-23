@@ -7,6 +7,8 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 
 import me.wallhacks.spark.systems.command.Command;
 import me.wallhacks.spark.systems.command.commands.*;
+import net.minecraft.network.play.server.SPacketEntityVelocity;
+import net.minecraft.network.play.server.SPacketPlayerPosLook;
 
 public class CommandManager {
 
@@ -21,6 +23,7 @@ public class CommandManager {
 		new ConfigCommand();
 		new WaypointManager();
 		new NoteBotCommand();
+		new DamageCommand();
 	}
 
 	public static ChatFormatting ErrorColor = ChatFormatting.RED;

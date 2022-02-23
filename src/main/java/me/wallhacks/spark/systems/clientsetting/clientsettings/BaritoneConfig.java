@@ -55,7 +55,11 @@ public class BaritoneConfig extends ClientSetting {
     }
 
     public void sync(Settings.Setting setting) {
-        getKeySetting(setting).setValue(setting.getValue());
+        try {
+            getKeySetting(setting).setValue(setting.getValue());
+        } catch (NullPointerException e) {
+            //no configs found for some reason
+        }
     }
 
     public void syncColor(Settings.Setting setting) {
