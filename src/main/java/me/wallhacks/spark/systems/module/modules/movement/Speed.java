@@ -5,7 +5,6 @@ import baritone.api.pathing.movement.IMovement;
 import baritone.api.pathing.path.IPathExecutor;
 import baritone.pathing.movement.movements.MovementDiagonal;
 import baritone.pathing.movement.movements.MovementTraverse;
-import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerMoveEvent;
@@ -13,15 +12,17 @@ import me.wallhacks.spark.event.player.PlayerPreUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
-import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
+import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import net.minecraft.entity.MoverType;
 import net.minecraft.init.MobEffects;
 import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -30,21 +31,22 @@ import java.util.Arrays;
 
 @Module.Registration(name = "Speed", description = "Fast module go brrr")
 public class Speed extends Module {
-    ModeSetting mode = new ModeSetting("Mode", this, "Strafe", Arrays.asList("Strafe", "StrictStrafe", "OnGround", "BoostStrafe"));
+    ModeSetting mode = new ModeSetting("Mode", this, "Strafe", Arrays.asList("Strafe", "StrictStrafe", "OnGround", "BoostStrafe", "LowHop"));
+    DoubleSetting boostF = new DoubleSetting("Boost", this, 1.5D, 1D, 3D, v -> mode.is("BoostStrafe"));
     BooleanSetting liquids = new BooleanSetting("Liquids", this, false);
     BooleanSetting useSpeed = new BooleanSetting("UseSpeed", this, false, "Effects");
     BooleanSetting useJumpBoost = new BooleanSetting("UseJumpBoost", this, false, "Effects");
     private double prevMotion = 0.0D;
-    private int gState;
+    private int state;
     private double speed;
     private boolean prevOnGround;
     private int jumps;
     private int offGroundTicks;
-
-
+    private double boost = 0;
+    private boolean flag;
     @SubscribeEvent
     public void onUpdate(PlayerPreUpdateEvent event) {
-        if (fullCheck() && !mode.is("OnGround")) {
+        if (fullCheck() && !mode.is("OnGround") && !mode.is("LowHop")) {
             Vec3d velocity = getVelocity();
             if (mc.player.onGround && !prevOnGround && (mc.player.moveForward != 0.0 || mc.player.moveStrafing != 0.0)) {
                 mc.player.setSprinting(true);
@@ -68,19 +70,34 @@ public class Speed extends Module {
             }
             mc.player.setVelocity(velocity.x, velocity.y, velocity.z);
         } else {
+            boost = 0;
             double dX = mc.player.posX - mc.player.prevPosX;
             double dZ = mc.player.posZ - mc.player.prevPosZ;
             prevMotion = Math.sqrt(dX * dX + dZ * dZ);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPacketReceive(PacketReceiveEvent event) {
         if (event.getPacket() instanceof SPacketPlayerPosLook) {
             jumps = 0;
             prevOnGround = false;
-            gState = 2;
+            state = mode.is("OnGround") ? 2 : 4;
             speed = 0;
+            boost = 0;
+        } else if (event.getPacket() instanceof SPacketExplosion) {
+            double motionX;
+            double motionZ;
+            if (event.getPacket() instanceof SPacketExplosion) {
+                SPacketExplosion p = event.getPacket();
+                motionX = Math.abs(p.motionX);
+                motionZ = Math.abs(p.motionZ);
+            } else {
+                SPacketEntityVelocity p = event.getPacket();
+                motionX = Math.abs(p.motionX / 8000);
+                motionZ = Math.abs(p.motionZ / 8000);
+            }
+            boost = MathHelper.clamp(Math.sqrt(MathUtil.square(motionX) + MathUtil.square(motionZ)) * boostF.getValue(), boost, 1);
         }
     }
 
@@ -88,7 +105,7 @@ public class Speed extends Module {
     public void onPacketSend(PacketSendEvent event) {
         if (fullCheck() && mode.is("OnGround")) {
             if (event.getPacket() instanceof CPacketPlayer.Position || event.getPacket() instanceof CPacketPlayer.PositionRotation) {
-                if (gState == 3 && !((mc.player.collidedHorizontally || mc.player.moveForward == 0) && mc.player.moveStrafing == 0) && mc.player.onGround) {
+                if (state == 3 && !((mc.player.collidedHorizontally || mc.player.moveForward == 0) && mc.player.moveStrafing == 0) && mc.player.onGround) {
                     ((CPacketPlayer) event.getPacket()).y += checkHeadspace() ? 0.2 : 0.4;
                 }
             }
@@ -103,24 +120,24 @@ public class Speed extends Module {
             float strafe = mc.player.movementInput.moveStrafe;
             if (mode.is("OnGround")) {
                 if (!mc.player.onGround) {
-                    if (gState != 3) return;
+                    if (state != 3) return;
                 }
                 if (!((mc.player.collidedHorizontally || mc.player.moveForward == 0) && mc.player.moveStrafing == 0)) {
-                    if (gState == 2) {
+                    if (state == 2) {
                         speed *= 2.149;
-                        gState = 3;
-                    } else if (gState == 3) {
+                        state = 3;
+                    } else if (state == 3) {
                         double adjustedSpeed = 0.66 * (prevMotion - getBaseMotionSpeed());
                         speed = prevMotion - adjustedSpeed;
-                        gState = 2;
+                        state = 2;
                     } else {
                         if (checkHeadspace() || mc.player.collidedVertically) {
-                            gState = 1;
+                            state = 1;
                         }
                     }
                 }
                 speed = Math.max(speed, getBaseMotionSpeed());
-            } else if (mode.is("Strafe")) {
+            } else if (mode.is("Strafe") || mode.is("BoostStrafe")) {
                 speed = getBaseMotionSpeed();
                 if (mc.player.onGround) {
                     if (jumps > 1) {
@@ -156,13 +173,66 @@ public class Speed extends Module {
                         jumps = 3;
                     }
                 }
+                if (mode.is("BoostStrafe")) {
+                    if (boost > speed) {
+                        speed = MathHelper.clamp(speed * boostF.getValue(), speed, boost);
+                        boost*=0.95;
+                    }
+                }
             } else if (mode.is("StrictStrafe")) {
                 mc.player.setSprinting(true);
                 return;
+            } else if (mode.is("LowHop")) {
+                double jumpSpeed = 0.0D;
+
+                if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)) {
+                    jumpSpeed += (mc.player.getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1F;
+                }
+
+                if (MathUtil.roundAvoid(mc.player.posY - (double) (int) mc.player.posY, 3) == MathUtil.roundAvoid(0.4, 3)) {
+                    mc.player.motionY = 0.31 + jumpSpeed;
+                    event.setY(mc.player.motionY);
+                } else if (MathUtil.roundAvoid(mc.player.posY - (double) (int) mc.player.posY, 3) == MathUtil.roundAvoid(0.71, 3)) {
+                    mc.player.motionY = 0.04 + jumpSpeed;
+                    event.setY(mc.player.motionY);
+                } else if (MathUtil.roundAvoid(mc.player.posY - (double) (int) mc.player.posY, 3) == MathUtil.roundAvoid(0.75, 3)) {
+                    mc.player.motionY = -0.2 - jumpSpeed;
+                    event.setY(mc.player.motionY);
+                } else if (MathUtil.roundAvoid(mc.player.posY - (double) (int) mc.player.posY, 3) == MathUtil.roundAvoid(0.55, 3)) {
+                    mc.player.motionY = -0.14 + jumpSpeed;
+                    event.setY(mc.player.motionY);
+                } else {
+                    if (MathUtil.roundAvoid(mc.player.posY - (double) (int) mc.player.posY, 3) == MathUtil.roundAvoid(0.41, 3)) {
+                        mc.player.motionY = -0.2 + jumpSpeed;
+                        event.setY(mc.player.motionY);
+                    }
+                }
+
+                if (state == 1 && (mc.player.moveForward != 0F || mc.player.moveStrafing != 0F)) {
+                    speed = 1.35 * getBaseMotionSpeed() - 0.01;
+                } else if (state == 2 && (mc.player.moveForward != 0F || mc.player.moveStrafing != 0F)) {
+                    mc.player.motionY = (checkHeadspace() ? 0.2 : 0.3999) + jumpSpeed;
+                    event.setY(mc.player.motionY);
+                    speed = speed * (flag ? 1.5685 : 1.3445);
+                } else if (state == 3) {
+                    double dV = 0.66 * (prevMotion - getBaseMotionSpeed());
+                    speed = prevMotion - dV;
+                    flag = !flag;
+                } else {
+                    if (mc.player.onGround && state > 0) {
+                        state = mc.player.moveForward != 0.0f || mc.player.moveStrafing != 0.0f ? 1 : 0;
+                    }
+                    speed = prevMotion - prevMotion / 159.0D;
+                }
+
+                speed = Math.max(speed, getBaseMotionSpeed());
+
+                if (mc.player.moveForward != 0F || mc.player.moveStrafing != 0F) state++;
             }
             if (forward == 0 && strafe == 0) {
                 event.setX(0D);
                 event.setZ(0D);
+                boost = 0;
             } else if (forward != 0.0D && strafe != 0.0D) {
                 forward *= Math.sin(0.7853981633974483D);
                 strafe *= Math.cos(0.7853981633974483D);
@@ -171,15 +241,16 @@ public class Speed extends Module {
             float yaw = BaritoneAPI.getProvider().getPrimaryBaritone().getLookBehavior().getYaw();
             event.setX(forward * speed * -Math.sin(Math.toRadians(yaw)) + strafe * speed * Math.cos(Math.toRadians(yaw)));
             event.setZ(forward * speed * Math.cos(Math.toRadians(yaw)) - strafe * speed * -Math.sin(Math.toRadians(yaw)));
-        }
+        } else boost = 0;
     }
 
     @Override
     public void onEnable() {
         prevOnGround = false;
         jumps = 0;
+        prevMotion = 0;
         offGroundTicks = 0;
-        gState = 2;
+        state = mode.is("OnGround") ? 2 : 4;
     }
 
     private double getBaseMotionSpeed() {
