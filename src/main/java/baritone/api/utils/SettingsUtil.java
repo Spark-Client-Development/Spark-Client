@@ -174,16 +174,14 @@ public class SettingsUtil {
 
     public static void parseAndApply(Settings settings, String settingName, String settingValue) throws IllegalStateException, NumberFormatException {
         Settings.Setting setting = settings.byLowerName.get(settingName);
-        if (setting == null) {
-            throw new IllegalStateException("No setting by that name");
+        if (setting != null) {
+            Class intendedType = setting.getValueClass();
+            ISettingParser ioMethod = Parser.getParser(setting.getType());
+            Object parsed = ioMethod.parse(new ParserContext(setting), settingValue);
+            if (intendedType.isInstance(parsed)) {
+                setting.setValue(parsed);
+            }
         }
-        Class intendedType = setting.getValueClass();
-        ISettingParser ioMethod = Parser.getParser(setting.getType());
-        Object parsed = ioMethod.parse(new ParserContext(setting), settingValue);
-        if (!intendedType.isInstance(parsed)) {
-            throw new IllegalStateException(ioMethod + " parser returned incorrect type, expected " + intendedType + " got " + parsed + " which is " + parsed.getClass());
-        }
-        setting.setValue(parsed);
     }
 
     private interface ISettingParser<T> {

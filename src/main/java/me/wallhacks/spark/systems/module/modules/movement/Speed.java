@@ -43,7 +43,9 @@ public class Speed extends Module {
     private int jumps;
     private int offGroundTicks;
     private double boost = 0;
+    private int boostTick;
     private boolean flag;
+
     @SubscribeEvent
     public void onUpdate(PlayerPreUpdateEvent event) {
         if (fullCheck() && !mode.is("OnGround") && !mode.is("LowHop")) {
@@ -69,12 +71,10 @@ public class Speed extends Module {
                 jumps = 0;
             }
             mc.player.setVelocity(velocity.x, velocity.y, velocity.z);
-        } else {
-            boost = 0;
-            double dX = mc.player.posX - mc.player.prevPosX;
-            double dZ = mc.player.posZ - mc.player.prevPosZ;
-            prevMotion = Math.sqrt(dX * dX + dZ * dZ);
-        }
+        } else boost = 0;
+        double dX = mc.player.posX - mc.player.prevPosX;
+        double dZ = mc.player.posZ - mc.player.prevPosZ;
+        prevMotion = Math.sqrt(dX * dX + dZ * dZ);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -97,6 +97,7 @@ public class Speed extends Module {
                 motionX = Math.abs(p.motionX / 8000);
                 motionZ = Math.abs(p.motionZ / 8000);
             }
+            boostTick = 0;
             boost = MathHelper.clamp(Math.sqrt(MathUtil.square(motionX) + MathUtil.square(motionZ)) * boostF.getValue(), boost, 1);
         }
     }
@@ -174,9 +175,10 @@ public class Speed extends Module {
                     }
                 }
                 if (mode.is("BoostStrafe")) {
-                    if (boost > speed) {
+                    if (prevMotion == 0) boost = 0;
+                    if (boost > speed && boostTick < 50) {
                         speed = MathHelper.clamp(speed * boostF.getValue(), speed, boost);
-                        boost*=0.95;
+                        boostTick++;
                     }
                 }
             } else if (mode.is("StrictStrafe")) {
@@ -241,7 +243,9 @@ public class Speed extends Module {
             float yaw = BaritoneAPI.getProvider().getPrimaryBaritone().getLookBehavior().getYaw();
             event.setX(forward * speed * -Math.sin(Math.toRadians(yaw)) + strafe * speed * Math.cos(Math.toRadians(yaw)));
             event.setZ(forward * speed * Math.cos(Math.toRadians(yaw)) - strafe * speed * -Math.sin(Math.toRadians(yaw)));
-        } else boost = 0;
+        } else {
+            boost = 0;
+        }
     }
 
     @Override
@@ -271,6 +275,8 @@ public class Speed extends Module {
             } else if (mc.player.isElytraFlying()) {
                 return false;
             } else if (!isSafeToSpeed()) {
+                return false;
+            } else if (mc.player.isSneaking()) {
                 return false;
             } else {
                 return !mc.player.isOnLadder() && mc.player.getRidingEntity() == null && mc.getRenderViewEntity() == mc.player;

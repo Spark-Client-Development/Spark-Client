@@ -34,7 +34,7 @@ public class SpeedGraph extends HudElement {
         Entity e = mc.player.ridingEntity == null ? mc.player : mc.player.ridingEntity;
         Vec3d v = new Vec3d(e.prevPosX- e.posX, e.prevPosY- e.posY, e.prevPosZ- e.posZ);
 
-        double speed = ((MathHelper.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)));
+        double speed = ((MathHelper.sqrt(v.x * v.x + v.z * v.z)));
         speed*=(50/mc.timer.tickLength);
 
 
