@@ -58,6 +58,7 @@
     "spark.MixinRenderPlayer",
     "spark.MixinVisGraph",
     "spark.MixinWorld",
+    "spark.MixinRenderGlobal",
     "spark.block.MixinBlock",
     "spark.block.MixinBlockBeacon",
     "spark.block.MixinBlockBed",
@@ -95,6 +96,7 @@
     "spark.block.MixinBlockTripWireHook",
     "spark.block.MixinBlockVine",
     "spark.block.MixinBlockWeb"
+
   ],
   "client": [
     "spark.MixinMovementInputFromOptions"

@@ -76,6 +76,7 @@ public class CombatManager implements MC {
 
 
 
+
     void handleDeath(EntityPlayer player) {
 
 

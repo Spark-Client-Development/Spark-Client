@@ -36,7 +36,7 @@ public class InventoryManager extends Module {
 
     BooleanSetting SortInventory = new BooleanSetting("SortInventory", this, false, "Sort");
 
-    BooleanSetting RemoveDoubleEquipment = new BooleanSetting("RemoveBadEquip", this, false, "Remove");
+    BooleanSetting RemoveNonKits = new BooleanSetting("RemoveNonKitItems", this, false, v -> SortInventory.isOn(), "Remove");
     BooleanSetting RemoveUseless = new BooleanSetting("RemoveUseless", this, false, "Remove");
 
     ItemListSelectSetting useless = new ItemListSelectSetting("Useless", this, new Item[]{Item.getItemFromBlock(Blocks.NETHERRACK), Items.ROTTEN_FLESH
@@ -265,7 +265,7 @@ public class InventoryManager extends Module {
 
 
     public boolean KeepItemStack(ItemStack itemStack){
-        if(RemoveDoubleEquipment.isOn() && !KeepEquipmentItemStack(itemStack))
+        if(RemoveNonKits.isOn() && itemNeededInPerfectKit(itemStack) == -1)
             return false;
         if(RemoveUseless.isOn() && useless.isValueSelected(itemStack.getItem()))
             return false;
@@ -291,55 +291,6 @@ public class InventoryManager extends Module {
     }
 
 
-
-
-    //only keep best
-    public boolean KeepEquipmentItemStack(ItemStack EquipmentItemStack){
-        Item EquipmentItem = EquipmentItemStack.getItem();
-
-
-        if(EquipmentItem instanceof ItemArmor || EquipmentItem instanceof ItemTool || EquipmentItem instanceof ItemSword)
-        {
-            for(int i = 0; i < mc.player.inventoryContainer.getInventory().size(); i++){
-
-                if(mc.player.inventory.getStackInSlot(i) instanceof ItemStack){
-                    ItemStack itemStack = (ItemStack) mc.player.inventoryContainer.getInventory().get(i);
-
-                    if(itemStack != EquipmentItemStack) {
-                        if(!keepComparedTo(EquipmentItemStack,itemStack))
-                            return false;
-
-                    }
-
-                }
-            }
-        }
-
-        return true;
-    }
-
-    boolean keepComparedTo(ItemStack current, ItemStack other){
-        Item currentItem = current.getItem();
-        Item otherItem = other.getItem();
-
-        if(currentItem instanceof ItemArmor && otherItem instanceof ItemArmor && ((ItemArmor)currentItem).armorType.equals(((ItemArmor)otherItem).armorType)){
-            return (InventoryUtil.getValueOfArmorItem(current) >= InventoryUtil.getValueOfArmorItem(other));
-        }
-        if(currentItem instanceof ItemTool && otherItem instanceof ItemTool){
-            ItemTool Ctool = (ItemTool) currentItem;
-            ItemTool Otool = (ItemTool) otherItem;
-
-            if(Ctool.effectiveBlocks.size() == Otool.effectiveBlocks.size()){
-                return (Ctool.efficiency >= Otool.efficiency);
-            }
-        }
-
-        if((currentItem instanceof ItemSword && otherItem instanceof ItemSword)){
-            return (InventoryUtil.getValueOfWeaponItem(current) >= InventoryUtil.getValueOfWeaponItem(other));
-        }
-
-        return true;
-    }
 
 
 

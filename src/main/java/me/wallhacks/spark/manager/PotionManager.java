@@ -2,6 +2,7 @@ package me.wallhacks.spark.manager;
 
 import io.netty.util.internal.ConcurrentSet;
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.Pair;
@@ -10,9 +11,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SPacketEntityMetadata;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import scala.Array;
 import scala.Int;
 
 import java.util.*;
@@ -20,7 +25,7 @@ import java.util.*;
 public class PotionManager implements MC {
 
 
-    public HashMap<EntityPlayer, ArrayList<Pair<PotionEffect, Integer>>> trackMap = new HashMap<>();
+    HashMap<EntityPlayer, ArrayList<Pair<PotionEffect, Long>>> trackMap = new HashMap<>();
     HashMap<Integer, Collection<PotionEffect>> potionMap = new HashMap<Integer, Collection<PotionEffect>>();
 
     public PotionManager() {
@@ -68,35 +73,84 @@ public class PotionManager implements MC {
 
     public Collection<PotionEffect> potionEffectsForLiving(EntityLivingBase entity) {
         int i = ((Integer) entity.dataManager.get(EntityLivingBase.POTION_EFFECTS)).intValue();
+        return potionEffectsForValue(i);
+    }
+    public Collection<PotionEffect> potionEffectsForValue(int value) {
 
-        if (potionMap.containsKey(i))
-            return potionMap.get(i);
+        if (potionMap.containsKey(value))
+            return potionMap.get(value);
         return new ArrayList<>();
     }
 
-    @SubscribeEvent
-    public void updatePotions(PlayerUpdateEvent event) {
-        for (EntityPlayer player : mc.world.playerEntities) {
-            ArrayList<Pair<PotionEffect, Integer>> playerMap = new ArrayList<>();
-            if (trackMap.containsKey(player)) {
-                for (PotionEffect potionEffect : potionEffectsForLiving(player)) {
-                    int old = 1;
-                    for (Pair<PotionEffect, Integer> p : trackMap.get(player)) {
-                        if (p.getKey() == potionEffect) old += p.getValue();
-                    }
-                    playerMap.add(new Pair<>(potionEffect, old));
-                }
-            } else {
-                for (PotionEffect potionEffect : potionEffectsForLiving(player)) {
-                    playerMap.add(new Pair<>(potionEffect, 1));
+    public int getPotionStrength(EntityPlayer player,Potion potion) {
+        Pair<PotionEffect,Long> longPair = getEffect(player,potion);
+        return longPair == null ? 0 : longPair.getKey().getAmplifier();
+    }
+
+    public long getPotionTime(EntityPlayer player,Potion potion) {
+        Pair<PotionEffect,Long> longPair = getEffect(player,potion);
+        return longPair == null ? 0 : longPair.getValue();
+    }
+    public long getPotionDuration(EntityPlayer player,Potion potion) {
+
+        return System.currentTimeMillis()-getPotionTime(player,potion);
+    }
+
+    public Pair<PotionEffect,Long> getEffect(EntityPlayer player,Potion potion) {
+        if(trackMap.containsKey(player))
+        {
+            for (Pair<PotionEffect, Long> p : trackMap.get(player)) {
+                if (p.getKey().getPotion() == potion) {
+                    return p;
                 }
             }
-            trackMap.put(player, playerMap);
         }
-        ArrayList<EntityPlayer> remove = new ArrayList<>();
-        for (EntityPlayer player : trackMap.keySet()) {
-            if (!mc.world.playerEntities.contains(player)) remove.add(player);
+
+        return null;
+    }
+
+    @SubscribeEvent
+    public void updatePotions(PacketReceiveEvent event) {
+
+        if (event.getPacket() instanceof SPacketEntityMetadata) {
+            SPacketEntityMetadata packet = event.getPacket();
+            if(mc.world == null)
+                return;
+            if(mc.world.getEntityByID(packet.getEntityId()) instanceof EntityPlayer)
+            {
+                EntityPlayer player = (EntityPlayer) mc.world.getEntityByID(packet.getEntityId());
+                for (EntityDataManager.DataEntry v : packet.getDataManagerEntries()) {
+                    if (v.getKey().equals(EntityLivingBase.POTION_EFFECTS)) {
+                        Collection<PotionEffect> effects = potionEffectsForValue((int)v.getValue());
+
+                        if(!trackMap.containsKey(player))
+                            trackMap.put(player,new ArrayList<>());
+
+                        ArrayList<Pair<PotionEffect, Long> > old = trackMap.get(player);
+
+                        ArrayList<Pair<PotionEffect, Long> > newMap = new ArrayList<> ();
+
+                        loop:
+                        for (PotionEffect potionEffect : effects) {
+                            for (Pair<PotionEffect, Long> p : old) {
+                                if (p.getKey() == potionEffect)
+                                {
+                                    newMap.add(p);
+                                    old.remove(p);
+                                    continue loop;
+                                }
+                            }
+                            newMap.add(new Pair<PotionEffect, Long>(potionEffect,System.currentTimeMillis()));
+                        }
+
+                        trackMap.put(player,newMap);
+
+
+                    }
+                }
+
+            }
         }
-        remove.forEach(p -> trackMap.remove(p));
+
     }
 }

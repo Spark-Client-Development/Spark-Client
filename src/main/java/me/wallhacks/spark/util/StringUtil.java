@@ -5,6 +5,7 @@ import me.wallhacks.spark.Spark;
 import net.minecraft.block.Block;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
@@ -79,5 +80,12 @@ public class StringUtil {
                     + ChatFormatting.RED + ChatFormatting.BOLD
                     + pops + ChatFormatting.RESET + (pops == 1 ? " totem" : " totems");
         }
+    }
+
+    public static String millisecondToElapsedTime(int milli) {
+        int i = milli/1000;
+        int j = i / 60;
+        i %= 60;
+        return i < 10 ? j + ":0" + i : j + ":" + i;
     }
 }

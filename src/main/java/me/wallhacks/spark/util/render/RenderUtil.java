@@ -138,6 +138,8 @@ public class RenderUtil implements MC {
 
     }
 
+    public static boolean isRenderLoop = false;
+
 
     public static void drawTracerPointer(float x, float y, float size, float widthDiv, float heightDiv, Color color, boolean outline, float outlineWidth, Color outlineColor) {
         boolean blend = GL11.glIsEnabled(3042);

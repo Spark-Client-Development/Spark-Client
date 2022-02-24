@@ -122,7 +122,7 @@ public class AutoTrap extends Module {
         });
 
         for(BlockPos p : needsPlacing){
-            if(p.equals(CevBreaker.INSTANCE.GetCevBreakerBlock()))
+            if(p.equals(CevBreaker.INSTANCE.getTarget()))
                 continue;
             if(TntAura.INSTANCE.blockNeedsToBeEmpty(p))
                 continue;

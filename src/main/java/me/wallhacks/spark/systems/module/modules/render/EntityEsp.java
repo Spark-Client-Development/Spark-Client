@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.render.RenderLivingEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.render.EspUtil;
+import me.wallhacks.spark.util.render.RenderUtil;
 import me.wallhacks.spark.util.render.ShaderEspUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -59,6 +60,8 @@ public class EntityEsp extends Module {
 
     @SubscribeEvent
     public void renderEntityEvent (RenderLivingEvent event) {
+        if(!RenderUtil.isRenderLoop)
+            return;
 
         Entity entity = event.getEntity();
         if (mc.player == null || mc.player == entity || mc.world == null) {

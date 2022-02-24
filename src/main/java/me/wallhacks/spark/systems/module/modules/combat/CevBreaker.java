@@ -233,6 +233,10 @@ public class CevBreaker extends Module {
         return true;
     }
 
+    BlockPos getTarget() {
+        return isEnabled() ? CevBlock : null;
+    }
+
     BlockPos GetCevBreakerBlock(){
         BlockPos NewPos = null;
         double bestDistance = Double.MAX_VALUE;
@@ -283,6 +287,7 @@ public class CevBreaker extends Module {
         }
         return NewPos;
     }
+
 
 
     public boolean isInAttackZone(EntityPlayer player) {

@@ -52,8 +52,13 @@ public class Chams extends Module {
 
     CopyOnWriteArrayList<PopCham> pops = new CopyOnWriteArrayList<>();
 
+
+
     @SubscribeEvent
     public void onRenderLivingBase(RenderLivingEvent event) {
+
+        if(!RenderUtil.isRenderLoop && !(event.getEntity() instanceof PopCham))
+            return;
         if ((event.getEntity() instanceof PopCham) || (event.getEntity() instanceof EntityPlayer && players.getValue()) || (event.getEntity() instanceof EntityMob && mobs.getValue()) || (event.getEntity() instanceof EntityAnimal && animals.getValue()) && event.getEntity().world == mc.world) {
             GlStateManager.pushMatrix();
             GL11.glPushAttrib(1048575);
