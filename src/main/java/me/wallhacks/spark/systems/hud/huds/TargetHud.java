@@ -2,16 +2,17 @@ package me.wallhacks.spark.systems.hud.huds;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.systems.hud.HudElement;
-import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
-import me.wallhacks.spark.systems.setting.settings.IntSetting;
+import me.wallhacks.spark.systems.module.modules.combat.CrystalAura;
+import me.wallhacks.spark.systems.module.modules.combat.KillAura;
+import me.wallhacks.spark.systems.module.modules.render.NameTags;
+import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.StringUtil;
 import me.wallhacks.spark.util.combat.AttackUtil;
-import me.wallhacks.spark.util.combat.HoleUtil;
-import me.wallhacks.spark.util.player.PlayerUtil;
+import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.render.ColorUtil;
-import net.minecraft.block.BlockAir;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -24,30 +25,23 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
+import net.minecraft.init.PotionTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ReportedException;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
-import me.wallhacks.spark.systems.module.modules.combat.CrystalAura;
-import me.wallhacks.spark.systems.module.modules.combat.KillAura;
-import me.wallhacks.spark.systems.module.modules.render.NameTags;
 
 import java.awt.*;
 
-@HudElement.Registration(name = "TargetHud", posX = 0.5, posY = 0, height = 73, width = 150, description = "Shows info about your current target")
+@HudElement.Registration(name = "TargetHud", posX = 0.5, posY = 0, height = 73, width = 170, description = "Shows info about your current target")
 public class TargetHud extends HudElement {
-
-    BooleanSetting useRange = new BooleanSetting("UseRange",this,false);
-    IntSetting range = new IntSetting("Range",this,100,20,100, v -> useRange.isOn());
-
-    BooleanSetting original = new BooleanSetting("Originalook",this,true);
-
-
-
     double smoothHealth = 0;
+    ResourceLocation resourceLocation = new ResourceLocation("textures/icons/distance.png");
 
     @Override
     public void draw(float deltaTime) {
@@ -57,49 +51,45 @@ public class TargetHud extends HudElement {
             setBackGround(true);
 
             double health = target.getAbsorptionAmount() + target.getHealth();
-            smoothHealth = MathUtil.moveTwards(smoothHealth,health,deltaTime*0.1);
+            smoothHealth = MathUtil.moveTwards(smoothHealth, health, deltaTime * 0.1);
 
-            double smoothPercent = MathHelper.clamp((smoothHealth) / 36,0,1);
+            double smoothPercent = MathHelper.clamp((smoothHealth) / 36, 0, 1);
 
-            Color healthColor = ColorUtil.getColorBasedOnHealthPercent((float)smoothPercent);
-
-
-            fontManager.getLargeFont().drawText((target).getName(), getRenderPosX() + 38, getRenderPosY() + 5, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
-            mc.getRenderItem().renderItemAndEffectIntoGUI(new ItemStack(Items.TOTEM_OF_UNDYING), (int) getRenderPosX() + 35, (int) getRenderPosY() + 19);
-
-
-            fontManager.drawString("Pops " + TextFormatting.RED + Spark.popManager.getTotemPops(target), (int)getRenderPosX() + 50, (int)getRenderPosY() + 22 + 2, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
-
+            fontManager.getLargeFont().drawText((target).getName(), getRenderPosX() + 41, getRenderPosY() + 5, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
+            mc.getRenderItem().renderItemAndEffectIntoGUI(new ItemStack(Items.TOTEM_OF_UNDYING), (int) getRenderPosX() + 38, (int) getRenderPosY() + 19);
+            int strength = 0;
+            boolean weakness = false;
+            int strengthTicks = 0;
+            int weaknessTicks = 0;
+            if (Spark.potionManager.trackMap.containsKey(target))
+                for (Pair<PotionEffect, Integer> p : Spark.potionManager.trackMap.get(target)) {
+                    if (p.getKey().getPotion() == MobEffects.STRENGTH) {
+                        strength += p.getKey().getAmplifier() + 1;
+                        strengthTicks = Math.max(strengthTicks, p.getValue());
+                        continue;
+                    }
+                    if (p.getKey().getPotion() == MobEffects.WEAKNESS) {
+                        weaknessTicks = Math.max(weaknessTicks, p.getValue());
+                        weakness = true;
+                    }
+                }
+            strength = Math.min(strength, 2);
+            ItemStack strengthS = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), strength == 2 ? PotionTypes.STRONG_STRENGTH : PotionTypes.STRENGTH);
+            ItemStack weaknessS = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionTypes.WEAKNESS);
+            mc.renderItem.renderItemAndEffectIntoGUI(strengthS, getRenderPosX() + 90, getRenderPosY() + 19);
+            mc.renderItem.renderItemAndEffectIntoGUI(weaknessS, getRenderPosX() + 90, getRenderPosY() + 19 + 17);
+            fontManager.drawString((strength == 0 ? ChatFormatting.RED + "Inactive" : "" + ChatFormatting.RED + strength + " " + ChatFormatting.GRAY + StringUtils.ticksToElapsedTime(strengthTicks)), (int) getRenderPosX() + 106, (int) getRenderPosY() + 24, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
+            fontManager.drawString((!weakness ? ChatFormatting.RED + "Inactive" : ChatFormatting.DARK_PURPLE + "Weak" + ChatFormatting.GRAY + " " + StringUtils.ticksToElapsedTime(weaknessTicks)), (int) getRenderPosX() + 106, (int) getRenderPosY() + 41, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
+            ColorUtil.glColor(new Color(-1));
+            fontManager.drawString(ChatFormatting.GRAY + "Pops " + TextFormatting.RED + Spark.popManager.getTotemPops(target), (int) getRenderPosX() + 54, (int) getRenderPosY() + 24, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
+            fontManager.drawString(ChatFormatting.GRAY + "Distance " + ChatFormatting.RESET + MathUtil.roundAvoid(mc.player.getDistance(target), 2) + "M", getRenderPosX() + 54, getRenderPosY() + 58, 0x466378);
             NetworkPlayerInfo playerInfo = mc.getConnection().getPlayerInfo(target.getUniqueID());
-            if(playerInfo != null)
-            {
-                drawPing((int)getRenderPosX() + 37, (int)getRenderPosY() + 39, playerInfo.getResponseTime());
-                fontManager.drawString("Ping " + NameTags.getPingText(mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime()) + mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime(), (int)getRenderPosX() + 50, (int)getRenderPosY() + 39 + 2,HudSettings.getInstance().getGuiHudSecondColor().getRGB());
-
+            if (playerInfo != null) {
+                drawPing((int) getRenderPosX() + 41, (int) getRenderPosY() + 39, playerInfo.getResponseTime());
+                fontManager.drawString(ChatFormatting.GRAY + "Ping " + NameTags.getPingText(mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime()) + mc.getConnection().getPlayerInfo(target.getUniqueID()).getResponseTime(), (int) getRenderPosX() + 54, (int) getRenderPosY() + 41, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
             }
-
-            if(original.isOn()) {
-                fontManager.getBadaboom().drawText(holeString(target), getRenderPosX() + 35, getRenderPosY() + 55, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
-            }
-            else
-            {
-                int x = fontManager.drawString("Health ", getRenderPosX() + 10, getRenderPosY() + 56 + 2, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
-
-                x = fontManager.drawString(StringUtil.fmt(health, 1), x, getRenderPosY() + 56 + 2, healthColor.getRGB());
-
-                x = fontManager.drawString("Distance " + StringUtil.fmt(PlayerUtil.getDistance(target.getPositionVector()), 1) + "m", x + 8, getRenderPosY() + 56 + 2, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
-            }
-
-
-            int y = getEndRenderPosY()+10;
-            for (PotionEffect e : Spark.potionManager.potionEffectsForLiving(target)) {
-                fontManager.drawString(e.getEffectName()+" "+e.getAmplifier(), getRenderPosX() + 40, y, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
-                y+=16;
-
-            }
-
-
-            Gui.drawRect((int)getRenderPosX(), (int)getRenderPosY() + getHeight() - 3, (int)getRenderPosX() + (int)(smoothPercent*getWidth()), (int)getRenderPosY() + getHeight(), original.isOn() ? HudSettings.getInstance().getGuiHudMainColor().getRGB() : healthColor.getRGB());
+            GuiUtil.drawCompleteImage(getRenderPosX() + 40, getRenderPosY() + 55, 11, 12, resourceLocation, Color.WHITE);
+            Gui.drawRect((int) getRenderPosX(), (int) getRenderPosY() + getHeight() - 3, (int) getRenderPosX() + (int) (smoothPercent * getWidth()), (int) getRenderPosY() + getHeight(), HudSettings.getInstance().getGuiHudMainColor().getRGB());
 
             GlStateManager.enableTexture2D();
             RenderHelper.enableStandardItemLighting();
@@ -110,27 +100,22 @@ public class TargetHud extends HudElement {
                 if (itemStack.isEmpty())
                     continue;
 
-                mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, (int)getRenderPosX() + getWidth()-20, (int)getRenderPosY() + 62 - (offset * 15));
-                mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, (int)getRenderPosX() + getWidth()-20, (int)getRenderPosY() +  + 62 - (offset * 15), "");
+                mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, (int) getRenderPosX() + getWidth() - 20, (int) getRenderPosY() + 62 - (offset * 15));
+                mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, (int) getRenderPosX() + getWidth() - 20, (int) getRenderPosY() + +62 - (offset * 15), "");
 
             }
 
 
-            GlStateManager.color(1,1,1,1);
+            GlStateManager.color(1, 1, 1, 1);
             RenderHelper.disableStandardItemLighting();
             mc.getRenderItem().zLevel = 0.0f;
 
             try {
-                if(original.isOn())
-                    GuiInventory.drawEntityOnScreen((int)getRenderPosX() + 18, (int)getRenderPosY() + getHeight() - 10, 29, 0.0f, 0.0f, (EntityPlayer) target);
-                else
-                    GuiInventory.drawEntityOnScreen((int)getRenderPosX() + 18, (int)getRenderPosY() + 51, 25, 0.0f, 0.0f, (EntityPlayer) target);
-            }
-            catch (ReportedException ignored) {
+                GuiInventory.drawEntityOnScreen((int) getRenderPosX() + 20, (int) getRenderPosY() + 66, 33, 0.0f, 0.0f, (EntityPlayer) target);
+            } catch (ReportedException ignored) {
             }
 
-        }
-        else
+        } else
             setBackGround(false);
     }
 
@@ -161,53 +146,36 @@ public class TargetHud extends HudElement {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos((double)(x + 0), (double)(y + height), (double)200).tex((double)((float)(textureX + 0) * 0.00390625F), (double)((float)(textureY + height) * 0.00390625F)).endVertex();
-        bufferbuilder.pos((double)(x + width), (double)(y + height), (double)200).tex((double)((float)(textureX + width) * 0.00390625F), (double)((float)(textureY + height) * 0.00390625F)).endVertex();
-        bufferbuilder.pos((double)(x + width), (double)(y + 0), (double)200).tex((double)((float)(textureX + width) * 0.00390625F), (double)((float)(textureY + 0) * 0.00390625F)).endVertex();
-        bufferbuilder.pos((double)(x + 0), (double)(y + 0), (double)200).tex((double)((float)(textureX + 0) * 0.00390625F), (double)((float)(textureY + 0) * 0.00390625F)).endVertex();
+        bufferbuilder.pos((double) (x + 0), (double) (y + height), (double) 200).tex((double) ((float) (textureX + 0) * 0.00390625F), (double) ((float) (textureY + height) * 0.00390625F)).endVertex();
+        bufferbuilder.pos((double) (x + width), (double) (y + height), (double) 200).tex((double) ((float) (textureX + width) * 0.00390625F), (double) ((float) (textureY + height) * 0.00390625F)).endVertex();
+        bufferbuilder.pos((double) (x + width), (double) (y + 0), (double) 200).tex((double) ((float) (textureX + width) * 0.00390625F), (double) ((float) (textureY + 0) * 0.00390625F)).endVertex();
+        bufferbuilder.pos((double) (x + 0), (double) (y + 0), (double) 200).tex((double) ((float) (textureX + 0) * 0.00390625F), (double) ((float) (textureY + 0) * 0.00390625F)).endVertex();
         tessellator.draw();
     }
 
-    private String holeString(EntityPlayer target) {
-        if (target != null) {
-            BlockPos pos = new BlockPos(target.posX, target.posY + 0.9, target.posZ);
-            if (!(mc.world.getBlockState(pos).getBlock() instanceof BlockAir)) {
-                return (ChatFormatting.DARK_RED + "Burrowed!");
-            }
-            if (HoleUtil.isInHole(target)) {
-                if (HoleUtil.isBedRockHole(pos)) {
-                    return ChatFormatting.GREEN + "In Bedrock Hole";
-                } else {
-                    return ChatFormatting.YELLOW + "In obsidian Hole!";
-                }
-            } else {
-                return ChatFormatting.RED + "Unsafe!";
-            }
-        }
-        return "";
-    }
-
     public EntityPlayer getTarget() {
-
-        if (CrystalAura.instance.getTarget() instanceof EntityPlayer) return (EntityPlayer) CrystalAura.instance.getTarget();
-        if (KillAura.instance.getTarget() instanceof EntityPlayer) return (EntityPlayer) KillAura.instance.getTarget();
+        if (isValid(CrystalAura.instance.getTarget()))
+            return (EntityPlayer) CrystalAura.instance.getTarget();
+        if (isValid(KillAura.instance.getTarget()))
+            return (EntityPlayer) KillAura.instance.getTarget();
         EntityPlayer returnEntity = null;
-        double closest = useRange.isOn() ? range.getValue() : Double.MAX_VALUE;
+        double closest = 20;
         for (Entity entity : mc.world.loadedEntityList) {
             if (entity instanceof EntityPlayer) {
-                if (AttackUtil.canAttackPlayer((EntityPlayer)entity)) {
+                if (AttackUtil.canAttackPlayer((EntityPlayer) entity)) {
                     if (mc.player.getDistance(entity) > closest)
                         continue;
-                    double pDist = mc.player.getDistance(entity);
-                    if (pDist < closest) {
-                        closest = pDist;
-                        returnEntity = (EntityPlayer) entity;
-                    }
+                    closest = mc.player.getDistance(entity);
+                    returnEntity = (EntityPlayer) entity;
                 }
             }
         }
-        if(returnEntity == null && isInHudEditor())
+        if (returnEntity == null && isInHudEditor())
             return mc.player;
         return returnEntity;
+    }
+
+    boolean isValid(Entity entityPlayer) {
+        return entityPlayer instanceof EntityPlayer && mc.world.loadedEntityList.contains(entityPlayer);
     }
 }

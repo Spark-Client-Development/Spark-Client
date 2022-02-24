@@ -33,6 +33,7 @@ import java.util.Arrays;
 public class Speed extends Module {
     ModeSetting mode = new ModeSetting("Mode", this, "Strafe", Arrays.asList("Strafe", "StrictStrafe", "OnGround", "BoostStrafe", "LowHop"));
     DoubleSetting boostF = new DoubleSetting("Boost", this, 1.5D, 1D, 3D, v -> mode.is("BoostStrafe"));
+    DoubleSetting boosty = new DoubleSetting("YFactor", this, 0.8D, 0.2D, 1D, v -> mode.is("BoostStrafe"));
     BooleanSetting liquids = new BooleanSetting("Liquids", this, false);
     BooleanSetting useSpeed = new BooleanSetting("UseSpeed", this, false, "Effects");
     BooleanSetting useJumpBoost = new BooleanSetting("UseJumpBoost", this, false, "Effects");
@@ -48,6 +49,7 @@ public class Speed extends Module {
 
     @SubscribeEvent
     public void onUpdate(PlayerPreUpdateEvent event) {
+        boostTick++;
         if (fullCheck() && !mode.is("OnGround") && !mode.is("LowHop")) {
             Vec3d velocity = getVelocity();
             if (mc.player.onGround && !prevOnGround && (mc.player.moveForward != 0.0 || mc.player.moveStrafing != 0.0)) {
@@ -79,23 +81,24 @@ public class Speed extends Module {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPacketReceive(PacketReceiveEvent event) {
+        if (mc.player != null)
         if (event.getPacket() instanceof SPacketPlayerPosLook) {
             jumps = 0;
             prevOnGround = false;
             state = mode.is("OnGround") ? 2 : 4;
             speed = 0;
             boost = 0;
-        } else if (event.getPacket() instanceof SPacketExplosion) {
+        } else if (event.getPacket() instanceof SPacketExplosion || (event.getPacket() instanceof SPacketEntityVelocity && ((SPacketEntityVelocity) event.getPacket()).entityID == mc.player.entityId)) {
             double motionX;
             double motionZ;
             if (event.getPacket() instanceof SPacketExplosion) {
                 SPacketExplosion p = event.getPacket();
-                motionX = Math.abs(p.motionX);
-                motionZ = Math.abs(p.motionZ);
+                motionX = p.motionX;
+                motionZ = p.motionZ;
             } else {
                 SPacketEntityVelocity p = event.getPacket();
-                motionX = Math.abs(p.motionX / 8000);
-                motionZ = Math.abs(p.motionZ / 8000);
+                motionX = p.motionX / 8000f;
+                motionZ = p.motionZ / 8000f;
             }
             boostTick = 0;
             boost = MathHelper.clamp(Math.sqrt(MathUtil.square(motionX) + MathUtil.square(motionZ)) * boostF.getValue(), boost, 1);
@@ -175,10 +178,10 @@ public class Speed extends Module {
                     }
                 }
                 if (mode.is("BoostStrafe")) {
-                    if (prevMotion == 0) boost = 0;
+                    if (prevMotion < speed) boost = 0;
                     if (boost > speed && boostTick < 50) {
                         speed = MathHelper.clamp(speed * boostF.getValue(), speed, boost);
-                        boostTick++;
+                        if (event.getY() < 0) event.setY(event.getY()*boosty.getFloatValue());
                     }
                 }
             } else if (mode.is("StrictStrafe")) {

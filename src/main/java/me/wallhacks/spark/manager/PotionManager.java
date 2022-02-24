@@ -4,23 +4,27 @@ import io.netty.util.internal.ConcurrentSet;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.objects.Pair;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import scala.Int;
 
 import java.util.*;
 
 public class PotionManager implements MC {
 
 
-
+    public HashMap<EntityPlayer, ArrayList<Pair<PotionEffect, Integer>>> trackMap = new HashMap<>();
     HashMap<Integer, Collection<PotionEffect>> potionMap = new HashMap<Integer, Collection<PotionEffect>>();
 
     public PotionManager() {
+        Spark.eventBus.register(this);
         MixPotions();
     }
 
@@ -70,5 +74,29 @@ public class PotionManager implements MC {
         return new ArrayList<>();
     }
 
-
+    @SubscribeEvent
+    public void updatePotions(PlayerUpdateEvent event) {
+        for (EntityPlayer player : mc.world.playerEntities) {
+            ArrayList<Pair<PotionEffect, Integer>> playerMap = new ArrayList<>();
+            if (trackMap.containsKey(player)) {
+                for (PotionEffect potionEffect : potionEffectsForLiving(player)) {
+                    int old = 1;
+                    for (Pair<PotionEffect, Integer> p : trackMap.get(player)) {
+                        if (p.getKey() == potionEffect) old += p.getValue();
+                    }
+                    playerMap.add(new Pair<>(potionEffect, old));
+                }
+            } else {
+                for (PotionEffect potionEffect : potionEffectsForLiving(player)) {
+                    playerMap.add(new Pair<>(potionEffect, 1));
+                }
+            }
+            trackMap.put(player, playerMap);
+        }
+        ArrayList<EntityPlayer> remove = new ArrayList<>();
+        for (EntityPlayer player : trackMap.keySet()) {
+            if (!mc.world.playerEntities.contains(player)) remove.add(player);
+        }
+        remove.forEach(p -> trackMap.remove(p));
+    }
 }
