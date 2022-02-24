@@ -187,7 +187,7 @@ public class Chams extends Module {
 
     @SubscribeEvent
     public void deathEvent(DeathEvent event) {
-        if (event.getEntity() != mc.player && event.getType() == DeathEvent.Type.TOTEMPOP)
+        if (event.getEntity() != mc.player && event.getType() == DeathEvent.Type.TOTEMPOP && popChams.getValue())
             pops.add(new PopCham(event.getEntity()));
     }
 
