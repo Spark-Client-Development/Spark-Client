@@ -1,11 +1,11 @@
 package me.wallhacks.spark.manager;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.BaritoneConfig;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.Setting;
@@ -15,6 +15,7 @@ import me.wallhacks.spark.util.MC;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ConfigManager implements MC {
@@ -38,14 +39,14 @@ public class ConfigManager implements MC {
 
     @SubscribeEvent
     public void onJoin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        if(mc.currentServerData != null)
-        for (Config c : configs) {
+        if (mc.currentServerData != null)
+            for (Config c : configs) {
 
-            if (c.isServer(mc.currentServerData.serverIP)) {
-                if (loadConfig(c, true))
-                return;
+                if (c.isServer(mc.currentServerData.serverIP)) {
+                    if (loadConfig(c, true))
+                        return;
+                }
             }
-        }
     }
 
     public ArrayList<Config> getConfigs() {
@@ -136,11 +137,11 @@ public class ConfigManager implements MC {
         for (String s : FileUtil.listFolderForFolder(configFolder)) {
             Config c = new Config(s);
             configs.add(c);
-            loadSettingHolder(c, getConfigPath(c) + System.getProperty("file.separator") + "configData.sex");
+            loadSettingHolder(c, getConfigPath(c) + System.getProperty("file.separator") + "configData.cfg");
             c.name.setValue(s);
         }
-        if (FileUtil.exists(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.sex"))
-            currentConfig = getConfigFromName(FileUtil.read(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.sex"));
+        if (FileUtil.exists(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.cfg"))
+            currentConfig = getConfigFromName(FileUtil.read(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.cfg"));
 
         if (currentConfig == null) {
             if (configs.size() <= 0)
@@ -154,9 +155,9 @@ public class ConfigManager implements MC {
     }
 
     public void SaveConfigConfigs(boolean overrideUnused) {
-        FileUtil.write(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.sex", currentConfig.getConfigName());
+        FileUtil.write(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.cfg", currentConfig.getConfigName());
         for (Config c : configs) {
-            saveSettingHolder(c, getConfigPath(c) + System.getProperty("file.separator") + "configData.sex", false);
+            saveSettingHolder(c, getConfigPath(c) + System.getProperty("file.separator") + "configData.cfg", false);
         }
 
         String configFolder = (Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "configs");
@@ -197,7 +198,7 @@ public class ConfigManager implements MC {
             base = base + "clientSettings" + System.getProperty("file.separator");
         if (holder instanceof HudElement)
             base = base + "huds" + System.getProperty("file.separator");
-        return base + holder.getName() + ".sex";
+        return base + holder.getName() + ".cfg";
     }
 
 
@@ -205,8 +206,10 @@ public class ConfigManager implements MC {
         for (SettingsHolder system : SystemManager.getSystems()) {
             if (system instanceof BaritoneConfig && !baritone) continue;
             if (!(system instanceof BaritoneConfig) && baritone) continue;
-
-            loadSettingHolder(system, getSystemSettingFile(system, config));
+            if (system instanceof ClientConfig)
+                loadSettingHolder(system, new File(Spark.ParentPath.getAbsolutePath(), "ClientSettings.cfg").toString());
+            else
+                loadSettingHolder(system, getSystemSettingFile(system, config));
         }
     }
 
@@ -266,7 +269,10 @@ public class ConfigManager implements MC {
 
     private void saveSystems(Config config, boolean saveDefaults) {
         for (SettingsHolder system : SystemManager.getSystems()) {
-            saveSettingHolder(system, getSystemSettingFile(system, config), saveDefaults);
+            if (system instanceof ClientConfig)
+                saveSettingHolder(system, new File(Spark.ParentPath.getAbsolutePath(), "ClientSettings.cfg").toString(), saveDefaults);
+            else
+                saveSettingHolder(system, getSystemSettingFile(system, config), saveDefaults);
         }
     }
 

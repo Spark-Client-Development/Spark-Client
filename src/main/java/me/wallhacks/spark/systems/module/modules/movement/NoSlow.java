@@ -12,9 +12,9 @@ import java.util.Arrays;
 
 @Module.Registration(name = "NoSlow", description = "Don't get slowed down by using items")
 public class NoSlow extends Module {
-    public ModeSetting webs = new ModeSetting("Mode", this, "Off", Arrays.asList("Off", "Vanilla", "Fast"), "Webs");
-    public DoubleSetting webSpeed = new DoubleSetting("Speed", this, 0.5, 0.25, 1.0, "Webs");
-    public DoubleSetting webSpeedY = new DoubleSetting("YSpeed", this, 0.8, 0.05, 1.0, "Webs");
+    public ModeSetting webs = new ModeSetting("WebMode", this, "Off", Arrays.asList("Off", "Vanilla", "Fast"), "Webs");
+    public DoubleSetting webSpeed = new DoubleSetting("WebSpeed", this, 0.5, 0.25, 1.0, "Webs");
+    public DoubleSetting webSpeedY = new DoubleSetting("WebYSpeed", this, 0.8, 0.05, 1.0, "Webs");
     public static NoSlow INSTANCE;
     public NoSlow() {
         INSTANCE = this;

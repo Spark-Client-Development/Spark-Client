@@ -1,6 +1,8 @@
 package me.wallhacks.spark.manager;
 
+import com.sun.org.apache.bcel.internal.generic.POP;
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.entity.DeathEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.module.Module;
@@ -53,7 +55,7 @@ public class CombatManager implements MC {
         if (event.getPacket() instanceof SPacketEntityStatus) {
             SPacketEntityStatus packet = event.getPacket();
             if (packet.getOpCode() == 35 && packet.getEntity(mc.world) instanceof EntityPlayer) {
-                handlePop((EntityPlayer) packet.getEntity(mc.world));
+                Spark.eventBus.post(new DeathEvent((EntityPlayer) packet.getEntity(mc.world), DeathEvent.Type.TOTEMPOP));
             }
         }
         if (event.getPacket() instanceof SPacketEntityMetadata) {
@@ -63,6 +65,7 @@ public class CombatManager implements MC {
                 for (EntityDataManager.DataEntry v : packet.getDataManagerEntries()) {
                     if (v.getKey().equals(EntityLivingBase.HEALTH) && (float)v.getValue() <= 0) {
                         handleDeath((EntityPlayer) mc.world.getEntityByID(packet.getEntityId()));
+                        Spark.eventBus.post(new DeathEvent((EntityPlayer) mc.world.getEntityByID(packet.getEntityId()), DeathEvent.Type.DEATH));
                     }
                 }
 
@@ -75,54 +78,51 @@ public class CombatManager implements MC {
 
     void handleDeath(EntityPlayer player) {
 
-        int diedAfterPops = getTotemPops(player);
 
+    }
 
-
-        if(mc.player != player)
-        {
-            if (Notifications.INSTANCE.death.getValue() && Notifications.INSTANCE.isEnabled())
-                Notifications.addNotification(new Notification(StringUtil.getDeathString(player,diedAfterPops),player));
-
-            //detect if we killed him/her
-            Module killedWith = null;
-
-            if(player.equals(CrystalAura.instance.getTarget()))
-                killedWith = CrystalAura.instance;
-            else if(player.equals(KillAura.instance.getTarget()))
-                killedWith = KillAura.instance;
-            else if(CevBreaker.INSTANCE.isInAttackZone(player))
-                killedWith = CevBreaker.INSTANCE;
-            else if(ShulkerAura.INSTANCE.isInAttackZone(player))
-                killedWith = ShulkerAura.INSTANCE;
-            else if(TntAura.INSTANCE.isInAttackZone(player))
-                killedWith = TntAura.INSTANCE;
-
-            if(killedWith != null)
-            {
-                Kill kill = new Kill(Spark.socialManager.getSocial(player.getName()),killedWith);
-
-                if(AutoGG.instance.isEnabled())
-                    AutoGG.instance.onKilledPlayer(kill,player);
-                //looks like we killed him/her :(
-                kills.add(kill);
+    @SubscribeEvent
+    void DeathEvent(DeathEvent event) {
+        EntityPlayer player = event.getEntity();
+        if (event.getType() == DeathEvent.Type.TOTEMPOP) {
+            this.popList.merge(player.getName(), 1, Integer::sum);
+            if (!player.equals(mc.player) && player.isEntityAlive() && Notifications.INSTANCE.pop.getValue() && Notifications.INSTANCE.isEnabled()) {
+                Notifications.addNotification(new Notification(StringUtil.getPopString(player, getTotemPops(player)), player));
             }
+        } else {
+            int diedAfterPops = getTotemPops(player);
+            if(mc.player != player)
+            {
+                if (Notifications.INSTANCE.death.getValue() && Notifications.INSTANCE.isEnabled())
+                    Notifications.addNotification(new Notification(StringUtil.getDeathString(player,diedAfterPops),player));
+
+                //detect if we killed him/her
+                Module killedWith = null;
+
+                if(player.equals(CrystalAura.instance.getTarget()))
+                    killedWith = CrystalAura.instance;
+                else if(player.equals(KillAura.instance.getTarget()))
+                    killedWith = KillAura.instance;
+                else if(CevBreaker.INSTANCE.isInAttackZone(player))
+                    killedWith = CevBreaker.INSTANCE;
+                else if(ShulkerAura.INSTANCE.isInAttackZone(player))
+                    killedWith = ShulkerAura.INSTANCE;
+                else if(TntAura.INSTANCE.isInAttackZone(player))
+                    killedWith = TntAura.INSTANCE;
+
+                if(killedWith != null)
+                {
+                    Kill kill = new Kill(Spark.socialManager.getSocial(player.getName()),killedWith);
+
+                    if(AutoGG.instance.isEnabled())
+                        AutoGG.instance.onKilledPlayer(kill,player);
+                    //looks like we killed him/her :(
+                    kills.add(kill);
+                }
+            }
+            this.setTotemPops(player, 0);
         }
-
-
-        this.setTotemPops(player, 0);
     }
-    void handlePop(EntityPlayer player) {
-        this.popList.merge(player.getName(), 1, Integer::sum);
-        if (!player.equals(mc.player) && player.isEntityAlive() && Notifications.INSTANCE.pop.getValue() && Notifications.INSTANCE.isEnabled()) {
-            Notifications.addNotification(new Notification(StringUtil.getPopString(player,getTotemPops(player)),player));
-        }
-    }
-
-
-
-
-
 
     void setTotemPops(EntityPlayer player, int amount) {
         this.popList.put(player.getName(), amount);

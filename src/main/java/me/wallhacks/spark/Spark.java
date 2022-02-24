@@ -24,7 +24,7 @@ import java.io.File;
 public class Spark implements MC {
     public static final String MODID = "sprk";
     public static final String NAME = "Spark";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.1";
     public static final Logger logger = LogManager.getLogger(MODID);
 
     public static File ParentPath;
@@ -100,7 +100,7 @@ public class Spark implements MC {
 
 
     public static void sendInfo(String msg) {
-        mc.player.sendMessage(new TextComponentString(ChatFormatting.DARK_PURPLE + "[Spark.Sex]" + ChatFormatting.GRAY + " " + msg));
+        mc.player.sendMessage(new TextComponentString(ChatFormatting.DARK_PURPLE + "[Spark]" + ChatFormatting.GRAY + " " + msg));
     }
     
     public static void sendError(String msg) {

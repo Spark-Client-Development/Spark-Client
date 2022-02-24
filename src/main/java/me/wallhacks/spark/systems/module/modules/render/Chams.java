@@ -1,9 +1,16 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
+import com.mojang.authlib.GameProfile;
+import me.wallhacks.spark.event.entity.DeathEvent;
 import me.wallhacks.spark.event.render.RenderLivingEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
+import me.wallhacks.spark.systems.setting.settings.ColorSetting;
+import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
+import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.render.RenderUtil;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,15 +18,14 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
-import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
-import me.wallhacks.spark.systems.setting.settings.ColorSetting;
-import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
-import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -37,13 +43,18 @@ public class Chams extends Module {
     BooleanSetting lighting = new BooleanSetting("Lighting", this, false);
     ColorSetting hiddenColor = new ColorSetting("HiddenColor", this, new Color(0x442CD512, true));
     ColorSetting visibleColor = new ColorSetting("VisibleColor", this, new Color(0x5715D7D7, true));
+    BooleanSetting popChams = new BooleanSetting("PopChams", this, false, "PopChams");
+    ColorSetting popColor = new ColorSetting("PopColor", this, new Color(0x76FFFFFF, true), "PopChams");
+    DoubleSetting popTime = new DoubleSetting("StayTime", this, 1.5D, 0.5D, 5D, "PopChams");
     ModeSetting glint = new ModeSetting("Glint", this, "Off", Arrays.asList("Off", "Normal", "Custom"), "Glint");
     DoubleSetting glintScale = new DoubleSetting("GlintScale", this, 1.0f, 0.1f, 10.0f, "Glint");
     DoubleSetting glintSpeed = new DoubleSetting("GlintSpeed", this, 5.0f, 0.1f, 20.0f, "Glint");
 
+    CopyOnWriteArrayList<PopCham> pops = new CopyOnWriteArrayList<>();
+
     @SubscribeEvent
     public void onRenderLivingBase(RenderLivingEvent event) {
-        if ((event.getEntity() instanceof EntityPlayer && players.getValue()) || (event.getEntity() instanceof EntityMob && mobs.getValue()) || (event.getEntity() instanceof EntityAnimal && animals.getValue())) {
+        if ((event.getEntity() instanceof PopCham) || (event.getEntity() instanceof EntityPlayer && players.getValue()) || (event.getEntity() instanceof EntityMob && mobs.getValue()) || (event.getEntity() instanceof EntityAnimal && animals.getValue()) && event.getEntity().world == mc.world) {
             GlStateManager.pushMatrix();
             GL11.glPushAttrib(1048575);
             ((EntityLivingBase) event.getEntity()).hurtTime = 0;
@@ -57,7 +68,7 @@ public class Chams extends Module {
             boolean bipedHeadwear = false;
             if (lighting.getValue())
                 GlStateManager.disableLighting();
-            if (!texture.getValue()) {
+            if (!texture.getValue() || event.getEntity() instanceof PopCham) {
                 if (event.getModelBase() instanceof ModelPlayer) {
                     ModelPlayer modelPlayer = (ModelPlayer) event.getModelBase();
                     bipedLeftArmwear = modelPlayer.bipedLeftArmwear.showModel;
@@ -75,30 +86,48 @@ public class Chams extends Module {
                 }
                 GlStateManager.disableTexture2D();
             }
+            Color color = popColor.getColor();
+            if (event.getEntity() instanceof PopCham) {
+                PopCham popCham = (PopCham) event.getEntity();
+                double factor = 1 - (popCham.timer.getPassedTimeMs() / (popTime.getValue() * 1000L));
+                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (color.getAlpha() * factor));
+            }
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
             GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
             GL11.glDepthFunc(GL_GEQUAL);
-            RenderUtil.setColor(hiddenColor.getColor());
+            if (event.getEntity() instanceof PopCham)
+                RenderUtil.setColor(color);
+            else
+                RenderUtil.setColor(hiddenColor.getColor());
             GL11.glLineWidth(2.0f);
             handleMode(event);
-            if (visible.getValue()) {
+            if (visible.getValue() || event.getEntity() instanceof PopCham) {
                 event.setCanceled(true);
                 GL11.glDepthFunc(GL_LEQUAL);
-                RenderUtil.setColor(visibleColor.getColor());
+                if (event.getEntity() instanceof PopCham)
+                    RenderUtil.setColor(color);
+                else
+                    RenderUtil.setColor(visibleColor.getColor());
                 handleMode(event);
             }
             if (!glint.is("Off") && !mode.is("Wire")) {
-                RenderUtil.setColor(hiddenColor.getColor());
+                if (event.getEntity() instanceof PopCham)
+                    RenderUtil.setColor(color);
+                else
+                    RenderUtil.setColor(hiddenColor.getColor());
                 GL11.glDepthFunc(GL_GEQUAL);
                 renderShine(event);
-                if (visible.getValue()) {
+                if (visible.getValue() || event.getEntity() instanceof PopCham) {
                     GL11.glDepthFunc(GL_LEQUAL);
-                    RenderUtil.setColor(visibleColor.getColor());
+                    if (event.getEntity() instanceof PopCham)
+                        RenderUtil.setColor(color);
+                    else
+                        RenderUtil.setColor(visibleColor.getColor());
                     renderShine(event);
                 }
             }
             GL11.glDepthFunc(GL_LESS);
-            if (!texture.getValue()) {
+            if (!texture.getValue() || event.getEntity() instanceof PopCham) {
                 GlStateManager.enableTexture2D();
                 if (event.getModelBase() instanceof ModelPlayer) {
                     ModelPlayer modelPlayer = (ModelPlayer) event.getModelBase();
@@ -124,7 +153,7 @@ public class Chams extends Module {
         switch (mode.getValue()) {
             case "Fill":
                 if (glint.is("Off") || texture.getValue())
-                renderModel(event);
+                    renderModel(event);
                 break;
             case "WireFill":
                 if (glint.is("Off") || texture.getValue())
@@ -136,13 +165,34 @@ public class Chams extends Module {
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
     }
 
+    @SubscribeEvent
+    public void onRender3d(RenderWorldLastEvent event) {
+        boolean flag = false;
+        pops.removeIf(popCham -> popCham.timer.passedS(popTime.getValue()));
+        for (PopCham popCham : pops) {
+            if (popCham != null)
+                try {
+                    mc.renderManager.renderEntityStatic(popCham, popCham.partial, true);
+                } catch (Exception e) {
+                    flag = true;
+                }
+        }
+        if (flag) pops.clear();
+    }
+
+    @SubscribeEvent
+    public void deathEvent(DeathEvent event) {
+        if (event.getEntity() != mc.player && event.getType() == DeathEvent.Type.TOTEMPOP)
+            pops.add(new PopCham(event.getEntity()));
+    }
+
     private void renderModel(RenderLivingEvent event) {
         event.getModelBase().render(event.getEntity(), event.getLimbSwing(), event.getLimbSwingAmount(), event.getAgeInTicks(), event.getNetHeadYaw(), event.getHeadPitch(), event.getScaleFactor());
     }
 
     private void renderShine(RenderLivingEvent event) {
         mc.getTextureManager().bindTexture(glint.is("Custom") ? CUSTOM : RES_ITEM_GLINT);
-        if (!texture.getValue())
+        if (!texture.getValue() || event.getEntity() instanceof PopCham)
             GlStateManager.enableTexture2D();
         for (int i = 0; i < 2; ++i) {
             GlStateManager.matrixMode(GL_TEXTURE);
@@ -150,7 +200,7 @@ public class Chams extends Module {
             float f8 = 0.33333334f * glintScale.getValue().floatValue();
             GlStateManager.scale(f8, f8, f8);
             GlStateManager.rotate(30.0f - (float) i * 60.0f, 0.0f, 0.0f, 1.0f);
-            GlStateManager.translate(0.0f, ((float) event.getEntity().ticksExisted + mc.getRenderPartialTicks()) * (0.001f + (float) i * 0.003f) * glintSpeed.getValue().floatValue(), 0.0f);
+            GlStateManager.translate(0.0f, ((float) mc.player.ticksExisted + mc.getRenderPartialTicks()) * (0.001f + (float) i * 0.003f) * glintSpeed.getValue().floatValue(), 0.0f);
             GlStateManager.matrixMode(GL_MODELVIEW);
             GL11.glTranslatef(0.0f, 0.0f, 0.0f);
             renderModel(event);
@@ -158,7 +208,39 @@ public class Chams extends Module {
         GlStateManager.matrixMode(GL_TEXTURE);
         GlStateManager.loadIdentity();
         GlStateManager.matrixMode(GL_MODELVIEW);
-        if (!texture.getValue())
+        if (!texture.getValue() || event.getEntity() instanceof PopCham)
             GlStateManager.disableTexture2D();
+    }
+
+    public class PopCham extends EntityOtherPlayerMP {
+        Timer timer;
+        float partial;
+
+        public PopCham(EntityPlayer player) {
+            //ding dong
+            super(mc.world, new GameProfile(UUID.fromString("fb43302e-b957-46af-822d-7742d624dd24"), "dummy"));
+            posY = player.posY;
+            posX = player.posX;
+            posZ = player.posZ;
+            prevPosX = player.prevPosX;
+            prevPosY = player.prevPosY;
+            prevPosZ = player.prevPosZ;
+            limbSwing = player.limbSwing;
+            ticksExisted = player.ticksExisted;
+            limbSwingAmount = player.limbSwingAmount;
+            prevLimbSwingAmount = player.prevLimbSwingAmount;
+            lastTickPosX = player.lastTickPosX;
+            lastTickPosY = player.lastTickPosY;
+            lastTickPosZ = player.lastTickPosZ;
+            rotationYaw = player.rotationYaw;
+            rotationYawHead = player.rotationYawHead;
+            rotationPitch = player.rotationPitch;
+            prevRotationPitch = player.prevRotationPitch;
+            prevRotationYaw = player.prevRotationYaw;
+            prevRotationYawHead = player.prevRotationYawHead;
+            pops.add(this);
+            timer = new Timer().reset();
+            partial = mc.getRenderPartialTicks();
+        }
     }
 }

@@ -28,11 +28,8 @@ public class Jesus extends Module {
         {
             IBlockState state1 = mc.world.getBlockState(event.getBlockPos());
 
-            if(state1.getBlock() instanceof BlockLiquid)
-            {
-                //thanks geza for epic water height thing - searched for this for ages. Have it now :D ez skid
-                double h = 1.125 - (double) (state1.getValue(BlockLiquid.LEVEL) + 1) / 8d;
-                event.setBoundingBox(new AxisAlignedBB(0, 0, 0, 1, MathHelper.clamp(h + 0.125, 0.125, 1), 1));
+            if(state1.getBlock() instanceof BlockLiquid) {
+                event.setBoundingBox(new AxisAlignedBB(0, 0, 0, 1, 0.95, 1));
                 event.setCanceled(true);
             }
         }
@@ -79,7 +76,7 @@ public class Jesus extends Module {
                 else if(!solidWater)
                 {
                     if(!mc.gameSettings.keyBindJump.isKeyDown() || mc.world.getBlockState(PlayerUtil.getPlayerPosFloored(mc.player,0.5)).getBlock() == Blocks.AIR)
-                        mc.player.setVelocity(mc.player.motionX, 0.11, mc.player.motionZ);
+                        if (mc.player.ridingEntity != null) mc.player.ridingEntity.motionY = 0.11; else mc.player.motionY = 0.11;
 
                 }
 
