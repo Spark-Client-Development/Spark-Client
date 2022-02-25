@@ -38,7 +38,7 @@ public class CevBreaker extends Module {
 
     IntSetting breakBlockDelay = new IntSetting("breakBlockDelay",this,1,0,10);
     IntSetting placeBlockDelay = new IntSetting("placeBlockDelay",this,1,0,10);
-    IntSetting breakCrystalDelay = new IntSetting("breakCrystalDelay",this,6,0,10);
+    IntSetting breakCrystalDelay = new IntSetting("breakCrystalDelay",this,1,0,10);
     IntSetting placeCrystalDelay = new IntSetting("placeCrystalDelay",this,1,0,10);
 
 
@@ -148,7 +148,7 @@ public class CevBreaker extends Module {
         else if(isBlockThere)
         {
             isMiningBlock = true;
-            if(Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),3))
+            if(Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),switchingMode.is("Const"),3))
             {
                 isMiningBlock = false;
                 cooldown = breakCrystalDelay.getValue();

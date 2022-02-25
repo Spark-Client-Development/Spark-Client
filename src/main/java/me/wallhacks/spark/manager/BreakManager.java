@@ -32,13 +32,16 @@ public class BreakManager implements MC {
     public BlockPos block = null;
     int ticks = 0;
     boolean instMine;
+    boolean constSwitch;
+
+    public boolean setCurrentBlock(BlockPos pos,boolean instMin,int keepTicks) {
+        return setCurrentBlock(pos,instMine,false,keepTicks);
+    }
+    public boolean setCurrentBlock(BlockPos pos,boolean instMine,boolean constSwitch,int keepTicks) {
 
 
-    public boolean setCurrentBlock(BlockPos pos,boolean instMine,int keepTicks) {
 
-
-
-
+        this.constSwitch = constSwitch;
         block = pos;
         this.instMine = instMine;
         ticks = keepTicks;
@@ -50,7 +53,8 @@ public class BreakManager implements MC {
             {
                 if(PacketMine.instance.ticksFromDone() < 3)
                 {
-                    Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.usedHand.Mainhand, ItemSwitcher.switchType.Normal);
+
+                    Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.usedHand.Mainhand, constSwitch ? ItemSwitcher.switchType.Const : ItemSwitcher.switchType.Normal);
                     return PacketMine.instance.tryMine();
                 }
 
@@ -124,7 +128,7 @@ public class BreakManager implements MC {
                     return;
             }
 
-            Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.usedHand.Mainhand, ItemSwitcher.switchType.Normal);
+            Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.usedHand.Mainhand, constSwitch ? ItemSwitcher.switchType.Const : ItemSwitcher.switchType.Normal);
         }
 
 
