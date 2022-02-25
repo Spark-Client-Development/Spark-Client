@@ -19,6 +19,7 @@ import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.ItemForFightSwi
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecItemSwitchItem;
 import me.wallhacks.spark.util.render.EspUtil;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -70,10 +71,10 @@ public class CrystalAura extends Module {
 
 
     ModeSetting Replace = new ModeSetting("Replace", this,"Instant", Arrays.asList("EntityRemove", "Instant","TickAfterExplosion", "OnExplosionPack"), "Time");
-
+    IntSetting speed = new IntSetting("Speed", this, 18, 1, 20, "Time");
     IntSetting breakCooldown = new IntSetting("BreakCooldown", this, 6, 0, 10, "Time");
     IntSetting placeCooldown = new IntSetting("PlaceCooldown", this, 6, 0, 10, "Time");
-    IntSetting placeTries = new IntSetting("placeTries", this, 2, 1, 5, "Time");
+    IntSetting placeTries = new IntSetting("PlaceTries", this, 2, 1, 5, "Time");
 
 
     IntSetting breakDelay = new IntSetting("BreakDelay", this, 1, 0, 5, "Time");
@@ -116,7 +117,7 @@ public class CrystalAura extends Module {
     int PlacePauseTimer = 0;
     int BreakPauseTimer = 0;
     int PlaceTries = 0;
-
+    float tick;
     boolean isUpdate = false;
 
     public static CrystalAura instance;
@@ -163,13 +164,17 @@ public class CrystalAura extends Module {
 
     //main ca logic
     void ca() {
-
         DelayTimer++;
 
         if (BreakPauseTimer > 0)
             BreakPauseTimer--;
         if (PlacePauseTimer > 0)
             PlacePauseTimer--;
+
+        if (tick > 1) {
+            tick-=1;
+            return;
+        } else tick += (20-speed.getValue())/20f;
 
         if (shouldPause()) return;
         //get crystal  entity to break

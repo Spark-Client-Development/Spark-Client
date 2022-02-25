@@ -44,6 +44,7 @@ public class Chams extends Module {
     ColorSetting hiddenColor = new ColorSetting("HiddenColor", this, new Color(0x442CD512, true));
     ColorSetting visibleColor = new ColorSetting("VisibleColor", this, new Color(0x5715D7D7, true));
     BooleanSetting popChams = new BooleanSetting("PopChams", this, false, "PopChams");
+    BooleanSetting deathChams = new BooleanSetting("DeathChams", this, false, "PopChams");
     ColorSetting popColor = new ColorSetting("PopColor", this, new Color(0x76FFFFFF, true), "PopChams");
     DoubleSetting popTime = new DoubleSetting("StayTime", this, 1.5D, 0.5D, 5D, "PopChams");
     ModeSetting glint = new ModeSetting("Glint", this, "Off", Arrays.asList("Off", "Normal", "Custom"), "Glint");
@@ -95,6 +96,10 @@ public class Chams extends Module {
             if (event.getEntity() instanceof PopCham) {
                 PopCham popCham = (PopCham) event.getEntity();
                 double factor = 1 - (popCham.timer.getPassedTimeMs() / (popTime.getValue() * 1000L));
+                if (factor < 0) {
+                    popCham.flag = true;
+                    factor = 0;
+                }
                 color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (color.getAlpha() * factor));
             }
             GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
@@ -173,7 +178,7 @@ public class Chams extends Module {
     @SubscribeEvent
     public void onRender3d(RenderWorldLastEvent event) {
         boolean flag = false;
-        pops.removeIf(popCham -> popCham.timer.passedS(popTime.getValue()));
+        pops.removeIf(popCham -> popCham.flag);
         for (PopCham popCham : pops) {
             if (popCham != null)
                 try {
@@ -187,7 +192,7 @@ public class Chams extends Module {
 
     @SubscribeEvent
     public void deathEvent(DeathEvent event) {
-        if (event.getEntity() != mc.player && event.getType() == DeathEvent.Type.TOTEMPOP && popChams.getValue())
+        if (event.getEntity() != mc.player && ((event.getType() == DeathEvent.Type.TOTEMPOP && popChams.getValue()) || (event.getType() == DeathEvent.Type.DEATH && deathChams.getValue())))
             pops.add(new PopCham(event.getEntity()));
     }
 
@@ -220,7 +225,7 @@ public class Chams extends Module {
     public class PopCham extends EntityOtherPlayerMP {
         Timer timer;
         float partial;
-
+        boolean flag = false;
         public PopCham(EntityPlayer player) {
             //ding dong
             super(mc.world, new GameProfile(UUID.fromString("fb43302e-b957-46af-822d-7742d624dd24"), "dummy"));
