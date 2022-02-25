@@ -1,10 +1,15 @@
 package me.wallhacks.spark.mixin.mixins.spark;
 
+import me.wallhacks.spark.systems.module.modules.combat.Surround;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import me.wallhacks.spark.systems.module.modules.movement.Velocity;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public class MixinEntity {
@@ -16,4 +21,5 @@ public class MixinEntity {
             entity.motionZ += z;
         }
     }
+
 }

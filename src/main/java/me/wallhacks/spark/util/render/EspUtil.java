@@ -12,6 +12,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -334,6 +335,54 @@ public class EspUtil implements MC {
     public static void entityESPTracers(Entity entity, Color c, int lineWidth) {
         double p_188388_2_ = mc.getRenderPartialTicks();
         renderTracers(new Vec3d(entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * p_188388_2_, entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * p_188388_2_, entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * p_188388_2_), c, lineWidth);
+    }
+
+    public static void chunkEsp(Chunk c, Color col, double yPos)
+    {
+        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glLineWidth(2.0F);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(false);
+
+
+        double startX = c.getPos().getXStart() - Minecraft.getMinecraft().getRenderManager().viewerPosX;
+        double endX = c.getPos().getXEnd() - Minecraft.getMinecraft().getRenderManager().viewerPosX;
+        double y = yPos - Minecraft.getMinecraft().getRenderManager().viewerPosY;
+        double startZ = c.getPos().getZStart() - Minecraft.getMinecraft().getRenderManager().viewerPosZ;
+        double endZ = c.getPos().getZEnd() - Minecraft.getMinecraft().getRenderManager().viewerPosZ;
+
+
+
+
+        GL11.glColor4f(col.getRed()/255f, col.getGreen()/255f, col.getBlue()/255f, col.getAlpha()/255f);
+
+
+        GL11.glBegin(GL11.GL_LINES);
+
+        GL11.glVertex3d(startX, y, startZ);
+        GL11.glVertex3d(endX, y, startZ);
+
+
+        GL11.glVertex3d(endX, y, startZ);
+        GL11.glVertex3d(endX, y, endZ);
+
+
+        GL11.glVertex3d(endX, y, endZ);
+        GL11.glVertex3d(startX, y, endZ);
+
+
+        GL11.glVertex3d(startX, y, endZ);
+        GL11.glVertex3d(startX, y, startZ);
+
+
+        GL11.glEnd();
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(true);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     public static void renderTracers(Vec3d end, Color color, int lineWidth) {

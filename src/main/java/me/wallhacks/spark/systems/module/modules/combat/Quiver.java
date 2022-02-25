@@ -52,7 +52,7 @@ public class Quiver extends Module {
     public void onUpdateEvent(PlayerUpdateEvent event) {
         if (nullCheck()) return;
         if (mc.currentScreen != null) return;
-        if (stage != 0 && ItemSwitcher.Switch(new SpecItemSwitchItem(Items.BOW), ItemSwitcher.switchType.Mainhand) == null) {
+        if (stage != 0 && Spark.switchManager.Switch(new SpecItemSwitchItem(Items.BOW), ItemSwitcher.usedHand.Mainhand) == null) {
             this.disable();
             Spark.sendInfo("No bow found");
             return;

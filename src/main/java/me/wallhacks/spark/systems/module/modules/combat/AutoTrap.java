@@ -1,15 +1,18 @@
 package me.wallhacks.spark.systems.module.modules.combat;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.world.GriefHelper;
 import me.wallhacks.spark.systems.module.modules.world.LogoutSpots;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.PredictionUtil;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
+import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.HardSolidBlockSwitchItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -28,10 +31,10 @@ public class AutoTrap extends Module {
 
 
     IntSetting prediction = new IntSetting("Prediction",this,2,1,8);
-    BooleanSetting silentSwitch = new BooleanSetting("SilentSwitch",this,true);
     IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,8);
     BooleanSetting logoutSpots = new BooleanSetting("LogoutSpots", this, false);
-    
+
+    ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal",  Arrays.asList("Normal","Silent","Const"));
 
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
@@ -145,14 +148,8 @@ public class AutoTrap extends Module {
 
 
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
-        int lastItem = mc.player.inventory.currentItem;
 
-
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(),true,true,4,false));
-
-
-        if(silentSwitch.isOn())
-            mc.player.inventory.currentItem = lastItem;
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(), Spark.switchManager.getModeFromString(switchingMode.getValue()),true,true,4,false));
 
         return res;
 

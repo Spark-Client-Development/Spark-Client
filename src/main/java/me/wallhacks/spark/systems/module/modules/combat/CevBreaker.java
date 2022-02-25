@@ -8,6 +8,7 @@ import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.CrystalUtil;
 import me.wallhacks.spark.util.objects.FadePos;
@@ -33,11 +34,11 @@ import java.awt.*;
 @Module.Registration(name = "CevBreaker", description = "Steals from chests")
 public class CevBreaker extends Module {
 
-
+    ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes);
 
     IntSetting breakBlockDelay = new IntSetting("breakBlockDelay",this,1,0,10);
     IntSetting placeBlockDelay = new IntSetting("placeBlockDelay",this,1,0,10);
-    IntSetting breakCrystalDelay = new IntSetting("breakCrystalDelay",this,6,0,10);
+    IntSetting breakCrystalDelay = new IntSetting("breakCrystalDelay",this,1,0,10);
     IntSetting placeCrystalDelay = new IntSetting("placeCrystalDelay",this,1,0,10);
 
 
@@ -147,7 +148,7 @@ public class CevBreaker extends Module {
         else if(isBlockThere)
         {
             isMiningBlock = true;
-            if(Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),3))
+            if(Spark.breakManager.setCurrentBlock(CevBlock,insta.isOn(),switchingMode.is("Const"),3))
             {
                 isMiningBlock = false;
                 cooldown = breakCrystalDelay.getValue();
@@ -180,7 +181,7 @@ public class CevBreaker extends Module {
 
 
     BlockInteractUtil.BlockPlaceResult place(BlockPos p) {
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p,new SpecBlockSwitchItem(Blocks.OBSIDIAN),true,true,4));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p,new SpecBlockSwitchItem(Blocks.OBSIDIAN), Spark.switchManager.getModeFromString(switchingMode.getValue()),true,true,4));
         if(res == BlockInteractUtil.BlockPlaceResult.PLACED)
             if (render.getValue())
                 new FadePos(p, fill,true);
@@ -204,7 +205,7 @@ public class CevBreaker extends Module {
             facing = EnumFacing.EAST;
 
         //offhand
-        EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.switchType.Both);
+        EnumHand hand = Spark.switchManager.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.usedHand.Both, switchingMode.getValue());
         if (hand == null)
             return false;
 

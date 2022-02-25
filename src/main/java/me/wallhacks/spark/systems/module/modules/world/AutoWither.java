@@ -6,6 +6,7 @@ import com.github.lunatrius.schematica.proxy.ClientProxy;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.player.RightClickEvent;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
@@ -42,13 +43,17 @@ public class AutoWither extends Module {
     ModeSetting witherPlaceMode = new ModeSetting("Place", this, "Toggle", Arrays.asList("Toggle","ClickSkull","Walk"), "Place");
     IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,10,"Place");
 
+
+    BooleanSetting autoName = new BooleanSetting("AutoName", this, true, "Place");
+    BooleanSetting rotateForName = new BooleanSetting("RotateForName", this, true, v -> autoName.isOn(),"Place");
+
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DC865E, true), "Render");
 
 
 
-    BooleanSetting autoName = new BooleanSetting("AutoName", this, true, "Place");
-    BooleanSetting rotateForName = new BooleanSetting("RotateForName", this, true, v -> autoName.isOn(),"Place");
+
+
 
     int isDone = 0;
 
@@ -62,7 +67,7 @@ public class AutoWither extends Module {
                     EntityWither w = (EntityWither)entity;
                     if(w.getDisplayName().getUnformattedComponentText().equalsIgnoreCase("Wither"))
                     {
-                        EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.NAME_TAG), ItemSwitcher.switchType.Both);
+                        EnumHand hand = Spark.switchManager.Switch(new SpecItemSwitchItem(Items.NAME_TAG), ItemSwitcher.usedHand.Both,AntiCheatConfig.getInstance().getBlockPlaceSwitchType());
 
                         if(hand != null)
                         {
@@ -136,7 +141,7 @@ public class AutoWither extends Module {
                 placeWither = null;
 
                 if(witherPlaceMode.isValueName("ClickSkull"))
-                    ItemSwitcher.Switch(new SpecItemSwitchItem(Items.SKULL), ItemSwitcher.switchType.Both);
+                    Spark.switchManager.Switch(new SpecItemSwitchItem(Items.SKULL), ItemSwitcher.usedHand.Both);
             }
             else
                 isDone--;

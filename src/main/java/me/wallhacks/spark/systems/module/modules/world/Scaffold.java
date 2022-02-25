@@ -1,12 +1,15 @@
 package me.wallhacks.spark.systems.module.modules.world;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
+import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SolidBlockSwitchItem;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
@@ -16,6 +19,7 @@ import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
 
 import java.awt.*;
+import java.util.Arrays;
 
 @Module.Registration(name = "Scaffold", description = "Steals from chests")
 public class Scaffold extends Module {
@@ -28,7 +32,6 @@ public class Scaffold extends Module {
     IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> Tower.isOn(),"General");
     BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,"General");
 
-    BooleanSetting Silent = new BooleanSetting("SilentSwitch",this,false,"General");
 
 
 
@@ -36,6 +39,7 @@ public class Scaffold extends Module {
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC5E, true), "Render");
 
 
+    ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal",  Arrays.asList("Normal","Silent","Const"));
 
 
     Timer scaffoldPauseTimer = new Timer();
@@ -75,7 +79,7 @@ public class Scaffold extends Module {
             if(Place(floorPos) == BlockInteractUtil.BlockPlaceResult.PLACED) {
                 if (render.getValue())
                     new FadePos(floorPos, fill, true);
-                if(mc.gameSettings.keyBindJump.isKeyDown())
+                if(mc.gameSettings.keyBindJump.isKeyDown() && mc.player.movementInput.moveStrafe == 0 && mc.player.movementInput.moveForward == 0)
                 {
                     lastTowerPlaced.reset();
 
@@ -134,7 +138,6 @@ public class Scaffold extends Module {
 
 
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
-        int lastItem = mc.player.inventory.currentItem;
 
         //prevent falling down
         if(BlockInteractUtil.getDirForPlacingBlockAtPos(x) == null){
@@ -147,11 +150,9 @@ public class Scaffold extends Module {
             }
         }
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new SolidBlockSwitchItem(),true,true,18));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new SolidBlockSwitchItem(), Spark.switchManager.getModeFromString(switchingMode.getValue()),true,true,18));
 
 
-        if(Silent.isOn())
-            mc.player.inventory.currentItem = lastItem;
 
         return res;
 

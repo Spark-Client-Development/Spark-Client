@@ -178,7 +178,7 @@ public class TntAura extends Module {
             if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 6, false, true))
                 return;
 
-            EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.FLINT_AND_STEEL), ItemSwitcher.switchType.Both);
+            EnumHand hand = Spark.switchManager.Switch(new SpecItemSwitchItem(Items.FLINT_AND_STEEL), ItemSwitcher.usedHand.Both);
 
             if(hand == null)
                 return;

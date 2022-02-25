@@ -26,6 +26,7 @@ public abstract class MixinEntityPlayer implements MC {
         if((Object)this instanceof EntityPlayerSP) {
             PlayerUpdateEvent event = new PlayerUpdateEvent();
             Spark.eventBus.post(event);
+            Spark.switchManager.OnLateUpdate();
         }
     }
 

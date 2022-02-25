@@ -5,10 +5,12 @@ import com.github.lunatrius.core.util.math.MBlockPos;
 import com.github.lunatrius.schematica.proxy.ClientProxy;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
@@ -22,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
+import java.util.Arrays;
 
 @Module.Registration(name = "GriefHelper", description = "Places tnt")
 public class GriefHelper extends Module {
@@ -30,6 +33,7 @@ public class GriefHelper extends Module {
     IntSetting delay = new IntSetting("Delay",this,0,0,8,"General");
     BooleanSetting render = new BooleanSetting("Render", this, true, "General");
     ColorSetting fill = new ColorSetting("Fill", this, new Color(0x389F5EDC, true), "General");
+
 
 
     int cooldown = 0;
