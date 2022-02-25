@@ -79,7 +79,7 @@ public class Scaffold extends Module {
             if(Place(floorPos) == BlockInteractUtil.BlockPlaceResult.PLACED) {
                 if (render.getValue())
                     new FadePos(floorPos, fill, true);
-                if(mc.gameSettings.keyBindJump.isKeyDown())
+                if(mc.gameSettings.keyBindJump.isKeyDown() && mc.player.movementInput.moveStrafe == 0 && mc.player.movementInput.moveForward == 0)
                 {
                     lastTowerPlaced.reset();
 
