@@ -15,7 +15,7 @@ public class SwitchManager implements MC {
 
     int delay = 0;
 
-    boolean silentSwitched = false;
+    boolean didInventorySwitch = false;
     int fromInvSlot;
     int toInvSlot;
     int realSlot;
@@ -23,9 +23,9 @@ public class SwitchManager implements MC {
 
 
     public void setDoInvSwitch(int fromInvSlot,int toInvSlot,int delay){
-        if(silentSwitched)
+        if(didInventorySwitch)
             return;
-        silentSwitched = true;
+        didInventorySwitch = true;
         this.delay = delay;
         this.fromInvSlot = fromInvSlot;
         this.toInvSlot = toInvSlot;
@@ -34,14 +34,14 @@ public class SwitchManager implements MC {
 
     public void OnLateUpdate() {
 
-        if(silentSwitched)
+        if(didInventorySwitch)
         {
             if(delay <= 0)
             {
                 if(fromInvSlot != toInvSlot)
                     InventoryUtil.moveItem(fromInvSlot,toInvSlot);
 
-                silentSwitched = false;
+                didInventorySwitch = false;
             }
             delay--;
 
@@ -166,7 +166,7 @@ public class SwitchManager implements MC {
     //gets action that needs to be done for switching to item
     public ItemSwitcher.SwitchResult getCalculateAction(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType type){
 
-        if(type == ItemSwitcher.switchType.NoSwitch || handType == ItemSwitcher.usedHand.Offhand)
+        if(type == ItemSwitcher.switchType.NoSwitch || handType == ItemSwitcher.usedHand.Offhand || (type == ItemSwitcher.switchType.Const && didInventorySwitch))
         {
             float main = ((handType == ItemSwitcher.usedHand.Both || handType == ItemSwitcher.usedHand.Mainhand) ? switcher.isItemGood(mc.player.getHeldItemMainhand()) : 0);
             float off = ((handType == ItemSwitcher.usedHand.Both || handType == ItemSwitcher.usedHand.Offhand) ? switcher.isItemGood(mc.player.getHeldItemOffhand()) : 0);
