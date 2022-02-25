@@ -50,7 +50,7 @@ public class BreakManager implements MC {
             {
                 if(PacketMine.instance.ticksFromDone() < 3)
                 {
-                    ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
+                    Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.usedHand.Mainhand, ItemSwitcher.switchType.Normal);
                     return PacketMine.instance.tryMine();
                 }
 
@@ -124,7 +124,7 @@ public class BreakManager implements MC {
                     return;
             }
 
-            ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.switchType.Mainhand);
+            Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.usedHand.Mainhand, ItemSwitcher.switchType.Normal);
         }
 
 

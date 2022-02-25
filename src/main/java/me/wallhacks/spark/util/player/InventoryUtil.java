@@ -1,6 +1,8 @@
 package me.wallhacks.spark.util.player;
 
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
+import me.wallhacks.spark.util.player.itemswitcher.SwitchItem;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -26,7 +28,7 @@ public class InventoryUtil implements MC {
     {
         ArrayList<Integer> l = new ArrayList<Integer>();
 
-        for (int i = 1; i < mc.player.inventoryContainer.getInventory().size(); i++) {
+        for (int i = 0; i < mc.player.inventoryContainer.getInventory().size(); i++) {
             if (i == 0 || i == 5 || i == 6 || i == 7 || i == 8)
                 continue;
             if(!searchInHotbar) if (i >= 36 && i <= 44) continue;
@@ -43,6 +45,8 @@ public class InventoryUtil implements MC {
         return l;
     }
 
+
+
     public static boolean getHeldItem(Item item) {
         return mc.player.getHeldItemMainhand().getItem().equals(item);
     }
@@ -55,6 +59,9 @@ public class InventoryUtil implements MC {
         }
         return true;
     }
+
+
+
 
     public static float getValueOfArmorItem(ItemStack item){
 

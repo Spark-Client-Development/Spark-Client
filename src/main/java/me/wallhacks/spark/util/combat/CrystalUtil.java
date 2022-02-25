@@ -308,7 +308,7 @@ public class CrystalUtil implements MC {
         int last = mc.player.inventory.currentItem;
         //weakness thing
         if (mc.player.isPotionActive(MobEffects.WEAKNESS) && !(mc.player.isPotionActive(MobEffects.STRENGTH) && mc.player.getActivePotionEffect(MobEffects.STRENGTH).getAmplifier() >= 1)) {
-            if(ItemSwitcher.Switch(new ItemForFightSwitchItem(), AntiCheatConfig.getInstance().antiWeakness.is("Off") ? ItemSwitcher.switchType.NoSwitch : ItemSwitcher.switchType.Mainhand) == null)
+            if(Spark.switchManager.Switch(new ItemForFightSwitchItem(), ItemSwitcher.usedHand.Mainhand, Spark.switchManager.getModeFromString(AntiCheatConfig.getInstance().antiWeakness.getValue())) == null)
                 return false;
 
 

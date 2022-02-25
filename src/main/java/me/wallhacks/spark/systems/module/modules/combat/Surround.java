@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.module.modules.combat;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
@@ -8,6 +9,7 @@ import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
+import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.HardSolidBlockSwitchItem;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import net.minecraft.entity.Entity;
@@ -42,7 +44,7 @@ public class Surround extends Module {
 
 
     BooleanSetting allowNonObi = new BooleanSetting("AllowNonObi",this,true,"ItemSwitch");
-    BooleanSetting silentSwitch = new BooleanSetting("SilentSwitch",this,true,"ItemSwitch");
+    ModeSetting switchingMode = new ModeSetting("Switch", this, "Silent",  Arrays.asList("Normal","Silent","Const"));
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DCB45E, true), "Render");
@@ -176,14 +178,11 @@ public class Surround extends Module {
             }
 
 
-        int lastItem = mc.player.inventory.currentItem;
 
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN), false,false,4,blocksPerTick.getValue() > 1));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN), Spark.switchManager.getModeFromString(switchingMode.getValue()), false,false,4,blocksPerTick.getValue() > 1));
 
 
-        if(silentSwitch.isOn())
-            mc.player.inventory.currentItem = lastItem;
 
         return res;
 

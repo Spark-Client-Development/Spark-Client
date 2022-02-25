@@ -32,7 +32,18 @@ public class BlockInteractUtil implements MC {
         return tryPlaceBlock(pos, switcher, clientSided, checkEntities, rotationStayTicks, false);
     }
 
-    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities, int rotationStayTicks, boolean allowSendMultipleRotPacket){
+
+    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher,ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities, int rotationStayTicks) {
+        return tryPlaceBlock(pos, switcher,switchType, clientSided, checkEntities, rotationStayTicks, false);
+    }
+
+
+    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities, int rotationStayTicks, boolean allowSendMultipleRotPacket) {
+        return tryPlaceBlock(pos, switcher, AntiCheatConfig.getInstance().getBlockPlaceSwitchType(), clientSided, checkEntities, rotationStayTicks, allowSendMultipleRotPacket);
+    }
+
+
+    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher,ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities, int rotationStayTicks, boolean allowSendMultipleRotPacket){
 
         if(!mc.world.getBlockState(pos).getMaterial().isReplaceable())
             return BlockPlaceResult.FAILED;
@@ -40,7 +51,7 @@ public class BlockInteractUtil implements MC {
         Item willuse = null;
         if(switcher != null)
         {
-            willuse = ItemSwitcher.predictItem(switcher, ItemSwitcher.switchType.Both);
+            willuse = Spark.switchManager.predictItem(switcher,ItemSwitcher.usedHand.Both, switchType);
             if(!(willuse instanceof ItemBlock) && !(willuse instanceof ItemSkull) && willuse != Items.SKULL && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
                 return BlockPlaceResult.FAILED;
         }
@@ -60,7 +71,7 @@ public class BlockInteractUtil implements MC {
         if(hitVec == null)
             return BlockPlaceResult.FAILED;
 
-        EnumHand hand = ItemSwitcher.Switch(switcher,ItemSwitcher.switchType.Both);
+        EnumHand hand = Spark.switchManager.Switch(switcher,ItemSwitcher.usedHand.Both,switchType);
         if(hand == null)
             return BlockPlaceResult.FAILED;
 
@@ -74,13 +85,15 @@ public class BlockInteractUtil implements MC {
 
         return processRightClickBlockForPlace(placeOn,face,clientSided,hand,hitVec) ? BlockPlaceResult.PLACED : BlockPlaceResult.FAILED;
     }
-
-    public static BlockPlaceResult tryPlaceBlockOnBlock(BlockPos pos, EnumFacing face, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities, int rotationStayTicks, boolean allowSendMultipleRotPacket){
+    public static BlockPlaceResult tryPlaceBlockOnBlock(BlockPos pos, EnumFacing face, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities, int rotationStayTicks, boolean allowSendMultipleRotPacket) {
+        return tryPlaceBlockOnBlock(pos,face,switcher, ItemSwitcher.switchType.Normal,clientSided,checkEntities,rotationStayTicks,allowSendMultipleRotPacket);
+    }
+    public static BlockPlaceResult tryPlaceBlockOnBlock(BlockPos pos, EnumFacing face, BlockSwitchItem switcher,ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities, int rotationStayTicks, boolean allowSendMultipleRotPacket){
 
         if(!mc.world.getBlockState(pos).getMaterial().isReplaceable())
             return BlockPlaceResult.FAILED;
 
-        Item willuse = ItemSwitcher.predictItem(switcher, ItemSwitcher.switchType.Both);
+        Item willuse = Spark.switchManager.predictItem(switcher, ItemSwitcher.usedHand.Both,switchType);
         if(!(willuse instanceof ItemBlock) && !(willuse instanceof ItemSkull) && willuse != Items.SKULL && willuse != Items.WATER_BUCKET && willuse != Items.LAVA_BUCKET)
             return BlockPlaceResult.FAILED;
 
@@ -100,7 +113,7 @@ public class BlockInteractUtil implements MC {
         if(hitVec == null)
             return BlockPlaceResult.FAILED;
 
-        EnumHand hand = ItemSwitcher.Switch(switcher,ItemSwitcher.switchType.Both);
+        EnumHand hand = Spark.switchManager.Switch(switcher,ItemSwitcher.usedHand.Both,switchType);
         if(hand == null)
             return BlockPlaceResult.FAILED;
 

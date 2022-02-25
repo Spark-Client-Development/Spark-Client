@@ -265,7 +265,7 @@ public class ShulkerAura extends Module {
 
 
         //offhand
-        EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.switchType.Both);
+        EnumHand hand = Spark.switchManager.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.usedHand.Both, ItemSwitcher.switchType.Normal);
         if (hand == null) {
             disable();
             return false;

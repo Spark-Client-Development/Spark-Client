@@ -36,7 +36,7 @@ public class AutoTool extends Module {
     @SubscribeEvent
     public void onPlayerDamageBlockEventPre(PlayerDamageBlockEvent.Pre event) {
 
-        ItemSwitcher.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(event.getPos())), ItemSwitcher.switchType.Mainhand);
+        Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(event.getPos())), ItemSwitcher.usedHand.Mainhand);
 
     }
 

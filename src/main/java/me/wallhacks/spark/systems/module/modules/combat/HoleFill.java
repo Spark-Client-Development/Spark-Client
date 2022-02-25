@@ -1,7 +1,9 @@
 package me.wallhacks.spark.systems.module.modules.combat;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
@@ -9,6 +11,7 @@ import me.wallhacks.spark.util.combat.PredictionUtil;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
+import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.HardSolidBlockSwitchItem;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +28,7 @@ import me.wallhacks.spark.systems.setting.settings.IntSetting;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Module.Registration(name = "HoleFill", description = "Steals from chests")
@@ -32,7 +36,7 @@ public class HoleFill extends Module {
 
     BooleanSetting smart = new BooleanSetting("Smart", this, true, "General");
     IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,1,1,8,"General");
-    BooleanSetting Silent = new BooleanSetting("SilentSwitch",this,false,"General");
+    ModeSetting switchingMode = new ModeSetting("Switch", this, "Silent",  Arrays.asList("Normal","Silent","Const"));
 
     BooleanSetting FillDoubles = new BooleanSetting("FillDoubles",this,true,"General");
 
@@ -147,14 +151,9 @@ public class HoleFill extends Module {
 
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
 
-        int lastItem = mc.player.inventory.currentItem;
 
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(), Spark.switchManager.getModeFromString(switchingMode.getValue()),true,true,4));
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(),true,true,4));
-
-
-        if(Silent.isOn())
-            mc.player.inventory.currentItem = lastItem;
 
         return res;
 

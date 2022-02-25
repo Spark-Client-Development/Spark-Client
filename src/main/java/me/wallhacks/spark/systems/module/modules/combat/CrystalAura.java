@@ -49,6 +49,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
 @Module.Registration(name = "CrystalAura", description = "Superior module litarly best ever")
 public class CrystalAura extends Module {
@@ -79,7 +80,7 @@ public class CrystalAura extends Module {
     IntSetting breakDelay = new IntSetting("BreakDelay", this, 1, 0, 5, "Time");
     IntSetting placeDelay = new IntSetting("PlaceDelay", this, 1, 0, 5, "Time");
 
-    ModeSetting switchMode = new ModeSetting("Switch", this, "Auto", Arrays.asList("Off", "Auto", "Silent"), "Other");
+    ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes, "Other");
 
     BooleanSetting DebugCs = new BooleanSetting("DebugSpeed", this, false, "Other");
     BooleanSetting Debug = new BooleanSetting("Debug", this, false, "Other");
@@ -323,8 +324,7 @@ public class CrystalAura extends Module {
             Offhand.instance.update();
             //hand
 
-
-            EnumHand hand = ItemSwitcher.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), switchMode.is("Off") || Offhand.instance.handlesCrystal() ? ItemSwitcher.switchType.NoSwitch : ItemSwitcher.switchType.Both);
+            EnumHand hand = Spark.switchManager.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.usedHand.Both, switchingMode.getValue());
             if (hand == null)
                 return;
 
@@ -348,12 +348,6 @@ public class CrystalAura extends Module {
             }
 
 
-
-            //if silent switch we switch back to old slot
-            if (switchMode.is("Silent")) {
-                mc.player.inventory.currentItem = oldSlot;
-                mc.playerController.syncCurrentPlayItem();
-            }
 
             //apply cooldown/timeout if failed xamount(2by default) places
             PlaceTries++;

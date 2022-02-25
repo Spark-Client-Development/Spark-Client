@@ -1,10 +1,12 @@
 package me.wallhacks.spark.systems.clientsetting.clientsettings;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
+import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 
 import java.util.Arrays;
 
@@ -38,6 +40,7 @@ public class AntiCheatConfig extends ClientSetting {
         return BlockRotStep.getValue();
     }
 
+    ModeSetting switchingMode = new ModeSetting("PlaceSwitch", this, "Normal",  Arrays.asList("Normal","Silent","Const"),"Blocks");
 
 
     public ModeSetting attackSwing = new ModeSetting("AttackSwing",this,"Normal" ,  Arrays.asList("Off","Normal","Packet"), "Attack");
@@ -76,5 +79,9 @@ public class AntiCheatConfig extends ClientSetting {
 
     public static AntiCheatConfig getInstance(){
         return INSTANCE;
+    }
+
+    public ItemSwitcher.switchType getBlockPlaceSwitchType() {
+        return Spark.switchManager.getModeFromString(switchingMode.getValue());
     }
 }
