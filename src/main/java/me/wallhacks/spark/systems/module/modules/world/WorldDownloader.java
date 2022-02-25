@@ -5,6 +5,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.ChunkLoadEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
+import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
@@ -45,7 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-@Module.Registration(name = "Suffix", description = "steals chunks")
+@Module.Registration(name = "WorldDownloader", description = "steals chunks")
 public class WorldDownloader extends Module {
 
 
@@ -99,7 +100,7 @@ public class WorldDownloader extends Module {
         Chunks.clear();
 
         Spark.sendInfo("["+this.getName()+"] " +ChatFormatting.BLUE +"Download started!");
-        Spark.sendInfo("["+this.getName()+"] "+ ChatFormatting.BLUE +"Saving download to world: §8'"+WorldName+"'");
+        Spark.sendInfo("["+this.getName()+"] "+ ChatFormatting.BLUE +"Saving download to world: '"+WorldName+"'");
 
         downLoadInView();
     }
@@ -157,7 +158,8 @@ public class WorldDownloader extends Module {
 
     ArrayList<Chunk> Chunks = new ArrayList<Chunk>();
 
-    public void onUpdate() {
+    @SubscribeEvent
+    public void onUpdate(PlayerUpdateEvent event) {
 
         if(WorldName == null)
         {
