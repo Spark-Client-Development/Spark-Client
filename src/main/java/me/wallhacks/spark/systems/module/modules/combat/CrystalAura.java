@@ -69,6 +69,8 @@ public class CrystalAura extends Module {
     BooleanSetting breakArmour = new BooleanSetting("BreakArmour", this, true, "Attacking");
     BooleanSetting NoSuicide = new BooleanSetting("NoSuicide", this, true, "Attacking");
 
+    IntSetting switchThreshold = new IntSetting("SwitchThreshold", this, 3, 0, 6, "Attacking");
+
 
     ModeSetting Replace = new ModeSetting("Replace", this,"Instant", Arrays.asList("EntityRemove", "Instant","TickAfterExplosion", "OnExplosionPack"), "Time");
 
@@ -314,17 +316,11 @@ public class CrystalAura extends Module {
                 facing = EnumFacing.EAST;
             renderVec = facing;
 
-            //save old slot
-            int oldSlot = mc.player.inventory.currentItem;
-
-
-
-
             //update offhand
             Offhand.instance.update();
             //hand
 
-            EnumHand hand = Spark.switchManager.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.usedHand.Both, switchingMode.getValue());
+            EnumHand hand = Spark.switchManager.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.usedHand.Both, Spark.switchManager.getModeFromString(switchingMode.getValue()),10);
             if (hand == null)
                 return;
 
@@ -441,6 +437,8 @@ public class CrystalAura extends Module {
         for (BlockPos pos : WorldUtils.getSphere(PlayerUtil.getPlayerPosFloored(mc.player), 7, 7, 1)) {
             if (CanPlaceOnBlock(pos,false)) {
                 ValueForExplodingCrystalAtPoint Value = getValueForCrystalExplodingAtPoint(new Vec3d(pos.getX() + 0.5f, pos.getY() + 1, pos.getZ() + 0.5f), prePlace.getValue());
+                if(pos.equals(currentCrystalBlockPos))
+                    Value.value += switchThreshold.getValue();
 
                 if (Value.value > bestValue) {
                     bestValue = Value.value;
@@ -463,11 +461,13 @@ public class CrystalAura extends Module {
     //methods to calculate crystal things
 
     class ValueForExplodingCrystalAtPoint {
-        public final float value;
-        public final PredictedEntity target;
+        public float value;
+        public PredictedEntity target;
+
         public ValueForExplodingCrystalAtPoint(PredictedEntity target,float value){
             this.value = value;
             this.target = target;
+
         }
     }
 

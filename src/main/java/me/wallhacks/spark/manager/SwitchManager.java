@@ -100,8 +100,11 @@ public class SwitchManager implements MC {
 
     }
 
+    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType) {
+        return Switch(switcher,handType,switchType,5);
+    }
 
-    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType){
+    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType,int constSwitchDelay){
 
         ItemSwitcher.SwitchResult res = getCalculateAction(switcher, handType, switchType);
 
@@ -124,10 +127,10 @@ public class SwitchManager implements MC {
             if(slot != mc.player.inventory.currentItem+36)
             {
                 InventoryUtil.moveItem(slot,mc.player.inventory.currentItem+36);
-                setDoInvSwitch(mc.player.inventory.currentItem+36,slot,5);
+                setDoInvSwitch(mc.player.inventory.currentItem+36,slot,constSwitchDelay);
             }
             else
-                delay = 5;
+                delay = constSwitchDelay;
 
 
             return EnumHand.MAIN_HAND;
@@ -166,7 +169,7 @@ public class SwitchManager implements MC {
     //gets action that needs to be done for switching to item
     public ItemSwitcher.SwitchResult getCalculateAction(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType type){
 
-        if(type == ItemSwitcher.switchType.NoSwitch || handType == ItemSwitcher.usedHand.Offhand || (type == ItemSwitcher.switchType.Const && didInventorySwitch))
+        if(type == ItemSwitcher.switchType.NoSwitch || handType == ItemSwitcher.usedHand.Offhand)
         {
             float main = ((handType == ItemSwitcher.usedHand.Both || handType == ItemSwitcher.usedHand.Mainhand) ? switcher.isItemGood(mc.player.getHeldItemMainhand()) : 0);
             float off = ((handType == ItemSwitcher.usedHand.Both || handType == ItemSwitcher.usedHand.Offhand) ? switcher.isItemGood(mc.player.getHeldItemOffhand()) : 0);
