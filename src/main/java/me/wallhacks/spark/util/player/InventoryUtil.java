@@ -127,6 +127,9 @@ public class InventoryUtil implements MC {
     }
 
     public static float getDestroySpeed(ItemStack stack,IBlockState state) {
+        if(stack.isEmpty())
+            return 1;
+
         float f = stack.getDestroySpeed(state);
         if(f > 1.0f)
         {
