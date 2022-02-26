@@ -104,9 +104,9 @@ public class CapeManager implements MC {
         if(locations.capes.length == 1)
             return locations.capes[0];
 
-        double rand = ((Math.sin(System.currentTimeMillis() * 6.28 / locations.capes.length / locations.delay)+1)/2.0);
+        double rand = (System.currentTimeMillis() * 6.28 / locations.capes.length / locations.delay) % locations.capes.length;
 
-        int index = (int) Math.min(Math.floor(rand*locations.capes.length),locations.capes.length-1);
+        int index = (int) Math.min(Math.floor(rand),locations.capes.length-1);
         return locations.capes[index];
     }
 
