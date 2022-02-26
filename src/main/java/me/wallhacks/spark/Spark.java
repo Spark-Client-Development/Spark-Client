@@ -40,10 +40,12 @@ public class Spark implements MC {
     public static FadeManager fadeManager;
     public static KeyManager keyManager;
     public static FontManager fontManager;
+    public static CapeManager capeManager;
     public static CommandManager commandManager;
     public static CombatManager popManager;
     public static ClickGuiMenuBase clickGuiScreen;
     public static AltManager altManager;
+    public static PositionManager positionManager;
     public static WaypointManager waypointManager;
     public static BreakManager breakManager;
     public static ThreadManager threadManager;
@@ -80,12 +82,14 @@ public class Spark implements MC {
         clickGuiScreen = new ClickGuiMenuBase();
         threadManager = new ThreadManager();
         switchManager = new SwitchManager();
+        capeManager = new CapeManager();
         altManager = new AltManager();
         socialManager = new SocialManager();
         dataTrackingManager = new ItemTrackerManager();
         waypointManager = new WaypointManager();
         configManager.Load(false);
         rpcManager = new RPCManager();
+        positionManager = new PositionManager();
         logger.info("Spark client loaded successfully");
     }
 

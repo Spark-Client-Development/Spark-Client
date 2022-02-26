@@ -32,7 +32,7 @@ public abstract class MixinEntityPlayer implements MC {
 
     @Inject(method = "isWearing", at = @At("RETURN"), cancellable = true)
     public void isWearing(EnumPlayerModelParts part, CallbackInfoReturnable<Boolean> cir) {
-        if (mc.world != null)
+        if (mc.world == null)
             cir.setReturnValue(true);
     }
 }
