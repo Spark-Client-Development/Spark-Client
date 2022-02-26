@@ -6,6 +6,7 @@ import me.wallhacks.spark.util.player.InventoryUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.SwitchItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
 public class SwitchManager implements MC {
@@ -30,6 +31,8 @@ public class SwitchManager implements MC {
         this.fromInvSlot = fromInvSlot;
         this.toInvSlot = toInvSlot;
     }
+
+
 
 
     public void OnLateUpdate() {
@@ -105,6 +108,10 @@ public class SwitchManager implements MC {
     }
 
     public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType,int constSwitchDelay){
+
+        if(switchType == ItemSwitcher.switchType.Const)
+           InventoryUtil.PlaceDownItemInMoveItemStack();
+
 
         ItemSwitcher.SwitchResult res = getCalculateAction(switcher, handType, switchType);
 

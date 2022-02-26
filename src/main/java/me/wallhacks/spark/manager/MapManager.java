@@ -108,6 +108,9 @@ public class MapManager implements MC {
     @SubscribeEvent
     public void onThread(ThreadEvent event) {
 
+        if(nullCheck())
+            return;
+
         if (toLoad.size() > 0) {
             Vec3i v = toLoad.iterator().next();
             toLoad.remove(v);

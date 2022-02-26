@@ -42,8 +42,8 @@ public class Offhand extends Module {
 
 
     ModeSetting gapSwap = new ModeSetting("GapSwap", this, "Off", Arrays.asList("Off", "Sword", "Pick", "Both", "Always"));
-    BooleanSetting CrystalSwap = new BooleanSetting("CrystalSwap", this,false);
-
+    BooleanSetting CrystalSwap = new BooleanSetting("CrystalAuraSwap", this,false);
+    BooleanSetting CevBreakSwap = new BooleanSetting("CevBreakSwap", this,false);
 
 
 
@@ -136,7 +136,7 @@ public class Offhand extends Module {
 
     private boolean shouldCrystalSwap(){
 
-        return CrystalSwap.isOn() && (SystemManager.getModule(CrystalAura.class).isEnabled() || SystemManager.getModule(CevBreaker.class).isEnabled());
+        return (CrystalSwap.isOn() && (SystemManager.getModule(CrystalAura.class).isEnabled()) || (CevBreakSwap.isOn() && SystemManager.getModule(CevBreaker.class).isEnabled()));
     }
 
     private boolean shouldGapSwap() {
