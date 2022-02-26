@@ -10,6 +10,8 @@ import me.wallhacks.spark.systems.setting.settings.KeySetting;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.InventoryUtil;
+import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
+import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecItemSwitchItem;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
@@ -28,7 +30,7 @@ public class FastUse extends Module {
     BooleanSetting exp = new BooleanSetting("EXP", this, true);
     BooleanSetting fireworks = new BooleanSetting("FireWorks", this, false);
     KeySetting bind = new KeySetting("PacketEXP", this, -1);
-    ModeSetting switchMode = new ModeSetting("Switch", this, "Silent", Arrays.asList("Normal", "Silent"));
+    ModeSetting switchMode = new ModeSetting("Switch", this, "Silent", Arrays.asList("Normal", "Silent","Const","NoSwitch"));
     IntSetting takeOffVal = new IntSetting("TakeOffPercent", this, 101, 0, 101);
     IntSetting packets = new IntSetting("Packets", this, 1, 1, 5);
     public static FastUse INSTANCE;
@@ -99,20 +101,15 @@ public class FastUse extends Module {
     void useXp() {
         if (findExpInHotbar() == -1) return;
         didshit = true;
-        if (takeArmorOff()) {
+
+        ItemSwitcher.SwitchResult res = Spark.switchManager.getCalculateAction(new SpecItemSwitchItem(Items.EXPERIENCE_BOTTLE), ItemSwitcher.usedHand.Both,Spark.switchManager.getModeFromString(switchMode.getValue()));
+
+        if (res != null && takeArmorOff()) {
             Spark.rotationManager.setFakePitch(90,2);
-            if (switchMode.is("Silent"))
-                mc.player.connection.sendPacket(new CPacketHeldItemChange(findExpInHotbar()));
-            else {
-                if (oldSlot != -1)
-                    oldSlot = mc.player.inventory.currentItem;
-                mc.player.inventory.currentItem = findExpInHotbar();
-            }
+            Spark.switchManager.Switch(res,Spark.switchManager.getModeFromString(switchMode.getValue()),7);
             for (int i = 0; i < packets.getValue(); i++) {
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
             }
-            if (switchMode.is("Silent"))
-                mc.player.connection.sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem));
         }
     }
 

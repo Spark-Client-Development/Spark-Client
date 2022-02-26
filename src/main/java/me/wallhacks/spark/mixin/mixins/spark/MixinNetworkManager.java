@@ -24,7 +24,9 @@ public class MixinNetworkManager {
         {
             callbackInfo.cancel();
         }
+
     }
+
 
 
     @Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)

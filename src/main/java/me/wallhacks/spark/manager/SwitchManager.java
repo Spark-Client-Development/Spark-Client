@@ -6,6 +6,7 @@ import me.wallhacks.spark.util.player.InventoryUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.SwitchItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
 public class SwitchManager implements MC {
@@ -32,6 +33,8 @@ public class SwitchManager implements MC {
     }
 
 
+
+
     public void OnLateUpdate() {
 
         if(didInventorySwitch)
@@ -39,7 +42,7 @@ public class SwitchManager implements MC {
             if(delay <= 0)
             {
                 if(fromInvSlot != toInvSlot)
-                    InventoryUtil.moveItem(fromInvSlot,toInvSlot);
+                    InventoryUtil.constSwitchMove(fromInvSlot,toInvSlot);
 
                 didInventorySwitch = false;
             }
@@ -100,10 +103,22 @@ public class SwitchManager implements MC {
 
     }
 
+    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType) {
+        return Switch(switcher,handType,switchType,5);
+    }
 
-    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType){
+    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType,int constSwitchDelay){
+
+        if(switchType == ItemSwitcher.switchType.Const)
+           InventoryUtil.PlaceDownItemInMoveItemStack();
+
 
         ItemSwitcher.SwitchResult res = getCalculateAction(switcher, handType, switchType);
+
+        return Switch(res,switchType,constSwitchDelay);
+    }
+    public EnumHand Switch(ItemSwitcher.SwitchResult res,ItemSwitcher.switchType switchType,int constSwitchDelay){
+
 
         if(res instanceof ItemSwitcher.NoSwitchResult)
         {
@@ -123,11 +138,11 @@ public class SwitchManager implements MC {
             int slot = ((ItemSwitcher.InventorySwitchResult)res).getSlot();
             if(slot != mc.player.inventory.currentItem+36)
             {
-                InventoryUtil.moveItem(slot,mc.player.inventory.currentItem+36);
-                setDoInvSwitch(mc.player.inventory.currentItem+36,slot,5);
+                InventoryUtil.constSwitchMove(slot,mc.player.inventory.currentItem+36);
+                setDoInvSwitch(mc.player.inventory.currentItem+36,slot,constSwitchDelay);
             }
             else
-                delay = 5;
+                delay = constSwitchDelay;
 
 
             return EnumHand.MAIN_HAND;
@@ -166,7 +181,7 @@ public class SwitchManager implements MC {
     //gets action that needs to be done for switching to item
     public ItemSwitcher.SwitchResult getCalculateAction(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType type){
 
-        if(type == ItemSwitcher.switchType.NoSwitch || handType == ItemSwitcher.usedHand.Offhand || (type == ItemSwitcher.switchType.Const && didInventorySwitch))
+        if(type == ItemSwitcher.switchType.NoSwitch || handType == ItemSwitcher.usedHand.Offhand)
         {
             float main = ((handType == ItemSwitcher.usedHand.Both || handType == ItemSwitcher.usedHand.Mainhand) ? switcher.isItemGood(mc.player.getHeldItemMainhand()) : 0);
             float off = ((handType == ItemSwitcher.usedHand.Both || handType == ItemSwitcher.usedHand.Offhand) ? switcher.isItemGood(mc.player.getHeldItemOffhand()) : 0);
@@ -177,9 +192,12 @@ public class SwitchManager implements MC {
         else if(type == ItemSwitcher.switchType.Const)
         {
             int id = ItemSwitcher.FindStackInInventory(switcher,handType != ItemSwitcher.usedHand.Mainhand);
+
             if(id == 45)
                 return new ItemSwitcher.NoSwitchResult(EnumHand.OFF_HAND);
-            if(id != -1)
+            if(id == mc.player.inventory.currentItem+36)
+                return new ItemSwitcher.InventorySwitchResult(id);
+            if(id != -1 && !didInventorySwitch)
                 return new ItemSwitcher.InventorySwitchResult(id);
         }
         else if(type == ItemSwitcher.switchType.Normal || type == ItemSwitcher.switchType.Silent)

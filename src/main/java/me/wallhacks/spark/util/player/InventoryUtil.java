@@ -3,6 +3,7 @@ package me.wallhacks.spark.util.player;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.SwitchItem;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -24,6 +25,7 @@ public class InventoryUtil implements MC {
             return l.get(0);
         return -1;
     }
+
     public static List<Integer> FindItemsInInventory(Item input, boolean searchInHotbar,boolean searchInOffhand)
     {
         ArrayList<Integer> l = new ArrayList<Integer>();
@@ -103,7 +105,7 @@ public class InventoryUtil implements MC {
             return;
 
         mc.playerController.windowClick(0, slot, 1, ClickType.THROW,  mc.player);
-
+        mc.playerController.updateController();
 
     }
     public static void moveItem(int slot,int slot2){
@@ -123,6 +125,60 @@ public class InventoryUtil implements MC {
 
         mc.playerController.updateController();
     }
+
+    public static float getDestroySpeed(ItemStack stack,IBlockState state) {
+        if(stack.isEmpty())
+            return 1;
+
+        float f = stack.getDestroySpeed(state);
+        if(f > 1.0f)
+        {
+            int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.EFFICIENCY,stack);
+
+            if (i > 0 && !stack.isEmpty())
+            {
+                f += (float)(i * i + 1);
+            }
+        }
+        return f;
+    }
+
+    public static void constSwitchMove(int slot,int slot2){
+        if (!(mc.currentScreen instanceof GuiInventory) && mc.currentScreen != null && mc.currentScreen instanceof GuiContainer)
+            return;
+
+
+        mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP,  mc.player);
+        mc.playerController.windowClick(0, slot2, 0, ClickType.PICKUP,  mc.player);
+        mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP,  mc.player);
+
+        mc.playerController.updateController();
+    }
+
+    public static boolean PlaceDownItemInMoveItemStack() {
+
+        if(mc.player.inventory.getItemStack().isEmpty())
+            return true;
+        if (!(mc.currentScreen instanceof GuiInventory) && mc.currentScreen != null && mc.currentScreen instanceof GuiContainer)
+            return false;
+
+        for (int i = 0; i < mc.player.inventoryContainer.getInventory().size(); i++) {
+            if (i == 0 || i == 5 || i == 6 || i == 7 || i == 8)
+                continue;
+
+            final ItemStack s = mc.player.inventoryContainer.getInventory().get(i);
+            if (s.isEmpty())
+            {
+                mc.playerController.windowClick(0, i, 0, ClickType.PICKUP,  mc.player);
+
+                mc.playerController.updateController();
+                return true;
+            }
+
+        }
+        return false;
+    }
+
 
     public static void moveItemInContainer(int slot,int slot2){
 

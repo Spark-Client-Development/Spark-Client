@@ -42,6 +42,7 @@ public class CevBreaker extends Module {
     IntSetting placeCrystalDelay = new IntSetting("placeCrystalDelay",this,1,0,10);
 
 
+
     BooleanSetting insta = new BooleanSetting("InstaMine",this,true);
     BooleanSetting smartCrystalPlayer = new BooleanSetting("SmartCrystal",this,true,aBoolean -> insta.isOn());
     BooleanSetting predictBreak = new BooleanSetting("PredictBlockBreak",this,false,aBoolean -> insta.isOn());

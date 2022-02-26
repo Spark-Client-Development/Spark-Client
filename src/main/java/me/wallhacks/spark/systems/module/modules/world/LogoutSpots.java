@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.module.modules.world;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.systems.module.Module;
@@ -41,13 +42,15 @@ public class LogoutSpots extends Module {
                 for (SPacketPlayerListItem.AddPlayerData d : packet.getEntries()) {
                     EntityPlayer entityPlayer = mc.world.getPlayerEntityByUUID(d.getProfile().getId());
                     if (entityPlayer != null) {
-                        spots.add(new LogoutSpot(entityPlayer.getEntityBoundingBox(), entityPlayer.getUniqueID(), entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount(), entityPlayer.getName()));
+                        spots.add(new LogoutSpot(entityPlayer.getEntityBoundingBox(), entityPlayer.getGameProfile().getId(), entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount(), entityPlayer.getName()));
                     }
                 }
             } else if (packet.getAction() == SPacketPlayerListItem.Action.ADD_PLAYER) {
                 for (SPacketPlayerListItem.AddPlayerData d : packet.getEntries()) {
                     for (LogoutSpot spot : spots) {
-                        if (spot.uuid.toString().equals(d.getProfile().getId().toString())) {
+                        if (spot.name.equalsIgnoreCase(d.getProfile().getName())) {
+                            Spark.sendInfo(d.getProfile().getName()+ ChatFormatting.BLUE +" reconnected at ("+(int)spot.box.minX+" "+(int)spot.box.minY+" "+(int)spot.box.minZ+")");
+
                             spots.remove(spot);
                             break;
                         }
