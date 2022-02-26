@@ -70,7 +70,8 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
                     found.remove(c);
                 searchChunk(c);
             }
-            chunksToSearch.remove(chunksToSearch.get(0));
+            if(!chunksToSearch.isEmpty())
+                chunksToSearch.remove(0);
         }
     }
 
