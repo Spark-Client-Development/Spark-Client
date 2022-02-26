@@ -3,6 +3,7 @@ package me.wallhacks.spark.util.player;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.SwitchItem;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -24,6 +25,7 @@ public class InventoryUtil implements MC {
             return l.get(0);
         return -1;
     }
+
     public static List<Integer> FindItemsInInventory(Item input, boolean searchInHotbar,boolean searchInOffhand)
     {
         ArrayList<Integer> l = new ArrayList<Integer>();
@@ -120,6 +122,31 @@ public class InventoryUtil implements MC {
 
         if(!isTargetSlotEmpty)
             mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP,  mc.player);
+
+        mc.playerController.updateController();
+    }
+
+    public static float getDestroySpeed(ItemStack stack,IBlockState state) {
+        float f = stack.getDestroySpeed(state);
+        if(f > 1.0f)
+        {
+            int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.EFFICIENCY,stack);
+
+            if (i > 0 && !stack.isEmpty())
+            {
+                f += (float)(i * i + 1);
+            }
+        }
+        return f;
+    }
+
+    public static void constSwitchMove(int slot,int slot2){
+
+
+
+        mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP,  mc.player);
+        mc.playerController.windowClick(0, slot2, 0, ClickType.PICKUP,  mc.player);
+        mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP,  mc.player);
 
         mc.playerController.updateController();
     }

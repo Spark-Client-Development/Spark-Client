@@ -39,7 +39,7 @@ public class SwitchManager implements MC {
             if(delay <= 0)
             {
                 if(fromInvSlot != toInvSlot)
-                    InventoryUtil.moveItem(fromInvSlot,toInvSlot);
+                    InventoryUtil.constSwitchMove(fromInvSlot,toInvSlot);
 
                 didInventorySwitch = false;
             }
@@ -108,6 +108,11 @@ public class SwitchManager implements MC {
 
         ItemSwitcher.SwitchResult res = getCalculateAction(switcher, handType, switchType);
 
+        return Switch(res,switchType,constSwitchDelay);
+    }
+    public EnumHand Switch(ItemSwitcher.SwitchResult res,ItemSwitcher.switchType switchType,int constSwitchDelay){
+
+
         if(res instanceof ItemSwitcher.NoSwitchResult)
         {
             return ((ItemSwitcher.NoSwitchResult)res).getHand();
@@ -126,7 +131,7 @@ public class SwitchManager implements MC {
             int slot = ((ItemSwitcher.InventorySwitchResult)res).getSlot();
             if(slot != mc.player.inventory.currentItem+36)
             {
-                InventoryUtil.moveItem(slot,mc.player.inventory.currentItem+36);
+                InventoryUtil.constSwitchMove(slot,mc.player.inventory.currentItem+36);
                 setDoInvSwitch(mc.player.inventory.currentItem+36,slot,constSwitchDelay);
             }
             else
@@ -180,9 +185,12 @@ public class SwitchManager implements MC {
         else if(type == ItemSwitcher.switchType.Const)
         {
             int id = ItemSwitcher.FindStackInInventory(switcher,handType != ItemSwitcher.usedHand.Mainhand);
+
             if(id == 45)
                 return new ItemSwitcher.NoSwitchResult(EnumHand.OFF_HAND);
-            if(id != -1)
+            if(id == mc.player.inventory.currentItem+36)
+                return new ItemSwitcher.InventorySwitchResult(id);
+            if(id != -1 && !didInventorySwitch)
                 return new ItemSwitcher.InventorySwitchResult(id);
         }
         else if(type == ItemSwitcher.switchType.Normal || type == ItemSwitcher.switchType.Silent)
