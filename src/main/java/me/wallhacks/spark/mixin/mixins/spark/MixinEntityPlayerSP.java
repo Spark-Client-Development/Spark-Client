@@ -81,6 +81,14 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
         Spark.eventBus.post(event);
     }
 
+    @Inject(method = "closeScreen", at = @At("HEAD"),cancellable = true)
+    public void closeScreen(final CallbackInfo info) {
+        CloseScreenEvent event = new CloseScreenEvent();
+        Spark.eventBus.post(event);
+
+        if(event.isCanceled())
+            info.cancel();
+    }
 
     @Inject(method = "onLivingUpdate", at = @At("HEAD"))
     public void onLivingUpdate(final CallbackInfo info) {
