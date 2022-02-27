@@ -32,18 +32,10 @@ public class CapeManager implements MC {
     private ConcurrentLinkedQueue<String> toUpdateImage = new ConcurrentLinkedQueue<String>();
 
     private HashSet<String> fancy = new HashSet<String>();
-
-    final Cape location;
+    ResourceLocation cape = new ResourceLocation("textures/capemain.png");
 
     public CapeManager() {
         Spark.eventBus.register(this);
-
-        ResourceLocation[] capes = new ResourceLocation[200];
-        for (int i = 0; i < 200; i++) {
-            capes[i] = new ResourceLocation("textures/capes/rgb/"+i+".png");
-        }
-        location = new Cape(capes,4);
-
 
         try {
             URL cache = new URL("https://raw.githubusercontent.com/Spark-Client-Development/resources/main/capes/users.txt");
@@ -115,24 +107,24 @@ public class CapeManager implements MC {
         }
     }
 
+    public boolean isFancy(String uuid) {
+        return fancy.contains(uuid);
+    }
+
     @Nullable
     public ResourceLocation getCapeForUser(String uuid) {
 
 
-        if(fancy.contains(uuid))
-        {
-            return location.getCapeLocation();
-
+        if(isFancy(uuid)) {
+            return cape;
         }
 
-        if(!capeCache.containsKey(uuid))
-        {
+        if(!capeCache.containsKey(uuid)) {
 
             if(capeMap.containsKey(uuid) && !toLoad.contains(uuid))
                 toLoad.add(uuid);
             return null;
         }
-
 
 
         return capeCache.get(uuid).getCapeLocation();

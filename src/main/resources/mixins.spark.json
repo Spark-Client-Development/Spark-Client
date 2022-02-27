@@ -41,6 +41,7 @@
     "spark.MixinEntityLivingBase",
     "spark.MixinEntityPlayer",
     "spark.MixinEntityPlayerSP",
+    "spark.MixinLayerCape",
     "spark.MixinEntityRenderer",
     "spark.MixinGui",
     "spark.MixinGuiMainMenu",

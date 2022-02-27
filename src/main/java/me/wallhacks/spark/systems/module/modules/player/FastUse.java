@@ -96,8 +96,7 @@ public class FastUse extends Module {
         ItemSwitcher.SwitchResult res = Spark.switchManager.getCalculateAction(new SpecItemSwitchItem(Items.EXPERIENCE_BOTTLE), ItemSwitcher.usedHand.Both,Spark.switchManager.getModeFromString(switchMode.getValue()));
 
         if (res != null && takeArmorOff()) {
-            if(!Spark.rotationManager.rotate(new float[]{0,90},50,4,false))
-                return;
+            Spark.rotationManager.setFakePitch(90,2);
             Spark.switchManager.Switch(res,Spark.switchManager.getModeFromString(switchMode.getValue()),7);
             for (int i = 0; i < packets.getValue(); i++) {
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
