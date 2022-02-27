@@ -28,6 +28,7 @@ public abstract class MixinEntityPlayer implements MC {
             Spark.eventBus.post(event);
             Spark.switchManager.OnLateUpdate();
         }
+
     }
 
     @Inject(method = "isWearing", at = @At("RETURN"), cancellable = true)

@@ -1,5 +1,6 @@
 package me.wallhacks.spark.manager;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,6 +13,9 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.render.ColorUtil;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.layers.LayerCape;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -27,8 +31,20 @@ public class CapeManager implements MC {
     private ConcurrentLinkedQueue<String> toLoad = new ConcurrentLinkedQueue<String>();
     private ConcurrentLinkedQueue<String> toUpdateImage = new ConcurrentLinkedQueue<String>();
 
+    private HashSet<String> fancy = new HashSet<String>();
+
+    final Cape location;
+
     public CapeManager() {
         Spark.eventBus.register(this);
+
+        ResourceLocation[] capes = new ResourceLocation[200];
+        for (int i = 0; i < 200; i++) {
+            capes[i] = new ResourceLocation("textures/capes/rgb/"+i+".png");
+        }
+        location = new Cape(capes,4);
+
+
         try {
             URL cache = new URL("https://raw.githubusercontent.com/Spark-Client-Development/resources/main/capes/users.txt");
             BufferedReader in = new BufferedReader(new InputStreamReader(cache.openStream()));
@@ -36,8 +52,17 @@ public class CapeManager implements MC {
             while ((inputLine = in.readLine()) != null) {
                 String[] split = inputLine.split(":",2);
 
+                if(split.length < 2)
+                    continue;
                 capeMap.put(split[0], split[1]);
                 Spark.logger.info("Added cape: "+split[0] +" "+split[1]);
+            }
+
+
+            cache = new URL("https://raw.githubusercontent.com/Spark-Client-Development/resources/main/capes/fancyCapeUsers.txt");
+            in = new BufferedReader(new InputStreamReader(cache.openStream()));
+            while ((inputLine = in.readLine()) != null) {
+                fancy.add(inputLine);
             }
         } catch (Exception problem) {
             problem.printStackTrace();
@@ -92,22 +117,25 @@ public class CapeManager implements MC {
 
     @Nullable
     public ResourceLocation getCapeForUser(String uuid) {
+
+
+        if(fancy.contains(uuid))
+        {
+            return location.getCapeLocation();
+
+        }
+
         if(!capeCache.containsKey(uuid))
         {
+
             if(capeMap.containsKey(uuid) && !toLoad.contains(uuid))
                 toLoad.add(uuid);
             return null;
         }
 
-        Cape locations = capeCache.get(uuid);
 
-        if(locations.capes.length == 1)
-            return locations.capes[0];
 
-        double rand = (System.currentTimeMillis() * 6.28 / locations.capes.length / locations.delay) % locations.capes.length;
-
-        int index = (int) Math.min(Math.floor(rand),locations.capes.length-1);
-        return locations.capes[index];
+        return capeCache.get(uuid).getCapeLocation();
     }
 
     public class Cape {
@@ -117,7 +145,7 @@ public class CapeManager implements MC {
         final int delay;
 
         public void updateImage() {
-            for (int i = 0; i < capes.length; i++) {
+            for (int i = 0; i < capesImage.length; i++) {
                 final DynamicTexture texture = new DynamicTexture(capesImage[i]);
                 capes[i] = mc.getTextureManager().getDynamicTextureLocation("spark/capes", texture);
             }
@@ -127,6 +155,22 @@ public class CapeManager implements MC {
             this.capesImage = capesImage;
             this.capes = new ResourceLocation[capesImage.length];
             this.delay = delay;
+        }
+        public Cape(ResourceLocation[] capes, int delay) {
+            this.capes = capes;
+            this.capesImage = null;
+            this.delay = delay;
+        }
+
+        public ResourceLocation getCapeLocation() {
+
+            if(capes.length == 1)
+                return capes[0];
+
+            double rand = (System.currentTimeMillis() * 6.28 / capes.length / delay) % capes.length;
+
+            int index = (int) Math.min(Math.floor(rand),capes.length-1);
+            return capes[index];
         }
     }
 }
