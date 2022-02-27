@@ -36,7 +36,7 @@ public class FastUse extends Module {
     public static FastUse INSTANCE;
     private boolean shouldPause = false;
     boolean didshit = false;
-    int oldSlot = -1;
+
 
     public FastUse() {
         INSTANCE = this;
@@ -49,32 +49,23 @@ public class FastUse extends Module {
     @Override
     public void onEnable() {
         shouldPause = false;
-        oldSlot = -1;
     }
 
     @Override
     public void onDisable() {
         shouldPause = false;
-        oldSlot = -1;
     }
 
 
     @SubscribeEvent
-    public final void onUpdateWalkingPlayerEvent(UpdateWalkingPlayerEvent.Pre event) {
+    public final void onUpdateWalkingPlayerEvent(PlayerUpdateEvent event) {
         didshit = false;
         if (bind.isDown() && mc.currentScreen == null)
             useXp();
         shouldPause = didshit;
     }
 
-    @SubscribeEvent
-    public final void onUpdateWalkingPlayerPostEvent(UpdateWalkingPlayerEvent.Post event) {
-        if (oldSlot != -1) {
-            mc.player.inventory.currentItem = oldSlot;
-            oldSlot = -1;
-        }
-        shouldPause = didshit;
-    }
+
 
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
@@ -105,7 +96,8 @@ public class FastUse extends Module {
         ItemSwitcher.SwitchResult res = Spark.switchManager.getCalculateAction(new SpecItemSwitchItem(Items.EXPERIENCE_BOTTLE), ItemSwitcher.usedHand.Both,Spark.switchManager.getModeFromString(switchMode.getValue()));
 
         if (res != null && takeArmorOff()) {
-            Spark.rotationManager.setFakePitch(90,2);
+            if(!Spark.rotationManager.rotate(new float[]{0,90},50,4,false))
+                return;
             Spark.switchManager.Switch(res,Spark.switchManager.getModeFromString(switchMode.getValue()),7);
             for (int i = 0; i < packets.getValue(); i++) {
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
