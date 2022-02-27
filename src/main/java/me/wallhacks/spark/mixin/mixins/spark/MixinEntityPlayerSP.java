@@ -92,6 +92,8 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
 
     @Inject(method = "onLivingUpdate", at = @At("HEAD"))
     public void onLivingUpdate(final CallbackInfo info) {
+
+
         PlayerLivingTickEvent event = new PlayerLivingTickEvent();
         Spark.eventBus.post(event);
     }
@@ -388,13 +390,5 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
         }
     }
 
-    @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;closeScreen()V"))
-    public void closeScreen(EntityPlayerSP player) {
-        if (!PortalChat.INSTANCE.isEnabled()) mc.player.closeScreen();
-    }
 
-    @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;displayGuiScreen(Lnet/minecraft/client/gui/GuiScreen;)V"))
-    public void displayGuiScreen(Minecraft minecraft, GuiScreen screen) {
-        if (!PortalChat.INSTANCE.isEnabled()) mc.displayGuiScreen((GuiScreen) null);
-    }
 }
