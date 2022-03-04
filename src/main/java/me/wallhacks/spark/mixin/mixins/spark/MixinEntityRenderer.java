@@ -5,7 +5,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.render.FovModifierEvent;
 import me.wallhacks.spark.event.render.RenderHurtCameraEffectEvent;
 import me.wallhacks.spark.manager.SystemManager;
-import me.wallhacks.spark.systems.module.modules.exploit.WideMode;
+import me.wallhacks.spark.systems.module.modules.exploit.Zelensky;
 import me.wallhacks.spark.systems.module.modules.render.CameraNoClip;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.render.CameraUtil;
@@ -80,7 +80,7 @@ public class MixinEntityRenderer  implements MC {
 
     @Inject(method = "orientCamera", at = @At("HEAD"))
     public void orientCamera(float partialTicks,final CallbackInfo callbackInfo) {
-        if(WideMode.instance != null && WideMode.instance.isEnabled())
+        if(Zelensky.instance != null && Zelensky.instance.isEnabled())
             GlStateManager.scale(2, 2 * 0.4, 2);
     }
 
