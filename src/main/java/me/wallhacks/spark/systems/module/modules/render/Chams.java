@@ -46,6 +46,7 @@ public class Chams extends Module {
     BooleanSetting popChams = new BooleanSetting("PopChams", this, false, "PopChams");
     BooleanSetting deathChams = new BooleanSetting("DeathChams", this, false, "PopChams");
     ColorSetting popColor = new ColorSetting("PopColor", this, new Color(0x76FFFFFF, true), "PopChams");
+    BooleanSetting glintP = new BooleanSetting("Glint", this, false, "PopChams");
     DoubleSetting popTime = new DoubleSetting("StayTime", this, 1.5D, 0.5D, 5D, "PopChams");
     ModeSetting glint = new ModeSetting("Glint", this, "Off", Arrays.asList("Off", "Normal", "Custom"), "Glint");
     DoubleSetting glintScale = new DoubleSetting("GlintScale", this, 1.0f, 0.1f, 10.0f, "Glint");
@@ -120,7 +121,7 @@ public class Chams extends Module {
                     RenderUtil.setColor(visibleColor.getColor());
                 handleMode(event);
             }
-            if (!glint.is("Off") && !mode.is("Wire")) {
+            if (!glint.is("Off") && (!(event.getEntity() instanceof PopCham) || glintP.getValue()) && !mode.is("Wire")) {
                 if (event.getEntity() instanceof PopCham)
                     RenderUtil.setColor(color);
                 else
@@ -162,11 +163,11 @@ public class Chams extends Module {
     private void handleMode(RenderLivingEvent event) {
         switch (mode.getValue()) {
             case "Fill":
-                if (glint.is("Off") || texture.getValue())
+                if (glint.is("Off") || (event.getEntity() instanceof PopCham && !glintP.getValue()) || texture.getValue())
                     renderModel(event);
                 break;
             case "WireFill":
-                if (glint.is("Off") || texture.getValue())
+                if (glint.is("Off") || (event.getEntity() instanceof PopCham && !glintP.getValue()) || texture.getValue())
                     renderModel(event);
             case "Wire":
                 GL11.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -201,6 +202,7 @@ public class Chams extends Module {
     }
 
     private void renderShine(RenderLivingEvent event) {
+  
         mc.getTextureManager().bindTexture(glint.is("Custom") ? CUSTOM : RES_ITEM_GLINT);
         if (!texture.getValue() || event.getEntity() instanceof PopCham)
             GlStateManager.enableTexture2D();

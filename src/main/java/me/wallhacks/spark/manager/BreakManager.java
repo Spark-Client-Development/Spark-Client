@@ -127,8 +127,11 @@ public class BreakManager implements MC {
                 if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 6, false, true))
                     return;
             }
-
-            Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.usedHand.Mainhand, constSwitch ? ItemSwitcher.switchType.Const : ItemSwitcher.switchType.Normal);
+            try {
+                Spark.switchManager.Switch(new ItemForMineSwitchItem(mc.world.getBlockState(block)), ItemSwitcher.usedHand.Mainhand, constSwitch ? ItemSwitcher.switchType.Const : ItemSwitcher.switchType.Normal);
+            } catch (NullPointerException problem) {
+                //we ignore problems
+            }
         }
 
 

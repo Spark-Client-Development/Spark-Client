@@ -329,7 +329,7 @@ public class CrystalUtil implements MC {
     }
 
     public static void breakSwing() {
-        EnumHand hand = EnumHand.OFF_HAND;
+        EnumHand hand = EnumHand.MAIN_HAND;
         switch (AntiCheatConfig.getInstance().crystalBreakHand.getValue()) {
             case "Both":
                 if (mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal))

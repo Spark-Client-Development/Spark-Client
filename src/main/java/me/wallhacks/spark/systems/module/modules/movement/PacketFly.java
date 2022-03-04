@@ -421,6 +421,7 @@ public class PacketFly extends Module {
     }
 
     private void safeSendPacket(Packet packet) {
+        if (nullCheck()) return;
         // Not necessary not to send packets but it's good practice in case we guess the tickrate wrong
         if (packet instanceof CPacketConfirmTeleport && aefLimit.getValue() && AntiCheatConfig.getInstance().isPacketFlyLimited())
             return;

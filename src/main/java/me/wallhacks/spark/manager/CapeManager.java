@@ -89,11 +89,15 @@ public class CapeManager implements MC {
 
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
-        if (toUpdateImage.size() > 0)
-        {
-            String uuid = toUpdateImage.peek();
-            capeCache.get(uuid).updateImage();
-            toUpdateImage.remove(uuid);
+        try {
+            if (toUpdateImage.size() > 0) {
+                String uuid = toUpdateImage.peek();
+                capeCache.get(uuid).updateImage();
+                toUpdateImage.remove(uuid);
+            }
+        } catch (NullPointerException problem) {
+            //ignore the problem
+            //hope it goes away by itself
         }
     }
 

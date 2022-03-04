@@ -24,6 +24,7 @@ import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemEndCrystal;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketCloseWindow;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
@@ -248,7 +249,9 @@ public class ShulkerAura extends Module {
         }
 
         //send packet
-        mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(shulkPos, facing, EnumHand.OFF_HAND, (float) pos.x, (float) pos.y, (float) pos.z));
+        EnumHand hand = EnumHand.OFF_HAND;
+        if (mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal)) hand = EnumHand.MAIN_HAND;
+        mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(shulkPos, facing, hand, (float) pos.x, (float) pos.y, (float) pos.z));
         flag = true;
     }
 
