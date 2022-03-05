@@ -5,8 +5,12 @@ import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
+import me.wallhacks.spark.systems.setting.settings.IntSetting;
+import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.CrystalUtil;
 import me.wallhacks.spark.util.combat.HoleUtil;
+import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
@@ -19,12 +23,17 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemEndCrystal;
+import net.minecraft.item.ItemShulkerBox;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketCloseWindow;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
@@ -42,9 +51,14 @@ import java.util.List;
 @Module.Registration(name = "ShulkerAura", description = "uses shulkers to push crystals in to blocks and kill enemies")
 public class ShulkerAura extends Module {
     public static ShulkerAura INSTANCE;
+    BooleanSetting craft = new BooleanSetting("Craft", this, false);
+    IntSetting shulkerSlot = new IntSetting("Slot", this, 8, 1, 9);
     BlockPos targetPos;
     EnumFacing targetFacing;
     int windowId;
+    int state = 0;
+    int shell = -1;
+    int chest = -1;
     private boolean flag = false;
 
     public ShulkerAura() {
@@ -99,13 +113,13 @@ public class ShulkerAura extends Module {
 
                 //the position 2 blocks out needs to be air for placing the shulk
                 BlockPos shulkPos = pos.offset(facing, 2);
+                BlockPos outerPos = pos.offset(facing, 3);
                 Block shulkBlock = mc.world.getBlockState(shulkPos).getBlock();
-                Spark.logger.info(shulkBlock);
-                if (!(shulkBlock instanceof BlockShulkerBox))
+                if (!(shulkBlock instanceof BlockShulkerBox)) {
                     if (!shulkBlock.isReplaceable(mc.world, shulkPos) || !BlockInteractUtil.blockCollisionCheck(shulkPos, null))
                         continue;
+                } else outerPos = shulkPos;
                 //raytrace and range checks
-                BlockPos outerPos = pos.offset(facing, 3);
                 RayTraceResult outer = mc.world.rayTraceBlocks(mc.player.getPositionEyes(mc.getRenderPartialTicks()), new Vec3d(outerPos).add(0.5, 0.5, 0.5));
                 double distance = mc.player.getDistance(outerPos.getX() + 0.5, outerPos.getY() + 0.5, outerPos.getZ() + 0.5);
                 if (distance < cfg.getBlockPlaceRange() && (outer == null || outerPos.equals(outer.getBlockPos()) || distance < cfg.getBlockPlaceWallRange())) {
@@ -172,17 +186,102 @@ public class ShulkerAura extends Module {
         if (mc.world.getBlockState(targetPos.offset(targetFacing).offset(targetFacing)).getBlock() instanceof BlockShulkerBox) {
             doShulkerAura();
         } else {
-            BlockPos support = targetPos.add(targetFacing.getDirectionVec()).add(targetFacing.getDirectionVec()).add(targetFacing.getDirectionVec());
-            if (mc.world.getBlockState(support).getBlock().isReplaceable(mc.world, support)) {
-                if (BlockInteractUtil.tryPlaceBlock(support, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
-                    if (BlockInteractUtil.tryPlaceBlock(support.down(), new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
-                        if (BlockInteractUtil.tryPlaceBlock(support.down().offset(targetFacing.getOpposite()), new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
-                            //wtf i hope we never get here but nothing left to do but return ig
+            flag = false;
+            int slot = ItemSwitcher.FindStackInInventory(new ShulkerSwitchItem(), false);
+            if ((slot != -1 && slot < 9) || !craft.getValue()) {
+                BlockPos support = targetPos.add(targetFacing.getDirectionVec()).add(targetFacing.getDirectionVec()).add(targetFacing.getDirectionVec());
+                if (mc.world.getBlockState(support).getBlock().isReplaceable(mc.world, support)) {
+                    if (BlockInteractUtil.tryPlaceBlock(support, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
+                        if (BlockInteractUtil.tryPlaceBlock(support.down(), new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
+                            if (BlockInteractUtil.tryPlaceBlock(support.down().offset(targetFacing.getOpposite()), new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
+                                //wtf i hope we never get here but nothing left to do but return ig
+                            } else return;
                         } else return;
                     } else return;
-                } else return;
-            } else {
-                BlockInteractUtil.tryPlaceBlockOnBlock(support.offset(targetFacing.getOpposite()), targetFacing.getOpposite(), new ShulkerSwitchItem(), false, true, 2, false);
+                } else {
+                    BlockInteractUtil.tryPlaceBlockOnBlock(support.offset(targetFacing.getOpposite()), targetFacing.getOpposite(), new ShulkerSwitchItem(), false, true, 2, false);
+                }
+            } else if (craft.getValue() && mc.currentScreen == null && !flag) {
+                boolean flag = false;
+                BlockPos craftPos = null;
+                int best = 0;
+                for (BlockPos pos : WorldUtils.getSphere(PlayerUtil.getPlayerPosFloored(mc.player), 6, 6, 1)) {
+                    if (mc.world.getBlockState(pos).getBlock() == Blocks.CRAFTING_TABLE) {
+                        Pair<Vec3d, EnumFacing> pair = BlockInteractUtil.getInteractPoint(pos);
+                        if (pair != null) {
+                            craftPos = pos;
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (!BlockInteractUtil.canPlaceBlockAtPos(pos, true)) continue;
+                    if (BlockInteractUtil.getDirForPlacingBlockAtPos(pos) == null) continue;
+                    int save = 0;
+                    for (EnumFacing enumFacing : EnumFacing.VALUES) {
+                        if (HoleUtil.getBlockResistance(pos.offset(enumFacing)) == HoleUtil.BlockResistance.Resistant || HoleUtil.getBlockResistance(pos.offset(enumFacing)) == HoleUtil.BlockResistance.Unbreakable)
+                            save++;
+                    }
+                    if (craftPos == null || save > best || (save == best && mc.player.getDistanceSq(pos) < mc.player.getDistanceSq(craftPos))) {
+                        best = save;
+                        craftPos = pos;
+                    }
+                }
+                if (flag || BlockInteractUtil.tryPlaceBlock(craftPos, new SpecBlockSwitchItem(Blocks.CRAFTING_TABLE), false, true, 2) == BlockInteractUtil.BlockPlaceResult.PLACED) {
+                    Vec3d pos = new Vec3d(craftPos).add(0.5, 0.5, 0.5);
+                    List<Vec3d> vecs = RaytraceUtil.getVisiblePointsForBox(new AxisAlignedBB(craftPos));
+                    if (!vecs.isEmpty())
+                        pos = PlayerUtil.getClosestPoint(vecs);
+                    final RayTraceResult result = mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
+                    EnumFacing facing = (result == null || !craftPos.equals(result.getBlockPos()) || result.sideHit == null) ? EnumFacing.UP : result.sideHit;
+                    if (flag && !Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.INSTANCE.getBlockRotStep(), 2, true, false))
+                        return;
+                    EnumHand hand = EnumHand.OFF_HAND;
+                    if (mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal))
+                        hand = EnumHand.MAIN_HAND;
+                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(craftPos, facing, hand, (float) pos.x, (float) pos.y, (float) pos.z));
+                    state = 0;
+                }
+            } else if (craft.getValue() && mc.currentScreen instanceof GuiCrafting) {
+                int id = mc.player.openContainer.windowId;
+                if (mc.player.openContainer.getSlot(0).getStack().getItem() instanceof ItemShulkerBox) {
+                    if (state == 4) {
+                        mc.playerController.windowClick(id, 0, 0, ClickType.PICKUP, mc.player);
+                        mc.playerController.windowClick(id, 36 + shulkerSlot.getValue(), 0, ClickType.PICKUP, mc.player);
+                        mc.player.closeScreen();
+                        state++;
+                    } else state++;
+                } else {
+                    if (state == 0) {
+                        shell = -1;
+                        chest = -1;
+                        for (int i = 10; i < 46; i++) {
+                            ItemStack stack = mc.player.openContainer.getSlot(i).getStack();
+                            if (stack.getItem() == Items.SHULKER_SHELL) shell = i;
+                            if (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST)) chest = i;
+                            if (chest > 0 && shell > 0) break;
+                        }
+                        if (shell == -1 || chest == -1) {
+                            disable();
+                        } else state++;
+                    } else if (state == 1) {
+                        if (shell == -1 || chest == -1) {
+                            disable();
+                        }
+                        mc.playerController.windowClick(id, shell, 0, ClickType.PICKUP, mc.player);
+                        mc.playerController.windowClick(id, 1, 1, ClickType.PICKUP, mc.player);
+                        mc.playerController.windowClick(id, 7, 1, ClickType.PICKUP, mc.player);
+                        mc.playerController.windowClick(id, shell, 0, ClickType.PICKUP, mc.player);
+                        state++;
+                    } else if (state == 2) {
+                        if (shell == -1 || chest == -1) {
+                            disable();
+                        }
+                        mc.playerController.windowClick(id, chest, 0, ClickType.PICKUP, mc.player);
+                        mc.playerController.windowClick(id, 4, 1, ClickType.PICKUP, mc.player);
+                        mc.playerController.windowClick(id, chest, 0, ClickType.PICKUP, mc.player);
+                        state++;
+                    }
+                }
             }
         }
     }
@@ -203,15 +302,21 @@ public class ShulkerAura extends Module {
             }
         }
         if (crystalState == 1) {
-            CrystalUtil.breakCrystal(crystal, null);
-            mc.player.connection.sendPacket(new CPacketCloseWindow(windowId));
+            if (state == 0) {
+                if (CrystalUtil.breakCrystal(crystal, null)) state = 3;
+            } else state--;
+            if (windowId != -1)
+                mc.player.connection.sendPacket(new CPacketCloseWindow(windowId));
+            windowId = -1;
         } else if (crystalState == 0) {
+            state=0;
             if (!flag)
                 openShulk(targetPos.offset(targetFacing).offset(targetFacing));
             else flag = false;
         }
         if (crystalState == -1) {
             flag = false;
+            state = 0;
             if (placeCrystal(targetPos.offset(targetFacing).down())) return;
             else {
                 Spark.sendInfo("No crystals found to place");
@@ -250,7 +355,8 @@ public class ShulkerAura extends Module {
 
         //send packet
         EnumHand hand = EnumHand.OFF_HAND;
-        if (mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal)) hand = EnumHand.MAIN_HAND;
+        if (mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal))
+            hand = EnumHand.MAIN_HAND;
         mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(shulkPos, facing, hand, (float) pos.x, (float) pos.y, (float) pos.z));
         flag = true;
     }
@@ -265,7 +371,6 @@ public class ShulkerAura extends Module {
         Vec3d v = new Vec3d(placePos).add(0.5, 0.5, 0.5).add(new Vec3d(facing.getDirectionVec()).scale(0.5));
         if (result != null && placePos.equals(result.getBlockPos()) && result.hitVec != null)
             v = result.hitVec;
-
 
         //offhand
         EnumHand hand = Spark.switchManager.Switch(new SpecItemSwitchItem(Items.END_CRYSTAL), ItemSwitcher.usedHand.Both, ItemSwitcher.switchType.Normal);
@@ -297,10 +402,9 @@ public class ShulkerAura extends Module {
     }
 
     public boolean isInAttackZone(EntityPlayer player) {
-        if(isEnabled() && targetPos != null)
-        {
+        if (isEnabled() && targetPos != null) {
             BlockPos floored = PlayerUtil.getPlayerPosFloored(player);
-            if(floored.add(0,2,0).equals(targetPos))
+            if (floored.add(0, 2, 0).equals(targetPos))
                 return true;
         }
         return false;

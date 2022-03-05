@@ -2,6 +2,7 @@ package me.wallhacks.spark.util.player;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -23,6 +24,7 @@ import net.minecraft.util.math.Vec3d;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.BlockSwitchItem;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -182,7 +184,6 @@ public class BlockInteractUtil implements MC {
 
 
         return null;
-
     }
 
     public static Vec3d getPointOnBlockFace(BlockPos pos, EnumFacing facing){
@@ -196,6 +197,37 @@ public class BlockInteractUtil implements MC {
         }
 
 
+    }
+
+    @Nullable
+    public static Pair<Vec3d, EnumFacing> getInteractPoint(BlockPos pos) {
+        double best = 0;
+        boolean wall = false;
+        Vec3d v = null;
+        EnumFacing f = null;
+        for (EnumFacing facing : EnumFacing.VALUES) {
+            Vec3d vec = RaytraceUtil.getPointOnBlockFace(pos,facing,AntiCheatConfig.getInstance().getBlockStrictRayTrace());
+            if(vec != null)
+                if (PlayerUtil.getDistance(vec) < AntiCheatConfig.getInstance().getBlockPlaceRange()) {
+                    if (v == null || mc.player.getDistance(v.x, v.y, v.z) < best) {
+                        v = vec;
+                        f = facing;
+                        wall = true;
+                    }
+                }
+            else if (!wall) {
+                //can't see
+                vec = new Vec3d(pos.getX()+0.5+facing.getDirectionVec().getX()*0.5,pos.getY()+0.5+facing.getDirectionVec().getY()*0.5,pos.getZ()+0.5+facing.getDirectionVec().getZ()*0.5);
+                if  (PlayerUtil.getDistance(vec) < AntiCheatConfig.getInstance().getBlockPlaceWallRange()) {
+                    if (v == null || mc.player.getDistance(v.x, v.y, v.z) < best) {
+                        v = vec;
+                        f = facing;
+                    }
+                }
+            }
+        }
+        if (v != null) return new Pair<>(v, f);
+        return null;
     }
 
 
