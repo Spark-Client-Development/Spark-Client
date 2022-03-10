@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.EntityAddEvent;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
+import me.wallhacks.spark.manager.RotationManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.player.Offhand;
@@ -12,9 +13,11 @@ import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.combat.CrystalUtil;
 import me.wallhacks.spark.util.objects.FadePos;
+import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.objects.PredictedEntity;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.RaytraceUtil;
+import me.wallhacks.spark.util.player.RotationUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecItemSwitchItem;
 import me.wallhacks.spark.util.render.EspUtil;
@@ -25,19 +28,17 @@ import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
+import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.server.SPacketExplosion;
+import net.minecraft.network.play.server.SPacketTimeUpdate;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -48,7 +49,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import java.util.Iterator;
+
+import static me.wallhacks.spark.systems.module.modules.combat.CrystalAura.RotateType.*;
 
 @Module.Registration(name = "CrystalAura", description = "Superior module litarly best ever")
 public class CrystalAura extends Module {
@@ -96,13 +98,15 @@ public class CrystalAura extends Module {
     int delayTimer = 0;
     int placePauseTimer = 0;
     int breakPauseTimer = 0;
+    boolean ready = false;
     int PlaceTries = 0;
     float tick;
     boolean isUpdate = false;
     boolean facePlace = false;
     int placeCounter = 0;
     int placeCounterTimer = 0;
-    boolean flag = false;
+    boolean raytrace = false;
+    float[] cache;
 
     public CrystalAura() {
         instance = this;
@@ -131,7 +135,6 @@ public class CrystalAura extends Module {
         ca();
 
         isUpdate = false;
-        flag = false;
     }
 
     private boolean shouldPause() {
@@ -154,20 +157,19 @@ public class CrystalAura extends Module {
         if (placePauseTimer > 0)
             placePauseTimer--;
 
-        tick+= (20f - speed.getValue()) / 20f;
+        tick += (20f - speed.getValue()) / 20f;
         if (tick < 1f) {
             if (shouldPause()) return;
             //get crystal  entity to break
             getCrystalEntityTarget();
             //break that entity if we can
             getCrystalPlacePos();
-            if (!flag)
-                if (!doBreak())
-                    if (!doPlace() && (currentCrystalEntity != null || currentCrystalBlockPos != null))
-                        rotate(true);
+            if (!doBreak() || (AntiCheatConfig.getInstance().CrystalRotate().equals("Place") || AntiCheatConfig.getInstance().CrystalRotate().equals("Off")))
+                if (!doPlace() && (currentCrystalEntity != null || currentCrystalBlockPos != null))
+                    rotate(BOTH);
         } else {
             tick -= 1;
-            rotate(true);
+            rotate(BOTH);
         }
     }
 
@@ -197,7 +199,7 @@ public class CrystalAura extends Module {
                         if (getValueForCrystalExplodingAtPoint(c.getPositionVector(), false).value > 0 && canBreakCrystal(c)) {
                             currentCrystalEntity = c;
                             if (tick < 1f)
-                                if (doBreak()) flag = true;
+                                doBreak();
                         }
                     }
 
@@ -218,7 +220,7 @@ public class CrystalAura extends Module {
 
             if (PlayerUtil.getPlayerPosFloored(ex.getX(), ex.getY() + 0.1, ex.getZ()).add(0, -1, 0).equals(currentCrystalBlockPos)) {
                 if (instantReplace.getValue() && tick < 1f) {
-                    if (doPlace()) flag = true;
+                    doPlace();
                 }
             }
         }
@@ -233,7 +235,7 @@ public class CrystalAura extends Module {
     @Override
     public void onEnable() {
         //reset values for ca to start
-        flag = false;
+        ready = false;
         facePlace = false;
         currentCrystalBlockPos = null;
         currentCrystalEntity = null;
@@ -260,16 +262,16 @@ public class CrystalAura extends Module {
 
 
     boolean doPlace() {
-        if (currentCrystalBlockPos == null || !CanPlaceOnBlock(currentCrystalBlockPos, true)) return false;
+        if (currentCrystalBlockPos == null || !CanPlaceOnBlock(currentCrystalBlockPos, true).getKey()) return false;
         if (placePauseTimer <= 0) {
             //place crystal
             //get point for rotations
-            if (delayTimer < 10 && slowFacePlace.getValue() && facePlace) {
+            if (delayTimer < 5 && slowFacePlace.getValue() && facePlace) {
                 return false;
             }
             Vec3d pos = CrystalUtil.getRotationPos(true, currentCrystalBlockPos, currentCrystalEntity);
             if (pos == null)
-                pos = new Vec3d(currentCrystalBlockPos).add(0.5, 1, 0.5);
+                pos = new Vec3d(currentCrystalBlockPos).add(0.5, 0.5, 0.5);
             final RayTraceResult result = mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
             EnumFacing facing = (result == null || !currentCrystalBlockPos.equals(result.getBlockPos()) || result.sideHit == null) ? EnumFacing.UP : result.sideHit;
 
@@ -291,9 +293,8 @@ public class CrystalAura extends Module {
 
 
             //rotate if needed
-            if (!rotate(false))
+            if (!rotate(PLACE))
                 return true;
-
 
             //send packet
             mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(currentCrystalBlockPos, facing, hand, (float) v.x, (float) v.y, (float) v.z));
@@ -335,7 +336,7 @@ public class CrystalAura extends Module {
                 //try break
 
                 //rotate if needed
-                if (!rotate(true))
+                if (!rotate(BREAK))
                     return true;
 
 
@@ -350,9 +351,6 @@ public class CrystalAura extends Module {
                 //place cooldown is set to 0 to replace
                 placePauseTimer = 0;
 
-                if (!isUpdate)
-                    flag = true;
-
                 //place tries is reset
                 PlaceTries = 0;
 
@@ -366,7 +364,6 @@ public class CrystalAura extends Module {
             //no entity to attack lets place a crystal
         } else return false;
     }
-
 
     void getCrystalEntityTarget() {
         currentCrystalEntity = null;
@@ -405,7 +402,8 @@ public class CrystalAura extends Module {
         targetEntity = null;
         float bestValue = 0;
         for (BlockPos pos : WorldUtils.getSphere(PlayerUtil.getPlayerPosFloored(mc.player), 7, 7, 1)) {
-            if (CanPlaceOnBlock(pos, false)) {
+            Pair<Boolean, Boolean> pair = CanPlaceOnBlock(pos, false);
+            if (pair.getKey()) {
                 ValueForExplodingCrystalAtPoint Value = getValueForCrystalExplodingAtPoint(new Vec3d(pos.getX() + 0.5f, pos.getY() + 1, pos.getZ() + 0.5f), prePlace.getValue());
                 if (pos.equals(currentCrystalBlockPos) && Value.value > 0)
                     Value.value += switchThreshold.getValue();
@@ -416,6 +414,7 @@ public class CrystalAura extends Module {
                         targetEntity = Value.target.entity;
                     bestPos = pos;
                     facePlace = Value.facePlace;
+                    raytrace = pair.getValue();
                 }
             }
         }
@@ -485,11 +484,11 @@ public class CrystalAura extends Module {
         return false;
     }
 
-    boolean CanPlaceOnBlock(BlockPos p, boolean canReallyPlace) {
+    Pair<Boolean, Boolean> CanPlaceOnBlock(BlockPos p, boolean canReallyPlace) {
 
         //prevent place on block we mining
         if (AutoCity.INSTANCE.isEnabled() && p.equals(AutoCity.INSTANCE.GetBreakeBlock()))
-            return false;
+            return new Pair<>(false, false);
 
         final Block block = mc.world.getBlockState(p).getBlock();
         if (block == Blocks.OBSIDIAN || block == Blocks.BEDROCK) {
@@ -518,27 +517,35 @@ public class CrystalAura extends Module {
                     }
 
 
-                    return false;
+                    return new Pair<>(false, false);
 
 
                 }
 
 
                 Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(p));
-
-                if (PlayerUtil.getDistance(p) > (pos != null ? AntiCheatConfig.getInstance().getCrystalPlaceRange() : AntiCheatConfig.getInstance().getCrystalWallRange()))
-                    return false;
+                boolean raytrace = false;
+                double d = PlayerUtil.getDistance(p);
+                if (d > AntiCheatConfig.getInstance().getCrystalPlaceRange())
+                    return new Pair<>(false, false);
+                if (pos == null && d > AntiCheatConfig.INSTANCE.getCrystalWallRange()) {
+                    float[] rotation = Spark.rotationManager.getLegitRotations(new Vec3d(p.getX() + 0.5, p.getY() + 1, p.getZ() + 0.5));
+                    if (AntiCheatConfig.getInstance().raytrace.getValue() && getRotationForBypass(rotation[0]) != null) {
+                        raytrace = true;
+                    } else return new Pair<>(false, false);
+                }
                 //predict can break
+
                 if (!canBreakCrystal(new Vec3d(p.getX() + 0.5, p.getY() + 1, p.getZ() + 0.5)))
-                    return false;
+                    return new Pair<>(false, false);
 
 
-                return true;
+                return new Pair<>(true, raytrace);
 
             }
         }
 
-        return false;
+        return new Pair<>(false, false);
 
 
     }
@@ -559,21 +566,122 @@ public class CrystalAura extends Module {
         Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getVisiblePointsForBox(CrystalUtil.PredictCrystalBBFromPos(crystal)));
 
         //if can see
-        if (PlayerUtil.getDistance(crystal) > (pos != null ? AntiCheatConfig.getInstance().getCrystalBreakRange() : AntiCheatConfig.getInstance().getCrystalWallRange()))
+        if (PlayerUtil.getDistance(crystal) > (pos != null ? AntiCheatConfig.getInstance().getCrystalBreakRange() : AntiCheatConfig.getInstance().getCrystalWallRangeBreak()))
             return false;
 
         return true;
     }
 
     //rotation methods
-    boolean rotate(boolean forBreak) {
-        if (!AntiCheatConfig.getInstance().CrystalRotate()) return true;
-        Vec3d pos = CrystalUtil.getRotationPos(forBreak, currentCrystalBlockPos, currentCrystalEntity);
+    boolean rotate(RotateType type) {
+        String rotate = AntiCheatConfig.INSTANCE.CrystalRotate();
+        if (rotate.equals("Off")) return true;
+        Vec3d pos = null;
+        //mess incomingVVVVVV
+        boolean placeFlag = false;
+        boolean anotherFlag = false;
+        switch (type) {
+            case PLACE:
+                if ((rotate.equals("Place") || rotate.equals("Both") && currentCrystalBlockPos != null)) {
+                    pos = getPosition(true);
+                    placeFlag = true;
+                    break;
+                } else return true;
+            case BREAK:
+                if ((rotate.equals("Break") || rotate.equals("Both") && currentCrystalEntity != null && !currentCrystalEntity.isDead)) {
+                    pos = getPosition(false);
+                    break;
+                } else if (rotate.equals("Place") && currentCrystalBlockPos != null) {
+                    pos = getPosition(true);
+                    anotherFlag = true;
+                    placeFlag = true;
+                }
+            case BOTH:
+                if (rotate.equals("Both")) {
+                    if (currentCrystalEntity != null && !currentCrystalEntity.isDead) {
+                        pos = getPosition(false);
+                        break;
+                    } else if (currentCrystalBlockPos != null) {
+                        pos = getPosition(true);
+                        placeFlag = true;
+                        break;
+                    }
+                } else if (rotate.equals("Break") && currentCrystalEntity != null && !currentCrystalEntity.isDead)  {
+                    pos = getPosition(false);
+                    break;
+                } else if (rotate.equals("Place") && currentCrystalBlockPos != null) {
+                    pos = getPosition(true);
+                    placeFlag = true;
+                    break;
+                }
+        }
 
 
         if (pos == null) return false;
-        return Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, isUpdate);
+        float rot[] = Spark.rotationManager.getLegitRotations(pos);
+        boolean ready = true;
+        if (placeFlag && raytrace) {
+            if ((Spark.rotationManager.getFakeRotationPitch() != null && Spark.rotationManager.getFakeRotationYaw() != null && !isRotationGood(Spark.rotationManager.getFakeRotationYaw(), Spark.rotationManager.getFakeRotationPitch())) || type == BOTH || type == BREAK) {
+                ready = false;
+                if (cache != null && Math.abs(cache[0] -rot[0]) < 5 && isRotationGood(cache[0], cache[1]))
+                    rot = cache;
+                else {
+                    float[] test = getRotationForBypass(rot[0]);
+                    if (test != null) {
+                        rot = test;
+                        cache = test;
+                    }
+                }
+            }
+        }
+        boolean rotation = Spark.rotationManager.rotate(rot, AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, isUpdate);
+        return (rotation && ready) || anotherFlag;
     }
+
+    private Vec3d getPosition(boolean place) {
+        Vec3d pos;
+        if (place) {
+            pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(currentCrystalBlockPos));
+            if (pos == null) pos = new Vec3d(currentCrystalBlockPos.add(0.5, 1, 0.5));
+        } else {
+            pos = PlayerUtil.getClosestPoint(RaytraceUtil.getVisiblePointsForBox(CrystalUtil.PredictCrystalBBFromPos(currentCrystalEntity.getPositionVector())));
+            if (pos == null)
+                pos = currentCrystalEntity.getPositionEyes(mc.getRenderPartialTicks());
+        }
+        return pos;
+    }
+
+    private float[] getRotationForBypass(float limit) {
+        float rotation[] = null;
+        float best = Float.MAX_VALUE;
+        for (float yaw = limit - 5; yaw <= limit+5; yaw+=1) {
+            for (float pitch = -90; pitch <= -40; pitch+=1) {
+                float difference = Math.abs(limit-yaw);
+                if ((rotation == null || difference < best) && isRotationGood(yaw, pitch)) {
+                    best = difference;
+                    rotation = new float[] {yaw, pitch};
+                }
+            }
+        }
+        return rotation;
+    }
+
+    private boolean isRotationGood(float yaw, float pitch) {
+        Vec3d eyes = new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.eyeHeight, mc.player.posZ);
+        Vec3d look = this.getVectorForRotation(pitch, yaw);
+        look = eyes.add(look.x * 100, look.y * 100, look.z * 100);
+        return mc.world.rayTraceBlocks(eyes, look, false, true, false) == null;
+    }
+
+    protected final Vec3d getVectorForRotation(float pitch, float yaw) {
+        float f = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
+        return new Vec3d((double)(f1 * f2), (double)f3, (double)(f * f2));
+    }
+
+
 
     private AxisAlignedBB getFacingVec(EnumFacing facing, BlockPos pos) {
         switch (facing) {
@@ -599,6 +707,12 @@ public class CrystalAura extends Module {
         AxisAlignedBB render = getFacingVec(renderVec, currentCrystalBlockPos);
         EspUtil.boundingESPBoxFilled(render, fill.getColor());
         EspUtil.boundingESPBox(render, fill.getColor().brighter(), 2.0f);
+    }
+
+    enum RotateType {
+        BREAK,
+        PLACE,
+        BOTH;
     }
 
     class ValueForExplodingCrystalAtPoint {

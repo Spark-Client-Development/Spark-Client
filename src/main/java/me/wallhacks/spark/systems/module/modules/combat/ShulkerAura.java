@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import me.wallhacks.spark.util.WorldUtils;
@@ -30,16 +31,18 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemEndCrystal;
 import net.minecraft.item.ItemShulkerBox;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketCloseWindow;
+import net.minecraft.network.play.client.CPacketPlaceRecipe;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -55,10 +58,8 @@ public class ShulkerAura extends Module {
     IntSetting shulkerSlot = new IntSetting("Slot", this, 8, 1, 9);
     BlockPos targetPos;
     EnumFacing targetFacing;
-    int windowId;
-    int state = 0;
-    int shell = -1;
-    int chest = -1;
+    int windowId = -1;
+    int delay = 0;
     private boolean flag = false;
 
     public ShulkerAura() {
@@ -67,9 +68,11 @@ public class ShulkerAura extends Module {
 
     @Override
     public void onEnable() {
+        windowId = -1;
         AntiCheatConfig cfg = AntiCheatConfig.getInstance();
         targetPos = null;
         targetFacing = null;
+        String message = "Could not find target";
         for (EntityPlayer player : mc.world.playerEntities) {
             if (mc.player.getDistance(player) > 6) continue;
             if (mc.player == player) continue;
@@ -108,6 +111,7 @@ public class ShulkerAura extends Module {
 
                 //block underneath needs to be air bedrock or obby so we can actually place crystal there after trapping
                 Block placeBlock = mc.world.getBlockState(pos.offset(facing).down()).getBlock();
+                if (!BlockInteractUtil.blockCollisionCheck(pos.offset(facing).down(), true) || !BlockInteractUtil.blockCollisionCheck(pos.offset(facing), true) || !BlockInteractUtil.blockCollisionCheck(pos.offset(facing, 2).down(), true)) continue;
                 if (!(placeBlock instanceof BlockAir || placeBlock instanceof BlockObsidian || placeBlock == Blocks.BEDROCK) && BlockInteractUtil.blockCollisionCheck(pos.offset(facing).down(), null))
                     continue;
 
@@ -119,6 +123,7 @@ public class ShulkerAura extends Module {
                     if (!shulkBlock.isReplaceable(mc.world, shulkPos) || !BlockInteractUtil.blockCollisionCheck(shulkPos, null))
                         continue;
                 } else outerPos = shulkPos;
+                message = "Found target to attack but its to far away";
                 //raytrace and range checks
                 RayTraceResult outer = mc.world.rayTraceBlocks(mc.player.getPositionEyes(mc.getRenderPartialTicks()), new Vec3d(outerPos).add(0.5, 0.5, 0.5));
                 double distance = mc.player.getDistance(outerPos.getX() + 0.5, outerPos.getY() + 0.5, outerPos.getZ() + 0.5);
@@ -130,10 +135,11 @@ public class ShulkerAura extends Module {
             if (face != EnumFacing.UP) {
                 targetPos = pos;
                 targetFacing = face;
+                PacketMine.instance.pos = null;
                 return;
             }
         }
-        Spark.sendInfo("Could not find target to ShulkerAura");
+        Spark.sendInfo(message);
         disable();
     }
 
@@ -187,8 +193,16 @@ public class ShulkerAura extends Module {
             doShulkerAura();
         } else {
             flag = false;
-            int slot = ItemSwitcher.FindStackInInventory(new ShulkerSwitchItem(), false);
-            if ((slot != -1 && slot < 9) || !craft.getValue()) {
+            int slot = -1;
+            if (mc.currentScreen == null) {
+                for (int i = 0; i < 9; i++) {
+                    if (mc.player.inventory.getStackInSlot(i).getItem() instanceof ItemShulkerBox) {
+                        slot = i;
+                        break;
+                    }
+                }
+            }
+            if (slot != -1 || !craft.getValue()) {
                 BlockPos support = targetPos.add(targetFacing.getDirectionVec()).add(targetFacing.getDirectionVec()).add(targetFacing.getDirectionVec());
                 if (mc.world.getBlockState(support).getBlock().isReplaceable(mc.world, support)) {
                     if (BlockInteractUtil.tryPlaceBlock(support, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
@@ -201,10 +215,10 @@ public class ShulkerAura extends Module {
                 } else {
                     BlockInteractUtil.tryPlaceBlockOnBlock(support.offset(targetFacing.getOpposite()), targetFacing.getOpposite(), new ShulkerSwitchItem(), false, true, 2, false);
                 }
-            } else if (craft.getValue() && mc.currentScreen == null && !flag) {
+            } else if (craft.getValue() && mc.currentScreen == null) {
                 boolean flag = false;
                 BlockPos craftPos = null;
-                int best = 0;
+                double best = 0;
                 for (BlockPos pos : WorldUtils.getSphere(PlayerUtil.getPlayerPosFloored(mc.player), 6, 6, 1)) {
                     if (mc.world.getBlockState(pos).getBlock() == Blocks.CRAFTING_TABLE) {
                         Pair<Vec3d, EnumFacing> pair = BlockInteractUtil.getInteractPoint(pos);
@@ -216,13 +230,10 @@ public class ShulkerAura extends Module {
                     }
                     if (!BlockInteractUtil.canPlaceBlockAtPos(pos, true)) continue;
                     if (BlockInteractUtil.getDirForPlacingBlockAtPos(pos) == null) continue;
-                    int save = 0;
-                    for (EnumFacing enumFacing : EnumFacing.VALUES) {
-                        if (HoleUtil.getBlockResistance(pos.offset(enumFacing)) == HoleUtil.BlockResistance.Resistant || HoleUtil.getBlockResistance(pos.offset(enumFacing)) == HoleUtil.BlockResistance.Unbreakable)
-                            save++;
-                    }
-                    if (craftPos == null || save > best || (save == best && mc.player.getDistanceSq(pos) < mc.player.getDistanceSq(craftPos))) {
-                        best = save;
+                    if (pos.equals(targetPos.offset(targetFacing)) || pos.equals(targetPos.offset(targetFacing, 2)) || pos.equals(targetPos.offset(targetFacing).down()))  continue;
+                    double distance = mc.player.getDistance(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                    if (craftPos == null || distance < best) {
+                        best = distance;
                         craftPos = pos;
                     }
                 }
@@ -238,49 +249,19 @@ public class ShulkerAura extends Module {
                     EnumHand hand = EnumHand.OFF_HAND;
                     if (mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal))
                         hand = EnumHand.MAIN_HAND;
+                    this.flag = false;
                     mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(craftPos, facing, hand, (float) pos.x, (float) pos.y, (float) pos.z));
-                    state = 0;
                 }
             } else if (craft.getValue() && mc.currentScreen instanceof GuiCrafting) {
                 int id = mc.player.openContainer.windowId;
                 if (mc.player.openContainer.getSlot(0).getStack().getItem() instanceof ItemShulkerBox) {
-                    if (state == 4) {
-                        mc.playerController.windowClick(id, 0, 0, ClickType.PICKUP, mc.player);
-                        mc.playerController.windowClick(id, 36 + shulkerSlot.getValue(), 0, ClickType.PICKUP, mc.player);
-                        mc.player.closeScreen();
-                        state++;
-                    } else state++;
-                } else {
-                    if (state == 0) {
-                        shell = -1;
-                        chest = -1;
-                        for (int i = 10; i < 46; i++) {
-                            ItemStack stack = mc.player.openContainer.getSlot(i).getStack();
-                            if (stack.getItem() == Items.SHULKER_SHELL) shell = i;
-                            if (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST)) chest = i;
-                            if (chest > 0 && shell > 0) break;
-                        }
-                        if (shell == -1 || chest == -1) {
-                            disable();
-                        } else state++;
-                    } else if (state == 1) {
-                        if (shell == -1 || chest == -1) {
-                            disable();
-                        }
-                        mc.playerController.windowClick(id, shell, 0, ClickType.PICKUP, mc.player);
-                        mc.playerController.windowClick(id, 1, 1, ClickType.PICKUP, mc.player);
-                        mc.playerController.windowClick(id, 7, 1, ClickType.PICKUP, mc.player);
-                        mc.playerController.windowClick(id, shell, 0, ClickType.PICKUP, mc.player);
-                        state++;
-                    } else if (state == 2) {
-                        if (shell == -1 || chest == -1) {
-                            disable();
-                        }
-                        mc.playerController.windowClick(id, chest, 0, ClickType.PICKUP, mc.player);
-                        mc.playerController.windowClick(id, 4, 1, ClickType.PICKUP, mc.player);
-                        mc.playerController.windowClick(id, chest, 0, ClickType.PICKUP, mc.player);
-                        state++;
-                    }
+                    mc.playerController.windowClick(id, 0, 0, ClickType.PICKUP, mc.player);
+                    mc.playerController.windowClick(id, 36 + shulkerSlot.getValue(), 0, ClickType.PICKUP, mc.player);
+                    mc.player.closeScreen();
+                } else if (!flag) {
+                    flag = true;
+                    IRecipe recipe = CraftingManager.getRecipe(new ResourceLocation("minecraft:purple_shulker_box"));
+                    mc.player.connection.sendPacket(new CPacketPlaceRecipe(id, recipe, false));
                 }
             }
         }
@@ -302,21 +283,21 @@ public class ShulkerAura extends Module {
             }
         }
         if (crystalState == 1) {
-            if (state == 0) {
-                if (CrystalUtil.breakCrystal(crystal, null)) state = 3;
-            } else state--;
+            if (delay == 0) {
+                if (CrystalUtil.breakCrystal(crystal, null)) delay = 3;
+            } else delay--;
             if (windowId != -1)
                 mc.player.connection.sendPacket(new CPacketCloseWindow(windowId));
             windowId = -1;
         } else if (crystalState == 0) {
-            state=0;
+            delay = 0;
             if (!flag)
                 openShulk(targetPos.offset(targetFacing).offset(targetFacing));
             else flag = false;
         }
         if (crystalState == -1) {
             flag = false;
-            state = 0;
+            delay = 0;
             if (placeCrystal(targetPos.offset(targetFacing).down())) return;
             else {
                 Spark.sendInfo("No crystals found to place");
@@ -338,7 +319,8 @@ public class ShulkerAura extends Module {
 
     @Override
     public void onDisable() {
-        mc.player.connection.sendPacket(new CPacketCloseWindow(windowId));
+        if (windowId != -1)
+            mc.player.connection.sendPacket(new CPacketCloseWindow(windowId));
     }
 
     private void openShulk(BlockPos shulkPos) {

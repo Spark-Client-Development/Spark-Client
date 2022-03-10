@@ -98,6 +98,22 @@ public class ItemSwitcher implements MC {
 		return best;
 	}
 
+	public static int FindStackInHotbar(SwitchItem input) {
+		int best = -1;
+		float bestValue = 0;
+
+		for (int i = 0; i < 9; i++) {
+			final ItemStack s = mc.player.inventoryContainer.getInventory().get(i);
+			if (s.isEmpty())
+				continue;
+			float value = input.isItemGood(s);
+			if (value > bestValue) {
+				best = i;
+				bestValue = value;
+			}
+		}
+		return best;
+	}
 
 
 	public static void ConstSwitch(int slot,int slot1) {

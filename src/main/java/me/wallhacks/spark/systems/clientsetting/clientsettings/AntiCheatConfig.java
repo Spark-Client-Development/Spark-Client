@@ -52,17 +52,17 @@ public class AntiCheatConfig extends ClientSetting {
 
     public ModeSetting attackSwing = new ModeSetting("AttackSwing",this,"Normal" ,  Arrays.asList("Off","Normal","Packet"), "Attack");
 
-    DoubleSetting crystalPlaceRange = new DoubleSetting("CrystalPlaceRange",this,4,1,6,0.25, "Crystals");
-    DoubleSetting crystalBreakRange = new DoubleSetting("CrystalBreakRange",this,4,1,6,0.25, "Crystals");
-    DoubleSetting crystalWallRange = new DoubleSetting("CrystalWallRange",this,0,0,6,0.25, "Crystals");
+    DoubleSetting crystalPlaceRange = new DoubleSetting("PlaceRange",this,4,1,6,0.25, "Crystals");
+    DoubleSetting crystalBreakRange = new DoubleSetting("BreakRange",this,4,1,6,0.25, "Crystals");
+    DoubleSetting placeWallRange = new DoubleSetting("PlaceWallRange",this,0,0,6,0.25, "Crystals");
+    DoubleSetting breakWallRange = new DoubleSetting("BreakWallRange",this,0,0,6,0.25, "Crystals");
     public ModeSetting crystalBreakHand = new ModeSetting("BreakHand",this,"Both", Arrays.asList("Both","MainHand","OffHand"), "Crystals");
     public ModeSetting antiWeakness = new ModeSetting("AntiWeakness",this,"Normal", Arrays.asList("Silent","Normal","Off"), "Crystals");
-
     public ModeSetting crystalBreakSwing = new ModeSetting("BreakSwing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Crystals");
     public ModeSetting crystalPlaceSwing = new ModeSetting("CrystalPlaceSwing",this,"Off", Arrays.asList("Off","Normal","Packet"), "Crystals");
-    BooleanSetting crystalRotate = new BooleanSetting("CrystalRotate",this,true,"Crystals");
+    ModeSetting crystalRotate = new ModeSetting("CrystalRotate",this,"Both", Arrays.asList("Off", "Both", "Place", "Break"), "Crystals");
     IntSetting crystalRotStep = new IntSetting("CrystalRotStep",this,180,45,180,"Crystals");
-
+    public BooleanSetting raytrace = new BooleanSetting("RaytraceBypass", this, false, "Crystals");
 
     public DoubleSetting tickAdjustment = new DoubleSetting("TickAdjustment", this, 0.95D, 0.1D, 2.0D, "AEF");
     public IntSetting maxPacketFlyLevels = new IntSetting("MaxPacketFlyLevels", this, 25, 1, 200, "AEF");
@@ -75,9 +75,12 @@ public class AntiCheatConfig extends ClientSetting {
         return crystalBreakRange.getValue();
     }
     public double getCrystalWallRange() {
-        return crystalWallRange.getValue();
+        return placeWallRange.getValue();
     }
-    public boolean CrystalRotate() {
+    public double getCrystalWallRangeBreak() {
+        return breakWallRange.getValue();
+    }
+    public String CrystalRotate() {
         return crystalRotate.getValue();
     }
     public int getCrystalRotStep() {

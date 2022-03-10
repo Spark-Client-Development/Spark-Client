@@ -116,22 +116,20 @@ public class RaytraceUtil implements MC {
         ArrayList<Vec3d> validHits = new ArrayList<>();
         Vec3d from = new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ);
 
-        for (double x = 0.1; x <= 0.9; x +=0.4)
-        {
-            for (double y = 0.1; y <= 0.9; y +=0.4)
-            {
-                for (double z = 0.1; z <= 0.9; z +=0.4)
-                {
-                    Vec3d vec = new Vec3d(pos.getX()+x
-                            ,pos.getY()+y,pos.getZ()+z);
+        for (double x = 0.0; x <= 1; x +=0.25) {
+            for (double y = 0.0; y <= 1; y +=0.25) {
+                for (double z = 0.0; z <= 1; z +=0.25) {
+                    if (x == 1 || x == 0 || y == 1 || y == 0 || z == 1 || z == 0) {
+                        Vec3d vec = new Vec3d(pos.getX() + x
+                                , pos.getY() + y, pos.getZ() + z);
 
-                    RayTraceResult res = mc.world.rayTraceBlocks(from,vec,false);
+                        RayTraceResult res = mc.world.rayTraceBlocks(from, vec, false);
 
-                    //we did not hit shit thats not our target
-                    if (res == null || (pos.equals(res.getBlockPos())))
-                        validHits.add(vec);
+                        //we did not hit shit thats not our target
+                        if (res == null || (pos.equals(res.getBlockPos())))
+                            validHits.add(vec);
 
-
+                    }
                 }
 
 

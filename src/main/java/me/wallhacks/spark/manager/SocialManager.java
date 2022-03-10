@@ -79,8 +79,12 @@ public class SocialManager {
         return getFriends().contains(entry);
     }
     public boolean isFriend(String name) {
-        for (SocialEntry s : getFriends()) {
-            if (s.getName().equalsIgnoreCase(name)) return true;
+        try {
+            for (SocialEntry s : getFriends()) {
+                if (s.getName().equalsIgnoreCase(name)) return true;
+            }
+        } catch (Exception e) {
+            //fuck you dvd the complete social manager is one big nullpointer
         }
         return false;
     }

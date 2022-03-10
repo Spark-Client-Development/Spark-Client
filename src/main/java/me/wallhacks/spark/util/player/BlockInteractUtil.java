@@ -6,6 +6,7 @@ import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityExpBottle;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
@@ -130,17 +131,6 @@ public class BlockInteractUtil implements MC {
         return processRightClickBlockForPlace(placeOn,face,clientSided,hand,hitVec) ? BlockPlaceResult.PLACED : BlockPlaceResult.FAILED;
     }
 
-
-    public static BlockPos getBlockPosToPlaceAtBlock(BlockPos pos,boolean checkEntities) {
-        if(canPlaceBlockAtPos(pos,checkEntities))
-            return pos;
-        for (BlockPos x : new BlockPos[]{pos.add(0,-1,0),pos.add(0,0,1),pos.add(0,0,-1),pos.add(1,0,0),pos.add(-1,0,0)}) {
-            if(canPlaceBlockAtPos(x,checkEntities))
-                return x;
-        }
-        return null;
-    }
-
     public static boolean canPlaceBlockAtPos(BlockPos p,boolean checkEntities) {
 
         if(!mc.world.getBlockState(p).getMaterial().isReplaceable())
@@ -167,6 +157,18 @@ public class BlockInteractUtil implements MC {
         }
         return true;
     }
+
+    public static boolean blockCollisionCheck(BlockPos pos, boolean ignoreCrystal){
+
+        AxisAlignedBB box = new AxisAlignedBB(pos);
+        List<Entity> l = mc.world.getEntitiesWithinAABBExcludingEntity(null, box);
+        for(Entity e : l){
+            if(!(e instanceof EntityItem) && !(e instanceof EntityExpBottle) && !e.isDead && (!(e instanceof EntityEnderCrystal) || !ignoreCrystal))
+                return false;
+        }
+        return true;
+    }
+
 
 
     public static EnumFacing getDirForPlacingBlockAtPos(BlockPos pos){

@@ -19,7 +19,9 @@ public class PlayerListItem extends GuiPanelBase {
 
 
     public String getName() {
-        return item.getGameProfile().getName();
+        if (item != null)
+            return item.getGameProfile().getName();
+        else return player.getName();
     }
 
     public PlayerListItem(SocialManager.SocialEntry player) {

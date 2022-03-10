@@ -1,5 +1,6 @@
 package me.wallhacks.spark.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -88,7 +89,13 @@ public class SessionUtils implements MC {
 
             // Convert to a JSON object to print data
             JsonParser jp = new JsonParser(); //from gson
-            JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+            JsonElement root = null;
+            try {
+                root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+            } catch (IOException fucked) {
+                knownPlayerName.put(name, null);
+                return null;
+            }
             JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object.
             String id = rootobj.get("id").getAsString(); //just grab the zipcode
             id = java.util.UUID.fromString(
@@ -150,9 +157,7 @@ public class SessionUtils implements MC {
 
             //return name;
         } catch (Exception e) {
-
             knownPlayerUUID.put(uuid, null);
-            e.printStackTrace();
         }
         return null;
 

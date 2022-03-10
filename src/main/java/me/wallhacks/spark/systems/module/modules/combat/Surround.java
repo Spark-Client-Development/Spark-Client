@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.objects.FadePos;
@@ -131,6 +132,7 @@ public class Surround extends Module {
 
                     done = false;
                     BlockInteractUtil.BlockPlaceResult res = Place(p);
+                    if (p.equals(PacketMine.instance.pos)) PacketMine.instance.pos = null;
 
                     if(res != BlockInteractUtil.BlockPlaceResult.FAILED)
                         isPlacing = true;

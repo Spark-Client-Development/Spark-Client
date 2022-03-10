@@ -51,10 +51,6 @@ public class RotationManager implements MC {
             if(FakeRotationYaw == null)
                 FakeRotationYaw = mc.player.lastReportedYaw;
 
-            if(Math.abs(rotation[1]) >= 88 && 92 <= Math.abs(rotation[1]))
-                rotation[0] = FakeRotationYaw;
-
-
             if(FakeRotationYaw < rotation[0])
                 FakeRotationYaw = (float) Math.min(FakeRotationYaw+yawstep, rotation[0]);
             else if(FakeRotationYaw > rotation[0])
