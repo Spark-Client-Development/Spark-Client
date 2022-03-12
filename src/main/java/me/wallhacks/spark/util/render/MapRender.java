@@ -122,6 +122,7 @@ public class MapRender implements MC {
 
         }
 
+        if(ClientConfig.getInstance().Structures.isOn())
         for (Vec2i chunkPos : structuresHashMap.keySet()) {
 
             Vec2d pos = new Vec2d(chunkPos.x*16,chunkPos.y*16);
