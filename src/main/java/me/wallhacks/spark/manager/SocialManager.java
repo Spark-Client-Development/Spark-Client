@@ -48,7 +48,7 @@ public class SocialManager {
     }
     public void removeFriend(String name){
         for (SocialEntry s : getFriends()) {
-            if (s.getName().equalsIgnoreCase(name))
+            if (name.equalsIgnoreCase(s.getName()))
                 removeFriend(s);
         }
 
@@ -79,12 +79,8 @@ public class SocialManager {
         return getFriends().contains(entry);
     }
     public boolean isFriend(String name) {
-        try {
-            for (SocialEntry s : getFriends()) {
-                if (s.getName().equalsIgnoreCase(name)) return true;
-            }
-        } catch (Exception e) {
-            //fuck you dvd the complete social manager is one big nullpointer
+        for (SocialEntry s : getFriends()) {
+            if (name.equalsIgnoreCase(s.getName())) return true;
         }
         return false;
     }

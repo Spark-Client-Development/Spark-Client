@@ -1,6 +1,7 @@
 package me.wallhacks.spark.util.render;
 
 import com.github.lunatrius.core.util.vector.Vector2d;
+import com.sun.jna.Structure;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.manager.FontManager;
@@ -11,6 +12,7 @@ import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
+import me.wallhacks.spark.util.objects.MCStructures;
 import me.wallhacks.spark.util.objects.MapImage;
 import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
@@ -26,11 +28,14 @@ import net.minecraft.world.storage.MapDecoration;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public class MapRender implements MC {
 
 
     private static final ResourceLocation ARROW_ICON = new ResourceLocation("textures/icons/arrowicon.png");
+
+
 
     public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, int ImageScale, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover) {
         GL11.glPushMatrix();
@@ -54,11 +59,16 @@ public class MapRender implements MC {
                 ImageScale*MapImage.lods*5/MapImage.size
         ),1, MapImage.lods);
 
+        HashMap<Vec2i, MCStructures> structuresHashMap = new HashMap<Vec2i, MCStructures>();
+
         for (int x = WholeMapStartPos.x; x <= WholeMapEndPos.x; x++) {
             for (int y = WholeMapStartPos.y; y <= WholeMapEndPos.y; y++) {
 
 
                 SparkMap map = MapManager.instance.getMap(new Vec2i(x, y), dim);
+
+                if(map.structures.size() > 0)
+                    structuresHashMap.putAll(new HashMap<>(map.structures));
 
                 if(!map.isEmpty())
                 {
@@ -112,6 +122,29 @@ public class MapRender implements MC {
 
         }
 
+        if(ClientConfig.getInstance().Structures.isOn())
+        for (Vec2i chunkPos : structuresHashMap.keySet()) {
+
+            Vec2d pos = new Vec2d(chunkPos.x*16,chunkPos.y*16);
+            double x = ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(pos.x - TargetX, ImageScale);
+            double y = ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(pos.y - TargetZ, ImageScale);
+
+            MCStructures structures = structuresHashMap.get(chunkPos);
+            GL11.glPushMatrix();
+            GlStateManager.translate(x, y, 0);
+
+            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),structures.getSize()*0.1);
+
+            GlStateManager.scale(s,s,s);
+            GuiUtil.drawCompleteImageRotated(-6,-6,6*2,6*2,0,structures.getResourceLocation(),Color.WHITE);
+
+            GL11.glPopMatrix();
+
+        }
+
+
+
+
 
         if (mc.player.dimension == dim) {
             for (Entity e : mc.world.loadedEntityList) {
@@ -136,6 +169,8 @@ public class MapRender implements MC {
                 }
             }
         }
+
+
 
 
 

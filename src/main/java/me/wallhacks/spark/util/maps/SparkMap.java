@@ -1,15 +1,16 @@
 package me.wallhacks.spark.util.maps;
 
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.github.lunatrius.core.util.vector.Vector2d;
+import me.wallhacks.spark.util.objects.MCStructures;
 import me.wallhacks.spark.util.objects.MapImage;
 import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -34,6 +35,7 @@ public class SparkMap {
         return image.getBufferedImage();
     }
 
+    public ConcurrentHashMap<Vec2i, MCStructures> structures = new ConcurrentHashMap<Vec2i, me.wallhacks.spark.util.objects.MCStructures>();
 
     public void setBufferedImage(BufferedImage bufferedImage) {
         if(image == null)
@@ -57,7 +59,7 @@ public class SparkMap {
     public final Vec2i pos;
     public final int dim;
 
-    static final int scale = 2;
+    public static final int scale = 2;
     public SparkMap(final Vec3i p){
         this(new Vec2i(p.getX(),p.getZ()),p.getY());
     }
@@ -143,7 +145,7 @@ public class SparkMap {
 
             for (int x1 = 0; x1 < 16/scale; x1++) {
                 for (int z1 = 0; z1 < 16/scale; z1++) {
-                    int mapC = getMapColorAtPos(x+x1*scale, z+z1*scale, worldIn);
+                    int mapC = getMapColorAtPos(x+x1*scale, z+z1*scale, chunk, worldIn);
 
                     image.setRGB(x/scale+x1-(pos.x*MapImage.size), z/scale+z1-(pos.y*MapImage.size), mapC);
 
@@ -157,11 +159,11 @@ public class SparkMap {
 
     }
 
-    int getMapColorAtPos(int x,int z,World worldIn){
+    int getMapColorAtPos(int x,int z,Chunk chunk,World worldIn){
 
         IBlockState iblockstate = Blocks.AIR.getDefaultState();
         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-        Chunk chunk = worldIn.getChunk(new BlockPos(x,0,z));
+
 
         blockpos$mutableblockpos.setPos(x,100,z);
         iblockstate = chunk.getBlockState(x, 100, z);

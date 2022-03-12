@@ -11,9 +11,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import me.wallhacks.spark.util.player.PlayerUtil;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class WorldUtils implements MC {
     public static List<BlockPos> getBlocksOccupiedByBox (AxisAlignedBB bb){
@@ -31,6 +33,28 @@ public class WorldUtils implements MC {
                 occupiedByPlayer.add(floored);
         }
         return occupiedByPlayer;
+    }
+
+    public static long getSeed(String s) {
+        long i = (new Random()).nextLong();
+
+        if (!StringUtils.isEmpty(s))
+        {
+            try
+            {
+                long j = Long.parseLong(s);
+
+                if (j != 0L)
+                {
+                    i = j;
+                }
+            }
+            catch (NumberFormatException var7)
+            {
+                i = (long)s.hashCode();
+            }
+        }
+        return i;
     }
 
     public static List<BlockPos> getSphere(BlockPos loc, float r, int h, int plus_y)
@@ -101,6 +125,7 @@ public class WorldUtils implements MC {
                 pos.add(0,-1,0),
         };
     }
+
 
 
 }
