@@ -129,6 +129,7 @@ public class SeedManager implements MC {
             for(int var12 = 0; var12 < var11; ++var12) {
                 int dim = var10[var12];
                 WorldServer world = dim == 0 ? overWorld : (WorldServer)(new WorldServerMulti(integratedServer, isavehandler, dim, overWorld, integratedServer.profiler)).init();
+                world.initialize(worldSettings);
             }
         }
 
@@ -188,19 +189,20 @@ public class SeedManager implements MC {
         return integratedServer.getWorld(0);
     }
 
-    public MCStructures getStructure(int chunkX, int chunkY,int dim) {
+    public ArrayList<MCStructures> getStructures(int chunkX, int chunkY,int dim) {
+        ArrayList<MCStructures> structures = new ArrayList<>();
         if(integratedServer == null)
             return null;
         if(dim == 1)
         {
             if(SeedManager.instance.getChunkGeneratorEnd().endCityGen.canSpawnStructureAtCoords(chunkX,chunkY))
-                return MCStructures.EndCity;
+                structures.add(MCStructures.EndCity);
         }
         else if(dim == -1)
         {
 
             if(getChunkGeneratorHell().genNetherBridge.canSpawnStructureAtCoords(chunkX,chunkY))
-                return MCStructures.NetherFortress;
+                structures.add(MCStructures.NetherFortress);
         }
         else if(dim == 0)
         {
@@ -208,37 +210,37 @@ public class SeedManager implements MC {
 
 
             if(generatorOverworld.villageGenerator.canSpawnStructureAtCoords(chunkX,chunkY))
-                return MCStructures.Village;
+                structures.add(MCStructures.Village);
 
             if(generatorOverworld.woodlandMansionGenerator.canSpawnStructureAtCoords(chunkX,chunkY))
-                return MCStructures.Mansion;
-            //if(generatorOverworld.mineshaftGenerator.canSpawnStructureAtCoords(chunkX,chunkY))
-            //    return MCStructures.Mineshaft;
+                structures.add( MCStructures.Mansion);
+            if(generatorOverworld.mineshaftGenerator.canSpawnStructureAtCoords(chunkX,chunkY))
+                structures.add( MCStructures.Mineshaft);
             if(generatorOverworld.strongholdGenerator.canSpawnStructureAtCoords(chunkX,chunkY))
-                return MCStructures.Stronghold;
+                structures.add( MCStructures.Stronghold);
             if(generatorOverworld.oceanMonumentGenerator.canSpawnStructureAtCoords(chunkX,chunkY))
-                return MCStructures.OceanMonument;
+                structures.add( MCStructures.OceanMonument);
             if(generatorOverworld.scatteredFeatureGenerator.canSpawnStructureAtCoords(chunkX,chunkY))
             {
                 Biome biomeIn = getOverworld().getBiome(new BlockPos(chunkX * 16 + 8, 0, chunkY * 16 + 8));
 
                 if (biomeIn != Biomes.JUNGLE && biomeIn != Biomes.JUNGLE_HILLS) {
                     if (biomeIn == Biomes.SWAMPLAND) {
-                        return MCStructures.WitchHut;
+                        structures.add( MCStructures.WitchHut);
                     } else if (biomeIn != Biomes.DESERT && biomeIn != Biomes.DESERT_HILLS) {
                         if (biomeIn == Biomes.ICE_PLAINS || biomeIn == Biomes.COLD_TAIGA) {
-                            return MCStructures.Igloo;
+                            structures.add( MCStructures.Igloo);
                         }
                     } else {
-                        return MCStructures.DesertTemple;
+                        structures.add( MCStructures.DesertTemple);
                     }
                 } else {
-                    return MCStructures.JungleTemple;
+                    structures.add( MCStructures.JungleTemple);
                 }
             }
 
         }
-        return null;
+        return structures;
     }
 
 

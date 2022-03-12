@@ -4,11 +4,9 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import me.wallhacks.spark.util.objects.MCStructures;
-import me.wallhacks.spark.util.objects.MapImage;
-import me.wallhacks.spark.util.objects.Vec2d;
-import me.wallhacks.spark.util.objects.Vec2i;
+import me.wallhacks.spark.util.objects.*;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -35,7 +33,7 @@ public class SparkMap {
         return image.getBufferedImage();
     }
 
-    public ConcurrentHashMap<Vec2i, MCStructures> structures = new ConcurrentHashMap<Vec2i, me.wallhacks.spark.util.objects.MCStructures>();
+    public CopyOnWriteArrayList<Pair<Vec2i,MCStructures>> structures = new CopyOnWriteArrayList<Pair<Vec2i, MCStructures>>();
 
     public void setBufferedImage(BufferedImage bufferedImage) {
         if(image == null)

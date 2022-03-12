@@ -24,6 +24,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.Objects;
+
 public class BreakManager implements MC {
     public BreakManager() {
         Spark.eventBus.register(this);
@@ -115,7 +117,7 @@ public class BreakManager implements MC {
         if(pos == null)
             pos = new Vec3d(block.getX()+0.5,block.getY()+0.5,block.getZ()+0.5);
         else
-            facing = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ),pos,false).sideHit;
+            facing = Objects.requireNonNull(mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), pos, false)).sideHit;
 
 
 

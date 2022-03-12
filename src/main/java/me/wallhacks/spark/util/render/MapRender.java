@@ -9,13 +9,11 @@ import me.wallhacks.spark.manager.MapManager;
 import me.wallhacks.spark.manager.WaypointManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
-import me.wallhacks.spark.util.objects.MCStructures;
-import me.wallhacks.spark.util.objects.MapImage;
-import me.wallhacks.spark.util.objects.Vec2d;
-import me.wallhacks.spark.util.objects.Vec2i;
+import me.wallhacks.spark.util.objects.*;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,6 +26,7 @@ import net.minecraft.world.storage.MapDecoration;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MapRender implements MC {
@@ -59,7 +58,7 @@ public class MapRender implements MC {
                 ImageScale*MapImage.lods*5/MapImage.size
         ),1, MapImage.lods);
 
-        HashMap<Vec2i, MCStructures> structuresHashMap = new HashMap<Vec2i, MCStructures>();
+        ArrayList<Pair<Vec2i,MCStructures>> structuresHashMap = new ArrayList<Pair<Vec2i, MCStructures>>();
 
         for (int x = WholeMapStartPos.x; x <= WholeMapEndPos.x; x++) {
             for (int y = WholeMapStartPos.y; y <= WholeMapEndPos.y; y++) {
@@ -68,7 +67,7 @@ public class MapRender implements MC {
                 SparkMap map = MapManager.instance.getMap(new Vec2i(x, y), dim);
 
                 if(map.structures.size() > 0)
-                    structuresHashMap.putAll(new HashMap<>(map.structures));
+                    structuresHashMap.addAll(new ArrayList<>(map.structures));
 
                 if(!map.isEmpty())
                 {
@@ -122,14 +121,17 @@ public class MapRender implements MC {
 
         }
 
-        if(ClientConfig.getInstance().Structures.isOn())
-        for (Vec2i chunkPos : structuresHashMap.keySet()) {
+        if(MapConfig.getInstance().Structures.isOn())
+        for (Pair<Vec2i, MCStructures> structuresPair : structuresHashMap) {
 
-            Vec2d pos = new Vec2d(chunkPos.x*16,chunkPos.y*16);
+            if(!MapConfig.getInstance().StructureList.contains(structuresPair.getValue()))
+                continue;
+
+            Vec2d pos = new Vec2d(structuresPair.getKey().x*16,structuresPair.getKey().y*16);
             double x = ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(pos.x - TargetX, ImageScale);
             double y = ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(pos.y - TargetZ, ImageScale);
 
-            MCStructures structures = structuresHashMap.get(chunkPos);
+            MCStructures structures = structuresPair.getValue();
             GL11.glPushMatrix();
             GlStateManager.translate(x, y, 0);
 

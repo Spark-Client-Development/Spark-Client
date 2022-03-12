@@ -4,11 +4,14 @@ import me.wallhacks.spark.gui.clickGui.panels.mainScreen.moduleslist.GuiModulePa
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
 import me.wallhacks.spark.util.GuiUtil;
+import me.wallhacks.spark.util.objects.MCStructures;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.awt.*;
 
 public class ListSettingGuiItem extends GuiPanelBase {
     public ListSettingGuiItem(ListSelectSetting listSelectSetting,Object selection) {
@@ -57,7 +60,12 @@ public class ListSettingGuiItem extends GuiPanelBase {
 
             textOffset += 15;
         }
+        else if(selection instanceof MCStructures)
+        {
+            GuiUtil.drawCompleteImage(posX + textOffset, posY,12,12,((MCStructures) selection).getResourceLocation(), Color.WHITE);
 
+            textOffset += 15;
+        }
 
 
         fontManager.drawString(listSelectSetting.getValueDisplayString(selection), this.posX + 4 + textOffset, this.posY + (this.height - 8) / 2, guiSettings.getContrastColor().getRGB());

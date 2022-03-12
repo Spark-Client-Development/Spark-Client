@@ -14,6 +14,7 @@ import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.panels.GuiPanelScroll;
 import me.wallhacks.spark.manager.ConfigManager;
 import me.wallhacks.spark.manager.WaypointManager;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.Vec2i;
@@ -40,6 +41,7 @@ public class NavigationGui extends ClickGuiPanel implements MC {
         super.init();
         map.resetValues();
         guiEditSettingPanel.setCurrentSettingsHolder(null);
+        guiMapConfig.setCurrentSettingsHolder(MapConfig.getInstance());
     }
 
 
@@ -50,15 +52,21 @@ public class NavigationGui extends ClickGuiPanel implements MC {
 
     final MapGui map = new MapGui();
 
-    boolean inMap = true;
+    final GuiEditSettingPanel guiMapConfig = new GuiEditSettingPanel();
+
+
+    int screen = 0;
+
 
     final GuiPanelButton MapButton = new GuiPanelButton(() -> {
-        inMap = true;
+        screen = 0;
     }, "Maps");
     final GuiPanelButton WayPointButton = new GuiPanelButton(() -> {
-        inMap = false;
+        screen = 1;
     }, "Waypoints");
-
+    final GuiPanelButton ConfigButton = new GuiPanelButton(() -> {
+        screen = 2;
+    }, "Config");
 
 
     final GuiPanelButton addWayPointButton = new GuiPanelButton(() -> {
@@ -92,10 +100,15 @@ public class NavigationGui extends ClickGuiPanel implements MC {
 
         int searchFieldHeight = 18;
 
-        if(inMap)
+        if(screen == 0)
         {
             map.setPositionAndSize(x,y,width,height);
             map.renderContent(MouseX, MouseY, deltaTime);
+        }
+        else if(screen == 2)
+        {
+            guiMapConfig.setPositionAndSize(x,y,width,height);
+            guiMapConfig.renderContent(MouseX, MouseY, deltaTime);
         }
         else
         {
@@ -132,19 +145,25 @@ public class NavigationGui extends ClickGuiPanel implements MC {
 
         Gui.drawRect(x-4,y-4,x+width+4,y+18+4, guiSettings.getGuiMainPanelBackgroundColor().getRGB());
 
+        int buttonWidth = (width-guiSettings.spacing*2)/3;
+
         MapButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
-        MapButton.setPositionAndSize(x,y,ListWidth,searchFieldHeight);
+        MapButton.setPositionAndSize(x,y,buttonWidth,searchFieldHeight);
         MapButton.renderContent(MouseX,MouseY,deltaTime);
 
 
-        x += ListWidth + guiSettings.spacing;
+        x += buttonWidth + guiSettings.spacing;
 
         WayPointButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
-        WayPointButton.setPositionAndSize(x,y,ListWidth,searchFieldHeight);
+        WayPointButton.setPositionAndSize(x,y,buttonWidth,searchFieldHeight);
         WayPointButton.renderContent(MouseX,MouseY,deltaTime);
 
 
+        x += buttonWidth + guiSettings.spacing;
 
+        ConfigButton.setOverrideColor(guiSettings.getGuiSubPanelBackgroundColor());
+        ConfigButton.setPositionAndSize(x,y,buttonWidth,searchFieldHeight);
+        ConfigButton.renderContent(MouseX,MouseY,deltaTime);
 
 
 

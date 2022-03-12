@@ -8,10 +8,12 @@ import me.wallhacks.spark.event.player.ChunkLoadEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
 import me.wallhacks.spark.util.objects.MCStructures;
 import me.wallhacks.spark.util.objects.MapImage;
+import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
@@ -23,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -125,7 +128,7 @@ public class MapManager implements MC {
             Vec3i v = toSave.iterator().next();
             toSave.remove(v);
 
-            if (ClientConfig.getInstance().SaveMap.isOn()) {
+            if (MapConfig.getInstance().SaveMap.isOn()) {
                 SparkMap map = getMap(v);
                 if (map != null)
                     SaveMap(map);
@@ -227,10 +230,15 @@ public class MapManager implements MC {
                 int chunkX = m.pos.x*s+x;
                 int chunkY = m.pos.y*s+y;
 
-                MCStructures structure = SeedManager.instance.getStructure(chunkX,chunkY,m.dim);
+                ArrayList<MCStructures> structures = SeedManager.instance.getStructures(chunkX,chunkY,m.dim);
 
-                if(structure != null)
-                    m.structures.put(new Vec2i(chunkX,chunkY),structure);
+                if(structures != null && structures.size() > 0)
+                {
+                    for (MCStructures structure : structures) {
+                        m.structures.add(new Pair<>(new Vec2i(chunkX,chunkY),structure));
+                    }
+
+                }
             }
         }
 
