@@ -42,10 +42,7 @@ public class AutoWither extends Module {
 
     ModeSetting witherPlaceMode = new ModeSetting("Place", this, "Toggle", Arrays.asList("Toggle","ClickSkull","Walk"), "Place");
     IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,10,"Place");
-
-
     BooleanSetting autoName = new BooleanSetting("AutoName", this, true, "Place");
-    BooleanSetting rotateForName = new BooleanSetting("RotateForName", this, true, v -> autoName.isOn(),"Place");
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DC865E, true), "Render");
@@ -74,8 +71,8 @@ public class AutoWither extends Module {
                             Vec3d lookAt = RaytraceUtil.getPointToLookAtEntity(w);
                             if (lookAt == null) lookAt = w.boundingBox.getCenter();
 
-                            if(rotateForName.isOn())
-                                if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(lookAt), 80, 2, false))
+                            if(AntiCheatConfig.getInstance().attackRotate.getValue())
+                                if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(lookAt), true))
                                     return;
 
                             mc.playerController.interactWithEntity(mc.player, w, hand);
@@ -116,7 +113,7 @@ public class AutoWither extends Module {
                         return;
 
 
-                    BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(p, new SpecBlockSwitchItem(i < 4 ? Blocks.SOUL_SAND : Blocks.SKULL), true, true, 4, true);
+                    BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(p, new SpecBlockSwitchItem(i < 4 ? Blocks.SOUL_SAND : Blocks.SKULL), true, true);
 
 
 

@@ -3,6 +3,7 @@ package me.wallhacks.spark.manager;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.UpdateWalkingPlayerEvent;
 import me.wallhacks.spark.event.render.RenderEntityEvent;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.util.MC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -42,22 +43,19 @@ public class RotationManager implements MC {
     //it return true if rotation was reached
     //yaw step is how fast it rotates and stay ticks is how many ticks after rotation we should keep that rotation
     //allow sendMultiplePackets if for doing multiple rotation things in one tick(bad idea for ca)
-    public boolean rotate(float[] rotation, int yawstep, int stayTicks, boolean allowSendMultiplePackets) {
-        return rotate(rotation,yawstep,stayTicks,allowSendMultiplePackets,true);
-    }
 
-    public boolean rotate(float[] rotation, int yawstep, int stayTicks, boolean allowSendMultiplePackets, boolean instant) {
+    public boolean rotate(float[] rotation, boolean instant) {
         if(!cancelNextWalkingUpdate) {
             if(FakeRotationYaw == null)
                 FakeRotationYaw = mc.player.lastReportedYaw;
 
             if(FakeRotationYaw < rotation[0])
-                FakeRotationYaw = (float) Math.min(FakeRotationYaw+yawstep, rotation[0]);
+                FakeRotationYaw = (float) Math.min(FakeRotationYaw+AntiCheatConfig.getInstance().rotStep.getValue(), rotation[0]);
             else if(FakeRotationYaw > rotation[0])
-                FakeRotationYaw = (float) Math.max(FakeRotationYaw-yawstep, rotation[0]);
+                FakeRotationYaw = (float) Math.max(FakeRotationYaw-AntiCheatConfig.getInstance().rotStep.getValue(), rotation[0]);
 
             FakeRotationPitch = rotation[1];
-            DoFakeRotationForTicks = 1+Math.max(0,stayTicks);
+            DoFakeRotationForTicks = 1+Math.max(0,AntiCheatConfig.getInstance().stayTicks.getValue());
 
             if(instant)
             {
@@ -70,7 +68,7 @@ public class RotationManager implements MC {
 
         }
         else{
-            if(allowSendMultiplePackets){
+            if(AntiCheatConfig.getInstance().allowMultiple.getValue()){
                 mc.player.connection.sendPacket(new CPacketPlayer.Rotation(rotation[0],rotation[1],mc.player.onGround));
                 return true;
             }

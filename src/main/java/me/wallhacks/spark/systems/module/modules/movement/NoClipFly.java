@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
 
-@Module.Registration(name = "NoClipFly", description = "ruupin gave it to me")
+@Module.Registration(name = "NoClipFly", description = "wallhacks_ coded this all by himself")
 public class NoClipFly extends Module {
 
     DoubleSetting flyspeed = new DoubleSetting("FlySpeed",this,1,0.2,10);

@@ -317,7 +317,7 @@ public class NoteBot extends Module {
                 }
             }
             if (currentPos != null) {
-                Spark.rotationManager.rotate(RotationUtil.getViewRotations(new Vec3d(currentPos).add(0.5, 0.5, 0.5), mc.player), AntiCheatConfig.getInstance().getBlockRotStep(), 2, true);
+                Spark.rotationManager.rotate(RotationUtil.getViewRotations(new Vec3d(currentPos).add(0.5, 0.5, 0.5), mc.player), true);
             }
         }
         if (tuneStage == 0 && currentPos != null) {
@@ -378,7 +378,7 @@ public class NoteBot extends Module {
                 }
                 if (posList.size() > 0) {
                     BlockPos blockPos = posList.get(0);
-                    Spark.rotationManager.rotate(RotationUtil.getViewRotations(new Vec3d(blockPos).add(0.5, 0.5, 0.5), mc.player), AntiCheatConfig.getInstance().getBlockRotStep(), 2, true);
+                    Spark.rotationManager.rotate(RotationUtil.getViewRotations(new Vec3d(blockPos).add(0.5, 0.5, 0.5), mc.player), true);
                 }
                 return;
             }

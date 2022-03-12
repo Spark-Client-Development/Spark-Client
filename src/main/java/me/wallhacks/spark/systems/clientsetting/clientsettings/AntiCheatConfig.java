@@ -24,69 +24,30 @@ import java.util.List;
 @ClientSetting.Registration(name = "AntiCheatConfig", description = "Anti cheat config")
 public class AntiCheatConfig extends ClientSetting {
 
-    DoubleSetting BlockPlaceRange = new DoubleSetting("BlockRange",this,4,0,5,0.25,"Blocks");
-    DoubleSetting BlockPlaceWallRange = new DoubleSetting("BlockWallRange",this,0,0,5,0.25,"Blocks");
-    BooleanSetting BlockStrictRayTrace = new BooleanSetting("NeedsToSeeFace",this,false,"Blocks");
+    public DoubleSetting placeRange = new DoubleSetting("Range",this,4,0,5,0.25,"Placing");
+    public DoubleSetting placeWallRange = new DoubleSetting("WallRange",this,0,0,5,0.25,"Placing");
+    public BooleanSetting placeStrict = new BooleanSetting("NeedsToSeeFace",this,false,"Placing");
+    public ModeSetting placeSwing = new ModeSetting("Swing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Placing");
+    public ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal",  Arrays.asList("Normal","Silent","Const"),"Blocks");
+    public BooleanSetting placeRotate = new BooleanSetting("Rotate",this,true,"Placing");
+    public BooleanSetting raytrace = new BooleanSetting("RaytraceBypass", this, false, "Placing");
 
-    BooleanSetting BlockRotate = new BooleanSetting("BlockRotate",this,true,"Blocks");
-    IntSetting BlockRotStep = new IntSetting("BlockRotStep",this,180,45,180,"Blocks");
-    public ModeSetting PlaceSwing = new ModeSetting("PlaceSwing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Blocks");
-    public double getBlockPlaceRange() {
-        return BlockPlaceRange.getValue();
-    }
-    public double getBlockPlaceWallRange() {
-        return BlockPlaceWallRange.getValue();
-    }
-    public boolean getBlockStrictRayTrace() {
-        return BlockStrictRayTrace.getValue();
-    }
-    public boolean getBlockRotate() {
-        return BlockRotate.getValue();
-    }
-    public int getBlockRotStep() {
-        return BlockRotStep.getValue();
-    }
+    public DoubleSetting attackRange = new DoubleSetting("Range",this,4,1,6,0.25, "Attacking");
+    public DoubleSetting attackWallRange = new DoubleSetting("WallRange",this,0,0,6,0.25, "Attacking");
+    public ModeSetting attackSwing = new ModeSetting("Swing",this,"Normal" ,  Arrays.asList("Off","Normal","Packet"), "Attacking");
+    public ModeSetting attackHand = new ModeSetting("Hand",this,"Both", Arrays.asList("Both","MainHand","OffHand"), "Attacking");
+    public ModeSetting antiWeakness = new ModeSetting("AntiWeakness",this,"Normal", Arrays.asList("Silent","Normal","Off"), "Attacking");
+    public BooleanSetting attackRotate = new BooleanSetting("Rotate",this,true,"Attacking");
 
-    ModeSetting switchingMode = new ModeSetting("PlaceSwitch", this, "Normal",  Arrays.asList("Normal","Silent","Const"),"Blocks");
-
-
-    public ModeSetting attackSwing = new ModeSetting("AttackSwing",this,"Normal" ,  Arrays.asList("Off","Normal","Packet"), "Attack");
-
-    DoubleSetting crystalPlaceRange = new DoubleSetting("PlaceRange",this,4,1,6,0.25, "Crystals");
-    DoubleSetting crystalBreakRange = new DoubleSetting("BreakRange",this,4,1,6,0.25, "Crystals");
-    DoubleSetting placeWallRange = new DoubleSetting("PlaceWallRange",this,0,0,6,0.25, "Crystals");
-    DoubleSetting breakWallRange = new DoubleSetting("BreakWallRange",this,0,0,6,0.25, "Crystals");
-    public ModeSetting crystalBreakHand = new ModeSetting("BreakHand",this,"Both", Arrays.asList("Both","MainHand","OffHand"), "Crystals");
-    public ModeSetting antiWeakness = new ModeSetting("AntiWeakness",this,"Normal", Arrays.asList("Silent","Normal","Off"), "Crystals");
-    public ModeSetting crystalBreakSwing = new ModeSetting("BreakSwing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Crystals");
-    public ModeSetting crystalPlaceSwing = new ModeSetting("CrystalPlaceSwing",this,"Off", Arrays.asList("Off","Normal","Packet"), "Crystals");
-    ModeSetting crystalRotate = new ModeSetting("CrystalRotate",this,"Both", Arrays.asList("Off", "Both", "Place", "Break"), "Crystals");
-    IntSetting crystalRotStep = new IntSetting("CrystalRotStep",this,180,45,180,"Crystals");
-    public BooleanSetting raytrace = new BooleanSetting("RaytraceBypass", this, false, "Crystals");
+    public IntSetting rotStep = new IntSetting("RotStep", this, 180, 45, 180, "Rotations");
+    public IntSetting stayTicks = new IntSetting("StayTicks", this, 2, 0, 10, "Rotations");
+    public BooleanSetting allowMultiple = new BooleanSetting("MultiSpoof", this, true, "Rotations");
 
     public DoubleSetting tickAdjustment = new DoubleSetting("TickAdjustment", this, 0.95D, 0.1D, 2.0D, "AEF");
     public IntSetting maxPacketFlyLevels = new IntSetting("MaxPacketFlyLevels", this, 25, 1, 200, "AEF");
     public IntSetting packetFlyTicks = new IntSetting("PacketFlyTicks", this, 25, 1, 1000, "AEF");
 
-    public double getCrystalPlaceRange() {
-        return crystalPlaceRange.getValue();
-    }
-    public double getCrystalBreakRange() {
-        return crystalBreakRange.getValue();
-    }
-    public double getCrystalWallRange() {
-        return placeWallRange.getValue();
-    }
-    public double getCrystalWallRangeBreak() {
-        return breakWallRange.getValue();
-    }
-    public String CrystalRotate() {
-        return crystalRotate.getValue();
-    }
-    public int getCrystalRotStep() {
-        return crystalRotStep.getValue();
-    }
-    public static AntiCheatConfig INSTANCE;
+    private static AntiCheatConfig INSTANCE;
     public AntiCheatConfig() {
         Spark.eventBus.register(this);
         INSTANCE = this;
@@ -99,7 +60,6 @@ public class AntiCheatConfig extends ClientSetting {
     public ItemSwitcher.switchType getBlockPlaceSwitchType() {
         return Spark.switchManager.getModeFromString(switchingMode.getValue());
     }
-
 
     private final List<SocketAddress> knownAEFServers = new ArrayList<>();
     private final List<Float> packetFlyLevels = new ArrayList<>();

@@ -62,7 +62,7 @@ public class BowAim extends Module implements MC {
 		if(SilentRotate.isOn()){
 
 
-			Spark.rotationManager.rotate(rot, 50,3,false);
+			Spark.rotationManager.rotate(rot, true);
 
 
 		}

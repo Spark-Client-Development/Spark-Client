@@ -296,7 +296,7 @@ public class CrystalUtil implements MC {
             pos = target.getPositionVector();
 
         //rotate if needed
-        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
+        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), true))
             return false;
 
 
@@ -330,7 +330,7 @@ public class CrystalUtil implements MC {
 
     public static void breakSwing() {
         EnumHand hand = EnumHand.MAIN_HAND;
-        switch (AntiCheatConfig.getInstance().crystalBreakHand.getValue()) {
+        switch (AntiCheatConfig.getInstance().attackHand.getValue()) {
             case "Both":
                 if (mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal))
                     hand = EnumHand.OFF_HAND;
@@ -344,7 +344,7 @@ public class CrystalUtil implements MC {
                 break;
         }
 
-        switch (AntiCheatConfig.getInstance().crystalBreakSwing.getValue()) {
+        switch (AntiCheatConfig.getInstance().attackSwing.getValue()) {
             case "Normal":
                 mc.player.swingArm(hand);
                 break;

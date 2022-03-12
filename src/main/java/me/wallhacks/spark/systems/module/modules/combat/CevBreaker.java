@@ -182,7 +182,7 @@ public class CevBreaker extends Module {
 
 
     BlockInteractUtil.BlockPlaceResult place(BlockPos p) {
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p,new SpecBlockSwitchItem(Blocks.OBSIDIAN), Spark.switchManager.getModeFromString(switchingMode.getValue()),true,true,4));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p,new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true));
         if(res == BlockInteractUtil.BlockPlaceResult.PLACED)
             if (render.getValue())
                 new FadePos(p, fill,true);
@@ -212,7 +212,7 @@ public class CevBreaker extends Module {
 
 
         //rotate if needed
-        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getCrystalRotStep(), 4, false, true))
+        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos),true))
             return false;
 
 
@@ -220,7 +220,7 @@ public class CevBreaker extends Module {
         mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(bestPos, facing, hand, (float) v.x, (float) v.y, (float) v.z));
 
         //swing
-        switch (AntiCheatConfig.getInstance().crystalPlaceSwing.getValue()) {
+        switch (AntiCheatConfig.getInstance().placeSwing.getValue()) {
             case "Normal":
                 mc.player.swingArm(hand);
                 break;

@@ -119,12 +119,9 @@ public class BreakManager implements MC {
 
 
 
-        if(!(instMine || PacketMine.instance.isEnabled()) || PacketMine.instance.ticksFromDone() < 3)
-        {
-
-            if(AntiCheatConfig.getInstance().getBlockRotate())
-            {
-                if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.getInstance().getBlockRotStep(), 6, false, true))
+        if(!(instMine || PacketMine.instance.isEnabled()) || PacketMine.instance.ticksFromDone() < 3) {
+            if(AntiCheatConfig.getInstance().placeRotate.getValue()) {
+                if(!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), true))
                     return;
             }
             try {
@@ -167,6 +164,6 @@ public class BreakManager implements MC {
         if(!WorldUtils.canBreak(p))
             return false;
         Vec3d vec = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(p));
-        return PlayerUtil.getDistance(p) < (vec == null ? AntiCheatConfig.getInstance().getBlockPlaceWallRange() : AntiCheatConfig.getInstance().getBlockPlaceRange());
+        return PlayerUtil.getDistance(p) < (vec == null ? AntiCheatConfig.getInstance().placeWallRange.getValue() : AntiCheatConfig.getInstance().placeRange.getValue());
     }
 }

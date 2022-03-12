@@ -37,26 +37,15 @@ public class KillAura extends Module {
 
     IntSetting targetFov = new IntSetting("TargetFov", this, 180, 45, 180, "Targeting");
 
-    DoubleSetting range = new DoubleSetting("Range", this, 4, 0, 6, 0.25, "Targeting");
-    DoubleSetting wallsReach = new DoubleSetting("WallRange", this, 0, 0, 6, 0.25, "Targeting");
-
-
     BooleanSetting delay = new BooleanSetting("Delay", this, true, "Time");
     IntSetting cps = new IntSetting("APS", this, 10, 5, 22, "Time");
     IntSetting failPercentage = new IntSetting("FailPercentage", this, 0, 0, 50, "Time");
-
 
     BooleanSetting mobs = new BooleanSetting("Mobs", this, false, "Attacking");
     BooleanSetting living = new BooleanSetting("Living", this, false, "Attacking");
 
     BooleanSetting FilterInvisible = new BooleanSetting("FilterInvisible", this, false, "Attacking");
     ModeSetting switchMode = new ModeSetting("Switch", this, "Off", Arrays.asList("Off", "Auto", "OnlySword"), "Attacking");
-
-
-    BooleanSetting Rotate = new BooleanSetting("Rotate", this, true, "Rotation");
-    IntSetting RotStep = new IntSetting("RotStep", this, 180, 45, 180, "Rotation");
-    IntSetting StayTicks = new IntSetting("StayTicks", this, 1, 0, 5, "Rotation");
-
 
     EntityLivingBase killaurTarget = null;
 
@@ -81,8 +70,8 @@ public class KillAura extends Module {
         Vec3d lookAt = RaytraceUtil.getPointToLookAtEntity(target);
         if (lookAt == null) lookAt = target.boundingBox.getCenter();
 
-        if (Rotate.isOn())
-            if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(lookAt), RotStep.getValue(), StayTicks.getValue(), false))
+        if (AntiCheatConfig.getInstance().attackRotate.getValue())
+            if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(lookAt), true))
                 return false;
         if (switchMode.is("Auto"))
             Spark.switchManager.Switch(new ItemForFightSwitchItem(target), ItemSwitcher.usedHand.Mainhand);
@@ -159,6 +148,6 @@ public class KillAura extends Module {
                 return false;
         }
 
-        return mc.player.getDistance(e) < ((RaytraceUtil.getVisiblePointsForEntity(e).size() > 0) ? range : wallsReach).getFloatValue();
+        return mc.player.getDistance(e) < ((RaytraceUtil.getVisiblePointsForEntity(e).size() > 0) ? AntiCheatConfig.getInstance().attackRange : AntiCheatConfig.getInstance().attackWallRange).getFloatValue();
     }
 }

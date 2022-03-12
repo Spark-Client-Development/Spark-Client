@@ -351,7 +351,7 @@ public class PacketFly extends Module {
         // FIXME: Are we about to be kicked? This just tells us if we have been limited
         //fixed already by wallhacks_
         //(fixed not skidded)
-        boolean forceAntiKick = !AntiCheatConfig.getInstance().wasPacketFlyLimited() && AntiCheatConfig.INSTANCE.isPacketFlyLimited();
+        boolean forceAntiKick = !AntiCheatConfig.getInstance().wasPacketFlyLimited() && AntiCheatConfig.getInstance().isPacketFlyLimited();
 
         if ((antiKickTick > antiKickTicks.getValue() || forceAntiKick) && !expectedConfirm) {
             antiKickTick = 0.0f;

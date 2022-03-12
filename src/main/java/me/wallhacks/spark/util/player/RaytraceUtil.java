@@ -30,8 +30,6 @@ public class RaytraceUtil implements MC {
     }
     public static List<Vec3d> getVisiblePointsForBox(AxisAlignedBB box)
     {
-
-
         Vec3d from = new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ);
 
         ArrayList<Vec3d> validHits = new ArrayList<>();
@@ -117,8 +115,8 @@ public class RaytraceUtil implements MC {
         Vec3d from = new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ);
 
         for (double x = 0.0; x <= 1; x +=0.25) {
-            for (double y = 0.0; y <= 1; y +=0.25) {
                 for (double z = 0.0; z <= 1; z +=0.25) {
+                    for (double y = 1.0; y >= 0; y -=0.25) {
                     if (x == 1 || x == 0 || y == 1 || y == 0 || z == 1 || z == 0) {
                         Vec3d vec = new Vec3d(pos.getX() + x
                                 , pos.getY() + y, pos.getZ() + z);
@@ -172,5 +170,33 @@ public class RaytraceUtil implements MC {
         return closest;
     }
 
+    public static float[] getRotationForBypass(float limit) {
+        float rotation[] = null;
+        float best = Float.MAX_VALUE;
+        for (float yaw = limit - 5; yaw <= limit + 5; yaw += 1) {
+            for (float pitch = -90; pitch <= -40; pitch += 1) {
+                float difference = Math.abs(limit - yaw);
+                if ((rotation == null || difference < best) && isRotationGood(yaw, pitch)) {
+                    best = difference;
+                    rotation = new float[]{yaw, pitch};
+                }
+            }
+        }
+        return rotation;
+    }
 
+    public static boolean isRotationGood(float yaw, float pitch) {
+        Vec3d eyes = new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.eyeHeight, mc.player.posZ);
+        Vec3d look = getVectorForRotation(pitch, yaw);
+        look = eyes.add(look.x * 100, look.y * 100, look.z * 100);
+        return mc.world.rayTraceBlocks(eyes, look, false, true, false) == null;
+    }
+
+    public static final Vec3d getVectorForRotation(float pitch, float yaw) {
+        float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
+        return new Vec3d((double) (f1 * f2), (double) f3, (double) (f * f2));
+    }
 }

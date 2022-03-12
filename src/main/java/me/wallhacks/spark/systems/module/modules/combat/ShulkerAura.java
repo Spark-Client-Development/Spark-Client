@@ -3,6 +3,7 @@ package me.wallhacks.spark.systems.module.modules.combat;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
+import me.wallhacks.spark.manager.RotationManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
@@ -127,7 +128,7 @@ public class ShulkerAura extends Module {
                 //raytrace and range checks
                 RayTraceResult outer = mc.world.rayTraceBlocks(mc.player.getPositionEyes(mc.getRenderPartialTicks()), new Vec3d(outerPos).add(0.5, 0.5, 0.5));
                 double distance = mc.player.getDistance(outerPos.getX() + 0.5, outerPos.getY() + 0.5, outerPos.getZ() + 0.5);
-                if (distance < cfg.getBlockPlaceRange() && (outer == null || outerPos.equals(outer.getBlockPos()) || distance < cfg.getBlockPlaceWallRange())) {
+                if (distance < cfg.placeRange.getValue() && (AntiCheatConfig.getInstance().raytrace.getValue() || outer == null || outerPos.equals(outer.getBlockPos()) || distance < cfg.placeWallRange.getValue())) {
                     face = facing;
                     break;
                 }
@@ -167,13 +168,13 @@ public class ShulkerAura extends Module {
             Block block = mc.world.getBlockState(pos).getBlock();
             if (block != Blocks.AIR)
                 continue;
-            BlockInteractUtil.BlockPlaceResult r = BlockInteractUtil.tryPlaceBlock(pos, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2);
+            BlockInteractUtil.BlockPlaceResult r = BlockInteractUtil.tryPlaceBlock(pos, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true);
             if (r != BlockInteractUtil.BlockPlaceResult.FAILED) return;
         }
 
         //trap the upperblock...
         if (mc.world.getBlockState(targetPos).getBlock() == Blocks.AIR) {
-            BlockInteractUtil.BlockPlaceResult r = BlockInteractUtil.tryPlaceBlock(targetPos, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2);
+            BlockInteractUtil.BlockPlaceResult r = BlockInteractUtil.tryPlaceBlock(targetPos, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true);
             if (r == BlockInteractUtil.BlockPlaceResult.FAILED) {
                 //failed lets add support
                 for (EnumFacing facing : EnumFacing.HORIZONTALS) {
@@ -182,7 +183,7 @@ public class ShulkerAura extends Module {
                     Block block = mc.world.getBlockState(pos).getBlock();
                     if (block != Blocks.AIR)
                         continue;
-                    BlockInteractUtil.BlockPlaceResult r2 = BlockInteractUtil.tryPlaceBlock(pos, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2);
+                    BlockInteractUtil.BlockPlaceResult r2 = BlockInteractUtil.tryPlaceBlock(pos, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true);
                     if (r2 != BlockInteractUtil.BlockPlaceResult.FAILED) return;
                 }
             } else return;
@@ -205,15 +206,15 @@ public class ShulkerAura extends Module {
             if (slot != -1 || !craft.getValue()) {
                 BlockPos support = targetPos.add(targetFacing.getDirectionVec()).add(targetFacing.getDirectionVec()).add(targetFacing.getDirectionVec());
                 if (mc.world.getBlockState(support).getBlock().isReplaceable(mc.world, support)) {
-                    if (BlockInteractUtil.tryPlaceBlock(support, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
-                        if (BlockInteractUtil.tryPlaceBlock(support.down(), new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
-                            if (BlockInteractUtil.tryPlaceBlock(support.down().offset(targetFacing.getOpposite()), new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true, 2) == BlockInteractUtil.BlockPlaceResult.FAILED) {
+                    if (BlockInteractUtil.tryPlaceBlock(support, new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true) == BlockInteractUtil.BlockPlaceResult.FAILED) {
+                        if (BlockInteractUtil.tryPlaceBlock(support.down(), new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true) == BlockInteractUtil.BlockPlaceResult.FAILED) {
+                            if (BlockInteractUtil.tryPlaceBlock(support.down().offset(targetFacing.getOpposite()), new SpecBlockSwitchItem(Blocks.OBSIDIAN), false, true) == BlockInteractUtil.BlockPlaceResult.FAILED) {
                                 //wtf i hope we never get here but nothing left to do but return ig
                             } else return;
                         } else return;
                     } else return;
                 } else {
-                    BlockInteractUtil.tryPlaceBlockOnBlock(support.offset(targetFacing.getOpposite()), targetFacing.getOpposite(), new ShulkerSwitchItem(), false, true, 2, false);
+                    BlockInteractUtil.tryPlaceBlockOnBlock(support.offset(targetFacing.getOpposite()), targetFacing.getOpposite(), new ShulkerSwitchItem(), false, true);
                 }
             } else if (craft.getValue() && mc.currentScreen == null) {
                 boolean flag = false;
@@ -237,14 +238,14 @@ public class ShulkerAura extends Module {
                         craftPos = pos;
                     }
                 }
-                if (flag || BlockInteractUtil.tryPlaceBlock(craftPos, new SpecBlockSwitchItem(Blocks.CRAFTING_TABLE), false, true, 2) == BlockInteractUtil.BlockPlaceResult.PLACED) {
+                if (flag || BlockInteractUtil.tryPlaceBlock(craftPos, new SpecBlockSwitchItem(Blocks.CRAFTING_TABLE), false, true) == BlockInteractUtil.BlockPlaceResult.PLACED) {
                     Vec3d pos = new Vec3d(craftPos).add(0.5, 0.5, 0.5);
                     List<Vec3d> vecs = RaytraceUtil.getVisiblePointsForBox(new AxisAlignedBB(craftPos));
                     if (!vecs.isEmpty())
                         pos = PlayerUtil.getClosestPoint(vecs);
                     final RayTraceResult result = mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
                     EnumFacing facing = (result == null || !craftPos.equals(result.getBlockPos()) || result.sideHit == null) ? EnumFacing.UP : result.sideHit;
-                    if (flag && !Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), AntiCheatConfig.INSTANCE.getBlockRotStep(), 2, true, false))
+                    if (flag && !Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), true))
                         return;
                     EnumHand hand = EnumHand.OFF_HAND;
                     if (mc.player.getHeldItemOffhand().getItem() instanceof ItemEndCrystal && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemEndCrystal))
@@ -319,8 +320,10 @@ public class ShulkerAura extends Module {
 
     @Override
     public void onDisable() {
-        if (windowId != -1)
+        if (windowId != -1) {
             mc.player.connection.sendPacket(new CPacketCloseWindow(windowId));
+            windowId = -1;
+        }
     }
 
     private void openShulk(BlockPos shulkPos) {
@@ -331,7 +334,7 @@ public class ShulkerAura extends Module {
         final RayTraceResult result = mc.world.rayTraceBlocks(PlayerUtil.getEyePos(), pos, false, true, false);
         EnumFacing facing = (result == null || !shulkPos.equals(result.getBlockPos()) || result.sideHit == null) ? EnumFacing.UP : result.sideHit;
         //rotate if needed
-        if (!Spark.rotationManager.rotate(RotationUtil.getViewRotations(pos, mc.player), AntiCheatConfig.INSTANCE.getCrystalRotStep(), 2, false)) {
+        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), true)) {
             return;
         }
 
@@ -363,7 +366,7 @@ public class ShulkerAura extends Module {
 
 
         //rotate if needed
-        if (!Spark.rotationManager.rotate(RotationUtil.getViewRotations(pos, mc.player), AntiCheatConfig.INSTANCE.getCrystalRotStep(), 2, false)) {
+        if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos), true)) {
             return true;
         }
 
@@ -371,7 +374,7 @@ public class ShulkerAura extends Module {
         mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(placePos, facing, hand, (float) v.x, (float) v.y, (float) v.z));
 
         //swing da arms
-        switch (AntiCheatConfig.getInstance().crystalPlaceSwing.getValue()) {
+        switch (AntiCheatConfig.getInstance().placeSwing.getValue()) {
             case "Normal":
                 mc.player.swingArm(hand);
                 break;

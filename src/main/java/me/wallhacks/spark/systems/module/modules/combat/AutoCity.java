@@ -215,7 +215,7 @@ public class AutoCity extends Module {
 
                 Vec3d pos = PlayerUtil.getClosestPoint(RaytraceUtil.getPointToLookAtBlock(p));
 
-                if (PlayerUtil.getDistance(p) > (pos != null ? AntiCheatConfig.getInstance().getCrystalPlaceRange() : AntiCheatConfig.getInstance().getCrystalWallRange()))
+                if (PlayerUtil.getDistance(p) > (pos != null ? AntiCheatConfig.getInstance().placeRange.getValue() : AntiCheatConfig.getInstance().placeWallRange.getValue()))
                     return false;
 
                 return true;
