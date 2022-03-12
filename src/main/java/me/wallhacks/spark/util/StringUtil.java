@@ -43,7 +43,16 @@ public class StringUtil {
     {
         return String.format("%."+decimals+"f",d);
     }
-    public static int getIntSeed(String seed) {
+    public static long getIntSeed(String seed) {
+
+        try {
+            return (Long.parseLong(seed));
+        }
+        catch (Exception e)
+        {
+
+        }
+
         int i = 0;
 
 

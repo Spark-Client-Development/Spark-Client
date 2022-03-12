@@ -8,6 +8,7 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.util.FileUtil;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.StringUtil;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.objects.MCStructures;
 import net.minecraft.block.material.Material;
@@ -33,8 +34,11 @@ import net.minecraft.world.gen.structure.ComponentScatteredFeaturePieces;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.DungeonHooks;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.TerrainGen;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
@@ -94,7 +98,7 @@ public class SeedManager implements MC {
             return;
         }
 
-        long seed = (!mc.isSingleplayer()) ? WorldUtils.getSeed(mc.getCurrentServerData().serverIP) : mc.integratedServer.getEntityWorld().getSeed();
+        long seed = (!mc.isSingleplayer()) ? StringUtil.getIntSeed(seedForServer(mc.getCurrentServerData().serverIP)) : mc.integratedServer.getEntityWorld().getSeed();
 
         YggdrasilAuthenticationService yggdrasilauthenticationservice = new YggdrasilAuthenticationService(mc.proxy, UUID.randomUUID().toString());
         MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice.createMinecraftSessionService();
@@ -105,12 +109,28 @@ public class SeedManager implements MC {
         PlayerProfileCache.setOnlineMode(false);
 
 
-
+        Spark.logger.info("Seed Server set to "+seed);
 
         WorldSettings worldSettings = new WorldSettings(seed, GameType.CREATIVE,true,false, WorldType.CUSTOMIZED);
         integratedServer = new IntegratedServer(mc, "lol1", "lol1", worldSettings, yggdrasilauthenticationservice, minecraftsessionservice, gameprofilerepository, playerprofilecache);
 
 
+
+        if(!mc.isSingleplayer())
+        {
+            ISaveHandler isavehandler = integratedServer.getActiveAnvilConverter().getSaveLoader("lol1", true);
+
+            WorldInfo worldinfo = new WorldInfo(worldSettings, "lol1");
+            WorldServer overWorld = integratedServer.isDemo() ? (WorldServer)(new WorldServerDemo(integratedServer, isavehandler, worldinfo, 0, integratedServer.profiler)).init() : (WorldServer)(new WorldServer(integratedServer, isavehandler, worldinfo, 0, integratedServer.profiler)).init();
+            overWorld.initialize(worldSettings);
+            Integer[] var10 = DimensionManager.getStaticDimensionIDs();
+            int var11 = var10.length;
+
+            for(int var12 = 0; var12 < var11; ++var12) {
+                int dim = var10[var12];
+                WorldServer world = dim == 0 ? overWorld : (WorldServer)(new WorldServerMulti(integratedServer, isavehandler, dim, overWorld, integratedServer.profiler)).init();
+            }
+        }
 
         ((ChunkGeneratorEnd)integratedServer.getWorld(1).getChunkProvider().chunkGenerator).generateChunk(1,1);
         ((ChunkGeneratorOverworld)integratedServer.getWorld(0).getChunkProvider().chunkGenerator).generateChunk(1,1);
@@ -145,7 +165,7 @@ public class SeedManager implements MC {
         try {
             String content = "";
             for(String e : seeds.keySet())
-                content = content + e+":"+seeds.get(seeds) + "\n";
+                content = content + e+":"+seeds.get(e) + "\n";
 
             FileUtil.write(getKitsFile(),content);
 

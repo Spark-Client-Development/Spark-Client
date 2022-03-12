@@ -29,7 +29,7 @@ public class SeedCommand extends Command {
 		}, "<seed>");
 
 		addOption("get", arg -> {
-			if(arg != null){
+
 
 				if(!Minecraft.getMinecraft().isSingleplayer()) {
 					String seed = Spark.seedManager.seedForServer(Minecraft.getMinecraft().getCurrentServerData().serverIP);
@@ -40,8 +40,8 @@ public class SeedCommand extends Command {
 				else
 					Spark.sendInfo("" + CommandManager.COLOR1 + "This world uses the seed " + CommandManager.COLOR2+" "+Minecraft.getMinecraft().integratedServer.getEntityWorld().getSeed());
 
-			}
-		}, InventoryManager.instance.getKitNames());
+			
+		});
 
 		addOption("setForServer", arg -> {
 			if(arg != null && arg.split(" ").length > 1){
@@ -50,7 +50,7 @@ public class SeedCommand extends Command {
 				Spark.sendInfo(""+ CommandManager.COLOR1+"Set seed for "+CommandManager.COLOR2+list[0]+ ""+CommandManager.COLOR1);
 
 			}
-		}, InventoryManager.instance.getKitNames());
+		}, "<server> <seed>");
 
 		addOption("list", arg -> {
 
@@ -66,7 +66,7 @@ public class SeedCommand extends Command {
 
 	@Override
 	public String getName() {
-		return "kit";
+		return "seed";
 	}
 
 }
