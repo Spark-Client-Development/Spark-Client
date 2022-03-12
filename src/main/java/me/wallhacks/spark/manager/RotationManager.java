@@ -1,10 +1,12 @@
 package me.wallhacks.spark.manager;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.player.UpdateWalkingPlayerEvent;
 import me.wallhacks.spark.event.render.RenderEntityEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.player.RaytraceUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.network.play.client.CPacketPlayer;
@@ -19,8 +21,11 @@ public class RotationManager implements MC {
 
     boolean cancelNextWalkingUpdate = false;
     int DoFakeRotationForTicks = 0;
+
     Float FakeRotationYaw = null;
     Float FakeRotationPitch = null;
+
+    boolean isRaytraceBypassDone = false;
 
     public void setCancelNextWalkingUpdate(){
         cancelNextWalkingUpdate = true;
@@ -45,6 +50,10 @@ public class RotationManager implements MC {
     //allow sendMultiplePackets if for doing multiple rotation things in one tick(bad idea for ca)
 
     public boolean rotate(float[] rotation, boolean instant) {
+        return rotate(rotation,instant,false);
+    }
+
+    public boolean rotate(float[] rotation, boolean instant,boolean multiSpoof) {
         if(!cancelNextWalkingUpdate) {
             if(FakeRotationYaw == null)
                 FakeRotationYaw = mc.player.lastReportedYaw;
@@ -68,7 +77,7 @@ public class RotationManager implements MC {
 
         }
         else{
-            if(AntiCheatConfig.getInstance().allowMultiple.getValue()){
+            if(multiSpoof){
                 mc.player.connection.sendPacket(new CPacketPlayer.Rotation(rotation[0],rotation[1],mc.player.onGround));
                 return true;
             }
@@ -163,6 +172,14 @@ public class RotationManager implements MC {
         return new float[] {myRot[0] + MathHelper.wrapDegrees(yaw-myRot[0]), myRot[1]+MathHelper.wrapDegrees(pitch-myRot[1]) };
     }
 
+    public boolean isRaytraceBypassDone() {
+        return isRaytraceBypassDone;
+    }
+
+    @SubscribeEvent
+    public void onUpdate(PlayerUpdateEvent event) {
+        isRaytraceBypassDone = RaytraceUtil.isRotationGoodForRaytrace(mc.player.lastReportedYaw,mc.player.lastReportedPitch);
+    }
 
     public Float getFakeRotationPitch() {
         return FakeRotationPitch;

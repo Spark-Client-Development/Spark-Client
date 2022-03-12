@@ -41,7 +41,6 @@ public class AntiCheatConfig extends ClientSetting {
 
     public IntSetting rotStep = new IntSetting("RotStep", this, 180, 45, 180, "Rotations");
     public IntSetting stayTicks = new IntSetting("StayTicks", this, 2, 0, 10, "Rotations");
-    public BooleanSetting allowMultiple = new BooleanSetting("MultiSpoof", this, true, "Rotations");
 
     public DoubleSetting tickAdjustment = new DoubleSetting("TickAdjustment", this, 0.95D, 0.1D, 2.0D, "AEF");
     public IntSetting maxPacketFlyLevels = new IntSetting("MaxPacketFlyLevels", this, 25, 1, 200, "AEF");

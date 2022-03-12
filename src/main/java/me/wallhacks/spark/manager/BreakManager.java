@@ -21,6 +21,7 @@ import net.minecraft.network.play.server.SPacketMultiBlockChange;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -117,7 +118,12 @@ public class BreakManager implements MC {
         if(pos == null)
             pos = new Vec3d(block.getX()+0.5,block.getY()+0.5,block.getZ()+0.5);
         else
-            facing = Objects.requireNonNull(mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), pos, false)).sideHit;
+        {
+            RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), pos, false);
+            if(result != null)
+                facing = result.sideHit;
+
+        }
 
 
 

@@ -2,13 +2,16 @@ package me.wallhacks.spark.mixin.mixins.spark;
 
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.block.BlockChangeEvent;
 import me.wallhacks.spark.event.entity.LiquidPushEvent;
 import me.wallhacks.spark.event.player.EntityAddEvent;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.modules.movement.Jesus;
 import me.wallhacks.spark.systems.module.modules.world.ClientTime;
 import me.wallhacks.spark.systems.module.modules.world.ClientWeather;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -69,6 +72,14 @@ public class MixinWorld {
         LiquidPushEvent event = new LiquidPushEvent(entity);
         Spark.eventBus.post(event);
         return entity.isPushedByWater() && !event.isCanceled();
+    }
+
+
+    @Inject(method = "setBlockState", at = @At("RETURN"))
+    public void setBlockStatePost(BlockPos pos, IBlockState newState, int flags, final CallbackInfoReturnable<Boolean> callbackInfo) {
+        BlockChangeEvent event = new BlockChangeEvent(pos);
+        Spark.eventBus.post(event);
+
     }
 
 }

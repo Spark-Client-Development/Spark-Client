@@ -1,6 +1,6 @@
 package me.wallhacks.spark.systems.module;
 
-import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.block.BlockChangeEvent;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.network.play.server.SPacketMultiBlockChange;
 import net.minecraft.util.math.BlockPos;
@@ -10,7 +10,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.event.player.ChunkLoadEvent;
-import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerLivingTickEvent;
 import me.wallhacks.spark.util.WorldUtils;
 
@@ -124,14 +123,8 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
     }
 
     @SubscribeEvent
-    public void onPacketReceive(PacketReceiveEvent event) {
-        if (event.getPacket() instanceof SPacketMultiBlockChange) {
-            for (SPacketMultiBlockChange.BlockUpdateData pos : ((SPacketMultiBlockChange) event.getPacket()).getChangedBlocks()) {
-                blockChanged(pos.getPos());
-            }
-        } else if (event.getPacket() instanceof SPacketBlockChange) {
-            blockChanged(((SPacketBlockChange) event.getPacket()).getBlockPosition());
-        }
+    public void onBlockChangeEvent(BlockChangeEvent event) {
+        blockChanged(event.getBlockPos());
     }
 
     protected void blockChanged(BlockPos pos) {

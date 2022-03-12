@@ -3,6 +3,7 @@ package me.wallhacks.spark.util.player;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.BlockSwitchItem;
@@ -31,11 +32,13 @@ import java.util.List;
 
 public class BlockInteractUtil implements MC {
     public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities) {
-        return tryPlaceBlock(pos, switcher, AntiCheatConfig.getInstance().getBlockPlaceSwitchType(), clientSided, checkEntities);
+        return tryPlaceBlock(pos, switcher, AntiCheatConfig.getInstance().getBlockPlaceSwitchType(), clientSided, checkEntities,true);
+    }
+    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities) {
+        return tryPlaceBlock(pos, switcher,switchType, clientSided, checkEntities,true);
     }
 
-
-    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities) {
+    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities,boolean multiSpoof) {
 
         if (!mc.world.getBlockState(pos).getMaterial().isReplaceable())
             return BlockPlaceResult.FAILED;
@@ -57,14 +60,14 @@ public class BlockInteractUtil implements MC {
             return BlockPlaceResult.FAILED;
 
         BlockPos placeOn = pos.offset(face, -1);
-        return getBlockPlaceResult(face, switcher, switchType, clientSided, placeOn);
+        return getBlockPlaceResult(face, switcher, switchType, clientSided, placeOn,multiSpoof);
     }
 
     public static BlockPlaceResult tryPlaceBlockOnBlock(BlockPos pos, EnumFacing face, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities) {
-        return tryPlaceBlockOnBlock(pos, face, switcher, ItemSwitcher.switchType.Normal, clientSided, checkEntities);
+        return tryPlaceBlockOnBlock(pos, face, switcher, ItemSwitcher.switchType.Normal, clientSided, checkEntities,true);
     }
 
-    public static BlockPlaceResult tryPlaceBlockOnBlock(BlockPos pos, EnumFacing face, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities) {
+    public static BlockPlaceResult tryPlaceBlockOnBlock(BlockPos pos, EnumFacing face, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities,boolean multiSpoof) {
 
         if (!mc.world.getBlockState(pos).getMaterial().isReplaceable())
             return BlockPlaceResult.FAILED;
@@ -87,11 +90,11 @@ public class BlockInteractUtil implements MC {
         if (mc.world.getBlockState(placeOn).getBlock().isReplaceable(mc.world, placeOn))
             return BlockPlaceResult.FAILED;
 
-        return getBlockPlaceResult(face, switcher, switchType, clientSided, placeOn);
+        return getBlockPlaceResult(face, switcher, switchType, clientSided, placeOn,multiSpoof);
     }
 
     @NotNull
-    private static BlockInteractUtil.BlockPlaceResult getBlockPlaceResult(EnumFacing face, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, BlockPos placeOn) {
+    private static BlockInteractUtil.BlockPlaceResult getBlockPlaceResult(EnumFacing face, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, BlockPos placeOn,boolean multiSpoof) {
         Pair<Vec3d, Boolean> p = getPointOnBlockFace(placeOn, face);
         Vec3d hitVec = p.getKey();
 
@@ -104,14 +107,20 @@ public class BlockInteractUtil implements MC {
 
         if (AntiCheatConfig.getInstance().placeRotate.getValue()) {
             float rot[] = Spark.rotationManager.getLegitRotations(hitVec);
-            boolean ready = true;
+
             if (p.getValue()) {
-                if (Spark.rotationManager.getFakeRotationPitch() != null && Spark.rotationManager.getFakeRotationYaw() != null && !RaytraceUtil.isRotationGood(Spark.rotationManager.getFakeRotationYaw(), Spark.rotationManager.getFakeRotationPitch()) && RaytraceUtil.getRotationForBypass(rot[0]) != null) {
-                    ready = false;
-                    rot = RaytraceUtil.getRotationForBypass(rot[0]);
+                // if this is null its a big fuckup
+                if(!Spark.rotationManager.isRaytraceBypassDone())
+                {
+                    float[] rotBypass = RaytraceUtil.getRotationForBypass(rot[0]);
+                    if (rotBypass == null)
+                        return BlockPlaceResult.FAILED;
+                    Spark.rotationManager.rotate(rotBypass, true,false);
+                    return BlockPlaceResult.WAIT;
                 }
+
             }
-            if (!Spark.rotationManager.rotate(rot, true) || !ready)
+            if (!Spark.rotationManager.rotate(rot, true,multiSpoof))
                 return BlockPlaceResult.WAIT;
         }
 
@@ -249,6 +258,8 @@ public class BlockInteractUtil implements MC {
         }
         return true;
     }
+
+
 
     public enum BlockPlaceResult {
         FAILED, WAIT, PLACED

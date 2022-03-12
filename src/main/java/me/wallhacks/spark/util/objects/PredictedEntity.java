@@ -10,10 +10,10 @@ public class PredictedEntity {
     public PredictedEntity(EntityLivingBase in, int prediction){
         entity = in;
 
-        predictedBB = in instanceof EntityPlayer ? PredictionUtil.PredictedTarget(entity,prediction) : in.boundingBox;
+        predictedBBs = in instanceof EntityPlayer ? PredictionUtil.PredictedTargetBoxes(entity,prediction) : new AxisAlignedBB[]{in.boundingBox};
     }
     public final EntityLivingBase entity;
 
-    public final AxisAlignedBB predictedBB;
+    public final AxisAlignedBB[] predictedBBs;
 
 }

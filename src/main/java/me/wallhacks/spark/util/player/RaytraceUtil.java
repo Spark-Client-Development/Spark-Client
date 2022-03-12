@@ -1,5 +1,6 @@
 package me.wallhacks.spark.util.player;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.util.MC;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -114,10 +115,10 @@ public class RaytraceUtil implements MC {
         ArrayList<Vec3d> validHits = new ArrayList<>();
         Vec3d from = new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ);
 
-        for (double x = 0.0; x <= 1; x +=0.25) {
-                for (double z = 0.0; z <= 1; z +=0.25) {
-                    for (double y = 1.0; y >= 0; y -=0.25) {
-                    if (x == 1 || x == 0 || y == 1 || y == 0 || z == 1 || z == 0) {
+        for (double x = 0.0; x <= 1; x +=0.5) {
+                for (double z = 0.0; z <= 1; z +=0.5) {
+                    for (double y = 1.0; y >= 0; y -=0.5) {
+
                         Vec3d vec = new Vec3d(pos.getX() + x
                                 , pos.getY() + y, pos.getZ() + z);
 
@@ -127,7 +128,7 @@ public class RaytraceUtil implements MC {
                         if (res == null || (pos.equals(res.getBlockPos())))
                             validHits.add(vec);
 
-                    }
+
                 }
 
 
@@ -137,6 +138,13 @@ public class RaytraceUtil implements MC {
         return validHits;
     }
 
+    public static boolean canSee(BlockPos pos,Vec3d vec) {
+        Vec3d from = new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ);
+
+        RayTraceResult res = mc.world.rayTraceBlocks(from, vec, false);
+        return (res == null || (pos.equals(res.getBlockPos())));
+    }
+
 
 
     public static Vec3d getPointToBreakPlaceCrystal(BlockPos pos){
@@ -144,11 +152,13 @@ public class RaytraceUtil implements MC {
         ArrayList<Vec3d> validHits = new ArrayList<>();
         Vec3d from = new Vec3d(mc.player.posX, mc.player.posY + (double)mc.player.getEyeHeight(), mc.player.posZ);
 
-        for (double x = 0.05; x <= 0.95; x +=0.45)
+        for (double x = 0.0; x <= 1; x +=0.5)
         {
-            for (double z = 0.05; z <= 0.95; z +=0.45)
+            for (double z = 0.0; z <= 1; z +=0.5)
             {
                 Vec3d vec = new Vec3d(pos.getX()+x,pos.getY()+1,pos.getZ()+z);
+
+
                 RayTraceResult res = mc.world.rayTraceBlocks(from,vec,false);
 
                 //we did not hit shit thats not our target
@@ -176,7 +186,7 @@ public class RaytraceUtil implements MC {
         for (float yaw = limit - 5; yaw <= limit + 5; yaw += 1) {
             for (float pitch = -90; pitch <= -40; pitch += 1) {
                 float difference = Math.abs(limit - yaw);
-                if ((rotation == null || difference < best) && isRotationGood(yaw, pitch)) {
+                if ((rotation == null || difference < best) && isRotationGoodForRaytrace(yaw, pitch)) {
                     best = difference;
                     rotation = new float[]{yaw, pitch};
                 }
@@ -185,7 +195,7 @@ public class RaytraceUtil implements MC {
         return rotation;
     }
 
-    public static boolean isRotationGood(float yaw, float pitch) {
+    public static boolean isRotationGoodForRaytrace(float yaw, float pitch) {
         Vec3d eyes = new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.eyeHeight, mc.player.posZ);
         Vec3d look = getVectorForRotation(pitch, yaw);
         look = eyes.add(look.x * 100, look.y * 100, look.z * 100);
