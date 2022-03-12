@@ -1,7 +1,6 @@
 package me.wallhacks.spark.util.player.itemswitcher;
 
 import me.wallhacks.spark.util.MC;
-import me.wallhacks.spark.util.player.InventoryUtil;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -59,13 +58,13 @@ public class ItemSwitcher implements MC {
 
 
 
-	public static List<String> modes = Arrays.asList("Normal","Silent","Const","Off");
+	public static List<String> modes = Arrays.asList("Normal","SwitchBack","Silent","Const","Off");
 
 	public enum usedHand {
 		Mainhand,Offhand,Both
 	}
 	public enum switchType {
-		Normal,Silent, Const,NoSwitch
+		Normal,Silent, SwitchBack, Const,NoSwitch
 	}
 
 

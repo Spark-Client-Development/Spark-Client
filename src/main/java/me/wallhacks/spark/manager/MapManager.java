@@ -7,37 +7,24 @@ import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.event.player.ChunkLoadEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
-import me.wallhacks.spark.systems.clientsetting.ClientSetting;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
-import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
-import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
+import me.wallhacks.spark.util.objects.MCStructures;
 import me.wallhacks.spark.util.objects.MapImage;
 import me.wallhacks.spark.util.objects.Vec2i;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.item.ItemMap;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.storage.MapDecoration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapManager implements MC {
 
@@ -46,13 +33,12 @@ public class MapManager implements MC {
 
         Spark.eventBus.register(this);
 
+
+
+
+
     }
     public static MapManager instance;
-
-
-
-
-
 
 
 
@@ -87,8 +73,11 @@ public class MapManager implements MC {
 
     }
 
+
+
     @SubscribeEvent
     public void worldLoadEvent(WorldLoadEvent event) {
+
         String serv = mc.getCurrentServerData() != null ? mc.getCurrentServerData().serverIP : "singleplayer";
         if(!serv.equals(CurrentServer))
         {
@@ -128,18 +117,7 @@ public class MapManager implements MC {
             Chunk c = mc.world.getChunk(p.x,p.z);
             if(c != null)
             {
-                Vec2i mapAtC = SparkMap.getMapPosFromWorldPos(c.getPos().x*16, c.getPos().z*16);
-                Vec3i mapPos = (new Vec3i(mapAtC.x,getDim(),mapAtC.y));
-
-                SparkMap M = getMap(mapPos);
-                if(toLoad.contains(mapPos)) {
-                    toLoad.remove(mapPos);
-                    LoadMap(M);
-                }
-                if(mc.world != null)
-                    M.updateMapData(c, mc.world);
-                //save map to files
-                toSave.add(mapPos);
+                addChunk(c);
             }
         }
 
@@ -156,6 +134,21 @@ public class MapManager implements MC {
 
         }
 
+    }
+
+    public void addChunk(Chunk c) {
+        Vec2i mapAtC = SparkMap.getMapPosFromWorldPos(c.getPos().x*16, c.getPos().z*16);
+        Vec3i mapPos = (new Vec3i(mapAtC.x,getDim(),mapAtC.y));
+
+        SparkMap M = getMap(mapPos);
+        if(toLoad.contains(mapPos)) {
+            toLoad.remove(mapPos);
+            LoadMap(M);
+        }
+        if(mc.world != null)
+            M.updateMapData(c, mc.world);
+        //save map to files
+        toSave.add(mapPos);
     }
 
     @SubscribeEvent
@@ -226,9 +219,26 @@ public class MapManager implements MC {
 
     public boolean LoadMap(SparkMap m){
 
+        int s = MapImage.size/16*SparkMap.scale;
+
+
+        for (int x = 0; x < s; x++) {
+            for (int y = 0; y < s; y++) {
+                int chunkX = m.pos.x*s+x;
+                int chunkY = m.pos.y*s+y;
+
+                MCStructures structure = SeedManager.instance.getStructure(chunkX,chunkY,m.dim);
+
+                if(structure != null)
+                    m.structures.put(new Vec2i(chunkX,chunkY),structure);
+            }
+        }
+
         File f = new File(getPath(m));
         if (!f.exists())
+        {
             return false;
+        }
 
         try {
             BufferedImage image = ImageIO.read(f);

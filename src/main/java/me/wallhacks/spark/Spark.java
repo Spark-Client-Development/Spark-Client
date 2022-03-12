@@ -1,7 +1,6 @@
 package me.wallhacks.spark;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.manager.*;
 import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 import net.minecraft.client.Minecraft;
@@ -53,6 +52,7 @@ public class Spark implements MC {
     public static MapManager mapManager;
     public static PotionManager potionManager;
     public static ItemTrackerManager dataTrackingManager;
+    public static SeedManager seedManager;
 
     public static SocialManager socialManager;
 
@@ -77,6 +77,7 @@ public class Spark implements MC {
         commandManager = new CommandManager();
         potionManager = new PotionManager();
         mapManager = new MapManager();
+        seedManager = new SeedManager();
         breakManager = new BreakManager();
         fadeManager = new FadeManager();
         clickGuiScreen = new ClickGuiMenuBase();
@@ -99,7 +100,7 @@ public class Spark implements MC {
         InventoryManager.instance.SaveKits();
         Spark.altManager.saveAlts();
         Spark.waypointManager.Save();
-
+        Spark.seedManager.SAVESEEDS();
     }
 
 

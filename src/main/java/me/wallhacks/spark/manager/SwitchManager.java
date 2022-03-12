@@ -6,7 +6,6 @@ import me.wallhacks.spark.util.player.InventoryUtil;
 import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.SwitchItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
 public class SwitchManager implements MC {
@@ -22,6 +21,21 @@ public class SwitchManager implements MC {
     int realSlot;
 
 
+
+
+    boolean scheduleHotbarSwitch = false;
+    int switchTo = 0;
+    int switchFrom = 0;
+    int hotbarSwitchDelay = 0;
+
+    public void setScheduleHotbarSwitch(int switchTo,int hotbarSwitchDelay){
+        if(scheduleHotbarSwitch)
+            return;
+        scheduleHotbarSwitch = true;
+        this.switchFrom = mc.player.inventory.currentItem;
+        this.switchTo = switchTo;
+        this.hotbarSwitchDelay = hotbarSwitchDelay;
+    }
 
     public void setDoInvSwitch(int fromInvSlot,int toInvSlot,int delay){
         if(didInventorySwitch)
@@ -56,6 +70,21 @@ public class SwitchManager implements MC {
             realSlot = -1;
         }
 
+        if(scheduleHotbarSwitch)
+        {
+            if(hotbarSwitchDelay <= 0)
+            {
+                if(switchFrom == mc.player.inventory.currentItem){
+                    mc.player.inventory.currentItem = switchTo;
+                    mc.playerController.syncCurrentPlayItem();
+                }
+
+                scheduleHotbarSwitch = false;
+            }
+            hotbarSwitchDelay--;
+
+        }
+
     }
 
 
@@ -85,10 +114,17 @@ public class SwitchManager implements MC {
 
     }
 
+    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, String mode,int delay) {
+        return Switch(switcher,handType, getModeFromString(mode),delay);
+
+    }
+
     public ItemSwitcher.switchType getModeFromString(String mode) {
         if(mode.equalsIgnoreCase("off"))
             return ItemSwitcher.switchType.NoSwitch;
         if(mode.equalsIgnoreCase("fastswap"))
+            return ItemSwitcher.switchType.SwitchBack;
+        if(mode.equalsIgnoreCase("constSwitch"))
             return ItemSwitcher.switchType.Const;
         try {
             return ItemSwitcher.switchType.valueOf(mode);
@@ -117,7 +153,7 @@ public class SwitchManager implements MC {
 
         return Switch(res,switchType,constSwitchDelay);
     }
-    public EnumHand Switch(ItemSwitcher.SwitchResult res,ItemSwitcher.switchType switchType,int constSwitchDelay){
+    public EnumHand Switch(ItemSwitcher.SwitchResult res,ItemSwitcher.switchType switchType,int switchBackDelay){
 
 
         if(res instanceof ItemSwitcher.NoSwitchResult)
@@ -126,10 +162,22 @@ public class SwitchManager implements MC {
         }
         else if(res instanceof ItemSwitcher.HotbarSwitchResult)
         {
+            int old = mc.player.inventory.currentItem;
             if(switchType == ItemSwitcher.switchType.Silent && realSlot == -1)
-                realSlot = (mc.player.inventory.currentItem);
+                realSlot = old;
+
             mc.player.inventory.currentItem = ((ItemSwitcher.HotbarSwitchResult)res).getSlot();
             mc.playerController.syncCurrentPlayItem();
+
+            if(switchType == ItemSwitcher.switchType.SwitchBack)
+            {
+                if(!scheduleHotbarSwitch)
+                    setScheduleHotbarSwitch(old,switchBackDelay);
+                else if(switchFrom == mc.player.inventory.currentItem)
+                    hotbarSwitchDelay = switchBackDelay;
+
+            }
+
             return ((ItemSwitcher.HotbarSwitchResult)res).getHand();
         }
         else if(res instanceof ItemSwitcher.InventorySwitchResult)
@@ -139,10 +187,10 @@ public class SwitchManager implements MC {
             if(slot != mc.player.inventory.currentItem+36)
             {
                 InventoryUtil.constSwitchMove(slot,mc.player.inventory.currentItem+36);
-                setDoInvSwitch(mc.player.inventory.currentItem+36,slot,constSwitchDelay);
+                setDoInvSwitch(mc.player.inventory.currentItem+36,slot,switchBackDelay);
             }
             else
-                delay = constSwitchDelay;
+                delay = switchBackDelay;
 
 
             return EnumHand.MAIN_HAND;
@@ -200,7 +248,7 @@ public class SwitchManager implements MC {
             if(id != -1 && !didInventorySwitch)
                 return new ItemSwitcher.InventorySwitchResult(id);
         }
-        else if(type == ItemSwitcher.switchType.Normal || type == ItemSwitcher.switchType.Silent)
+        else if(type == ItemSwitcher.switchType.Normal || type == ItemSwitcher.switchType.Silent || type == ItemSwitcher.switchType.SwitchBack)
         {
             float Best = 0;
             EnumHand hand = null;

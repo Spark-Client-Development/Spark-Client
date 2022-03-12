@@ -24,6 +24,7 @@ public class CommandManager {
 		new WaypointManager();
 		new NoteBotCommand();
 		new DamageCommand();
+		new SeedCommand();
 	}
 
 	public static ChatFormatting ErrorColor = ChatFormatting.RED;
