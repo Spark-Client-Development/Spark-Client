@@ -24,10 +24,9 @@ public class InventoryMove extends Module {
     @SubscribeEvent
     public void onUpdateEntityAction(UpdateEntityAction event){
 
-        if(useInventoryMove()) {
+        if(useInventoryMove() && mc.player.movementInput.moveForward == 0 && mc.player.movementInput.moveStrafe == 0) {
 
-            mc.player.movementInput.moveForward = 0;
-            mc.player.movementInput.moveStrafe = 0;
+
 
             if(Keyboard.isKeyDown(mc.gameSettings.keyBindForward.getKeyCode()))
                 mc.player.movementInput.moveForward += 1;
