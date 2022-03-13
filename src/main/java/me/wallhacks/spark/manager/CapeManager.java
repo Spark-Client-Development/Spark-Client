@@ -1,21 +1,16 @@
 package me.wallhacks.spark.manager;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.util.MC;
-import me.wallhacks.spark.util.render.ColorUtil;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.layers.LayerCape;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -31,8 +26,7 @@ public class CapeManager implements MC {
     private ConcurrentLinkedQueue<String> toLoad = new ConcurrentLinkedQueue<String>();
     private ConcurrentLinkedQueue<String> toUpdateImage = new ConcurrentLinkedQueue<String>();
 
-    private HashSet<String> fancy = new HashSet<String>();
-    ResourceLocation cape = new ResourceLocation("textures/capemain.png");
+
 
     public CapeManager() {
         Spark.eventBus.register(this);
@@ -51,11 +45,6 @@ public class CapeManager implements MC {
             }
 
 
-            cache = new URL("https://raw.githubusercontent.com/Spark-Client-Development/resources/main/capes/fancyCapeUsers.txt");
-            in = new BufferedReader(new InputStreamReader(cache.openStream()));
-            while ((inputLine = in.readLine()) != null) {
-                fancy.add(inputLine);
-            }
         } catch (Exception problem) {
             problem.printStackTrace();
         }
@@ -63,12 +52,27 @@ public class CapeManager implements MC {
 
 
 
-    void addToCatchMap(String uuid) {
+    void addToCatchMap(String value) {
         try {
-            String value = capeMap.get(uuid);
+
 
             String list[] = value.split(":");
-            int delay = (list.length > 1) ? Integer.parseInt(list[1]) : 500;
+
+            int delay = 500;
+            try {
+                if( (list.length > 1))
+                    delay = Integer.parseInt(list[1]);
+            }
+            catch (NumberFormatException exception)
+            {
+
+            }
+
+            boolean rgb = (list.length > 1) ? "true".equalsIgnoreCase(list[list.length-1]) : false;
+
+
+
+
 
             String[] capeLocations = list[0].split(",");
 
@@ -77,10 +81,10 @@ public class CapeManager implements MC {
                 capes[i] = (ImageIO.read(new URL("https://raw.githubusercontent.com/Spark-Client-Development/resources/main/capes/" + capeLocations[i] + ".png")));
 
             }
-            Spark.logger.info("Loaded cape for "+uuid+" Capes: "+capes.length+" Delay: "+delay);
+            Spark.logger.info("Loaded cape from '"+value+"' Capes: "+capes.length+" Delay: "+delay);
 
-            toUpdateImage.add(uuid);
-            capeCache.put(uuid, new Cape(capes, delay));
+            toUpdateImage.add(value);
+            capeCache.put(value, new Cape(capes, delay, rgb));
         } catch (Exception problem) {
             problem.printStackTrace();
         }
@@ -111,27 +115,38 @@ public class CapeManager implements MC {
         }
     }
 
-    public boolean isFancy(String uuid) {
-        return fancy.contains(uuid);
+    public boolean isRGB(String uuid) {
+        Cape cape = getCape(uuid);
+
+        if(cape == null)
+            return false;
+
+        return cape.isRgb();
     }
 
     @Nullable
     public ResourceLocation getCapeForUser(String uuid) {
+        Cape cape = getCape(uuid);
 
+        if(cape == null)
+            return null;
 
-        if(isFancy(uuid)) {
-            return cape;
-        }
+        return cape.getCapeLocation();
+    }
 
-        if(!capeCache.containsKey(uuid)) {
+    public Cape getCape(String uuid) {
+        if(!capeMap.containsKey(uuid))
+            return null;
 
-            if(capeMap.containsKey(uuid) && !toLoad.contains(uuid))
-                toLoad.add(uuid);
+        String value = capeMap.get(uuid);
+
+        if(!capeCache.containsKey(value)) {
+
+            if(!toLoad.contains(value))
+                toLoad.add(value);
             return null;
         }
-
-
-        return capeCache.get(uuid).getCapeLocation();
+        return capeCache.get(value);
     }
 
     public class Cape {
@@ -139,6 +154,7 @@ public class CapeManager implements MC {
         final BufferedImage[] capesImage;
         final ResourceLocation[] capes;
         final int delay;
+        final boolean rgb;
 
         public void updateImage() {
             for (int i = 0; i < capesImage.length; i++) {
@@ -147,15 +163,21 @@ public class CapeManager implements MC {
             }
         }
 
-        public Cape(BufferedImage[] capesImage, int delay) {
+        public Cape(BufferedImage[] capesImage, int delay, boolean rgb) {
             this.capesImage = capesImage;
             this.capes = new ResourceLocation[capesImage.length];
             this.delay = delay;
+            this.rgb = rgb;
         }
-        public Cape(ResourceLocation[] capes, int delay) {
+        public Cape(ResourceLocation[] capes, int delay, boolean rgb) {
             this.capes = capes;
+            this.rgb = rgb;
             this.capesImage = null;
             this.delay = delay;
+        }
+
+        public boolean isRgb() {
+            return rgb;
         }
 
         public ResourceLocation getCapeLocation() {

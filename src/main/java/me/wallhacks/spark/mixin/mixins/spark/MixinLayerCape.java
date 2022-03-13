@@ -18,7 +18,7 @@ public class MixinLayerCape {
 
     @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/layers/LayerCape;playerRenderer:Lnet/minecraft/client/renderer/entity/RenderPlayer;", ordinal = 1))
     public void doRenderLayer(AbstractClientPlayer d1, float d2, float f, float d3, float d4, float f1, float f2, float f3, CallbackInfo ci) {
-        if (Spark.capeManager.isFancy(d1.entityUniqueID.toString().replaceAll("-", ""))) {
+        if (Spark.capeManager.isRGB(d1.entityUniqueID.toString().replaceAll("-", ""))) {
             GlStateManager.disableTexture2D();
             GlStateManager.disableLighting();
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
