@@ -43,7 +43,7 @@ public class NoFall extends Module {
                 {
                     Block b = mc.world.getBlockState(p.add(0, -h, 0)).getBlock();
                     if(b.material.isSolid() && b != Blocks.HAY_BLOCK && b != Blocks.WEB) {
-                        BlockInteractUtil.tryPlaceBlock(p.add(0, 1-h, 0), new ItemStopFall(), false, false);
+                        BlockInteractUtil.tryPlaceBlock(p.add(0, 1-h, 0), new ItemStopFall(), true);
                         break;
                     }
                 }

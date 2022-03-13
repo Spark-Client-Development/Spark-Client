@@ -86,7 +86,7 @@ public class AutoTrap extends Module {
 
 
         for (BlockPos pos : occupiedByPlayer) {
-            BlockPos[] poses = new BlockPos[]{pos.add(0,-1,0),pos.add(1,1,0),pos.add(0,1,1),pos.add(-1,1,0),pos.add(0,1,-1),pos.add(1,0,0),pos.add(0,0,1),pos.add(-1,0,0),pos.add(0,0,-1)};
+            BlockPos[] poses = new BlockPos[]{pos.add(0,-1,0),pos.add(1,1,0),pos.add(0,1,1),pos.add(-1,1,0),pos.add(0,1,-1),pos.add(1,0,0),pos.add(0,0,1),pos.add(-1,0,0),pos.add(0,0,-1) };
 
             BlockPos top = pos.add(0,2,0);
             if(!needsPlacing.contains(top))
@@ -130,6 +130,8 @@ public class AutoTrap extends Module {
             if(TntAura.INSTANCE.blockNeedsToBeEmpty(p))
                 continue;
             BlockInteractUtil.BlockPlaceResult res = Place(p);
+            if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                res = Place(p.add(0,-1,0));
             if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
                 if (render.getValue())
                     new FadePos(p, fill, true);
@@ -149,7 +151,7 @@ public class AutoTrap extends Module {
 
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(), Spark.switchManager.getModeFromString(switchingMode.getValue()),false,true));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(), Spark.switchManager.getModeFromString(switchingMode.getValue()),true));
 
         return res;
 

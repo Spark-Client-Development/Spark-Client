@@ -13,21 +13,59 @@ import java.awt.*;
 @Module.Registration(name = "CustomFog", description = "Stop rendering shit we don't want to render")
 public class CustomFog extends Module {
 
-    private ColorSetting mainColor = new ColorSetting("Color",this, new Color(137, 80, 80,255),false,"Fog");
+    private ColorSetting netherMainColor = new ColorSetting("Color",this, new Color(137, 80, 80,255),false,"Nether");
 
-    private IntSetting fogDensity = new IntSetting("FogDensity",this,30,0,100,"Fog");
+    private IntSetting netherFogDensity = new IntSetting("FogDensity",this,30,0,100,"Nether");
+
+
+    private ColorSetting owMainColor = new ColorSetting("Color",this, new Color(137, 80, 80,255),false,"Overworld");
+
+    private IntSetting owFogDensity = new IntSetting("FogDensity",this,30,0,100,"Overworld");
+
+
+    private ColorSetting endMainColor = new ColorSetting("Color",this, new Color(137, 80, 80,255),false,"End");
+
+    private IntSetting endFogDensity = new IntSetting("FogDensity",this,30,0,100,"End");
 
 
     @SubscribeEvent
     public void onFog(EntityViewRenderEvent.FogColors event) {
-        event.setRed(mainColor.getColor().getRed()/255f);
-        event.setGreen(mainColor.getColor().getGreen()/255f);
-        event.setBlue(mainColor.getColor().getBlue()/255f);
+        Color color = Color.WHITE;
+        switch (mc.player.dimension)
+        {
+            case -1:
+                color = netherMainColor.getColor();
+                break;
+            case 0:
+                color = owMainColor.getColor();
+                break;
+            case 1:
+                color = endMainColor.getColor();
+                break;
+        }
+
+        event.setRed(color.getRed()/255f);
+        event.setGreen(color.getGreen()/255f);
+        event.setBlue(color.getBlue()/255f);
     }
 
     @SubscribeEvent
     public void onFogDensity(EntityViewRenderEvent.FogDensity event) {
-        event.setDensity((fogDensity.getValue()/100f)*event.getDensity());
+        int fogDensity = 30;
+        switch (mc.player.dimension)
+        {
+            case -1:
+                fogDensity = netherFogDensity.getValue();
+                break;
+            case 0:
+                fogDensity = owFogDensity.getValue();
+                break;
+            case 1:
+                fogDensity = endFogDensity.getValue();
+                break;
+        }
+
+        event.setDensity((fogDensity/100f)*event.getDensity());
 
         GlStateManager.setFog(GlStateManager.FogMode.EXP);
         ColorUtil.glColor(Color.WHITE);

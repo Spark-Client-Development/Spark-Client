@@ -120,7 +120,7 @@ public class BreakManager implements MC {
         else
         {
             RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), pos, false);
-            if(result != null)
+            if(result != null && result.sideHit != null)
                 facing = result.sideHit;
 
         }

@@ -167,7 +167,7 @@ public class TntAura extends Module {
 
     BlockInteractUtil.BlockPlaceResult place(BlockPos p, BlockSwitchItem item) {
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p, item, true, true));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p, item,  true));
         if (res == BlockInteractUtil.BlockPlaceResult.PLACED)
             if (render.getValue())
                 new FadePos(p, fill, true);

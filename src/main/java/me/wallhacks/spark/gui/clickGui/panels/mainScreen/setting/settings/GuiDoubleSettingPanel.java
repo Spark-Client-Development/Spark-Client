@@ -12,7 +12,7 @@ public class GuiDoubleSettingPanel extends GuiSettingPanel<DoubleSetting> {
         super(setting);
 
         guiPanelInputField = new GuiPanelInputField(0,0,0,0,0);
-        guiSlider = new GuiSlider((int)setting.getMin(),(int)setting.getMax());
+        guiSlider = new GuiSlider(setting.getMin(),setting.getMax());
 
         guiSlider.setValue(setting.getValue());
         guiPanelInputField.setText(setting.getValue().toString());

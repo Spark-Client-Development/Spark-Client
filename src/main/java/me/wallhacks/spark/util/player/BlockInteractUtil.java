@@ -31,11 +31,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BlockInteractUtil implements MC {
-    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities) {
-        return tryPlaceBlock(pos, switcher, AntiCheatConfig.getInstance().getBlockPlaceSwitchType(), clientSided, checkEntities,true);
+    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher) {
+        return tryPlaceBlock(pos, switcher, true);
     }
-    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities) {
-        return tryPlaceBlock(pos, switcher,switchType, clientSided, checkEntities,true);
+    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher,boolean clientSide) {
+        return tryPlaceBlock(pos, switcher, AntiCheatConfig.getInstance().getBlockPlaceSwitchType(), clientSide, true,true);
+    }
+    public static BlockPlaceResult tryPlaceBlockNoEntityCheck(BlockPos pos, BlockSwitchItem switcher) {
+        return tryPlaceBlockNoEntityCheck(pos, switcher, AntiCheatConfig.getInstance().getBlockPlaceSwitchType());
+    }
+    public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided) {
+        return tryPlaceBlock(pos, switcher,switchType, clientSided, true,true);
+    }
+    public static BlockPlaceResult tryPlaceBlockNoEntityCheck(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType) {
+        return tryPlaceBlock(pos, switcher,switchType, false, false,true);
     }
 
     public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities,boolean multiSpoof) {
@@ -60,7 +69,7 @@ public class BlockInteractUtil implements MC {
             return BlockPlaceResult.FAILED;
 
         BlockPos placeOn = pos.offset(face, -1);
-        return getBlockPlaceResult(face, switcher, switchType, clientSided, placeOn,multiSpoof);
+        return getBlockPlaceResult(face, switcher, switchType, clientSided && checkEntities, placeOn,multiSpoof);
     }
 
     public static BlockPlaceResult tryPlaceBlockOnBlock(BlockPos pos, EnumFacing face, BlockSwitchItem switcher, boolean clientSided, boolean checkEntities) {

@@ -135,7 +135,7 @@ public class MapRender implements MC {
             GL11.glPushMatrix();
             GlStateManager.translate(x, y, 0);
 
-            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),structures.getSize()*0.1);
+            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),8);
 
             GlStateManager.scale(s,s,s);
             GuiUtil.drawCompleteImageRotated(-6,-6,6*2,6*2,0,structures.getResourceLocation(),Color.WHITE);
