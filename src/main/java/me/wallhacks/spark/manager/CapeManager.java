@@ -23,6 +23,7 @@ public class CapeManager implements MC {
     private HashMap<String, String> capeMap = new HashMap<String, String>();
     private HashMap<String, Cape> capeCache = new HashMap<String, Cape>();
 
+
     private ConcurrentLinkedQueue<String> toLoad = new ConcurrentLinkedQueue<String>();
     private ConcurrentLinkedQueue<String> toUpdateImage = new ConcurrentLinkedQueue<String>();
 
