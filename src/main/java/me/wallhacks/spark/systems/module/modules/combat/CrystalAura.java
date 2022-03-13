@@ -54,6 +54,7 @@ public class CrystalAura extends Module {
     public static CrystalAura instance;
     IntSetting prediction = new IntSetting("Prediction", this, 0, 0, 20, "Prediction");
     BooleanSetting prePlace = new BooleanSetting("PrePlace", this, true, "Prediction");
+
     BooleanSetting PlayersOnly = new BooleanSetting("PlayersOnly", this, true, "Attacking");
     IntSetting maxSelfdamage = new IntSetting("MaxSelfDam", this, 15, 0, 20, "Attacking");
     IntSetting minEnemydamage = new IntSetting("MinEnemyDam", this, 6, 0, 20, "Attacking");
@@ -407,6 +408,7 @@ public class CrystalAura extends Module {
                     Value.value += switchThreshold.getValue();
                 if (pair.getValue())
                     Value.value -= 1;
+
                 if (Value.value > bestValue) {
                     bestValue = Value.value;
                     if (Value.target != null)

@@ -50,7 +50,7 @@ public class BaritoneConfig extends ClientSetting {
     public void onSettingChange(SettingChangeEvent event) {
         Setting setting = event.getSetting();
         if (settingMap.containsKey(setting)) {
-            settingMap.get(setting).setValue(setting.getValue(), true);
+            settingMap.get(setting).setValue(setting instanceof ColorSetting ? ((ColorSetting) setting).getColor() : setting.getValue(), true);
         }
     }
 
