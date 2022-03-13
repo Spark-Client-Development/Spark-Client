@@ -3,7 +3,7 @@ package me.wallhacks.spark.systems.module.modules.world;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.systems.setting.settings.ModeSetting;
+import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.objects.Timer;
@@ -14,9 +14,6 @@ import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SolidBlockSwitc
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
-import me.wallhacks.spark.systems.setting.settings.ColorSetting;
-import me.wallhacks.spark.systems.setting.settings.IntSetting;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -32,7 +29,7 @@ public class Scaffold extends Module {
     IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> Tower.isOn(),"General");
     BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,"General");
 
-
+    KeySetting invertedKey = new KeySetting("Inverted",this,-1,"General");
 
 
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
@@ -62,8 +59,40 @@ public class Scaffold extends Module {
 
     void doScaffold() {
 
+        if(invertedKey.isDown())
+        {
+
+
+            final BlockPos floorPos = PlayerUtil.getPlayerPosFloored(mc.player,-0.1).add(0, -1, 0);
+
+            final Block floor = mc.world.getBlockState(floorPos).getBlock();
+
+            if (floor.material.isReplaceable()) {
+                BlockInteractUtil.BlockPlaceResult res = Place(floorPos);
+
+                if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                    res = Place(floorPos.add(1,0,0));
+                if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                    res = Place(floorPos.add(-1,0,0));
+                if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                    res = Place(floorPos.add(0,0,-1));
+                if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
+                    res = Place(floorPos.add(0,0,1));
+
+                if (res == BlockInteractUtil.BlockPlaceResult.PLACED) {
+                    if (render.getValue())
+                        new FadePos(floorPos, fill, true);
+                }
+            }
+            return;
+        }
+
+
         final BlockPos floorPos = PlayerUtil.getPlayerPosFloored(mc.player,0.2).add(0, -1, 0);
+
+
         final Block floor = mc.world.getBlockState(floorPos).getBlock();
+
 
 
         if(doTowerCenter()){
