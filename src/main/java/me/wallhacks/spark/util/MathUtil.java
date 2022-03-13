@@ -1,5 +1,6 @@
 package me.wallhacks.spark.util;
 
+import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -44,6 +45,11 @@ public class MathUtil {
         double f1 = from.y - to.y;
         double f2 = from.z - to.z;
         return MathHelper.sqrt(f * f + f1 * f1 + f2 * f2);
+    }
+    public static double getDistanceFromTo(Vec2i from, Vec2i to) {
+        double f = from.x - to.x;
+        double f1 = from.y - to.y;
+        return MathHelper.sqrt(f * f + f1 * f1);
     }
 
     public static double roundToClosest(double num, double low, double high) {

@@ -14,7 +14,7 @@ public enum MCStructures {
     WitchHut (new ResourceLocation("textures/icons/structures/witchhut.png"), 5),
     Igloo (new ResourceLocation("textures/icons/structures/igloo.png"), 5),
     JungleTemple (new ResourceLocation("textures/icons/structures/jungletemple.png"), 5),
-    NetherFortress (new ResourceLocation("textures/icons/structures/fortress.png"), 8);
+    NetherFortress (new ResourceLocation("textures/icons/structures/fortress.png"), 7);
 
     final ResourceLocation resourceLocation;
     final int size;

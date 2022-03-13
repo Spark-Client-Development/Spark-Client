@@ -1,9 +1,13 @@
 package me.wallhacks.spark.gui.clickGui.panels.navigation;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.util.GuiUtil;
+import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.maps.SparkMap;
+import me.wallhacks.spark.util.objects.MCStructures;
+import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import me.wallhacks.spark.util.render.MapRender;
@@ -129,6 +133,19 @@ public class MapGui extends GuiPanelBase {
         if(MouseButton == 1)
         {
             screenInfoCoords = new Vec2i(MouseX,MouseY);
+            mapGuiSubMenu.inputField.setText("");
+            mapGuiSubMenu.addingWayPoint = false;
+
+            Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim),MouseX-offsetX,MouseY-offsetY,posX+width/2,posY+height/2);
+
+            SparkMap map = Spark.mapManager.getMap(SparkMap.getMapPosFromWorldPos(pos.x,pos.y),dim);
+            for (Pair<Vec2i, MCStructures> i : map.structures) {
+                if(MathUtil.getDistanceFromTo(i.getKey(),new Vec2i(pos.x/16,pos.y/16)) < 6)
+                {
+                    mapGuiSubMenu.inputField.setText(i.getValue().name());
+                    break;
+                }
+            }
         }
         else
             screenInfoCoords = null;

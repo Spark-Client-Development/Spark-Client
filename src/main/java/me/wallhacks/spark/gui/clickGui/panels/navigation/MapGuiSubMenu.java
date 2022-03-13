@@ -76,7 +76,7 @@ public class MapGuiSubMenu extends GuiPanelBase {
             inputField.setBackGroundColor(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
             inputField.renderContent(MouseX, MouseY, deltaTime);
 
-            addWayPointButton.setText("Add Waypoint");
+            addWayPointButton.setText(inputField.getText().length() > 0 ? "Add Waypoint" : "Cancel");
             addWayPointButton.setPositionAndSize(posX+2,posY+11+4,width-4,11);
             addWayPointButton.renderContent(MouseX, MouseY, deltaTime);
 

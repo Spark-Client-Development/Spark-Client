@@ -88,6 +88,42 @@ public class MapRender implements MC {
         }
 
 
+
+
+        if(MapConfig.getInstance().Structures.isOn())
+        for (Pair<Vec2i, MCStructures> structuresPair : structuresHashMap) {
+
+            if(!MapConfig.getInstance().StructureList.contains(structuresPair.getValue()))
+                continue;
+
+            Vec2d pos = new Vec2d(structuresPair.getKey().x*16,structuresPair.getKey().y*16);
+            double x = ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(pos.x - TargetX, ImageScale);
+            double y = ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(pos.y - TargetZ, ImageScale);
+
+            boolean hovered = false;
+            if (hover) {
+                Double distance = Math.sqrt((y - mouseY) * (y - mouseY) + (x - mouseX) * (x - mouseX));
+                if (distance < 3) hovered = true;
+            }
+
+            MCStructures structures = structuresPair.getValue();
+            GL11.glPushMatrix();
+            GlStateManager.translate(x, y, 0);
+
+            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),structures.getSize()*0.1);
+
+            if(hovered)
+                s*=1.3;
+
+            GlStateManager.scale(s,s,s);
+            GuiUtil.drawCompleteImageRotated(-6,-6,6*2,6*2,0,structures.getResourceLocation(),Color.WHITE);
+
+            GL11.glPopMatrix();
+
+        }
+
+
+
         FontManager fontManager = Spark.fontManager;
 
         for (WaypointManager.Waypoint point : Spark.waypointManager.getWayPoints()) {
@@ -120,31 +156,6 @@ public class MapRender implements MC {
 
 
         }
-
-        if(MapConfig.getInstance().Structures.isOn())
-        for (Pair<Vec2i, MCStructures> structuresPair : structuresHashMap) {
-
-            if(!MapConfig.getInstance().StructureList.contains(structuresPair.getValue()))
-                continue;
-
-            Vec2d pos = new Vec2d(structuresPair.getKey().x*16,structuresPair.getKey().y*16);
-            double x = ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(pos.x - TargetX, ImageScale);
-            double y = ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(pos.y - TargetZ, ImageScale);
-
-            MCStructures structures = structuresPair.getValue();
-            GL11.glPushMatrix();
-            GlStateManager.translate(x, y, 0);
-
-            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),8);
-
-            GlStateManager.scale(s,s,s);
-            GuiUtil.drawCompleteImageRotated(-6,-6,6*2,6*2,0,structures.getResourceLocation(),Color.WHITE);
-
-            GL11.glPopMatrix();
-
-        }
-
-
 
 
 
