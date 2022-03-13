@@ -1299,7 +1299,7 @@ public final class Settings {
         }
 
         public T getValue() {
-            if (getType().equals(Color.class)) {
+            if(this.value instanceof Color) {
                 BaritoneConfig.getInstance().syncColor(this);
             }
             return value;

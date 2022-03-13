@@ -136,7 +136,7 @@ public class MapGui extends GuiPanelBase {
             mapGuiSubMenu.inputField.setText("");
             mapGuiSubMenu.addingWayPoint = false;
 
-            Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim),MouseX-offsetX,MouseY-offsetY,posX+width/2,posY+height/2);
+            Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, new Vec2d(mc.player.posX,mc.player.posZ),MouseX-offsetX,MouseY-offsetY,posX+width/2,posY+height/2);
 
             SparkMap map = Spark.mapManager.getMap(SparkMap.getMapPosFromWorldPos(pos.x,pos.y),dim);
             for (Pair<Vec2i, MCStructures> i : map.structures) {
