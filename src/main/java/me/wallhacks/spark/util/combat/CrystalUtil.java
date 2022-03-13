@@ -176,7 +176,6 @@ public class CrystalUtil implements MC {
     //use this to calculate damage for prediction
     public static float calculateDamageCrystal(Vec3d expolsionPoint, PredictedEntity predicted, boolean prePlace) {
 
-        float finald = 0;
 
         EntityLivingBase entity = predicted.entity;
 
@@ -184,18 +183,16 @@ public class CrystalUtil implements MC {
         AxisAlignedBB realBB = entity.boundingBox;
 
 
-        for (int i = 0; i < predicted.predictedBBs.length; i++) {
-            entity.boundingBox = predicted.predictedBBs[i];
-            entity.resetPositionToBB();
-            //damage calculation
-            finald += calculateDamageCrystal(expolsionPoint, entity, true, prePlace);
-        }
+        entity.boundingBox = predicted.predictedBBs[predicted.predictedBBs.length-1];
+        entity.resetPositionToBB();
+        //damage calculation
+        float finald = calculateDamageCrystal(expolsionPoint, entity, true, prePlace);
 
         //set enttiy bb back to normal one
         entity.boundingBox = realBB;
         entity.resetPositionToBB();
 
-        return finald/predicted.predictedBBs.length;
+        return finald;
     }
 
 
