@@ -188,6 +188,14 @@ public class CrystalUtil implements MC {
         //damage calculation
         float finald = calculateDamageCrystal(expolsionPoint, entity, true, prePlace);
 
+        if(finald > 4 && predicted.predictedBBs.length > 1)
+        {
+            for (int i = 0; i < predicted.predictedBBs.length-1; i++) {
+                finald += calculateDamageCrystal(expolsionPoint, entity, true, prePlace);
+            }
+            finald/=predicted.predictedBBs.length;
+        }
+
         //set enttiy bb back to normal one
         entity.boundingBox = realBB;
         entity.resetPositionToBB();
@@ -202,6 +210,10 @@ public class CrystalUtil implements MC {
 
     public static float calculateDamageCrystal(BlockPos pos, Entity target, boolean shouldIgnore, boolean prePlace) {
         return calculateDamageCrystal(new Vec3d(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5), target, shouldIgnore, prePlace);
+    }
+
+    public static float calculateDamageCrystal(Vec3d explosionPosition, Entity target, boolean prePlace) {
+        return calculateDamageCrystal(explosionPosition,target, true, prePlace);
     }
 
     public static float calculateDamageCrystal(Vec3d explosionPosition, Entity target, boolean shouldIgnore, boolean prePlace) {
