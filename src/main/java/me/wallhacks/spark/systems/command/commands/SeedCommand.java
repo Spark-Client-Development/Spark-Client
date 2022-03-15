@@ -7,7 +7,6 @@ import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.command.Command;
 import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 import net.minecraft.client.Minecraft;
-import sun.security.ec.ECDSAOperations;
 
 public class SeedCommand extends Command {
 
