@@ -66,7 +66,7 @@ public class MapRender implements MC {
 
                 SparkMap map = MapManager.instance.getMap(new Vec2i(x, y), dim);
 
-                if(map.structures.size() > 0)
+                if(!map.structures.isEmpty())
                     structuresHashMap.addAll(new ArrayList<>(map.structures));
 
                 if(!map.isEmpty())
