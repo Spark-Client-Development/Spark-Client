@@ -47,6 +47,17 @@ public class Speed extends Module {
     private int boostTick;
     private boolean flag;
 
+    //Turning off the module should reset the module
+    @Override
+    public void disable() {
+    	jumps = 0;
+        prevOnGround = false;
+        state = mode.is("OnGround") ? 2 : 4;
+        speed = 0;
+        boost = 0;
+    	super.disable();
+    }
+    
     @SubscribeEvent
     public void onUpdate(PlayerPreUpdateEvent event) {
         boostTick++;
@@ -297,7 +308,7 @@ public class Speed extends Module {
         if (!BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().isPathing()) return true;
         IPathExecutor executor = BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().getCurrent();
         int currentPostion = executor.getPosition();
-        Class f = null;
+        Class<? extends IMovement> f = null;
         if (executor.getPath().movements().isEmpty()) return true;
         for (int i = 0; i < Math.min(2, executor.getPath().movements().size() - currentPostion - 1); i++) {
             IMovement movement = executor.getPath().movements().get(currentPostion + i);
