@@ -46,17 +46,6 @@ public class Speed extends Module {
     private double boost = 0;
     private int boostTick;
     private boolean flag;
-
-    //Turning off the module should reset the module
-    @Override
-    public void disable() {
-    	jumps = 0;
-        prevOnGround = false;
-        state = mode.is("OnGround") ? 2 : 4;
-        speed = 0;
-        boost = 0;
-    	super.disable();
-    }
     
     @SubscribeEvent
     public void onUpdate(PlayerPreUpdateEvent event) {
@@ -269,6 +258,8 @@ public class Speed extends Module {
         prevMotion = 0;
         offGroundTicks = 0;
         state = mode.is("OnGround") ? 2 : 4;
+        speed = 0;
+        boost = 0;
     }
 
     private double getBaseMotionSpeed() {
