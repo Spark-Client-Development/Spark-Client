@@ -2,10 +2,12 @@ package me.wallhacks.spark.systems.module.modules.render;
 
 
 import me.wallhacks.spark.systems.setting.settings.*;
+import me.wallhacks.spark.util.render.ColorUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -35,10 +37,12 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
     DoubleSetting height = new DoubleSetting("MainHeight", this, 1.0D, -1.0D, 3.0D);
     DoubleSetting outlineWidth = new DoubleSetting("OutlineWidth", this, 2.0, 0.5, 5.0);
     BooleanSetting doubles = new BooleanSetting("Doubles", this, true);
+
     ColorSetting obsidian = new ColorSetting("ObsidianBox", this, new Color(144, 0, 255, 45));
     ColorSetting bedrock = new ColorSetting("BedrockBox", this, new Color(93, 235, 240, 45));
-    ColorSetting obsidianOL = new ColorSetting("ObsidianOutline", this, new Color(144, 0, 255, 144));
-    ColorSetting bedrockOL = new ColorSetting("BedrockOutline", this, new Color(93, 235, 240, 144));
+
+    BooleanSetting smooth = new BooleanSetting("SmoothColor", this, true);
+
 
     @SubscribeEvent
     public void onRender3D(RenderWorldLastEvent event) {
@@ -57,15 +61,11 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
                         double dis = RenderUtil.getRenderDistance(holeInfo);
                         if(dis < range){
 
-                            //anti fuckup
-                            if(!isBlockHole(holeInfo))
-                            {
-                                chunksToSearch.add(c.getPos());
-                                break;
-                            }
+
+
 
                             double d = 1.0/MathHelper.clamp(range,2,10);
-                            renderHole(holeInfo,holeInfo.type,holeInfo.length,holeInfo.width, MathHelper.clamp((range-dis)*d,0,1));
+                            renderHole(holeInfo,MathHelper.clamp((range-dis)*d,0,1));
                         }
 
                     }
@@ -86,49 +86,60 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
 
 
 
-    public void renderHole(BlockPos hole, Type type, double length, double width,double alpha) {
-        AxisAlignedBB box = new AxisAlignedBB(hole.getX(), hole.getY(), hole.getZ(), hole.getX() + 1 + length, hole.getY() + height.getValue(), hole.getZ() + width + 1);
-        Color color = type == Type.Bedrock ? bedrockOL.getColor(alpha) : obsidianOL.getColor(alpha);
+
+    public void renderHole(HoleInfo hole,double alpha) {
+
+        int x = (hole.neighbour == null ? 0 : hole.neighbour.getXOffset());
+        int z = (hole.neighbour == null ? 0 : hole.neighbour.getZOffset());
+
+        AxisAlignedBB box = new AxisAlignedBB(hole.getX()+(x<0?x:0), hole.getY(), hole.getZ()+(z<0?z:0), hole.getX() + 1 + (x>0?x:0), hole.getY() + height.getValue(), hole.getZ() + 1 + (x>0?x:0));
+
+
+
+        Color color = (smooth.isOn() ? ColorUtil.lerpColor(obsidian.getColor(alpha),bedrock.getColor(alpha),hole.getBedrockPercentage()) : (hole.isFullBedrock() ? bedrock.getColor(alpha) : obsidian.getColor(alpha)));
 
 
 
         if (mode.is("Box")) {
-            EspUtil.boundingESPBox(box, color, outlineWidth.getFloatValue());
-            color = type == Type.Bedrock ? bedrock.getColor(alpha) : obsidian.getColor(alpha);
+            EspUtil.boundingESPBox(box, color.brighter(), outlineWidth.getFloatValue());
             EspUtil.boundingESPBoxFilled(box, color);
         }
         if (mode.is("Glow")) {
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            EspUtil.drawGradientBlockOutline(box, new Color(0, 0, 0, 0), color, outlineWidth.getFloatValue());
-            color = type == Type.Bedrock ? bedrock.getColor(alpha) : obsidian.getColor(alpha);
+            EspUtil.drawGradientBlockOutline(box, new Color(0, 0, 0, 0), color.brighter(), outlineWidth.getFloatValue());
             EspUtil.drawOpenGradientBoxBB(box, color, new Color(0, 0, 0, 0));
             GlStateManager.shadeModel(GL11.GL_FLAT);
         }
     }
 
-    public enum Type {
-        Obsidian,
-        Bedrock,
-        Double
-    }
+
 
     class HoleInfo extends BlockPos {
 
-        Type type;
-        int length;
-        int width;
+        final EnumFacing neighbour;
+        final int bedrock;
 
-        public HoleInfo(BlockPos pos, Type type, int length, int width) {
+        public float getBedrockPercentage() {
+            return (float)bedrock / (neighbour == null ? 5 : 10);
+        }
+
+        public boolean isFullBedrock() {
+            return bedrock >= (neighbour == null ? 5 : 10);
+        }
+
+        public HoleInfo(BlockPos pos, EnumFacing neighbour, int bedrock) {
             super(pos);
-            this.type = type;
-            this.length = length;
-            this.width = width;
+            this.neighbour = neighbour;
+            this.bedrock = bedrock;
+
         }
     }
 
 
     @Override
     protected void blockChanged(BlockPos pos) {
+        if(pos == null || nullCheck())
+            return;
         List<BlockPos> blocks = WorldUtils.getSphere(pos,3,2,0);
         for (BlockPos p : blocks)
             removeFound(p);
@@ -172,42 +183,24 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
     void checkBlock(BlockPos potentialHole) {
         if (!(mc.world.getBlockState(potentialHole).getBlock() instanceof BlockAir)) return;
 
-        if (HoleUtil.isBedRockHole(potentialHole))
-            addFound(new HoleInfo(potentialHole, Type.Bedrock, 0, 0));
-        else if (HoleUtil.isObsidianHole(potentialHole))
-            addFound(new HoleInfo(potentialHole, Type.Obsidian, 0, 0));
+        int bedrock = HoleUtil.isSingleHole(potentialHole);
+
+        if (bedrock >= 0) {
+            addFound(new HoleInfo(potentialHole,null,bedrock));
+        }
+
 
         if (doubles.getValue()) {
-            if (HoleUtil.isDoubleBedrockHoleX(potentialHole))
-                addFound(new HoleInfo(potentialHole, Type.Bedrock, 1, 0));
-            else if (HoleUtil.isDoubleBedrockHoleZ(potentialHole))
-                addFound(new HoleInfo(potentialHole, Type.Bedrock, 0, 1));
-            else if (HoleUtil.isDoubleObsidianHoleX(potentialHole))
-                addFound(new HoleInfo(potentialHole, Type.Obsidian, 1, 0));
-            else if (HoleUtil.isDoubleObsidianHoleZ(potentialHole))
-                addFound(new HoleInfo(potentialHole, Type.Obsidian, 0, 1));
+            bedrock = HoleUtil.isDoubleHole(potentialHole,EnumFacing.EAST);
+
+            if (bedrock >= 0)
+                addFound(new HoleInfo(potentialHole, EnumFacing.EAST, bedrock));
+            else  {
+                bedrock = HoleUtil.isDoubleHole(potentialHole,EnumFacing.NORTH);
+                if (bedrock >= 0)
+                    addFound(new HoleInfo(potentialHole, EnumFacing.NORTH, bedrock));
+            }
         }
-    }
-
-    boolean isBlockHole(BlockPos potentialHole) {
-        if (!(mc.world.getBlockState(potentialHole).getBlock() instanceof BlockAir)) return false;
-
-        if (HoleUtil.isBedRockHole(potentialHole))
-            return true;
-        else if (HoleUtil.isObsidianHole(potentialHole))
-            return true;
-
-        if (doubles.getValue()) {
-            if (HoleUtil.isDoubleBedrockHoleX(potentialHole))
-                return true;
-            else if (HoleUtil.isDoubleBedrockHoleZ(potentialHole))
-                return true;
-            else if (HoleUtil.isDoubleObsidianHoleX(potentialHole))
-                return true;
-            else if (HoleUtil.isDoubleObsidianHoleZ(potentialHole))
-                return true;
-        }
-        return false;
     }
 
 }

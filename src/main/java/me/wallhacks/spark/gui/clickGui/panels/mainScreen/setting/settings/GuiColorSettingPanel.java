@@ -99,8 +99,10 @@ public class GuiColorSettingPanel extends GuiSettingPanel<ColorSetting> {
 
         if (hue.picking) {
             hsb[0] = hue.pick(mouseY, hsb[0]);
+			int alpha = getSetting().getColor().getAlpha();
             getSetting().setColor(new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2])));
-        }
+			getSetting().setColor(new Color(getSetting().getColor().getRed(), getSetting().getColor().getGreen(), getSetting().getColor().getBlue(), alpha));
+		}
         
         if (picker.picking) {
             hsb[1] = picker.pickSaturation(mouseX, hsb[1]);

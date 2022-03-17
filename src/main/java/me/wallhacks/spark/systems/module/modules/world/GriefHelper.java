@@ -60,7 +60,7 @@ public class GriefHelper extends Module {
                         boolean lastCanPlaceOn = false;
                         for (int h = floored.getY()-5; h <= floored.getY()+5; h++) {
                             Block b = mc.world.getBlockState(new BlockPos(x,h,z)).getBlock();
-                            if(b == Blocks.AIR || b == Blocks.TNT)
+                            if(b.material.isReplaceable() || b == Blocks.TNT)
                             {
                                 if(lastCanPlaceOn)
                                 {
@@ -134,7 +134,7 @@ public class GriefHelper extends Module {
 
     boolean isRedstone(Block b) {
 
-        if(b == Blocks.AIR)
+        if(b.material.isReplaceable())
             return false;
         return b == Blocks.REDSTONE_WIRE || b == Blocks.REDSTONE_BLOCK || b == Blocks.REDSTONE_TORCH || b == Blocks.POWERED_REPEATER || b == Blocks.STONE_PRESSURE_PLATE || b == Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE || b == Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE || b == Blocks.WOODEN_PRESSURE_PLATE || b == Blocks.LEVER;
     }
