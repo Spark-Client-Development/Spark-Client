@@ -59,13 +59,18 @@ public class PotionManager implements MC {
 
         long limit = 1 << possiblePotions.size(); // this is 2^length
 
+
+
+
         for (long l = 1; l < limit; l++) {
             Set<PotionEffect> subSet = new LinkedHashSet<>();
+
             for (int i = 0; i < possiblePotions.size(); i++) {
                 if ((l & (1 << i)) > 0) {
                     subSet.add(possiblePotions.get(i));
                 }
             }
+
             potionMap.put(PotionUtils.getPotionColorFromEffectList(subSet), new HashSet<>(subSet));
         }
 
@@ -84,7 +89,7 @@ public class PotionManager implements MC {
 
     public int getPotionStrength(EntityPlayer player,Potion potion) {
         Pair<PotionEffect,Long> longPair = getEffect(player,potion);
-        return longPair == null ? 0 : longPair.getKey().getAmplifier();
+        return longPair == null ? -1 : longPair.getKey().getAmplifier();
     }
 
     public long getPotionTime(EntityPlayer player,Potion potion) {
@@ -122,6 +127,7 @@ public class PotionManager implements MC {
                 for (EntityDataManager.DataEntry v : packet.getDataManagerEntries()) {
                     if (v.getKey().equals(EntityLivingBase.POTION_EFFECTS)) {
                         Collection<PotionEffect> effects = potionEffectsForValue((int)v.getValue());
+
 
                         if(!trackMap.containsKey(player))
                             trackMap.put(player,new ArrayList<>());

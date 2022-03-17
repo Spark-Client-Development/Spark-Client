@@ -69,7 +69,7 @@ public class TargetHud extends HudElement {
             fontManager.getLargeFont().drawText((target).getName(), getRenderPosX() + 41, getRenderPosY() + 5, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
             mc.getRenderItem().renderItemAndEffectIntoGUI(new ItemStack(Items.TOTEM_OF_UNDYING), (int) getRenderPosX() + 38, (int) getRenderPosY() + 19);
             int strength = Spark.potionManager.getPotionStrength(target,MobEffects.STRENGTH);
-            boolean weakness = Spark.potionManager.getPotionStrength(target,MobEffects.WEAKNESS) > 0;
+            boolean weakness = Spark.potionManager.getPotionStrength(target,MobEffects.WEAKNESS) >= 0;
             int strengthTicks = (int) (Spark.potionManager.getPotionDuration(target,MobEffects.STRENGTH));
             int weaknessTicks = (int) (Spark.potionManager.getPotionDuration(target,MobEffects.WEAKNESS));
 
@@ -78,7 +78,7 @@ public class TargetHud extends HudElement {
             ItemStack weaknessS = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM, 1), PotionTypes.WEAKNESS);
             mc.renderItem.renderItemAndEffectIntoGUI(strengthS, getRenderPosX() + 90, getRenderPosY() + 19);
             mc.renderItem.renderItemAndEffectIntoGUI(weaknessS, getRenderPosX() + 90, getRenderPosY() + 19 + 17);
-            fontManager.drawString((strength == 0 ? ChatFormatting.RED + "Inactive" : "" + ChatFormatting.RED + strength + " " + ChatFormatting.GRAY + StringUtil.millisecondToElapsedTime(strengthTicks)), (int) getRenderPosX() + 106, (int) getRenderPosY() + 24, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
+            fontManager.drawString((strength < 0 ? ChatFormatting.RED + "Inactive" : "" + ChatFormatting.RED + strength + " " + ChatFormatting.GRAY + StringUtil.millisecondToElapsedTime(strengthTicks)), (int) getRenderPosX() + 106, (int) getRenderPosY() + 24, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
             fontManager.drawString((!weakness ? ChatFormatting.RED + "Inactive" : ChatFormatting.DARK_PURPLE + "Weak" + ChatFormatting.GRAY + " " + StringUtil.millisecondToElapsedTime(weaknessTicks)), (int) getRenderPosX() + 106, (int) getRenderPosY() + 41, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
             ColorUtil.glColor(new Color(-1));
             fontManager.drawString(ChatFormatting.GRAY + "Pops " + TextFormatting.RED + Spark.popManager.getTotemPops(target), (int) getRenderPosX() + 54, (int) getRenderPosY() + 24, HudSettings.getInstance().getGuiHudSecondColor().getRGB());
