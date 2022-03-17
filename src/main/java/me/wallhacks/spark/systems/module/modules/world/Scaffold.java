@@ -2,6 +2,7 @@ package me.wallhacks.spark.systems.module.modules.world;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
+import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.MC;
@@ -28,10 +29,7 @@ public class Scaffold extends Module {
     BooleanSetting Tower = new BooleanSetting("FastTower",this,true,"General");
     IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> Tower.isOn(),"General");
     BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,"General");
-
-    KeySetting invertedKey = new KeySetting("Inverted",this,-1,"General");
-
-
+    BooleanSetting down = new BooleanSetting("Downwards",this,false,"General");
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC5E, true), "Render");
 
@@ -59,8 +57,7 @@ public class Scaffold extends Module {
 
     void doScaffold() {
 
-        if(invertedKey.isDown())
-        {
+        if(mc.gameSettings.keyBindSneak.isKeyDown() && down.getValue()) {
 
 
             final BlockPos floorPos = PlayerUtil.getPlayerPosFloored(mc.player,-0.1).add(0, -1, 0);
@@ -93,15 +90,12 @@ public class Scaffold extends Module {
 
         final Block floor = mc.world.getBlockState(floorPos).getBlock();
 
-
-
         if(doTowerCenter()){
-            if(mc.player.onGround && PlayerUtil.MoveCenter(floorPos,false)){
+            if(towerStart.passedMs(500) && mc.player.onGround && PlayerUtil.MoveCenter(floorPos,false)){
                 mc.player.motionY = -0.28f;
                 return;
             }
         }
-
 
         if (floor.material.isReplaceable())
         {
@@ -113,16 +107,12 @@ public class Scaffold extends Module {
                     lastTowerPlaced.reset();
 
                     if(towerStart.passedMs(500))
-                        if(Tower.isOn())
-                        {
-
-                            if(scaffoldPauseTimer.passedMs(TowerPause.getValue()*100))
-                            {
+                        if(Tower.isOn()) {
+                            if(scaffoldPauseTimer.passedMs(TowerPause.getValue()*100)) {
                                 mc.player.motionY = -0.28f;
                                 scaffoldPauseTimer.reset();
                             }
-                            else
-                            {
+                            else {
                                 this.mc.player.jump();
                             }
                         }
@@ -179,13 +169,20 @@ public class Scaffold extends Module {
             }
         }
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new SolidBlockSwitchItem(), true));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new SolidBlockSwitchItem(), true, true));
 
 
 
         return res;
 
 
+    }
+
+    @SubscribeEvent
+    public void onSneakEvent(SneakEvent event) {
+        if (mc.gameSettings.keyBindSneak.isKeyDown() && down.getValue()) {
+            event.setCanceled(true);
+        }
     }
 
     double getDisToEdge(){

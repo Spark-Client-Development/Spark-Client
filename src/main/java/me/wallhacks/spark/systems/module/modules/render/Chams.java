@@ -11,8 +11,10 @@ import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.render.RenderUtil;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -198,6 +200,7 @@ public class Chams extends Module {
     }
 
     private void renderModel(RenderLivingEvent event) {
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         event.getModelBase().render(event.getEntity(), event.getLimbSwing(), event.getLimbSwingAmount(), event.getAgeInTicks(), event.getNetHeadYaw(), event.getHeadPitch(), event.getScaleFactor());
     }
 

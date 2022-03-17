@@ -38,24 +38,16 @@ public class BowAim extends Module implements MC {
 	void OnUpdate(PlayerUpdateEvent event) {
 
 
-		if (mc.player.getHeldItemMainhand().getItem() != Items.BOW)
+		if (mc.player.getHeldItemMainhand().getItem() != Items.BOW || !mc.player.isHandActive() || mc.player.getActiveItemStack().isEmpty()) {
+			target = null;
 			return;
-
-		if (!mc.player.isHandActive() || mc.player.getActiveItemStack().isEmpty())
-			return;
-
+		}
 
 
 		target = GetTarget();
 
 		if(target == null)
 			return;
-
-
-
-
-
-
 
 		float[] rot = getRot(target);
 

@@ -172,21 +172,26 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
             double d2 = x;
             double d3 = y;
             double d4 = z;
+
             if ((type == MoverType.SELF || type == MoverType.PLAYER) && this.onGround && this.isSneaking() && _this instanceof EntityPlayer) {
-                double d5 = 0.05;
-                while (x != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(x, (double) (-this.stepHeight), 0.0)).isEmpty()) {
-                    x = x < 0.05 && x >= -0.05 ? 0.0 : (x > 0.0 ? (x -= 0.05) : (x += 0.05));
-                    d2 = x;
-                }
-                while (z != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(0.0, (double) (-this.stepHeight), z)).isEmpty()) {
-                    z = z < 0.05 && z >= -0.05 ? 0.0 : (z > 0.0 ? (z -= 0.05) : (z += 0.05));
-                    d4 = z;
-                }
-                while (x != 0.0 && z != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(x, (double) (-this.stepHeight), z)).isEmpty()) {
-                    x = x < 0.05 && x >= -0.05 ? 0.0 : (x > 0.0 ? (x -= 0.05) : (x += 0.05));
-                    d2 = x;
-                    z = z < 0.05 && z >= -0.05 ? 0.0 : (z > 0.0 ? (z -= 0.05) : (z += 0.05));
-                    d4 = z;
+                SneakEvent event = new SneakEvent();
+                Spark.eventBus.post(event);
+                if (!event.isCanceled()) {
+                    double d5 = 0.05;
+                    while (x != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(x, (double) (-this.stepHeight), 0.0)).isEmpty()) {
+                        x = x < 0.05 && x >= -0.05 ? 0.0 : (x > 0.0 ? (x -= 0.05) : (x += 0.05));
+                        d2 = x;
+                    }
+                    while (z != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(0.0, (double) (-this.stepHeight), z)).isEmpty()) {
+                        z = z < 0.05 && z >= -0.05 ? 0.0 : (z > 0.0 ? (z -= 0.05) : (z += 0.05));
+                        d4 = z;
+                    }
+                    while (x != 0.0 && z != 0.0 && this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().offset(x, (double) (-this.stepHeight), z)).isEmpty()) {
+                        x = x < 0.05 && x >= -0.05 ? 0.0 : (x > 0.0 ? (x -= 0.05) : (x += 0.05));
+                        d2 = x;
+                        z = z < 0.05 && z >= -0.05 ? 0.0 : (z > 0.0 ? (z -= 0.05) : (z += 0.05));
+                        d4 = z;
+                    }
                 }
             }
             List list1 = this.world.getCollisionBoxes(_this, this.getEntityBoundingBox().expand(x, y, z));

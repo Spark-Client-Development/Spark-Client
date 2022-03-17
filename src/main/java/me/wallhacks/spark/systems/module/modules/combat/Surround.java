@@ -2,15 +2,16 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
-import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
-import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
+import me.wallhacks.spark.systems.setting.settings.ColorSetting;
+import me.wallhacks.spark.systems.setting.settings.IntSetting;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.objects.FadePos;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
-import me.wallhacks.spark.util.player.itemswitcher.ItemSwitcher;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.HardSolidBlockSwitchItem;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import net.minecraft.entity.Entity;
@@ -23,10 +24,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
-import me.wallhacks.spark.systems.setting.settings.ColorSetting;
-import me.wallhacks.spark.systems.setting.settings.IntSetting;
-import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,32 +32,27 @@ import java.util.List;
 
 @Module.Registration(name = "Surround", description = "Steals from chests")
 public class Surround extends Module {
-    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,8,"General");
-    BooleanSetting bottomFill = new BooleanSetting("BottomFill",this,true,"General");
-    ModeSetting SnapToCenter = new ModeSetting("Center",this,"Always",Arrays.asList("Always","Off","ForPlace"),"General");
+    public static Surround instance;
+    IntSetting blocksPerTick = new IntSetting("BlocksPerTick", this, 4, 1, 8, "General");
+    BooleanSetting bottomFill = new BooleanSetting("BottomFill", this, true, "General");
+    ModeSetting SnapToCenter = new ModeSetting("Center", this, "Always", Arrays.asList("Always", "Off", "ForPlace"), "General");
     ModeSetting disable = new ModeSetting("Disable", this, "Off", Arrays.asList("Off", "Done", "OffGround"), "General");
-
-    BooleanSetting IgnoreCrystals = new BooleanSetting("IgnoreCrystals",this,true,"Crystals");
-    BooleanSetting BreakCrystals = new BooleanSetting("BreakCrystals",this,false,"Crystals");
-
-
-    BooleanSetting allowNonObi = new BooleanSetting("AllowNonObi",this,true,"ItemSwitch");
-    ModeSetting switchingMode = new ModeSetting("Switch", this, "Silent",  Arrays.asList("Normal","Silent","Const"));
-
+    BooleanSetting IgnoreCrystals = new BooleanSetting("IgnoreCrystals", this, true, "Crystals");
+    BooleanSetting BreakCrystals = new BooleanSetting("BreakCrystals", this, false, "Crystals");
+    BooleanSetting allowNonObi = new BooleanSetting("AllowNonObi", this, true, "ItemSwitch");
+    ModeSetting switchingMode = new ModeSetting("Switch", this, "Silent", Arrays.asList("Normal", "Silent", "Const"));
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DCB45E, true), "Render");
+    boolean isPlacing = true;
 
-    public static Surround instance;
-    public Surround(){
+
+    public Surround() {
         instance = this;
     }
-
 
     public boolean isPlacing() {
         return isEnabled() && isPlacing;
     }
-
-    boolean isPlacing = true;
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
@@ -72,14 +64,13 @@ public class Surround extends Module {
             disable();
             return;
         }
-        BlockPos blockUnderPlayer = PlayerUtil.getPlayerPosFloored(mc.player,0.2);
-        if(!SnapToCenter.isValueName("Off"))
-            if(!PlayerUtil.MoveCenter(blockUnderPlayer,SnapToCenter.isValueName("OnPlace")))
+        BlockPos blockUnderPlayer = PlayerUtil.getPlayerPosFloored(mc.player, 0.2);
+        if (!SnapToCenter.isValueName("Off"))
+            if (!PlayerUtil.MoveCenter(blockUnderPlayer, SnapToCenter.isValueName("OnPlace")))
                 return;
 
 
         ArrayList<BlockPos> aroundPlayer = new ArrayList<BlockPos>();
-
 
 
         List<BlockPos> occupiedByPlayer = WorldUtils.getBlocksOccupiedByBox(mc.player.boundingBox);
@@ -88,16 +79,13 @@ public class Surround extends Module {
         for (BlockPos floored : occupiedByPlayer) {
             BlockPos[] poses = new BlockPos[]{floored.add(1, 0, 0), floored.add(0, 0, 1), floored.add(-1, 0, 0), floored.add(0, 0, -1)};
             for (BlockPos p : poses)
-                if (!occupiedByPlayer.contains(p))
-                {
+                if (!occupiedByPlayer.contains(p)) {
                     aroundPlayer.add(p);
 
                 }
             for (BlockPos p : poses)
                 if (occupiedByPlayer.contains(p))
-                    aroundPlayer.add(p.add(0,-1,0));
-
-
+                    aroundPlayer.add(p.add(0, -1, 0));
 
 
         }
@@ -105,28 +93,26 @@ public class Surround extends Module {
 
         ArrayList<BlockPos> poses = new ArrayList<BlockPos>();
 
-        if(bottomFill.isOn() && mc.player.isJumping)
-        {
-            if (!poses.contains(blockUnderPlayer.add(0,-1,0)))
-                poses.add(blockUnderPlayer.add(0,-1,0));
+        if (bottomFill.isOn() && mc.player.isJumping) {
+            if (!poses.contains(blockUnderPlayer.add(0, -1, 0)))
+                poses.add(blockUnderPlayer.add(0, -1, 0));
         }
 
 
-        for(BlockPos p : aroundPlayer){
+        for (BlockPos p : aroundPlayer) {
             if (!poses.contains(p))
                 poses.add(p);
         }
 
-        if(bottomFill.isOn() && !mc.player.isJumping) {
-            if (!poses.contains(blockUnderPlayer.add(0,-1,0)))
-                poses.add(blockUnderPlayer.add(0,-1,0));
+        if (bottomFill.isOn() && !mc.player.isJumping) {
+            if (!poses.contains(blockUnderPlayer.add(0, -1, 0)))
+                poses.add(blockUnderPlayer.add(0, -1, 0));
         }
 
         int placed = 0;
         boolean done = true;
-        for(BlockPos x : poses){
-            if(mc.world.getBlockState(x).getBlock().material.isReplaceable())
-            {
+        for (BlockPos x : poses) {
+            if (mc.world.getBlockState(x).getBlock().material.isReplaceable()) {
                 BlockPos p = getBlockPosToPlaceAtBlock(x);
                 if (p != null) {
 
@@ -134,18 +120,17 @@ public class Surround extends Module {
                     BlockInteractUtil.BlockPlaceResult res = Place(p);
                     if (p.equals(PacketMine.instance.pos)) PacketMine.instance.pos = null;
 
-                    if(res != BlockInteractUtil.BlockPlaceResult.FAILED)
+                    if (res != BlockInteractUtil.BlockPlaceResult.FAILED)
                         isPlacing = true;
 
-                    if(res == BlockInteractUtil.BlockPlaceResult.PLACED) {
+                    if (res == BlockInteractUtil.BlockPlaceResult.PLACED) {
                         if (render.getValue())
                             new FadePos(p, fill, true);
                         placed++;
-                    }
-                    else if(res == BlockInteractUtil.BlockPlaceResult.WAIT)
+                    } else if (res == BlockInteractUtil.BlockPlaceResult.WAIT)
                         return;
 
-                    if(placed >= blocksPerTick.getValue())
+                    if (placed >= blocksPerTick.getValue())
                         return;
                 }
             }
@@ -155,24 +140,22 @@ public class Surround extends Module {
     }
 
 
-
-    BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
+    BlockInteractUtil.BlockPlaceResult Place(BlockPos x) {
 
         ArrayList<EntityEnderCrystal> crystals = new ArrayList<EntityEnderCrystal>();
         boolean isblocked = false;
         List<Entity> l = mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(x));
-        for(Entity e : l){
-            if(!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead) {
+        for (Entity e : l) {
+            if (!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead) {
                 isblocked = true;
-                if(e instanceof EntityEnderCrystal && (IgnoreCrystals.isOn() || BreakCrystals.isOn())) {
-                    crystals.add((EntityEnderCrystal)e);
-                }
-                else
+                if (e instanceof EntityEnderCrystal && (IgnoreCrystals.isOn() || BreakCrystals.isOn())) {
+                    crystals.add((EntityEnderCrystal) e);
+                } else
                     return BlockInteractUtil.BlockPlaceResult.FAILED;
             }
         }
 
-        if(BreakCrystals.isOn())
+        if (BreakCrystals.isOn())
             for (EntityEnderCrystal entity : crystals) {
                 mc.player.connection.sendPacket(new CPacketUseEntity(entity));
                 mc.player.swingArm(EnumHand.MAIN_HAND);
@@ -180,10 +163,7 @@ public class Surround extends Module {
             }
 
 
-
-
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN), Spark.switchManager.getModeFromString(switchingMode.getValue()), false));
-
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x, allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN), Spark.switchManager.getModeFromString(switchingMode.getValue()), false, false));
 
 
         return res;
@@ -193,10 +173,10 @@ public class Surround extends Module {
 
 
     BlockPos getBlockPosToPlaceAtBlock(BlockPos pos) {
-        if(canPlace(pos))
+        if (canPlace(pos))
             return pos;
-        for (BlockPos x : new BlockPos[]{pos.add(0,-1,0),pos.add(0,0,1),pos.add(0,0,-1),pos.add(1,0,0),pos.add(-1,0,0)}) {
-            if(canPlace(x))
+        for (BlockPos x : new BlockPos[]{pos.add(0, -1, 0), pos.add(0, 0, 1), pos.add(0, 0, -1), pos.add(1, 0, 0), pos.add(-1, 0, 0)}) {
+            if (canPlace(x))
                 return x;
         }
         return null;
@@ -204,18 +184,15 @@ public class Surround extends Module {
 
     boolean canPlace(BlockPos p) {
         List<Entity> l = mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(p));
-        for(Entity e : l){
-            if(!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead)
-            {
-                if(e instanceof EntityEnderCrystal && (IgnoreCrystals.isOn() || BreakCrystals.isOn()))
-                {
+        for (Entity e : l) {
+            if (!(e instanceof EntityItem) && !(e instanceof EntityXPOrb) && !e.isDead) {
+                if (e instanceof EntityEnderCrystal && (IgnoreCrystals.isOn() || BreakCrystals.isOn())) {
 
-                }
-                else
+                } else
                     return false;
             }
         }
-        return BlockInteractUtil.canPlaceBlockAtPos(p,false);
+        return BlockInteractUtil.canPlaceBlockAtPos(p, false);
 
     }
 

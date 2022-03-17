@@ -182,7 +182,7 @@ public class CevBreaker extends Module {
 
 
     BlockInteractUtil.BlockPlaceResult place(BlockPos p) {
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p,new SpecBlockSwitchItem(Blocks.OBSIDIAN),Spark.switchManager.getModeFromString(switchingMode.getValue()),true));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(p,new SpecBlockSwitchItem(Blocks.OBSIDIAN),Spark.switchManager.getModeFromString(switchingMode.getValue()), false,true));
         if(res == BlockInteractUtil.BlockPlaceResult.PLACED)
             if (render.getValue())
                 new FadePos(p, fill,true);

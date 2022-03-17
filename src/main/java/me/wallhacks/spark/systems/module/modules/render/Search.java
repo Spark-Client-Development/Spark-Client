@@ -68,8 +68,8 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
                     GL11.glEnd();
                 }
             }
-            GL11.glBegin(GL11.GL_QUADS);
             if (!found.containsKey(c) || found.get(c) == null) return;
+            GL11.glBegin(GL11.GL_QUADS);
             for (SearchBlock block : found.get(c)) {
                 ColorUtil.glColor(new Color(block.color.getRed(), block.color.getGreen(), block.color.getBlue(), 120));
                 int i = 0;
