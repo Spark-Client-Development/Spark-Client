@@ -92,7 +92,7 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
         int x = (hole.neighbour == null ? 0 : hole.neighbour.getXOffset());
         int z = (hole.neighbour == null ? 0 : hole.neighbour.getZOffset());
 
-        AxisAlignedBB box = new AxisAlignedBB(hole.getX()+(x<0?x:0), hole.getY(), hole.getZ()+(z<0?z:0), hole.getX() + 1 + (x>0?x:0), hole.getY() + height.getValue(), hole.getZ() + 1 + (x>0?x:0));
+        AxisAlignedBB box = new AxisAlignedBB(hole.getX()+(Math.min(x, 0)), hole.getY(), hole.getZ()+(Math.min(z, 0)), hole.getX() + 1 + (Math.max(x, 0)), hole.getY() + height.getValue(), hole.getZ() + 1 + (Math.max(z, 0)));
 
 
 

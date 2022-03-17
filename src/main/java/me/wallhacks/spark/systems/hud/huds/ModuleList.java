@@ -16,7 +16,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-@HudElement.Registration(name = "ModuleList", description = "List of modules", posX = 1, posY = 0, width = 40, height = 100, enabled = true, drawBackground = false)
+@HudElement.Registration(name = "ModuleList", description = "List of modules", posX = 1, posY = 0, width = 40, height = 100, enabled = true)
 public class ModuleList extends AlignedHudElement {
     ModeSetting sort = new ModeSetting("Sorting",this,"Length",Arrays.asList("Length","CharLength","Name"));
     ModeSetting mode = new ModeSetting("Mode", this, "Rainbow", Arrays.asList("AlphaStep", "Rainbow", "Normal", "Module"),"Color");

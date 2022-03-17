@@ -123,6 +123,8 @@ public class TargetHud extends HudElement {
             setBackGround(false);
     }
 
+
+
     protected void drawPing(int x, int y, int ping) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(GuiPlayerTabOverlay.ICONS);

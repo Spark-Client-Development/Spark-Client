@@ -25,6 +25,7 @@ public class CommandManager {
 		new NoteBotCommand();
 		new DamageCommand();
 		new SeedCommand();
+		new FontCommand();
 	}
 
 	public static ChatFormatting ErrorColor = ChatFormatting.RED;

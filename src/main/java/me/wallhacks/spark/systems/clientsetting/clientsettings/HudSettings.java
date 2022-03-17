@@ -1,6 +1,7 @@
 package me.wallhacks.spark.systems.clientsetting.clientsettings;
 
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 
 import java.awt.*;
@@ -14,18 +15,26 @@ public class HudSettings extends ClientSetting {
         INSTANCE = this;
     }
 
-    ColorSetting hudMainColor = new ColorSetting("MainColor",this, new Color(137, 80, 80,255),"Hud");
-    ColorSetting hudSecondColor = new ColorSetting("SecondColor",this, new Color(150,150,150,255),"Hud");
-    ColorSetting hudBackgroundColor = new ColorSetting("BackgroundColor",this, new Color(20,20,30,180),"Hud");
+    ColorSetting hudMainColor = new ColorSetting("GuiColor",this, new Color(137, 80, 80,255),"Hud");
+    BooleanSetting infoBackGrounds = new BooleanSetting("InfoBackgrounds",this,true,"Hud");
+
+
+    Color hudSecondColor = new Color(150,150,150,255);
+    Color hudBackgroundColor = new Color(20,20,30,180);
 
     public Color getGuiHudMainColor() {
         return hudMainColor.getColor();
     }
     public Color getGuiHudSecondColor() {
-        return hudSecondColor.getColor();
+        return hudSecondColor;
     }
+
+    public boolean getInfoBackGrounds() {
+        return infoBackGrounds.isOn();
+    }
+
     public Color getGuiHudListBackgroundColor() {
-        return hudBackgroundColor.getColor();
+        return hudBackgroundColor;
     }
 
 

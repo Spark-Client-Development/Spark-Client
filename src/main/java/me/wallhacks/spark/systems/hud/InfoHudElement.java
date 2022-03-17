@@ -2,11 +2,18 @@ package me.wallhacks.spark.systems.hud;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import net.minecraft.client.gui.Gui;
 
 public class InfoHudElement extends HudElement {
+
+
+
+
     String info;
     public void drawInfo() {
+        setBackGround(HudSettings.INSTANCE.getInfoBackGrounds());
+
         setHeight(fontManager.getTextHeight() + 2);
         setWidth(fontManager.getTextWidth(info) + 3);
         Spark.fontManager.drawString(info, getRenderPosX() + (alignLeft() ? 1 : 2), getRenderPosY() + 2, -1);

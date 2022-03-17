@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-@HudElement.Registration(name = "CombatResources", description = "Shows your coords", posY = 0.4, posX = 0.2, height = 0, width = 0, drawBackground = false)
+@HudElement.Registration(name = "CombatResources", description = "Shows your coords", posY = 0.4, posX = 0.2, height = 0, width = 0)
 public class CombatRecourses extends AlignedHudElement {
     BooleanSetting exp = new BooleanSetting("EXP", this, true);
     BooleanSetting totems = new BooleanSetting("Totems", this, true);

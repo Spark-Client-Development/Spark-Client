@@ -18,6 +18,10 @@ public class FontManager implements MC {
     private GameFontRenderer largeFont = new GameFontRenderer(new Font(fontName, Font.PLAIN, 27), true, false);
     private GameFontRenderer badaboom = new GameFontRenderer(getClientFont("badaboom.ttf", 27), true, false);
 
+    public String[] getFonts() {
+        return fonts;
+    }
+
     public void setFont() {
         this.font = new GameFontRenderer(new Font(fontName, Font.PLAIN, fontSize), true, false);
         this.largeFont = new GameFontRenderer(new Font(fontName, Font.PLAIN, 27), true, false);

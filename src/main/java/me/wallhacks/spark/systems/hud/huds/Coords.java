@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@HudElement.Registration(name = "Coords", description = "Shows your coords", posY = 0.9, posX = 0, height = 0, width = 0, drawBackground = false)
+@HudElement.Registration(name = "Coords", description = "Shows your coords", posY = 0.9, posX = 0, height = 0, width = 0)
 public class Coords extends AlignedHudElement {
     ModeSetting mode = new ModeSetting("Mode", this, "Horizontal", Arrays.asList("Horizontal", "List"));
     BooleanSetting y = new BooleanSetting("Y", this, false);

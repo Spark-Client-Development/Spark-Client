@@ -1,6 +1,8 @@
 package me.wallhacks.spark.systems.hud;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
+import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.util.objects.Pair;
 import net.minecraft.client.gui.Gui;
 
@@ -9,7 +11,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+
 public abstract class AlignedHudElement extends HudElement {
+
+    public AlignedHudElement() {
+        setBackGround(false);
+    }
+
 
     protected int getBackgroundColor() {
         return hudSettings.getGuiHudListBackgroundColor().getRGB();
@@ -43,7 +51,8 @@ public abstract class AlignedHudElement extends HudElement {
             int y = startY + h;
             int x = startX + (alignLeft() ? 0 : -widthstring);
 
-            Gui.drawRect(x, y, x + widthstring + 2, y + fontManager.getTextHeight() + 2, getBackgroundColor());
+            if(HudSettings.getInstance().getInfoBackGrounds())
+                Gui.drawRect(x, y, x + widthstring + 2, y + fontManager.getTextHeight() + 2, getBackgroundColor());
             if (!alignLeft())
                 Gui.drawRect(x - 1, y, x, y + fontManager.getTextHeight() + 2, pair.getValue());
             else

@@ -312,8 +312,8 @@ public class HudElement extends SettingsHolder implements MC {
         GlStateManager.enableAlpha();
         float deltaTime = (System.nanoTime() - Time) / 1000000f;
         GlStateManager.color(1f, 1f, 1f, 1f);
-        if (isInHudEditor())
-            Gui.drawRect(getRenderPosX(), getRenderPosY(), getEndRenderPosX(), getEndRenderPosY(), !isSelectedInHudEditor() ? hudSettings.getGuiHudListBackgroundColor().getRGB() : new Color(47, 47, 47, 160).getRGB());
+        if (isInHudEditor() && isSelectedInHudEditor())
+            Gui.drawRect(getRenderPosX(), getRenderPosY(), getEndRenderPosX(), getEndRenderPosY(), hudSettings.getGuiHudListBackgroundColor().getRGB());
         else if (shouldDrawBackground()) {
             Gui.drawRect(getRenderPosX(), getRenderPosY(), getEndRenderPosX(), getEndRenderPosY(), hudSettings.getGuiHudListBackgroundColor().getRGB());
         }
