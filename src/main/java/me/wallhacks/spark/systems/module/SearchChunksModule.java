@@ -88,6 +88,8 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
         found.get(c).add(add);
     }
     protected void removeFound(BlockPos remove) {
+        if(remove == null)
+            return;
         Chunk c = mc.world.getChunk(remove);
 
         if(found.containsKey(c) && found.get(c).contains(remove))

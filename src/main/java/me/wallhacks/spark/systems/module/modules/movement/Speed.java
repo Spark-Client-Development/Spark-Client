@@ -46,7 +46,7 @@ public class Speed extends Module {
     private double boost = 0;
     private int boostTick;
     private boolean flag;
-
+    
     @SubscribeEvent
     public void onUpdate(PlayerPreUpdateEvent event) {
         boostTick++;
@@ -258,6 +258,8 @@ public class Speed extends Module {
         prevMotion = 0;
         offGroundTicks = 0;
         state = mode.is("OnGround") ? 2 : 4;
+        speed = 0;
+        boost = 0;
     }
 
     private double getBaseMotionSpeed() {
@@ -297,7 +299,7 @@ public class Speed extends Module {
         if (!BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().isPathing()) return true;
         IPathExecutor executor = BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().getCurrent();
         int currentPostion = executor.getPosition();
-        Class f = null;
+        Class<? extends IMovement> f = null;
         if (executor.getPath().movements().isEmpty()) return true;
         for (int i = 0; i < Math.min(2, executor.getPath().movements().size() - currentPostion - 1); i++) {
             IMovement movement = executor.getPath().movements().get(currentPostion + i);

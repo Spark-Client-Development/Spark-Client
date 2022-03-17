@@ -54,8 +54,9 @@ public class PlayerUtil implements MC {
     }
 
 
-
-
+    public static boolean isInLiquid() {
+    	return mc.world.getBlockState(new BlockPos(mc.player.getPositionVector())).getBlock() instanceof BlockLiquid;
+    }
 
 
 

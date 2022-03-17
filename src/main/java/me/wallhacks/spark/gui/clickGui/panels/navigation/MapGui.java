@@ -3,6 +3,7 @@ package me.wallhacks.spark.gui.clickGui.panels.navigation;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
+import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.maps.SparkMap;
@@ -140,7 +141,7 @@ public class MapGui extends GuiPanelBase {
 
             SparkMap map = Spark.mapManager.getMap(SparkMap.getMapPosFromWorldPos(pos.x,pos.y),dim);
             for (Pair<Vec2i, MCStructures> i : map.structures) {
-                if(MathUtil.getDistanceFromTo(i.getKey(),new Vec2i(pos.x/16,pos.y/16)) < 6)
+                if(MathUtil.getDistanceFromTo(i.getKey(),new Vec2i(pos.x/16,pos.y/16)) < 6 && MapConfig.getInstance().StructureList.contains(i.getValue()))
                 {
                     mapGuiSubMenu.inputField.setText(i.getValue().name());
                     break;

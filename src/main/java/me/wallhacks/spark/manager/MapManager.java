@@ -76,8 +76,6 @@ public class MapManager implements MC {
 
     }
 
-
-
     @SubscribeEvent
     public void worldLoadEvent(WorldLoadEvent event) {
 

@@ -1,22 +1,16 @@
 package me.wallhacks.spark.gui.clickGui.panels.navigation;
 
 import baritone.api.BaritoneAPI;
-import baritone.api.cache.IWaypoint;
-import baritone.api.cache.Waypoint;
-import baritone.api.command.datatypes.ForWaypoints;
 import baritone.api.pathing.goals.GoalXZ;
-import baritone.api.utils.BetterBlockPos;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.gui.panels.GuiPanelButton;
 import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.maps.SparkMap;
 import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import me.wallhacks.spark.util.render.MapRender;
 import me.wallhacks.spark.util.render.RenderUtil;
-import net.minecraft.client.renderer.entity.Render;
 
 public class MapGuiSubMenu extends GuiPanelBase {
 
@@ -29,7 +23,13 @@ public class MapGuiSubMenu extends GuiPanelBase {
     GuiPanelButton gotoButton = new GuiPanelButton(() -> {
         Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(mapGui.zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,mapGui.dim),posX-mapGui.offsetX,posY-mapGui.offsetY,mapGui.posX+mapGui.width/2,mapGui.posY+mapGui.height/2);
 
-        BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x,pos.y));
+        if(mapGui.dim == 0 && mc.player.dimension == -1) {
+        	BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x/8,pos.y/8));
+        } else if(mapGui.dim == -1 && mc.player.dimension == 0) {
+        	BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x*8,pos.y*8));
+        } else {
+        	BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x,pos.y));
+        }
 
         //close gui
         mc.displayGuiScreen(null);

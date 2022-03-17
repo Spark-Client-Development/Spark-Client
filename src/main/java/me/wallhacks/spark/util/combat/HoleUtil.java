@@ -3,6 +3,7 @@ package me.wallhacks.spark.util.combat;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.WorldUtils;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,87 +23,88 @@ public class HoleUtil implements MC {
         return mc.player.dimension == -1 ? (blockPos.getY() == 0 || blockPos.getY() == 127) && getBlockResistance(blockPos) == BlockResistance.Blank : blockPos.getY() == 0 && getBlockResistance(blockPos) == BlockResistance.Blank;
     }
 
-    public static List<Hole> getHoles(float range) {
-        List<Hole> holes = new ArrayList<>();
 
-        for (BlockPos pos : WorldUtils.getSphere(mc.player.getPosition(), range, (int) range, 1)) {
-            if (isObsidianHole(pos))
-                holes.add(new Hole(Type.Obsidian, Facing.None, pos));
+    public static int isDoubleHole(BlockPos blockPos, EnumFacing enumFacing) {
+        if (getBlockResistance(blockPos.add(enumFacing.getDirectionVec())) != BlockResistance.Blank || getBlockResistance(blockPos.add(enumFacing.getDirectionVec()).add(0,1,0)) != BlockResistance.Blank
+            || getBlockResistance(blockPos) != BlockResistance.Blank || getBlockResistance(blockPos.add(0,1,0)) != BlockResistance.Blank)
+            return -1;
 
-            if (isBedRockHole(pos))
-                holes.add(new Hole(Type.Bedrock, Facing.None, pos));
-        }
+        int bedrock = 0;
 
-        return holes;
-    }
+        BlockResistance resistance = getBlockResistance(blockPos.add(0, -1, 0));
+        if(resistance == BlockResistance.Unbreakable)
+            bedrock++;
+        else if(resistance != BlockResistance.Resistant)
+            return -1;
 
-    public static boolean isDoubleBedrockHoleX(BlockPos blockPos) {
-        if (!mc.world.getBlockState(blockPos).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(1, 0, 0)).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 1, 0)).getBlock().equals(Blocks.AIR) && !mc.world.getBlockState(blockPos.add(1, 1, 0)).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 2, 0)).getBlock().equals(Blocks.AIR) && !mc.world.getBlockState(blockPos.add(1, 2, 0)).getBlock().equals(Blocks.AIR))
-            return false;
+        resistance = getBlockResistance(blockPos.add(enumFacing.getDirectionVec()).add(0, -1, 0));
+        if(resistance == BlockResistance.Unbreakable)
+            bedrock++;
+        else if(resistance != BlockResistance.Resistant)
+            return -1;
 
-        for (BlockPos blockPos2 : new BlockPos[]{blockPos.add(2, 0, 0), blockPos.add(1, 0, 1), blockPos.add(1, 0, -1), blockPos.add(-1, 0, 0), blockPos.add(0, 0, 1), blockPos.add(0, 0, -1), blockPos.add(0, -1, 0), blockPos.add(1, -1, 0)}) {
-            IBlockState iBlockState = mc.world.getBlockState(blockPos2);
-
-            if (iBlockState.getBlock() != Blocks.AIR && (iBlockState.getBlock() == Blocks.BEDROCK))
+        for (BlockPos blockPos2 : WorldUtils.getSurroundBlocks(blockPos)) {
+            if(blockPos2.equals(blockPos.add(enumFacing.getDirectionVec())))
                 continue;
 
-            return false;
+            resistance = getBlockResistance(blockPos2);
+            if(resistance == BlockResistance.Unbreakable)
+                bedrock++;
+            else if(resistance != BlockResistance.Resistant)
+                return -1;
         }
 
-        return true;
-    }
-
-    public static boolean isDoubleBedrockHoleZ(BlockPos blockPos) {
-        if (!mc.world.getBlockState(blockPos).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 0, 1)).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 1, 0)).getBlock().equals(Blocks.AIR) && !mc.world.getBlockState(blockPos.add(0, 1, 1)).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 2, 0)).getBlock().equals(Blocks.AIR) && !mc.world.getBlockState(blockPos.add(0, 2, 1)).getBlock().equals(Blocks.AIR))
-            return false;
-
-        for (BlockPos blockPos2 : new BlockPos[]{blockPos.add(0, 0, 2), blockPos.add(1, 0, 1), blockPos.add(-1, 0, 1), blockPos.add(0, 0, -1), blockPos.add(1, 0, 0), blockPos.add(-1, 0, 0), blockPos.add(0, -1, 0), blockPos.add(0, -1, 1)}) {
-            IBlockState iBlockState = mc.world.getBlockState(blockPos2);
-
-            if (iBlockState.getBlock() != Blocks.AIR && (iBlockState.getBlock() == Blocks.BEDROCK))
+        for (BlockPos blockPos2 : WorldUtils.getSurroundBlocks(blockPos.add(enumFacing.getDirectionVec()))) {
+            if(blockPos2.equals(blockPos))
                 continue;
 
-            return false;
+            resistance = getBlockResistance(blockPos2);
+            if(resistance == BlockResistance.Unbreakable)
+                bedrock++;
+            else if(resistance != BlockResistance.Resistant)
+                return -1;
         }
 
-        return true;
-    }
-
-    public static boolean isDoubleObsidianHoleX(BlockPos blockPos) {
-        if (!mc.world.getBlockState(blockPos).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(1, 0, 0)).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 1, 0)).getBlock().equals(Blocks.AIR) && !mc.world.getBlockState(blockPos.add(1, 1, 0)).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 2, 0)).getBlock().equals(Blocks.AIR) && !mc.world.getBlockState(blockPos.add(1, 2, 0)).getBlock().equals(Blocks.AIR))
-            return false;
-
-        for (BlockPos blockPos2 : new BlockPos[]{blockPos.add(2, 0, 0), blockPos.add(1, 0, 1), blockPos.add(1, 0, -1), blockPos.add(-1, 0, 0), blockPos.add(0, 0, 1), blockPos.add(0, 0, -1), blockPos.add(0, -1, 0), blockPos.add(1, -1, 0)}) {
-            if (getBlockResistance(blockPos2) == BlockResistance.Resistant || getBlockResistance(blockPos2) == BlockResistance.Unbreakable)
-                continue;
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean isDoubleObsidianHoleZ(BlockPos blockPos) {
-        if (!mc.world.getBlockState(blockPos).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 0, 1)).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 1, 0)).getBlock().equals(Blocks.AIR) && !mc.world.getBlockState(blockPos.add(0, 1, 1)).getBlock().equals(Blocks.AIR) || !mc.world.getBlockState(blockPos.add(0, 2, 0)).getBlock().equals(Blocks.AIR) && !mc.world.getBlockState(blockPos.add(0, 2, 1)).getBlock().equals(Blocks.AIR))
-            return false;
-
-        for (BlockPos blockPos2 : new BlockPos[]{blockPos.add(0, 0, 2), blockPos.add(1, 0, 1), blockPos.add(-1, 0, 1), blockPos.add(0, 0, -1), blockPos.add(1, 0, 0), blockPos.add(-1, 0, 0), blockPos.add(0, -1, 0), blockPos.add(0, -1, 1)}) {
-            if (getBlockResistance(blockPos2) == BlockResistance.Resistant || getBlockResistance(blockPos2) == BlockResistance.Unbreakable)
-                continue;
-
-            return false;
-        }
-
-        return true;
+        return bedrock;
     }
 
 
-    public static boolean isObsidianHole(BlockPos blockPos) {
-        return !(getBlockResistance(blockPos.add(0, 1, 0)) != BlockResistance.Blank || isBedRockHole(blockPos) || getBlockResistance(blockPos.add(0, 0, 0)) != BlockResistance.Blank || getBlockResistance(blockPos.add(0, 2, 0)) != BlockResistance.Blank || getBlockResistance(blockPos.add(0, 0, -1)) != BlockResistance.Resistant && getBlockResistance(blockPos.add(0, 0, -1)) != BlockResistance.Unbreakable || getBlockResistance(blockPos.add(1, 0, 0)) != BlockResistance.Resistant && getBlockResistance(blockPos.add(1, 0, 0)) != BlockResistance.Unbreakable || getBlockResistance(blockPos.add(-1, 0, 0)) != BlockResistance.Resistant && getBlockResistance(blockPos.add(-1, 0, 0)) != BlockResistance.Unbreakable || getBlockResistance(blockPos.add(0, 0, 1)) != BlockResistance.Resistant && getBlockResistance(blockPos.add(0, 0, 1)) != BlockResistance.Unbreakable || getBlockResistance(blockPos.add(0.5, 0.5, 0.5)) != BlockResistance.Blank || getBlockResistance(blockPos.add(0, -1, 0)) != BlockResistance.Resistant && getBlockResistance(blockPos.add(0, -1, 0)) != BlockResistance.Unbreakable);
-    }
+    public static int isSingleHole(BlockPos blockPos) {
+        if(getBlockResistance(blockPos) != BlockResistance.Blank || getBlockResistance(blockPos.add(0,1,0)) != BlockResistance.Blank)
+            return -1;
+        int i = 0;
 
-    public static boolean isBedRockHole(BlockPos blockPos) {
-        return getBlockResistance(blockPos.add(0, 1, 0)) == BlockResistance.Blank && getBlockResistance(blockPos.add(0, 0, 0)) == BlockResistance.Blank && getBlockResistance(blockPos.add(0, 2, 0)) == BlockResistance.Blank && getBlockResistance(blockPos.add(0, 0, -1)) == BlockResistance.Unbreakable && getBlockResistance(blockPos.add(1, 0, 0)) == BlockResistance.Unbreakable && getBlockResistance(blockPos.add(-1, 0, 0)) == BlockResistance.Unbreakable && getBlockResistance(blockPos.add(0, 0, 1)) == BlockResistance.Unbreakable && getBlockResistance(blockPos.add(0.5, 0.5, 0.5)) == BlockResistance.Blank && getBlockResistance(blockPos.add(0, -1, 0)) == BlockResistance.Unbreakable;
+        BlockResistance resistance = getBlockResistance(blockPos.add(0, -1, 0));
+        if(resistance == BlockResistance.Unbreakable)
+            i++;
+        else if(resistance != BlockResistance.Resistant)
+            return -1;
+
+        resistance = getBlockResistance(blockPos.add(0, 0, 1));
+        if(resistance == BlockResistance.Unbreakable)
+            i++;
+        else if(resistance != BlockResistance.Resistant)
+            return -1;
+
+        resistance = getBlockResistance(blockPos.add(1, 0, 0));
+        if(resistance == BlockResistance.Unbreakable)
+            i++;
+        else if(resistance != BlockResistance.Resistant)
+            return -1;
+
+        resistance = getBlockResistance(blockPos.add(-1, 0, 0));
+        if(resistance == BlockResistance.Unbreakable)
+            i++;
+        else if(resistance != BlockResistance.Resistant)
+            return -1;
+
+        resistance = getBlockResistance(blockPos.add(0, 0, -1));
+        if(resistance == BlockResistance.Unbreakable)
+            i++;
+        else if(resistance != BlockResistance.Resistant)
+            return -1;
+
+        return i;
     }
 
     public static boolean isHole(BlockPos blockPos) {

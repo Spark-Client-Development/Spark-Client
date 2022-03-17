@@ -28,6 +28,7 @@ public class XBLToken {
                 throw new IllegalArgumentException("authXBL response: " + request.response());
             token = gson.fromJson(request.body(), JsonObject.class).get("Token").getAsString();
         } catch (IOException e) {
+        	e.printStackTrace();
             throw  new AuthException("Failed generating XBLToken");
         }
     }

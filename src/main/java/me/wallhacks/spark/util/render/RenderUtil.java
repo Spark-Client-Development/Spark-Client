@@ -4,6 +4,7 @@ import me.wallhacks.spark.util.MC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -27,6 +28,73 @@ public class RenderUtil implements MC {
             scaleDistance = 1.0f;
         }
         GlStateManager.scale(scaleDistance, scaleDistance, scaleDistance);
+    }
+
+
+    public static void drawSkyBox(Color up,Color down) {
+
+        GlStateManager.disableFog();
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableLighting();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+
+
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.depthMask(false);
+
+
+        for(int k1 = 0; k1 < 4; ++k1) {
+            GlStateManager.pushMatrix();
+
+            GlStateManager.rotate(90.0F*k1, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+
+            RenderUtil.drawSkyQuad(down, down,up, up);
+
+
+            GlStateManager.popMatrix();
+
+        }
+
+
+        GlStateManager.pushMatrix();
+
+        RenderUtil.drawSkyQuad(up, up, up, up);
+        GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+        RenderUtil.drawSkyQuad(down, down, down, down);
+        GlStateManager.popMatrix();
+
+
+
+
+        GL11.glColor3f(1f, 1f, 1f);
+        GlStateManager.enableLighting();
+        GlStateManager.enableTexture2D();
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableAlpha();
+
+    }
+
+
+    public static void drawSkyQuad(Color color0,Color color1,Color color2,Color color3) {
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glColor3f(color0.getRed() / 255f, color0.getGreen() / 255f, color0.getBlue() / 255f);
+        GL11.glVertex3d(-100.0D, 100, 100.0D);
+        GL11.glColor3f(color1.getRed() / 255f, color1.getGreen() / 255f, color1.getBlue() / 255f);
+        GL11.glVertex3d(-100.0D, 100, -100.0D);
+        GL11.glColor3f(color2.getRed() / 255f, color2.getGreen() / 255f, color2.getBlue() / 255f);
+        GL11.glVertex3d(100.0D, 100, -100.0D);
+        GL11.glColor3f(color3.getRed() / 255f, color3.getGreen() / 255f, color3.getBlue() / 255f);
+        GL11.glVertex3d(100.0D, 100, 100.0D);
+        GL11.glEnd();
+
     }
 
     public static float getRenderDistance (BlockPos block){
