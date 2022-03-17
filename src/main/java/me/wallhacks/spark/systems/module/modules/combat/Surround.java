@@ -2,6 +2,7 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
+import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
@@ -14,6 +15,7 @@ import me.wallhacks.spark.util.player.BlockInteractUtil;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.HardSolidBlockSwitchItem;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
+import net.java.games.input.Keyboard;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityItem;
@@ -45,6 +47,13 @@ public class Surround extends Module {
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DCB45E, true), "Render");
     boolean isPlacing = true;
 
+
+    @SubscribeEvent
+    public void onSneakEvent(SneakEvent event) {
+        if (isEnabled() && getBind() == mc.gameSettings.keyBindSneak.keyCode) {
+            event.setCanceled(true);
+        }
+    }
 
     public Surround() {
         instance = this;

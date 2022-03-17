@@ -22,19 +22,22 @@ import java.util.Arrays;
 @Module.Registration(name = "Scaffold", description = "Steals from chests")
 public class Scaffold extends Module {
 
-    IntSetting Extended = new IntSetting("Extended",this,2,0,4,"General");
+
+    BooleanSetting Strict = new BooleanSetting("Strict",this,false,"General");
+
+    IntSetting Extended = new IntSetting("Extended",this,2,0,4,v -> Strict.isOn(),"General");
 
 
 
     BooleanSetting Tower = new BooleanSetting("FastTower",this,true,"General");
     IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> Tower.isOn(),"General");
-    BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,"General");
+    BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,v -> Tower.isOn(),"General");
     BooleanSetting down = new BooleanSetting("Downwards",this,false,"General");
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC5E, true), "Render");
 
 
-    ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal",  Arrays.asList("Normal","Silent","Const"));
+    ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes);
 
 
     Timer scaffoldPauseTimer = new Timer();
@@ -65,6 +68,17 @@ public class Scaffold extends Module {
             final Block floor = mc.world.getBlockState(floorPos).getBlock();
 
             if (floor.material.isReplaceable()) {
+
+                if(Strict.isOn())
+                {
+                    if(mc.player.onGround && !mc.gameSettings.keyBindJump.isKeyDown())
+                    {
+                        if(getDisToEdge() < 0.2)
+                            return;
+                    }
+
+                }
+
                 BlockInteractUtil.BlockPlaceResult res = Place(floorPos);
 
                 if(res == BlockInteractUtil.BlockPlaceResult.FAILED)
@@ -129,6 +143,8 @@ public class Scaffold extends Module {
         if(doTowerCenter())
             return;
 
+        if(Strict.isOn())
+            return;
 
         //extended
         int x = (int) Math.round(Math.max(-1,Math.min(1, (mc.player.posX - lastPosX)*20)));
@@ -169,7 +185,7 @@ public class Scaffold extends Module {
             }
         }
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new SolidBlockSwitchItem(), true, true));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new SolidBlockSwitchItem(),Spark.switchManager.getModeFromString(switchingMode.getValue()), true, true));
 
 
 
