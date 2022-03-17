@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.player.PlayerUtil;
@@ -18,12 +19,14 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 

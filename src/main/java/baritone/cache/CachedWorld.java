@@ -92,7 +92,7 @@ public final class CachedWorld implements ICachedWorld, Helper {
                     // saving every 10 minutes means that once it's time to exit
                     // we'll only have a couple regions to save
                     save();
-                    Thread.sleep(600000);
+                    Thread.sleep(60000);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

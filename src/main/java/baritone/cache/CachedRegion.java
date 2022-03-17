@@ -20,6 +20,7 @@ package baritone.cache;
 import baritone.Baritone;
 import baritone.api.cache.ICachedRegion;
 import baritone.api.utils.BlockUtils;
+import me.wallhacks.spark.Spark;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 
@@ -305,6 +306,7 @@ public final class CachedRegion implements ICachedRegion {
     }
 
     public synchronized final void removeExpired() {
+        System.out.println("Removing chunks at" + x + " " + z);
         long expiry = Baritone.settings().cachedChunksExpirySeconds.getValue();
         if (expiry < 0) {
             return;

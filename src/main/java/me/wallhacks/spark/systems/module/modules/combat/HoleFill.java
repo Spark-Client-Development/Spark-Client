@@ -152,7 +152,7 @@ public class HoleFill extends Module {
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){
 
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(), Spark.switchManager.getModeFromString(switchingMode.getValue()),false));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new HardSolidBlockSwitchItem(), Spark.switchManager.getModeFromString(switchingMode.getValue()),false, true));
 
 
         return res;

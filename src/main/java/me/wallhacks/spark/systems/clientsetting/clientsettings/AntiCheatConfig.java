@@ -28,7 +28,7 @@ public class AntiCheatConfig extends ClientSetting {
     public DoubleSetting placeWallRange = new DoubleSetting("WallRange",this,0,0,5,0.25,"Placing");
     public BooleanSetting placeStrict = new BooleanSetting("NeedsToSeeFace",this,false,"Placing");
     public ModeSetting placeSwing = new ModeSetting("Swing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Placing");
-    public ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal",  Arrays.asList("Normal","Silent","Const"),"Blocks");
+    public ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes,"Placing");
     public BooleanSetting placeRotate = new BooleanSetting("Rotate",this,true,"Placing");
     public BooleanSetting raytrace = new BooleanSetting("RaytraceBypass", this, false, "Placing");
 

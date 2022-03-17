@@ -66,6 +66,7 @@ public class CrystalRender extends Module {
                 GlStateManager.enableTexture2D();
             if (lighting.getValue())
                 GlStateManager.enableLighting();
+            GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
             GlStateManager.popAttrib();
