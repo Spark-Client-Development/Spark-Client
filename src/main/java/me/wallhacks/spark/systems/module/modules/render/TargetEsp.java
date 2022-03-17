@@ -30,7 +30,6 @@ public class TargetEsp extends Module {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onUpdateEvent(PlayerUpdateEvent event) {
         if (isValid(CrystalAura.instance.getTarget())) {
-            Spark.sendInfo("TEST");
             target = CrystalAura.instance.getTarget();
             alphaMultiplier = 0;
             fade = true;
