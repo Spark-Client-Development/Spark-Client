@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 public enum MCStructures {
     Village (new ResourceLocation("textures/icons/structures/village.png"), 7),
     EndCity (new ResourceLocation("textures/icons/structures/endcity.png"), 8),
-    Mansion (new ResourceLocation("textures/icons/structures/mansion.png"), 15),
+    Mansion (new ResourceLocation("textures/icons/structures/mansion.png"), 17),
     Mineshaft (new ResourceLocation("textures/icons/structures/mineshaft.png"), 5),
     Stronghold (new ResourceLocation("textures/icons/structures/stronghold.png"), 18),
     OceanMonument (new ResourceLocation("textures/icons/structures/oceanmonument.png"), 6),

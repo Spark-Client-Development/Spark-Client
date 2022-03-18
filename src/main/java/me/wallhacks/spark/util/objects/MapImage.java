@@ -10,7 +10,7 @@ public class MapImage {
 
 
 
-    public static int lods = 2;
+    public static int lods = 1;
     public static int size = 512;
 
     final ResourceLocation[] resourceLocation;

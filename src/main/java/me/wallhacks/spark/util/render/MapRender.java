@@ -110,7 +110,7 @@ public class MapRender implements MC {
             GL11.glPushMatrix();
             GlStateManager.translate(x, y, 0);
 
-            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),structures.getSize()*0.1);
+            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),0.6);
 
             if(hovered)
                 s*=1.3;
