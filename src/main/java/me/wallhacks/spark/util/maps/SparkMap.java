@@ -24,9 +24,9 @@ public class SparkMap {
     public boolean isEmpty() {
         return image == null;
     }
-    public ResourceLocation getResourceLocation(int lod)
+    public ResourceLocation getResourceLocation()
     {
-        return image.getResourceLocation(lod);
+        return image.getResourceLocation();
     }
 
     public BufferedImage getBufferedImage() {

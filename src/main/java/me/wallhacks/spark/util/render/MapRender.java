@@ -54,9 +54,7 @@ public class MapRender implements MC {
         Vec2i WholeMapEndPos = SparkMap.getMapPosFrom2dMapPos(centerX + ImageScaleX, centerY + ImageScaleY, ImageScale);
 
 
-        int lod = MapImage.lods-(int)MathHelper.clamp((
-                ImageScale*MapImage.lods*6/MapImage.size
-        ),1, MapImage.lods);
+
 
         ArrayList<Pair<Vec2i,MCStructures>> structuresHashMap = new ArrayList<Pair<Vec2i, MCStructures>>();
 
@@ -71,7 +69,7 @@ public class MapRender implements MC {
 
                 if(!map.isEmpty())
                 {
-                    ResourceLocation location = map.getResourceLocation(lod);
+                    ResourceLocation location = map.getResourceLocation();
 
                     if(location != null)
                     {

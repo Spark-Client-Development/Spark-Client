@@ -13,69 +13,44 @@ public class MapImage {
     public static int lods = 1;
     public static int size = 512;
 
-    final ResourceLocation[] resourceLocation;
-    final DynamicTexture[] mapTextures;
-    final BufferedImage[] bufferedImages;
+    ResourceLocation resourceLocation;
+    DynamicTexture mapTextures;
+    BufferedImage bufferedImages;
 
     public MapImage() {
-        mapTextures = new DynamicTexture[lods];
-        bufferedImages = new BufferedImage[lods];
-        resourceLocation = new ResourceLocation[lods];
 
-        for (int i = 0; i < bufferedImages.length; i++)
-        {
-            int scale = i == 0 ? 1 : i * 4;
-            bufferedImages[i] = new BufferedImage(size/scale, size/scale, BufferedImage.TYPE_4BYTE_ABGR);
-        }
+
+        bufferedImages = new BufferedImage(size, size, BufferedImage.TYPE_4BYTE_ABGR);
+
     }
 
 
 
-    public ResourceLocation getResourceLocation(int lod)
+    public ResourceLocation getResourceLocation()
     {
-        return resourceLocation[lod];
+        return resourceLocation;
     }
 
     public BufferedImage getBufferedImage() {
-        return bufferedImages[0];
+        return bufferedImages;
     }
 
 
     public void setBufferedImage(BufferedImage bufferedImage) {
 
 
-        bufferedImages[0] = bufferedImage;
-
-        for (int i = 1; i < bufferedImages.length; i++)
-        {
-            int scale = i == 0 ? 1 : i * 4;
-            bufferedImages[i] = new BufferedImage(size/scale, size/scale, BufferedImage.TYPE_4BYTE_ABGR);
-
-            for(int x = 0; x < bufferedImages[i].getWidth(); x++)
-            {
-                for(int y = 0; y < bufferedImages[i].getHeight(); y++)
-                {
-                    bufferedImages[i].setRGB(x,y,bufferedImage.getRGB(x*scale,y*scale));
-                }
-            }
-        }
+        this.bufferedImages = bufferedImage;
 
         this.changedImage = true;
     }
 
-    DynamicTexture getDynamicTexture(int lod) {
-        return mapTextures[lod];
+    DynamicTexture getDynamicTexture() {
+        return mapTextures;
     }
 
     public void setRGB(int x,int y,int rgb) {
-        bufferedImages[0].setRGB(x,y,rgb);
-        for (int i = 1; i < bufferedImages.length; i++)
-        {
-            int scale = i * 4;
+        bufferedImages.setRGB(x,y,rgb);
 
-            if(x % scale == 0 && y % scale == 0)
-                bufferedImages[i].setRGB(Math.min(x/scale,size/scale-1),Math.min(y/scale,size/scale-1),rgb);
-        }
 
     }
 
@@ -85,25 +60,18 @@ public class MapImage {
 
     public void UpdateMapTextures()
     {
-        for (int i = 0; i < mapTextures.length; i++)
+        if(mapTextures == null)
         {
-            if(mapTextures[i] == null)
-            {
-                mapTextures[i] = new DynamicTexture(bufferedImages[i]);
-                resourceLocation[i] = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("temp", mapTextures[i] );
-
-            }
-            else
-            {
-                bufferedImages[i].getRGB(0, 0, bufferedImages[i].getWidth(), bufferedImages[i].getHeight(), mapTextures[i].getTextureData(), 0, bufferedImages[i].getWidth());
-                mapTextures[i].updateDynamicTexture();
-            }
-
-
-
-
+            mapTextures = new DynamicTexture(bufferedImages);
+            resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("temp", mapTextures );
 
         }
+            else
+        {
+            bufferedImages.getRGB(0, 0, bufferedImages.getWidth(), bufferedImages.getHeight(), mapTextures.getTextureData(), 0, bufferedImages.getWidth());
+            mapTextures.updateDynamicTexture();
+        }
+
 
         changedImage = false;
     }
