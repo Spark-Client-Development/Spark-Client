@@ -53,7 +53,6 @@ public class SparkMap {
 
 
 
-
     public final Vec2i pos;
     public final int dim;
 

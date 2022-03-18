@@ -22,6 +22,7 @@ public class MathUtil {
 
     }
 
+
     public static double square(double value) {
         return value*value;
     }

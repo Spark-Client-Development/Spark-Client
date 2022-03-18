@@ -7,7 +7,6 @@ import me.wallhacks.spark.event.client.ThreadEvent;
 import me.wallhacks.spark.event.player.ChunkLoadEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.maps.SparkMap;
@@ -25,7 +24,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -154,6 +152,8 @@ public class MapManager implements MC {
 
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
+
+
 
         Set<Vec3i> unused = mapsUsed.keySet();
         for (Vec3i map : unused) {

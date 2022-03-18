@@ -10,7 +10,7 @@ public class MapImage {
 
 
 
-    public static int lods = 4;
+    public static int lods = 2;
     public static int size = 512;
 
     final ResourceLocation[] resourceLocation;
@@ -22,24 +22,17 @@ public class MapImage {
         bufferedImages = new BufferedImage[lods];
         resourceLocation = new ResourceLocation[lods];
 
-        ResetBufferImages();
-    }
-
-    public void ResetBufferImages() {
         for (int i = 0; i < bufferedImages.length; i++)
         {
-            int scale = i == 0 ? 1 : i * 3;
+            int scale = i == 0 ? 1 : i * 4;
             bufferedImages[i] = new BufferedImage(size/scale, size/scale, BufferedImage.TYPE_4BYTE_ABGR);
         }
-
     }
+
+
 
     public ResourceLocation getResourceLocation(int lod)
     {
-        DynamicTexture texture = getDynamicTexture(lod);
-        if(texture == null)
-            return null;
-        resourceLocation[lod] = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("temp", texture);
         return resourceLocation[lod];
     }
 
@@ -49,11 +42,13 @@ public class MapImage {
 
 
     public void setBufferedImage(BufferedImage bufferedImage) {
+
+
         bufferedImages[0] = bufferedImage;
 
         for (int i = 1; i < bufferedImages.length; i++)
         {
-            int scale = i == 0 ? 1 : i * 3;
+            int scale = i == 0 ? 1 : i * 4;
             bufferedImages[i] = new BufferedImage(size/scale, size/scale, BufferedImage.TYPE_4BYTE_ABGR);
 
             for(int x = 0; x < bufferedImages[i].getWidth(); x++)
@@ -76,7 +71,7 @@ public class MapImage {
         bufferedImages[0].setRGB(x,y,rgb);
         for (int i = 1; i < bufferedImages.length; i++)
         {
-            int scale = i * 3;
+            int scale = i * 4;
 
             if(x % scale == 0 && y % scale == 0)
                 bufferedImages[i].setRGB(Math.min(x/scale,size/scale-1),Math.min(y/scale,size/scale-1),rgb);
@@ -91,10 +86,30 @@ public class MapImage {
     public void UpdateMapTextures()
     {
         for (int i = 0; i < mapTextures.length; i++)
-            mapTextures[i] = new DynamicTexture(bufferedImages[i]);
+        {
+            if(mapTextures[i] == null)
+            {
+                mapTextures[i] = new DynamicTexture(bufferedImages[i]);
+                resourceLocation[i] = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("temp", mapTextures[i] );
+
+            }
+            else
+            {
+                bufferedImages[i].getRGB(0, 0, bufferedImages[i].getWidth(), bufferedImages[i].getHeight(), mapTextures[i].getTextureData(), 0, bufferedImages[i].getWidth());
+                mapTextures[i].updateDynamicTexture();
+            }
+
+
+
+
+
+        }
 
         changedImage = false;
     }
+
+
+
 
 
 
@@ -102,5 +117,6 @@ public class MapImage {
         return changedImage;
     }
 
-    boolean changedImage = true;
+    boolean changedImage = false;
+
 }

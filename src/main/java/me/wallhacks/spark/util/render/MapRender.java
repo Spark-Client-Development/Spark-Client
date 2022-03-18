@@ -55,7 +55,7 @@ public class MapRender implements MC {
 
 
         int lod = MapImage.lods-(int)MathHelper.clamp((
-                ImageScale*MapImage.lods*5/MapImage.size
+                ImageScale*MapImage.lods*6/MapImage.size
         ),1, MapImage.lods);
 
         ArrayList<Pair<Vec2i,MCStructures>> structuresHashMap = new ArrayList<Pair<Vec2i, MCStructures>>();

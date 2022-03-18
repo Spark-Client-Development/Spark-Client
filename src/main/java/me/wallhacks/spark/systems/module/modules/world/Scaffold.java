@@ -30,8 +30,8 @@ public class Scaffold extends Module {
 
 
     BooleanSetting Tower = new BooleanSetting("FastTower",this,true,"General");
-    IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> Tower.isOn(),"General");
-    BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,v -> Tower.isOn(),"General");
+    IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> !Tower.isOn(),"General");
+    BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,v -> !Tower.isOn(),"General");
     BooleanSetting down = new BooleanSetting("Downwards",this,false,"General");
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC5E, true), "Render");

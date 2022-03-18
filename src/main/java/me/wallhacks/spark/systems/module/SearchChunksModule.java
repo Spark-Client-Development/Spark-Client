@@ -25,6 +25,7 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
     protected ConcurrentHashMap<Chunk, CopyOnWriteArrayList<T>> found = new ConcurrentHashMap<Chunk,CopyOnWriteArrayList<T>>();
 
 
+
     protected boolean needsAdjacentChunks() {
         return false;
     }
@@ -33,6 +34,7 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
     public void onEnable() {
         chunksToSearch.clear();
         found.clear();
+
 
         if(mc.player == null || mc.world == null)
             return;
@@ -126,6 +128,14 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
 
     @SubscribeEvent
     public void onBlockChangeEvent(BlockChangeEvent event) {
+        if(event.getBlockPos() == null)
+            return;
+        Chunk c = mc.world.getChunk(event.getBlockPos());
+        if(c == null)
+            return;
+        if(chunksToSearch.contains(c))
+            return;
+
         blockChanged(event.getBlockPos());
     }
 

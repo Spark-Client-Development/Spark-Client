@@ -70,7 +70,7 @@ public class BowAim extends Module implements MC {
 
 	public float[] getRot(EntityLivingBase target){
 
-		double time = Math.max(2,mc.player.getDistance(target))/2;
+		double time = mc.player.getDistance(target)/2;
 
 
 		AxisAlignedBB bb = PredictionUtil.PredictedTarget(target, (int)time);

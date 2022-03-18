@@ -10,6 +10,7 @@ import me.wallhacks.spark.systems.module.modules.movement.Jesus;
 import me.wallhacks.spark.systems.module.modules.world.ClientTime;
 import me.wallhacks.spark.systems.module.modules.world.ClientWeather;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -77,6 +78,9 @@ public class MixinWorld {
 
     @Inject(method = "setBlockState", at = @At("RETURN"))
     public void setBlockStatePost(BlockPos pos, IBlockState newState, int flags, final CallbackInfoReturnable<Boolean> callbackInfo) {
+        if(!this.equals(Minecraft.getMinecraft().world))
+            return;
+
         BlockChangeEvent event = new BlockChangeEvent(pos);
         Spark.eventBus.post(event);
 
