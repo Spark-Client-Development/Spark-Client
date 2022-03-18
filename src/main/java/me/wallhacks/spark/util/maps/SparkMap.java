@@ -79,13 +79,13 @@ public class SparkMap {
         return MapImage.size*scale;
     }
 
-    public static double get2dMapPosFromWorldPos(double x,int MapScale){
+    public static double get2dMapPosFromWorldPos(double x,double MapScale){
         return x*(MapScale/getWidthAndHeight());
     }
     public static int get2iMapPosFromWorldPos(double x,int MapScale){
         return (int) (x*(MapScale/getWidthAndHeight()));
     }
-    public static double getWorldPosFrom2dMapPos(double x,int MapScale){
+    public static double getWorldPosFrom2dMapPos(double x,double MapScale){
         return x/(MapScale/getWidthAndHeight());
     }
     public static int getWorldPosFrom2dMapPosRound(double x,int MapScale){

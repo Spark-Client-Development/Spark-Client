@@ -14,6 +14,7 @@ import me.wallhacks.spark.util.objects.Vec2i;
 import me.wallhacks.spark.util.render.MapRender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
@@ -71,12 +72,24 @@ public class MapGui extends GuiPanelBase {
 
         double mWheel = zoom*deltaTime*(Mouse.getDWheel())*0.00008;
 
+
         if(mWheel != 0)
         {
+
+            Vec2d wp = new Vec2d(
+                    SparkMap.getWorldPosFrom2dMapPos(offsetX,zoom),
+                    SparkMap.getWorldPosFrom2dMapPos(offsetY,zoom)
+            );
+
+
             zoom = MathHelper.clamp(zoom+mWheel,25,900);
             if(screenInfoCoords != null)
                 screenInfoCoords = null;
+
+            offsetX = SparkMap.get2dMapPosFromWorldPos(wp.x,zoom);
+            offsetY = SparkMap.get2dMapPosFromWorldPos(wp.y,zoom);
         }
+
 
 
 
