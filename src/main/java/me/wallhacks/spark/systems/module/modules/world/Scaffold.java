@@ -32,7 +32,7 @@ public class Scaffold extends Module {
     BooleanSetting Tower = new BooleanSetting("FastTower",this,true,"General");
     IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> !Tower.isOn(),"General");
     BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,v -> !Tower.isOn(),"General");
-    BooleanSetting down = new BooleanSetting("Downwards",this,false,"General");
+    KeySetting down = new KeySetting("Downwards",this,-1,"General");
     BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
     ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC5E, true), "Render");
 
@@ -60,7 +60,7 @@ public class Scaffold extends Module {
 
     void doScaffold() {
 
-        if(mc.gameSettings.keyBindSneak.isKeyDown() && down.getValue()) {
+        if(down.isDown()) {
 
 
             final BlockPos floorPos = PlayerUtil.getPlayerPosFloored(mc.player,-0.1).add(0, -1, 0);
@@ -196,7 +196,7 @@ public class Scaffold extends Module {
 
     @SubscribeEvent
     public void onSneakEvent(SneakEvent event) {
-        if (mc.gameSettings.keyBindSneak.isKeyDown() && down.getValue()) {
+        if (down.isDown()) {
             event.setCanceled(true);
         }
     }
