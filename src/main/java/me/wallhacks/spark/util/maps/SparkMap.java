@@ -41,6 +41,11 @@ public class SparkMap {
         image.setBufferedImage(bufferedImage);
     }
 
+    public void delete() {
+        if(!isEmpty())
+            image.delete();
+    }
+
     public boolean updateMapTextures(){
         if(!isEmpty() && image.isChangedImage())
         {

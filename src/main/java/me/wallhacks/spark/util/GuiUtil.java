@@ -22,6 +22,8 @@ import static org.lwjgl.opengl.GL11.*;
 public class GuiUtil implements MC {
     public static void drawCompleteImage(float posX, float posY, float width, float height) {
         GL11.glPushMatrix();
+        GL11.glEnable(GL_BLEND);
+        GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GL11.glTranslatef(posX, posY, 0.0f);
         GL11.glBegin(7);
         GL11.glTexCoord2f(0.0f, 0.0f);

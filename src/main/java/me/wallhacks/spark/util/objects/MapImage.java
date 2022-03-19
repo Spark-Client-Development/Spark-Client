@@ -10,7 +10,7 @@ public class MapImage {
 
 
 
-    public static int lods = 1;
+
     public static int size = 512;
 
     ResourceLocation resourceLocation;
@@ -76,7 +76,11 @@ public class MapImage {
         changedImage = false;
     }
 
+    public void delete() {
+        if(resourceLocation != null)
+            Minecraft.getMinecraft().getTextureManager().deleteTexture(resourceLocation);
 
+    }
 
 
 

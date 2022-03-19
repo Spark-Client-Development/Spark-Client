@@ -74,13 +74,20 @@ public class MapManager implements MC {
 
     }
 
+    public void removeMap(Vec3i v) {
+        loadedMaps.get(v).delete();
+        loadedMaps.remove(v);
+    }
+
     @SubscribeEvent
     public void worldLoadEvent(WorldLoadEvent event) {
 
         String serv = mc.getCurrentServerData() != null ? mc.getCurrentServerData().serverIP : "singleplayer";
         if(!serv.equals(CurrentServer))
         {
-            loadedMaps.clear();
+            while (!loadedMaps.isEmpty()) {
+                removeMap(loadedMaps.keys().nextElement());
+            }
             mapsUsed.clear();
             toSave.clear();
             toLoad.clear();
@@ -154,7 +161,6 @@ public class MapManager implements MC {
     public void onUpdate(PlayerUpdateEvent event) {
 
 
-
         Set<Vec3i> unused = mapsUsed.keySet();
         for (Vec3i map : unused) {
             int i = mapsUsed.get(map);
@@ -162,7 +168,7 @@ public class MapManager implements MC {
             if(i <= 0)
             {
                 mapsUsed.remove(map);
-                loadedMaps.remove(map);
+                removeMap(map);
             }
             else
             {
@@ -271,13 +277,15 @@ public class MapManager implements MC {
         {
             try {
                 Files.createParentDirs(f);
-                f.createNewFile();
+            } catch (IOException e) {
 
+            }
+            try {
+                f.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
             }
-
         }
 
         try {

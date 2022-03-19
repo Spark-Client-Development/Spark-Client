@@ -105,16 +105,26 @@ public class MapRender implements MC {
             }
 
             MCStructures structures = structuresPair.getValue();
+
+
+            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),0.6);
+
+            double hideSize = 0.1;
+
+            if(s < hideSize)
+                continue;
+
             GL11.glPushMatrix();
             GlStateManager.translate(x, y, 0);
 
-            double s = Math.min(structures.getSize()*(ImageScale / SparkMap.getWidthAndHeight()),0.6);
+            float alpha = (float) Math.min(1,Math.abs(s-hideSize)/0.1);
+
 
             if(hovered)
                 s*=1.3;
 
             GlStateManager.scale(s,s,s);
-            GuiUtil.drawCompleteImageRotated(-6,-6,6*2,6*2,0,structures.getResourceLocation(),Color.WHITE);
+            GuiUtil.drawCompleteImageRotated(-6,-6,6*2,6*2,0,structures.getResourceLocation(),new Color(1f,1f,1f,alpha));
 
             GL11.glPopMatrix();
 

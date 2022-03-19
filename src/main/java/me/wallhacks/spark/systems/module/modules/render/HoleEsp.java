@@ -120,11 +120,11 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
         final int bedrock;
 
         public float getBedrockPercentage() {
-            return (float)bedrock / (neighbour == null ? 5 : 10);
+            return (float)bedrock / (neighbour == null ? 5 : 8);
         }
 
         public boolean isFullBedrock() {
-            return bedrock >= (neighbour == null ? 5 : 10);
+            return bedrock >= (neighbour == null ? 5 : 8);
         }
 
         public HoleInfo(BlockPos pos, EnumFacing neighbour, int bedrock) {
