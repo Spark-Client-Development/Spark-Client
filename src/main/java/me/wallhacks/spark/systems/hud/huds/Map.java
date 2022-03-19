@@ -26,6 +26,6 @@ public class Map extends HudElement {
 
         Gui.drawRect(getRenderPosX(), getRenderPosY(), getEndRenderPosX(), getEndRenderPosY(), HudSettings.getInstance().getGuiHudListBackgroundColor().getRGB());
 
-        MapRender.RenderWholeMap(getRenderPosX()+2,this.getRenderPosY()+2,getWidth()-4,getHeight()-4,zoom.getValue(),mc.player.posX,mc.player.posZ,0,0,mc.player.dimension, 0, 0, false);
+        MapRender.RenderWholeMap(getRenderPosX()+2,this.getRenderPosY()+2,getWidth()-4,getHeight()-4,zoom.getValue(),mc.player.posX,mc.player.posZ,0,0,mc.player.dimension, 0, 0, false,false);
     }
 }

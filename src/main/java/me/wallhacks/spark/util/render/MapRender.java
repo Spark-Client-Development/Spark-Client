@@ -1,14 +1,11 @@
 package me.wallhacks.spark.util.render;
 
-import com.github.lunatrius.core.util.vector.Vector2d;
-import com.sun.jna.Structure;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.panels.GuiPanelBase;
 import me.wallhacks.spark.manager.FontManager;
 import me.wallhacks.spark.manager.MapManager;
 import me.wallhacks.spark.manager.WaypointManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
@@ -17,17 +14,14 @@ import me.wallhacks.spark.util.objects.*;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.MapDecoration;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MapRender implements MC {
 
@@ -35,11 +29,38 @@ public class MapRender implements MC {
     private static final ResourceLocation ARROW_ICON = new ResourceLocation("textures/icons/arrowicon.png");
 
 
+    public enum MapGrid {
+        Chunks(16, new Vec2i(200,Integer.MAX_VALUE), new Color(0xFF4D4D57, true)),
+        Regions(16*32, new Vec2i(40,450), new Color(0xFF9F9FBD, true)),
+        Sector(4096, new Vec2i(0,80), new Color(0xFF6363D3, true));
 
-    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, int ImageScale, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover) {
+
+
+        final int size;
+        final float scaledSize;
+
+        final Vec2i range;
+
+        final Color color;
+
+
+
+        MapGrid(int sizeInBlocks, Vec2i range, Color color) {
+            this.size = sizeInBlocks;
+            this.scaledSize = sizeInBlocks/SparkMap.scale;
+            this.range = range;
+
+            this.color = color;
+
+        }
+    }
+
+
+    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, int ImageScale, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid) {
         GL11.glPushMatrix();
         GuiUtil.glScissor(ImageStartX, ImageStartY, ImageScaleX, ImageScaleY);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
 
 
         //background
@@ -54,10 +75,52 @@ public class MapRender implements MC {
         Vec2i WholeMapEndPos = SparkMap.getMapPosFrom2dMapPos(centerX + ImageScaleX, centerY + ImageScaleY, ImageScale);
 
 
+        float thick = 0.4f;
+
+        if(drawGrid)
+        for (int i = 0; i < MapGrid.values().length; i++) {
+            MapGrid grid = MapGrid.values()[i];
+            if(grid.range.x < ImageScale && ImageScale < grid.range.y)
+            {
+                float scale = grid.scaledSize/MapImage.size*ImageScale;
+
+                float conv = grid.size/SparkMap.getWidthAndHeight();
+
+                //this code can be made better in so many ways :(
+                float x_start = (float) (ImageStartX+ (Math.floor(WholeMapStartPos.x/conv)*conv)*ImageScale - centerX);
+                float y_start = (float) (ImageStartY+ (Math.floor(WholeMapStartPos.y/conv)*conv)*ImageScale - centerY);
+
+
+                GuiUtil.linePre(grid.color,thick);
+
+                thick*=1.4f;
+
+                for (float xr = x_start; xr < ImageStartX+ImageScaleX+scale; xr+=scale) {
+                    GL11.glBegin(2);
+                    GL11.glVertex2d(xr, ImageStartY);
+                    GL11.glVertex2d(xr, ImageStartY+ImageScaleY);
+                    GL11.glEnd();
+                }
+
+                for (float yr = y_start; yr < ImageStartY+ImageScaleY+scale; yr+=scale) {
+                    GL11.glBegin(2);
+                    GL11.glVertex2d(ImageStartX,yr);
+                    GL11.glVertex2d(ImageStartX+ImageScaleX,yr);
+                    GL11.glEnd();
+                }
+
+
+                GuiUtil.linePost();
+
+            }
+
+        }
 
 
         ArrayList<Pair<Vec2i,MCStructures>> structuresHashMap = new ArrayList<Pair<Vec2i, MCStructures>>();
 
+
+        //render map
         for (int x = WholeMapStartPos.x; x <= WholeMapEndPos.x; x++) {
             for (int y = WholeMapStartPos.y; y <= WholeMapEndPos.y; y++) {
 
@@ -69,12 +132,15 @@ public class MapRender implements MC {
 
                 if(!map.isEmpty())
                 {
+
+
                     ResourceLocation location = map.getResourceLocation();
 
                     if(location != null)
                     {
                         float x_ = map.getStartPos().x * (ImageScale / SparkMap.getWidthAndHeight()) - centerX;
                         float y_ = map.getStartPos().y * (ImageScale / SparkMap.getWidthAndHeight()) - centerY;
+
 
                         mc.getTextureManager().bindTexture(location);
 
@@ -84,7 +150,6 @@ public class MapRender implements MC {
 
             }
         }
-
 
 
 

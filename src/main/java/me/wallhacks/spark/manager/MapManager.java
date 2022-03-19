@@ -229,21 +229,27 @@ public class MapManager implements MC {
         int s = MapImage.size/16*SparkMap.scale;
 
 
-        for (int x = 0; x < s; x++) {
-            for (int y = 0; y < s; y++) {
-                int chunkX = m.pos.x*s+x;
-                int chunkY = m.pos.y*s+y;
+        try {
+            for (int x = 0; x < s; x++) {
+                for (int y = 0; y < s; y++) {
+                    int chunkX = m.pos.x*s+x;
+                    int chunkY = m.pos.y*s+y;
 
-                ArrayList<MCStructures> structures = SeedManager.instance.getStructures(chunkX,chunkY,m.dim);
+                    ArrayList<MCStructures> structures = SeedManager.instance.getStructures(chunkX,chunkY,m.dim);
 
-                if(structures != null && structures.size() > 0)
-                {
-                    for (MCStructures structure : structures) {
-                        m.structures.add(new Pair<>(new Vec2i(chunkX,chunkY),structure));
+                    if(structures != null && structures.size() > 0)
+                    {
+                        for (MCStructures structure : structures) {
+                            m.structures.add(new Pair<>(new Vec2i(chunkX,chunkY),structure));
+                        }
+
                     }
-
                 }
             }
+        }
+        catch (Exception exception)
+        {
+
         }
 
         File f = new File(getPath(m));

@@ -105,6 +105,8 @@ public class SparkMap {
         return new Vec2i((int)Math.floor(x /getWidthAndHeight()),(int)Math.floor(y /getWidthAndHeight()));
     }
 
+
+
     public Vec2i getStartPos(){
         return new Vec2i(pos.x*MapImage.size*scale,pos.y*MapImage.size*scale);
     }

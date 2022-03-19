@@ -152,6 +152,43 @@ public class GuiUtil implements MC {
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
     }
+    public static void drawQuad(float left, float top, float width, float height, int color) {
+        drawRect(left,top,left+width,top+height,color);
+    }
+
+    public static void drawRect(float left, float top, float right, float bottom, int color) {
+        float j;
+        if (left < right) {
+            j = left;
+            left = right;
+            right = j;
+        }
+
+        if (top < bottom) {
+            j = top;
+            top = bottom;
+            bottom = j;
+        }
+
+        float f3 = (float)(color >> 24 & 255) / 255.0F;
+        float f = (float)(color >> 16 & 255) / 255.0F;
+        float f1 = (float)(color >> 8 & 255) / 255.0F;
+        float f2 = (float)(color & 255) / 255.0F;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(f, f1, f2, f3);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.pos((double)left, (double)bottom, 0.0D).endVertex();
+        bufferbuilder.pos((double)right, (double)bottom, 0.0D).endVertex();
+        bufferbuilder.pos((double)right, (double)top, 0.0D).endVertex();
+        bufferbuilder.pos((double)left, (double)top, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
 
     public static void drawPickerBase(int pickerX, int pickerY, int pickerWidth, int pickerHeight, float red, float green, float blue, float alpha) {
         GL11.glPushMatrix();
@@ -223,6 +260,55 @@ public class GuiUtil implements MC {
         ScaledResolution scr = new ScaledResolution(mc);
         GL11.glScissor((x+ (int) GuiUtil.getGlTransformOffset().x) * scr.getScaleFactor(), (scr.getScaledHeight() - y - height - (int) GuiUtil.getGlTransformOffset().y) * scr.getScaleFactor(), width * scr.getScaleFactor(), height * scr.getScaleFactor());
     }
+
+    public static void drawHorizontalLine(int startX, int endX, int y, int color) {
+        if (endX < startX) {
+            int i = startX;
+            startX = endX;
+            endX = i;
+        }
+
+        Gui.drawRect(startX, y, endX + 1, y + 1, color);
+    }
+
+    public static void drawVerticalLine(int x, int startY, int endY, int color) {
+        if (endY < startY) {
+            int i = startY;
+            startY = endY;
+            endY = i;
+        }
+
+        Gui.drawRect(x, startY + 1, x + 1, endY, color);
+    }
+
+
+    public static void linePre(Color color,float width) {
+        GL11.glEnable(3042);
+        GL11.glDisable(3553);
+        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(2848);
+        GL11.glPushMatrix();
+
+        GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, color.getAlpha() / 255.0f);
+
+        GL11.glLineWidth(width);
+
+
+
+
+    }
+
+    public static void linePost() {
+        GL11.glDisable(3042);
+
+        GL11.glColor4f(1f,1f,1f,1f);
+
+        GL11.glPopMatrix();
+        GL11.glEnable(3553);
+
+        GL11.glDisable(2848);
+    }
+
 
     public static boolean drawButton(String text, int left, int top, int right, int bottom, Color color, int mouseX, int mouseY, boolean clicked) {
         boolean hover = false;

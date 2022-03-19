@@ -82,7 +82,7 @@ public class MapGui extends GuiPanelBase {
             );
 
 
-            zoom = MathHelper.clamp(zoom+mWheel,12,1800);
+            zoom = MathHelper.clamp(zoom+mWheel,10,1800);
             if(screenInfoCoords != null)
                 screenInfoCoords = null;
 
@@ -95,7 +95,7 @@ public class MapGui extends GuiPanelBase {
 
 
         Vec2d pos = MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
-        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true);
+        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true,true);
 
 
 

@@ -10,6 +10,8 @@ public class GuiPanelButton extends GuiPanelBase {
         super();
         this.action = action;
 
+
+
         this.text = text;
     }
     String text;
