@@ -215,6 +215,7 @@ public class CevBreaker extends Module {
         if (!Spark.rotationManager.rotate(Spark.rotationManager.getLegitRotations(pos),true))
             return false;
 
+        v = v.add(-bestPos.getX(),-bestPos.getY(),-bestPos.getZ());
 
         //send packet
         mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(bestPos, facing, hand, (float) v.x, (float) v.y, (float) v.z));

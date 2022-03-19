@@ -174,7 +174,7 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer implements MC {
             double d4 = z;
 
             if ((type == MoverType.SELF || type == MoverType.PLAYER) && this.onGround && this.isSneaking() && _this instanceof EntityPlayer) {
-                SneakEvent event = new SneakEvent();
+                SafeWalkEvent event = new SafeWalkEvent();
                 Spark.eventBus.post(event);
                 if (!event.isCanceled()) {
                     double d5 = 0.05;

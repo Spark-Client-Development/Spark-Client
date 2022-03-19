@@ -2,6 +2,7 @@ package me.wallhacks.spark.systems.module.modules.combat;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
+import me.wallhacks.spark.event.player.SafeWalkEvent;
 import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
@@ -49,7 +50,7 @@ public class Surround extends Module {
 
 
     @SubscribeEvent
-    public void onSneakEvent(SneakEvent event) {
+    public void onSneakEvent(SafeWalkEvent event) {
         if (isEnabled() && getBind() == mc.gameSettings.keyBindSneak.keyCode) {
             event.setCanceled(true);
         }

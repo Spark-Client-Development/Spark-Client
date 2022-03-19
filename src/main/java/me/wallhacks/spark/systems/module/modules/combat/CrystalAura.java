@@ -292,6 +292,8 @@ public class CrystalAura extends Module {
             if (!rotate(PLACE))
                 return true;
 
+            v = v.add(-currentCrystalBlockPos.getX(),-currentCrystalBlockPos.getY(),-currentCrystalBlockPos.getZ());
+
             //send packet
             mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(currentCrystalBlockPos, facing, hand, (float) v.x, (float) v.y, (float) v.z));
 

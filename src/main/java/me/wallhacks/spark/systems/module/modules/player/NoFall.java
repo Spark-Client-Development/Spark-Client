@@ -1,5 +1,6 @@
 package me.wallhacks.spark.systems.module.modules.player;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
@@ -24,10 +25,16 @@ public class NoFall extends Module {
 
 
 
-
+    int timer = 0;
 
     @SubscribeEvent
     public void onUpdate(PlayerUpdateEvent event) {
+        if(timer > 0)
+        {
+            timer--;
+            return;
+        }
+
         if(!mc.player.onGround && mc.player.fallDistance > 3){
             BlockPos p = PlayerUtil.getPlayerPosFloored(mc.player);
             if(Mode.isValueName("Packet") && (!AntiElytraGlitch.isOn() || !mc.player.isElytraFlying() || mc.world.getBlockState(p.add(0, -3, 0)).getBlock() != Blocks.AIR))
@@ -39,11 +46,21 @@ public class NoFall extends Module {
             }
             else if(Mode.isValueName("Dream")){
 
-                for (int h = 1; h < 5; h++)
+                for (int h = 1; h < 6; h++)
                 {
+
                     Block b = mc.world.getBlockState(p.add(0, -h, 0)).getBlock();
-                    if(b.material.isSolid() && b != Blocks.HAY_BLOCK && b != Blocks.WEB) {
-                        BlockInteractUtil.tryPlaceBlock(p.add(0, 1-h, 0), new ItemStopFall(), true, false);
+
+                    if(b.material.isLiquid() || b == Blocks.HAY_BLOCK || b == Blocks.WEB)
+                        break;
+                    if(!b.material.isReplaceable()) {
+
+                        BlockInteractUtil.tryPlaceBlock(p.add(0, 1-h, 0), new ItemStopFall(), false, false);
+
+                        timer=10;
+
+
+
                         break;
                     }
                 }

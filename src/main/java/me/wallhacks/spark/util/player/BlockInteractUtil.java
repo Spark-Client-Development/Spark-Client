@@ -14,9 +14,11 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -102,7 +104,9 @@ public class BlockInteractUtil implements MC {
         if (hand == null)
             return BlockPlaceResult.FAILED;
 
-        if (AntiCheatConfig.getInstance().placeRotate.getValue()) {
+
+
+        if (AntiCheatConfig.getInstance().placeRotate.getValue() || (mc.player.getHeldItem(hand).getItem() == Items.WATER_BUCKET || mc.player.getHeldItem(hand).getItem() == Items.BUCKET || mc.player.getHeldItem(hand).getItem() == Items.LAVA_BUCKET)) {
             float rot[] = Spark.rotationManager.getLegitRotations(hitVec);
             boolean ready = true;
             if (p.getValue()) {
@@ -221,6 +225,7 @@ public class BlockInteractUtil implements MC {
         if (activated)
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
         boolean placed = processRightClickBlock(pos, side, clientSided, hand, hit);
+
         if (activated)
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
         return placed;
@@ -237,6 +242,8 @@ public class BlockInteractUtil implements MC {
                 break;
         }
 
+        hit = hit.add(-pos.getX(),-pos.getY(),-pos.getZ());
+
         if (!clientSided)
             mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, (float) hit.x, (float) hit.y, (float) hit.z));
         else {
@@ -244,9 +251,12 @@ public class BlockInteractUtil implements MC {
                 return false;
         }
 
-        if (mc.player.getHeldItemMainhand().getItem() == Items.WATER_BUCKET || mc.player.getHeldItemMainhand().getItem() == Items.BUCKET || mc.player.getHeldItemMainhand().getItem() == Items.LAVA_BUCKET) {
-            mc.playerController.processRightClick(mc.player, mc.world, hand);
+
+
+        if (mc.player.getHeldItem(hand).getItem() == Items.WATER_BUCKET || mc.player.getHeldItem(hand).getItem() == Items.BUCKET || mc.player.getHeldItem(hand).getItem() == Items.LAVA_BUCKET) {
+            mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(hand));
         }
+
         return true;
     }
 
