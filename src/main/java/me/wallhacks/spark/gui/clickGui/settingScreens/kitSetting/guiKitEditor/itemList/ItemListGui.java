@@ -1,16 +1,12 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.guiKitEditor.itemList;
 
-import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.guiKitEditor.GuiKitEditor;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.player.InventoryUtil;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.translation.I18n;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 

@@ -4,30 +4,11 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.gui.clickGui.ClickGuiPanel;
 import me.wallhacks.spark.gui.clickGui.panels.configs.configList.ConfigListGui;
-import me.wallhacks.spark.gui.clickGui.panels.configs.configList.ConfigListItem;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiEditSettingPanel;
-import me.wallhacks.spark.gui.clickGui.panels.navigation.waypointlist.WayPointItem;
-import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListGui;
-import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListItem;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
 import me.wallhacks.spark.manager.ConfigManager;
-import me.wallhacks.spark.manager.SocialManager;
-import me.wallhacks.spark.manager.WaypointManager;
-import me.wallhacks.spark.util.GuiUtil;
-import me.wallhacks.spark.util.MathUtil;
-import me.wallhacks.spark.util.SessionUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.util.ResourceLocation;
-
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Configs extends ClickGuiPanel {
 

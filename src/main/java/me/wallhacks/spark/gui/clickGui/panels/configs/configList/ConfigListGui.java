@@ -2,13 +2,8 @@ package me.wallhacks.spark.gui.clickGui.panels.configs.configList;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.configs.Configs;
-import me.wallhacks.spark.gui.clickGui.panels.navigation.waypointlist.WayPointItem;
-import me.wallhacks.spark.gui.clickGui.panels.socials.Socials;
-import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListItem;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.manager.ConfigManager;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 import java.util.ArrayList;
 

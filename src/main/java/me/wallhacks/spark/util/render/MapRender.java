@@ -1,7 +1,7 @@
 package me.wallhacks.spark.util.render;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.manager.FontManager;
 import me.wallhacks.spark.manager.MapManager;
 import me.wallhacks.spark.manager.WaypointManager;
@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -203,7 +202,7 @@ public class MapRender implements MC {
 
             if (point.getDim() == dim || (point.getDim() != 1 && dim != 1)) {
 
-                Vec2d pos = ConvertPos(point.getLocation2d(), point.getDim(), dim);
+                Vec2d pos = point.getLocation2d(point.getDim(), dim);
                 double x = (ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(pos.x - TargetX, ImageScale));
                 double y = (ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(pos.y - TargetZ, ImageScale));
                 boolean hovered = false;

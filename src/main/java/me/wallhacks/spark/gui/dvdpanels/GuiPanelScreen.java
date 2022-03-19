@@ -1,4 +1,4 @@
-package me.wallhacks.spark.gui.panels;
+package me.wallhacks.spark.gui.dvdpanels;
 
 
 import me.wallhacks.spark.Spark;
@@ -96,7 +96,7 @@ public class GuiPanelScreen extends GuiScreen {
     public void handleMouse(int MouseX, int MouseY) {
 
 
-        if((Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2) || Mouse.isButtonDown(3) || Mouse.isButtonDown(4)))
+        if((Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2)))
         {
 
             if(GuiPanelBase.SelectedMouse != null || GuiPanelBase.TopMouseOn != null){

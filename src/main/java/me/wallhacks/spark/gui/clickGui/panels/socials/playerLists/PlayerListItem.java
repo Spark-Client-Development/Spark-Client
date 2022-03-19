@@ -2,7 +2,7 @@ package me.wallhacks.spark.gui.clickGui.panels.socials.playerLists;
 
 import com.mojang.authlib.GameProfile;
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.manager.SocialManager;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.network.NetworkPlayerInfo;

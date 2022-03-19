@@ -1,8 +1,8 @@
 package me.wallhacks.spark.gui.clickGui.panels.mainScreen.moduleslist;
 
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.util.ResourceLocation;
 import me.wallhacks.spark.systems.module.Module;

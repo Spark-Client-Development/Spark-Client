@@ -4,10 +4,10 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.gui.clickGui.ClickGuiPanel;
 import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListItem;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
 import me.wallhacks.spark.manager.SocialManager;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.Minecraft;
@@ -17,7 +17,6 @@ import net.minecraft.util.ResourceLocation;
 import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListGui;
 import me.wallhacks.spark.util.SessionUtils;
 
-import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 

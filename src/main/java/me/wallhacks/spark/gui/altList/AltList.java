@@ -4,7 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.manager.AltManager;
 import me.wallhacks.spark.util.GuiUtil;
 import org.lwjgl.input.Mouse;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.util.auth.account.Account;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 

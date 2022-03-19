@@ -1,8 +1,8 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.gui.panels.GuiPanelScreen;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScreen;
 import me.wallhacks.spark.systems.setting.Setting;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.gui.Gui;

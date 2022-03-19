@@ -1,4 +1,4 @@
-package me.wallhacks.spark.gui.panels;
+package me.wallhacks.spark.gui.dvdpanels;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;

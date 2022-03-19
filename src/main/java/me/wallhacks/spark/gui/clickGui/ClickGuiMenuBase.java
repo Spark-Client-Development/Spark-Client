@@ -1,18 +1,14 @@
 package me.wallhacks.spark.gui.clickGui;
 
-import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.configs.Configs;
 import me.wallhacks.spark.gui.clickGui.panels.navigation.NavigationGui;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.gui.panels.GuiPanelScreen;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScreen;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
-import me.wallhacks.spark.systems.module.modules.player.Freecam;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import me.wallhacks.spark.gui.clickGui.panels.hudeditor.HudEditor;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.SystemsScreen;

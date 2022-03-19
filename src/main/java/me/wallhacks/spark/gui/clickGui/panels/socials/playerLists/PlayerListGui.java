@@ -2,8 +2,8 @@ package me.wallhacks.spark.gui.clickGui.panels.socials.playerLists;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.socials.Socials;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 
 public class PlayerListGui extends GuiPanelBase {

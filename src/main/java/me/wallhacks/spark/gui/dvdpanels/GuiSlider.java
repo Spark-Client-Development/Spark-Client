@@ -1,4 +1,4 @@
-package me.wallhacks.spark.gui.panels;
+package me.wallhacks.spark.gui.dvdpanels;
 
 public class GuiSlider extends GuiPanelBase {
 

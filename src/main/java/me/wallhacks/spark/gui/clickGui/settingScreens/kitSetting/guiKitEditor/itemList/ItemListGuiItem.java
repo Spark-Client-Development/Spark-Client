@@ -1,8 +1,6 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.guiKitEditor.itemList;
 
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
-import net.minecraft.block.Block;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;

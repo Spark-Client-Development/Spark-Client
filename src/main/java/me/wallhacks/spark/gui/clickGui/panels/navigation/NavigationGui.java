@@ -1,27 +1,17 @@
 package me.wallhacks.spark.gui.clickGui.panels.navigation;
 
-import baritone.api.BaritoneAPI;
-import baritone.api.pathing.goals.GoalBlock;
-import baritone.api.pathing.goals.GoalXZ;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.gui.clickGui.ClickGuiPanel;
-import me.wallhacks.spark.gui.clickGui.panels.configs.configList.ConfigListGui;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiEditSettingPanel;
 import me.wallhacks.spark.gui.clickGui.panels.navigation.waypointlist.WayPointList;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.gui.panels.GuiPanelScroll;
-import me.wallhacks.spark.manager.ConfigManager;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
 import me.wallhacks.spark.manager.WaypointManager;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
-import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 
 public class NavigationGui extends ClickGuiPanel implements MC {
 

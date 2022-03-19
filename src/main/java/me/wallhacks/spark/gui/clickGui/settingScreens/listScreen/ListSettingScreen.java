@@ -1,8 +1,8 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens.listScreen;
 
 import me.wallhacks.spark.gui.clickGui.settingScreens.SettingScreen;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
 import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.util.ResourceLocation;

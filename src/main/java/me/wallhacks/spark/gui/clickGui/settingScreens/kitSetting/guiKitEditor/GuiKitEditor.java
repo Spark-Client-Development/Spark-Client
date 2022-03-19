@@ -2,13 +2,12 @@ package me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.guiKitEditor;
 
 import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.guiKitEditor.itemList.ItemListGui;
 import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.guiKitEditor.itemList.ItemListGuiItem;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
 import me.wallhacks.spark.util.GuiUtil;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;

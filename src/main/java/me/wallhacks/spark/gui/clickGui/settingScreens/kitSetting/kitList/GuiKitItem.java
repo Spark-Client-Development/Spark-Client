@@ -1,15 +1,8 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.kitList;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
 import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
-import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 public class GuiKitItem extends GuiPanelBase {
     public GuiKitItem(GuiKitList listSelectSetting, String selection) {

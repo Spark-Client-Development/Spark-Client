@@ -5,7 +5,7 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.lwjgl.input.Mouse;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.manager.AltManager;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.SessionUtils;

@@ -1,8 +1,7 @@
-package me.wallhacks.spark.gui.panels;
+package me.wallhacks.spark.gui.dvdpanels;
 
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.util.GuiUtil;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;

@@ -1,8 +1,8 @@
 package me.wallhacks.spark.gui.clickGui.panels.navigation;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MathUtil;
@@ -14,7 +14,6 @@ import me.wallhacks.spark.util.objects.Vec2i;
 import me.wallhacks.spark.util.render.MapRender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;

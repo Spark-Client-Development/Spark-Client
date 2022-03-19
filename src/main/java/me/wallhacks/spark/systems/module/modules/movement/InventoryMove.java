@@ -2,15 +2,13 @@ package me.wallhacks.spark.systems.module.modules.movement;
 
 import me.wallhacks.spark.event.player.PlayerLivingTickEvent;
 import me.wallhacks.spark.event.player.UpdateEntityAction;
-import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiDoubleSettingPanel;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiIntSettingPanel;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiKeySettingPanel;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.gui.panels.GuiPanelScreen;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScreen;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.util.MC;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.inventory.GuiEditSign;

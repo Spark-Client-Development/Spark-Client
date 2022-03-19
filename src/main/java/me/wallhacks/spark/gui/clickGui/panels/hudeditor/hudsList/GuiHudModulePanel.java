@@ -2,7 +2,7 @@ package me.wallhacks.spark.gui.clickGui.panels.hudeditor.hudsList;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.hudeditor.HudEditor;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.systems.hud.HudElement;
 
 import java.awt.*;

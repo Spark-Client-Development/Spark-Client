@@ -1,4 +1,4 @@
-package me.wallhacks.spark.gui.panels;
+package me.wallhacks.spark.gui.dvdpanels;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;

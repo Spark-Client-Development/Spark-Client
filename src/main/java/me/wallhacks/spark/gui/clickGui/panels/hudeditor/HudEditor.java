@@ -3,14 +3,11 @@ package me.wallhacks.spark.gui.clickGui.panels.hudeditor;
 import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.gui.clickGui.ClickGuiPanel;
 import me.wallhacks.spark.gui.clickGui.panels.hudeditor.hudsList.GuiHudSettingTab;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.manager.SystemManager;
-import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.systems.hud.HudElement;
 
 public class HudEditor extends ClickGuiPanel {

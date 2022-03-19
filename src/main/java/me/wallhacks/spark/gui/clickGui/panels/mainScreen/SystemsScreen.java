@@ -2,7 +2,7 @@ package me.wallhacks.spark.gui.clickGui.panels.mainScreen;
 
 import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.gui.clickGui.ClickGuiPanel;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.BaritoneConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.SchematicaConfig;
 import net.minecraft.client.gui.Gui;

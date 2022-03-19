@@ -2,7 +2,7 @@ package me.wallhacks.spark.gui.clickGui.panels.navigation.waypointlist;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.navigation.NavigationGui;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.manager.WaypointManager;
 
 import java.util.ArrayList;

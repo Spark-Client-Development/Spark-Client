@@ -1,17 +1,14 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting;
 
-import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.guiKitEditor.GuiKitEditor;
 import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.kitList.GuiKitList;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.gui.panels.GuiPanelScreen;
-import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScreen;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
-import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 public class KitSettingGui extends GuiPanelScreen {

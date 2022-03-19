@@ -1,7 +1,7 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens.listScreen;
 
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
 import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
 import me.wallhacks.spark.util.GuiUtil;
 import org.lwjgl.input.Keyboard;

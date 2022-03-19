@@ -156,6 +156,13 @@ public class WaypointManager implements MC {
             Vec2d v = MapRender.ConvertPos(new Vec2d(pos.getValue().getX(),pos.getValue().getZ()),dim.getValueIndex()-1,mc.player.dimension);
             return new Vec2d((int)v.x,(int)v.y);
         }
+
+        public Vec2d getLocation2d(int fromDim, int toDim)
+        {
+            Vec2d v = MapRender.ConvertPos(new Vec2d(pos.getValue().getX(),pos.getValue().getZ()),fromDim,toDim);
+            return new Vec2d((int)v.x,(int)v.y);
+        }
+
         public Vec3i getLocation()
         {
             Vec2d v = MapRender.ConvertPos(new Vec2d(pos.getValue().getX(),pos.getValue().getZ()),dim.getValueIndex()-1,mc.player.dimension);

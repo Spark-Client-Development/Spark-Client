@@ -2,7 +2,7 @@ package me.wallhacks.spark.manager;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.panels.GuiPanelScroll;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
 import me.wallhacks.spark.util.*;
 import me.wallhacks.spark.util.auth.account.MSAccount;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -20,7 +20,7 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.storage.WorldInfo;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
 import me.wallhacks.spark.gui.altList.AltList;
 import me.wallhacks.spark.util.auth.MSAuth;
 import me.wallhacks.spark.util.objects.FakeWorld;

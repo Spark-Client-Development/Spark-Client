@@ -1,12 +1,8 @@
 package me.wallhacks.spark.gui.clickGui.panels.navigation.waypointlist;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.clickGui.panels.configs.Configs;
 import me.wallhacks.spark.gui.clickGui.panels.navigation.NavigationGui;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
-import me.wallhacks.spark.manager.ConfigManager;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.manager.WaypointManager;
 import me.wallhacks.spark.util.render.ColorUtil;
 

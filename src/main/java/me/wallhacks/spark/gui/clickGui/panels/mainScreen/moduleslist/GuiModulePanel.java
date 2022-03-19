@@ -2,7 +2,7 @@ package me.wallhacks.spark.gui.clickGui.panels.mainScreen.moduleslist;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.SystemsScreen;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.systems.module.Module;
 
 import java.awt.*;

@@ -1,6 +1,6 @@
 package me.wallhacks.spark.gui.clickGui.panels.mainScreen.moduleslist;
 
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;

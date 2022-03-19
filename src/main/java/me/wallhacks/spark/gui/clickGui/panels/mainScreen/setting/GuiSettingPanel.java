@@ -1,6 +1,6 @@
 package me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting;
 
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.systems.setting.Setting;
 
 public class GuiSettingPanel<T extends Setting> extends GuiPanelBase {

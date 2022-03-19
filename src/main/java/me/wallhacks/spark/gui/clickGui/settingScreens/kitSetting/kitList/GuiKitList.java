@@ -1,16 +1,8 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.kitList;
 
-import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.clickGui.panels.configs.configList.ConfigListItem;
 import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.KitSettingGui;
-import me.wallhacks.spark.gui.clickGui.settingScreens.listScreen.ListSettingGuiItem;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
-import me.wallhacks.spark.gui.panels.GuiPanelInputField;
-import me.wallhacks.spark.manager.ConfigManager;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
-import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
-import me.wallhacks.spark.util.GuiUtil;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 

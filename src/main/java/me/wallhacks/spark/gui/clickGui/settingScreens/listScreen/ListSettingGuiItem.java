@@ -1,7 +1,6 @@
 package me.wallhacks.spark.gui.clickGui.settingScreens.listScreen;
 
-import me.wallhacks.spark.gui.clickGui.panels.mainScreen.moduleslist.GuiModulePanel;
-import me.wallhacks.spark.gui.panels.GuiPanelBase;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.objects.MCStructures;
@@ -9,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 

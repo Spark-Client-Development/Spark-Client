@@ -2,7 +2,7 @@ package me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings;
 
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.GuiSettingPanel;
 import me.wallhacks.spark.gui.clickGui.settingScreens.listScreen.ListSettingScreen;
-import me.wallhacks.spark.gui.panels.GuiPanelButton;
+import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
 import me.wallhacks.spark.systems.setting.settings.ListSelectSetting;
 
 public class GuiListSettingPanel extends GuiSettingPanel<ListSelectSetting> {
