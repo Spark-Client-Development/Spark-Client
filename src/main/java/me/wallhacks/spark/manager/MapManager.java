@@ -1,6 +1,5 @@
 package me.wallhacks.spark.manager;
 
-import com.google.common.io.Files;
 import io.netty.util.internal.ConcurrentSet;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.ThreadEvent;
@@ -282,14 +281,10 @@ public class MapManager implements MC {
         if (!f.exists())
         {
             try {
-                Files.createParentDirs(f);
-            } catch (IOException e) {
-
-            }
-            try {
+                f.getParentFile().mkdirs();
                 f.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("Image file could not be created");
                 return;
             }
         }
@@ -297,7 +292,7 @@ public class MapManager implements MC {
         try {
             ImageIO.write(m.getBufferedImage(), "PNG", f);
         } catch (IOException e) {
-            System.out.println("Image could not be read");
+            System.out.println("Image could not be saved");
         }
 
     }
