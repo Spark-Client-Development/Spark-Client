@@ -89,7 +89,7 @@ public class MapGui extends GuiPanelBase {
             );
 
 
-            zoom = MathHelper.clamp(zoom+mWheel,0.5,1800);
+            zoom = MathHelper.clamp(zoom+mWheel,0.2,1800);
             if(screenInfoCoords != null)
                 screenInfoCoords = null;
 
@@ -102,7 +102,7 @@ public class MapGui extends GuiPanelBase {
 
 
         Vec2d pos = MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
-        MapRender.RenderWholeMap(posX,posY,width,height,(float) zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true,true,showBiomes);
+        MapRender.RenderWholeMap(posX,posY,width,height,(float) zoom,0,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true,true,showBiomes);
 
 
 
@@ -176,14 +176,25 @@ public class MapGui extends GuiPanelBase {
 
             Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, new Vec2d(mc.player.posX,mc.player.posZ),MouseX-offsetX,MouseY-offsetY,posX+width/2,posY+height/2);
 
-            SparkMap map = Spark.mapManager.getMap(SparkMap.getMapPosFromWorldPos(pos.x,pos.y),dim);
-            for (Pair<Vec2i, MCStructures> i : map.structures) {
-                if(MathUtil.getDistanceFromTo(i.getKey(),new Vec2i(pos.x/16,pos.y/16)) < 6 && MapConfig.getInstance().StructureList.contains(i.getValue()))
-                {
-                    mapGuiSubMenu.inputField.setText(i.getValue().name());
-                    break;
+            Vec2i mp = SparkMap.getMapPosFromWorldPos(pos.x,pos.y);
+            loop:
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    SparkMap map = Spark.mapManager.getMap(mp,dim);
+                    for (Pair<Vec2i, MCStructures> i : map.structures) {
+                        float x_start = (float) (posX+ (i.getKey().x*16)*zoom - offsetX);
+                        float y_start = (float) (posY+ (i.getKey().y*16)*zoom - offsetY);
+
+                        if(MathUtil.getDistanceFromTo(new Vec2d(MouseX,MouseY),new Vec2d(x_start,y_start)) < 10 && MapConfig.getInstance().StructureList.contains(i.getValue()))
+                        {
+                            mapGuiSubMenu.inputField.setText(i.getValue().name());
+                            break loop;
+                        }
+                    }
                 }
             }
+
+
         }
         else
             screenInfoCoords = null;

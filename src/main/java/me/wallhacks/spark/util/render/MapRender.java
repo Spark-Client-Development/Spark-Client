@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
+import scala.reflect.internal.AnnotationInfos;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -33,8 +34,8 @@ public class MapRender implements MC {
     public enum MapGrid {
         Chunks(16, new Vec2i(200,Integer.MAX_VALUE), new Color(0xFF4D4D57, true)),
         Regions(16*32, new Vec2i(40,450), new Color(0xFF9F9FBD, true)),
-        Sector(4096, new Vec2i(3,80), new Color(0xFF838396, true)),
-        LargeSector(16384*2, new Vec2i(0,6), new Color(0xFFA1A6A6, true));
+        Sector(4096, new Vec2i(3,80), new Color(0xFF474750, true)),
+        LargeSector(16384*2, new Vec2i(1,6), new Color(0xFFA1A6A6, true));
 
 
 
@@ -92,12 +93,26 @@ public class MapRender implements MC {
 
 
 
-    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, float ImageScale, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid, boolean showBiomes) {
+    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, float ImageScale,float rotation, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid, boolean showBiomes) {
         GL11.glPushMatrix();
         GuiUtil.glScissor(ImageStartX, ImageStartY, ImageScaleX, ImageScaleY);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
 
+        if(rotation % 90 != 0)
+        {
+            GlStateManager.translate(ImageStartX+ImageScaleX/2,ImageStartY+ImageScaleY/2,0);
+            GlStateManager.rotate(rotation, 0.0F, 0.0F, 1.0F);
+            GlStateManager.translate(-ImageStartX-ImageScaleX/2,-ImageStartY-ImageScaleY/2,0);
+
+
+            if(hover)
+                new Exception("hover needs to be false when rotate is not 0").printStackTrace();
+            ImageStartX -= ImageScaleX/2;
+            ImageStartY -= ImageScaleY/2;
+            ImageScaleX*=2;
+            ImageScaleY*=2;
+        }
 
         //background
         Gui.drawRect(ImageStartX, ImageStartY, ImageStartX + ImageScaleX, ImageStartY + ImageScaleY, new Color(68, 68, 68, 165).getRGB());
@@ -381,7 +396,7 @@ public class MapRender implements MC {
             float OffsetXtoPlayer = (float) (ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(pos.x - TargetX, ImageScale));
             float OffsetYtoPlayer = (float) (ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(pos.y - TargetZ, ImageScale));
 
-            GuiUtil.drawCompleteImageRotated(OffsetXtoPlayer - 2, OffsetYtoPlayer - 2, 4, 4, (int) mc.player.rotationYaw + 90, ARROW_ICON, dim == -1 ? Color.WHITE : Color.RED);
+            GuiUtil.drawCompleteImageRotated(OffsetXtoPlayer - 2, OffsetYtoPlayer - 2, 4, 4, mc.player.rotationYaw + 90, ARROW_ICON, dim == -1 ? Color.WHITE : Color.RED);
         }
 
 

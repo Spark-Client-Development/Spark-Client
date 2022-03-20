@@ -82,7 +82,7 @@ public class GuiUtil implements MC {
     }
 
 
-    public static void drawCompleteImageRotated(float posX, float posY, float width, float height, int rotation, ResourceLocation image, Color c) {
+    public static void drawCompleteImageRotated(float posX, float posY, float width, float height, float rotation, ResourceLocation image, Color c) {
 
         GL11.glPushMatrix();
         GlStateManager.translate(posX + width / 2, posY + height / 2, 0.0F);
