@@ -25,6 +25,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeCache;
 import net.minecraft.world.gen.ChunkGeneratorEnd;
 import net.minecraft.world.gen.ChunkGeneratorHell;
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
@@ -54,7 +55,12 @@ public class SeedManager implements MC {
     }
     public static SeedManager instance;
 
-    public static IntegratedServer integratedServer;
+    static IntegratedServer integratedServer;
+
+
+    public static IntegratedServer getIntegratedServer() {
+        return integratedServer;
+    }
 
     HashMap<String,String> seeds = new HashMap<>();
 
@@ -92,7 +98,7 @@ public class SeedManager implements MC {
 
     public void reload() {
 
-        if(mc.world == null || (!mc.isSingleplayer() && (mc.getCurrentServerData() == null || !seeds.containsKey(mc.getCurrentServerData().serverIP))))
+        if(mc.world == null || mc.isSingleplayer() || (!mc.isSingleplayer() && (mc.getCurrentServerData() == null || !seeds.containsKey(mc.getCurrentServerData().serverIP))))
         {
             integratedServer = null;
             return;
@@ -116,21 +122,18 @@ public class SeedManager implements MC {
 
 
 
-        if(!mc.isSingleplayer())
-        {
-            ISaveHandler isavehandler = integratedServer.getActiveAnvilConverter().getSaveLoader("lol1", true);
+        ISaveHandler isavehandler = integratedServer.getActiveAnvilConverter().getSaveLoader("lol1", true);
 
-            WorldInfo worldinfo = new WorldInfo(worldSettings, "lol1");
-            WorldServer overWorld = integratedServer.isDemo() ? (WorldServer)(new WorldServerDemo(integratedServer, isavehandler, worldinfo, 0, integratedServer.profiler)).init() : (WorldServer)(new WorldServer(integratedServer, isavehandler, worldinfo, 0, integratedServer.profiler)).init();
-            overWorld.initialize(worldSettings);
-            Integer[] var10 = DimensionManager.getStaticDimensionIDs();
-            int var11 = var10.length;
+        WorldInfo worldinfo = new WorldInfo(worldSettings, "lol1");
+        WorldServer overWorld = integratedServer.isDemo() ? (WorldServer)(new WorldServerDemo(integratedServer, isavehandler, worldinfo, 0, integratedServer.profiler)).init() : (WorldServer)(new WorldServer(integratedServer, isavehandler, worldinfo, 0, integratedServer.profiler)).init();
+        overWorld.initialize(worldSettings);
+        Integer[] var10 = DimensionManager.getStaticDimensionIDs();
+        int var11 = var10.length;
 
-            for(int var12 = 0; var12 < var11; ++var12) {
-                int dim = var10[var12];
-                WorldServer world = dim == 0 ? overWorld : (WorldServer)(new WorldServerMulti(integratedServer, isavehandler, dim, overWorld, integratedServer.profiler)).init();
-                world.initialize(worldSettings);
-            }
+        for(int var12 = 0; var12 < var11; ++var12) {
+            int dim = var10[var12];
+            WorldServer world = dim == 0 ? overWorld : (WorldServer)(new WorldServerMulti(integratedServer, isavehandler, dim, overWorld, integratedServer.profiler)).init();
+            world.initialize(worldSettings);
         }
 
         ((ChunkGeneratorEnd)integratedServer.getWorld(1).getChunkProvider().chunkGenerator).generateChunk(1,1);
@@ -177,29 +180,28 @@ public class SeedManager implements MC {
     }
 
     public ChunkGeneratorEnd getChunkGeneratorEnd() {
-        return ((ChunkGeneratorEnd)integratedServer.getWorld(1).getChunkProvider().chunkGenerator);
+        return ((ChunkGeneratorEnd)getIntegratedServer().getWorld(1).getChunkProvider().chunkGenerator);
     }
     public ChunkGeneratorOverworld getChunkGeneratorOverworld() {
-        return ((ChunkGeneratorOverworld)integratedServer.getWorld(0).getChunkProvider().chunkGenerator);
+        return ((ChunkGeneratorOverworld)getIntegratedServer().getWorld(0).getChunkProvider().chunkGenerator);
     }
     public ChunkGeneratorHell getChunkGeneratorHell() {
-        return ((ChunkGeneratorHell)integratedServer.getWorld(-1).getChunkProvider().chunkGenerator);
+        return ((ChunkGeneratorHell)getIntegratedServer().getWorld(-1).getChunkProvider().chunkGenerator);
     }
     public WorldServer getOverworld() {
-        return integratedServer.getWorld(0);
+        return getIntegratedServer().getWorld(0);
     }
 
     public Biome getBiome(int x, int y,int dim) {
 
-
-        return integratedServer.getWorld(dim).getBiome(new BlockPos(x, 0, y));
+        return getIntegratedServer().getWorld(dim).getBiome(new BlockPos(x, 0, y));
 
 
     }
 
     public ArrayList<MCStructures> getStructures(int chunkX, int chunkY,int dim) {
         ArrayList<MCStructures> structures = new ArrayList<>();
-        if(integratedServer == null)
+        if(getIntegratedServer() == null)
             return null;
         if(dim == 1)
         {

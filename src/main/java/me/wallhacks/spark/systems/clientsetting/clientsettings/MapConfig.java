@@ -27,8 +27,8 @@ public class MapConfig extends ClientSetting {
     }, v -> Structures.isOn(),"MapManager");
 
 
-
     public static MapConfig INSTANCE;
+
 
     public MapConfig() {
         super();

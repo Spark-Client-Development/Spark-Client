@@ -30,6 +30,8 @@ public class MapGui extends GuiPanelBase {
         offsetX = 0;
         offsetY = 0;
         screenInfoCoords = null;
+
+        showBiomes = false;
     }
 
     int dim = 0;
@@ -37,11 +39,14 @@ public class MapGui extends GuiPanelBase {
     double offsetX = 0;
     double offsetY = 0;
 
+    boolean showBiomes = false;
+
     MapGuiSubMenu mapGuiSubMenu = new MapGuiSubMenu(this);
 
     Vec2i screenInfoCoords;
 
     final ResourceLocation layersIcon = new ResourceLocation("textures/icons/layersicon.png");
+    final ResourceLocation biomeIcon = new ResourceLocation("textures/icons/biomeicon.png");
     GuiPanelButton dimButton = new GuiPanelButton(() -> {
 
 
@@ -62,6 +67,9 @@ public class MapGui extends GuiPanelBase {
         }
     },"");
 
+    GuiPanelButton biomeButton = new GuiPanelButton(() -> {
+        showBiomes = !showBiomes;
+    },"");
 
     @Override
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
@@ -69,7 +77,7 @@ public class MapGui extends GuiPanelBase {
 
 
 
-        double mWheel = zoom*deltaTime*(Mouse.getDWheel())*0.00008;
+        double mWheel = zoom*deltaTime*(Mouse.getDWheel())*0.00004;
 
 
         if(mWheel != 0)
@@ -94,7 +102,7 @@ public class MapGui extends GuiPanelBase {
 
 
         Vec2d pos = MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
-        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true,true);
+        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true,true,showBiomes);
 
 
 
@@ -109,6 +117,18 @@ public class MapGui extends GuiPanelBase {
         dimButton.drawBackGround(guiSettings.getGuiMainPanelBackgroundColor().getRGB());
         GuiUtil.drawCompleteImage(posX+3+2,posY+height-3-layerButton+2,layerButton-4,layerButton-4,layersIcon, Color.WHITE);
         dimButton.renderContent(MouseX, MouseY, deltaTime);
+
+
+
+        if(Spark.mapManager.canShowBiomes(dim))
+        {
+            biomeButton.setPositionAndSize(posX+3,posY+height-3-layerButton-3-layerButton,layerButton,layerButton);
+
+            biomeButton.drawBackGround(guiSettings.getGuiScreenBackgroundColor().getRGB());
+            biomeButton.drawBackGround(guiSettings.getGuiMainPanelBackgroundColor().getRGB());
+            GuiUtil.drawCompleteImage(posX+3+2,posY+height-3-layerButton-3-layerButton+2,layerButton-4,layerButton-4,biomeIcon, Color.WHITE);
+            biomeButton.renderContent(MouseX, MouseY, deltaTime);
+        }
 
 
 

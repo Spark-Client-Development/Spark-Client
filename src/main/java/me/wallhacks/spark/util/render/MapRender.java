@@ -55,7 +55,7 @@ public class MapRender implements MC {
     }
 
 
-    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, int ImageScale, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid) {
+    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, int ImageScale, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid, boolean showBiomes) {
         GL11.glPushMatrix();
         GuiUtil.glScissor(ImageStartX, ImageStartY, ImageScaleX, ImageScaleY);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -119,7 +119,11 @@ public class MapRender implements MC {
         ArrayList<Pair<Vec2i,MCStructures>> structuresHashMap = new ArrayList<Pair<Vec2i, MCStructures>>();
 
 
+        if(showBiomes && !Spark.mapManager.canShowBiomes(dim))
+            showBiomes = false;
+
         //render map
+
         for (int x = WholeMapStartPos.x; x <= WholeMapEndPos.x; x++) {
             for (int y = WholeMapStartPos.y; y <= WholeMapEndPos.y; y++) {
 
@@ -134,8 +138,24 @@ public class MapRender implements MC {
 
 
 
+                if(showBiomes){
+                    if(!map.isBiomeMapEmpty())
+                    {
 
-                if(!map.isEmpty())
+
+                        ResourceLocation location = map.getBiomeResourceLocation();
+
+                        if(location != null)
+                        {
+
+                            mc.getTextureManager().bindTexture(location);
+
+                            GuiUtil.drawCompleteImage(ImageStartX + x_, ImageStartY + y_, ImageScale, ImageScale);
+                        }
+                    }
+                    else
+                        Spark.mapManager.addToGenerateBiomeMap(map);
+                } else if(!map.isEmpty())
                 {
 
 

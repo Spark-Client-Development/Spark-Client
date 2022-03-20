@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.manager.SeedManager;
 import me.wallhacks.spark.util.objects.*;
 import me.wallhacks.spark.util.render.ColorUtil;
@@ -26,13 +27,21 @@ public class SparkMap {
 
     MapImage image;
 
+    MapImage biomeImage;
 
     public boolean isEmpty() {
         return image == null;
     }
+    public boolean isBiomeMapEmpty() {
+        return biomeImage == null;
+    }
     public ResourceLocation getResourceLocation()
     {
         return image.getResourceLocation();
+    }
+    public ResourceLocation getBiomeResourceLocation()
+    {
+        return biomeImage.getResourceLocation();
     }
 
     public BufferedImage getBufferedImage() {
@@ -50,6 +59,8 @@ public class SparkMap {
     public void delete() {
         if(image != null)
             image.delete();
+        if(biomeImage != null)
+            biomeImage.delete();
     }
 
     public boolean updateMapTextures(){
@@ -58,10 +69,18 @@ public class SparkMap {
             image.UpdateMapTextures();
             return true;
         }
+        if(!isBiomeMapEmpty() && biomeImage.isChangedImage())
+        {
+            biomeImage.UpdateMapTextures();
+            return true;
+        }
         return false;
     }
 
 
+    public static int getChunksInMap() {
+        return size*scale/16;
+    }
 
 
     public final Vec2i pos;
@@ -279,6 +298,21 @@ public class SparkMap {
     }
 
 
+    public void generateBiomeMap() {
+        if(biomeImage == null)
+            biomeImage = new MapImage(getChunksInMap());
+
+        Vec2i vec2i = getStartPos();
 
 
+        for (int x1 = 0; x1 < getChunksInMap(); x1++) {
+            for (int z1 = 0; z1 < getChunksInMap(); z1++) {
+                Biome mapC = Spark.seedManager.getBiome(vec2i.x+x1*16, vec2i.y+z1*16, dim);
+
+                biomeImage.setRGB(x1, z1, ColorUtil.getBiomeColor(mapC).getRGB());
+            }
+        }
+
+        biomeImage.setChangedImage();
+    }
 }

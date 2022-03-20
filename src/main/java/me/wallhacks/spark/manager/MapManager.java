@@ -8,9 +8,9 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.maps.SparkMap;
 import me.wallhacks.spark.util.objects.MCStructures;
-import me.wallhacks.spark.util.objects.MapImage;
 import me.wallhacks.spark.util.objects.Pair;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.util.math.ChunkPos;
@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapManager implements MC {
 
@@ -43,6 +45,10 @@ public class MapManager implements MC {
     private ConcurrentHashMap<Vec3i,SparkMap> loadedMaps = new ConcurrentHashMap<Vec3i,SparkMap>();
 
     ConcurrentSet<Vec3i> toLoad = new ConcurrentSet<Vec3i>();
+    CopyOnWriteArrayList<Vec3i> toGenerateBiomeMap = new CopyOnWriteArrayList<Vec3i>();
+
+
+
     ConcurrentSet<ChunkPos> chunksToLoad = new ConcurrentSet<>();
 
     ConcurrentSet<Vec3i> toSave = new ConcurrentSet<Vec3i>();
@@ -62,16 +68,25 @@ public class MapManager implements MC {
             loadedMaps.put(mapPos, new SparkMap(mapPos));
         }
 
-        mapsUsed.put(mapPos,20*12);
+        mapsUsed.put(mapPos,20*8);
 
 
         return loadedMaps.get(mapPos);
 
     }
 
+
+
     public void removeMap(Vec3i v) {
         loadedMaps.get(v).delete();
         loadedMaps.remove(v);
+
+        if(toGenerateBiomeMap.contains(v))
+            toGenerateBiomeMap.remove(v);
+        if(toLoad.contains(v))
+            toLoad.remove(v);
+        if(toSave.contains(v))
+            toSave.remove(v);
     }
 
     @SubscribeEvent
@@ -86,11 +101,13 @@ public class MapManager implements MC {
             mapsUsed.clear();
             toSave.clear();
             toLoad.clear();
+            toGenerateBiomeMap.clear();
             chunksToLoad.clear();
             CurrentServer = serv;
         }
 
     }
+
 
 
 
@@ -133,6 +150,21 @@ public class MapManager implements MC {
             }
 
 
+        } else if(toGenerateBiomeMap.size() > 0) {
+
+
+
+            Vec3i v = toGenerateBiomeMap.iterator().next();
+            toGenerateBiomeMap.remove(v);
+
+
+            if(SeedManager.getIntegratedServer() != null)
+            {
+                SparkMap m = getMap(v);
+                m.generateBiomeMap();
+
+            }
+
         }
 
     }
@@ -172,8 +204,8 @@ public class MapManager implements MC {
         }
         for (SparkMap map : loadedMaps.values())
         {
-            if(map.updateMapTextures())
-                break;
+            map.updateMapTextures();
+
         }
 
 
@@ -221,11 +253,11 @@ public class MapManager implements MC {
 
     public boolean LoadMap(SparkMap m){
 
-        int s = SparkMap.size/16*SparkMap.scale;
 
 
-        try {
-
+        if(SeedManager.getIntegratedServer() != null)
+        {
+            int s = SparkMap.getChunksInMap();
             for (int x = 0; x < s; x++) {
                 for (int y = 0; y < s; y++) {
                     int chunkX = m.pos.x*s+x;
@@ -233,6 +265,8 @@ public class MapManager implements MC {
 
 
                     ArrayList<MCStructures> structures = SeedManager.instance.getStructures(chunkX,chunkY,m.dim);
+
+
 
                     if(structures != null && structures.size() > 0)
                     {
@@ -243,10 +277,6 @@ public class MapManager implements MC {
                     }
                 }
             }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
         }
 
         File f = new File(getPath(m));
@@ -295,4 +325,34 @@ public class MapManager implements MC {
 
     }
 
+    public boolean canShowBiomes(int dim) {
+        return (dim == 0)
+            && (SeedManager.getIntegratedServer() != null);
+    }
+
+    public void addToGenerateBiomeMap(SparkMap map) {
+        if(canShowBiomes(map.dim))
+        {
+            Vec3i v = new Vec3i(map.pos.x,map.dim,map.pos.y);
+            if(!toGenerateBiomeMap.contains(v))
+            {
+                Vec2i playerPos = SparkMap.getMapPosFromWorldPos(mc.player.posX,mc.player.posZ);
+                double dis = MathUtil.getDistanceFromTo(new Vec2i(v.getX(),v.getZ()),playerPos);
+
+                ArrayList<Vec3i> arrayList = new ArrayList(toGenerateBiomeMap);
+                for (int i = 0; i < arrayList.size(); i++) {
+                    if(arrayList.get(i).getY() == map.dim)
+                    {
+                        if(dis < MathUtil.getDistanceFromTo(new Vec2i(arrayList.get(i).getX(),arrayList.get(i).getZ()),playerPos))
+                        {
+                            toGenerateBiomeMap.add(Math.min(toGenerateBiomeMap.size()-1,i),v);
+                            return;
+                        }
+                    }
+                }
+                toGenerateBiomeMap.add(v);
+
+            }
+        }
+    }
 }

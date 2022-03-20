@@ -110,27 +110,27 @@ public class ColorUtil {
 
     public static Color getBiomeColor(Biome b) {
         if (Biomes.OCEAN.equals(b)) {
-            return new Color(0x4A4ADA);
+            return new Color(000070);
         } else if (Biomes.DEFAULT.equals(b)) {
-            return new Color(0x6FD258);
+            return new Color(0x8DB360);
         } else if (Biomes.PLAINS.equals(b)) {
-            return new Color(0x10DE0B);
+            return new Color(0x8DB360);
         } else if (Biomes.DESERT.equals(b)) {
-            return new Color(0x8CDACB0F, true);
+            return new Color(0xFA9418);
         } else if (Biomes.EXTREME_HILLS.equals(b)) {
-            return new Color(0x38DC865E, true);
+            return new Color(0x38DC865E);
         } else if (Biomes.FOREST.equals(b)) {
-            return new Color(0xCF1BBE67, true);
+            return new Color(0xCF1BBE67);
         } else if (Biomes.TAIGA.equals(b)) {
-            return new Color(0xDA412828, true);
+            return new Color(0xDA412828);
         } else if (Biomes.SWAMPLAND.equals(b)) {
-            return new Color(0xA1829F8C, true);
+            return new Color(0xA1829F8C);
         } else if (Biomes.RIVER.equals(b)) {
             return new Color(0x5858A6);
         } else if (Biomes.HELL.equals(b)) {
             return new Color(0xEA0D0D);
         } else if (Biomes.SKY.equals(b)) {
-            return new Color(0x64000000, true);
+            return new Color(0x64000000);
         } else if (Biomes.FROZEN_OCEAN.equals(b)) {
             return new Color(0x2DC7C7);
         } else if (Biomes.FROZEN_RIVER.equals(b)) {
@@ -144,29 +144,29 @@ public class ColorUtil {
         } else if (Biomes.MUSHROOM_ISLAND_SHORE.equals(b)) {
             return new Color(0xC523C5);
         } else if (Biomes.BEACH.equals(b)) {
-            return new Color(0x8CFFEC00, true);
+            return new Color(0x8CFFEC00);
         } else if (Biomes.DESERT_HILLS.equals(b)) {
-            return new Color(0x8CDACB0F, true);
+            return new Color(0x8CDACB0F);
         } else if (Biomes.FOREST_HILLS.equals(b)) {
             return new Color(0x9E9EB0);
         } else if (Biomes.TAIGA_HILLS.equals(b)) {
-            return new Color(0xCF1BBE67, true);
+            return new Color(0xCF1BBE67);
         } else if (Biomes.EXTREME_HILLS_EDGE.equals(b)) {
-            return new Color(0x38DC865E, true);
+            return new Color(0x38DC865E);
         } else if (Biomes.JUNGLE.equals(b)) {
-            return new Color(0xCF1BBE67, true);
+            return new Color(0xCF1BBE67);
         } else if (Biomes.JUNGLE_HILLS.equals(b)) {
-            return new Color(0xCF1BBE67, true);
+            return new Color(0xCF1BBE67);
         } else if (Biomes.JUNGLE_EDGE.equals(b)) {
             return new Color(0x10DE0B);
         } else if (Biomes.DEEP_OCEAN.equals(b)) {
             return new Color(0x080893);
         } else if (Biomes.STONE_BEACH.equals(b)) {
-            return new Color(0x1E1B9B9, true);
+            return new Color(0x1E1B9B9);
         } else if (Biomes.COLD_BEACH.equals(b)) {
-            return new Color(0xDADAC6C6, true);
+            return new Color(0xDADAC6C6);
         } else if (Biomes.BIRCH_FOREST.equals(b)) {
-            return new Color(0xCF64AB7B, true);
+            return new Color(0xCF64AB7B);
         } else if (Biomes.BIRCH_FOREST_HILLS.equals(b)) {
             return new Color(0x62C062);
         } else if (Biomes.ROOFED_FOREST.equals(b)) {
@@ -182,9 +182,9 @@ public class ColorUtil {
         } else if (Biomes.EXTREME_HILLS_WITH_TREES.equals(b)) {
             return new Color(1);
         } else if (Biomes.SAVANNA.equals(b)) {
-            return new Color(0x3881543C, true);
+            return new Color(0x3881543C);
         } else if (Biomes.SAVANNA_PLATEAU.equals(b)) {
-            return new Color(0x3883543E, true);
+            return new Color(0x3883543E);
         } else if (Biomes.MESA.equals(b)) {
             return new Color(1);
         } else if (Biomes.MESA_ROCK.equals(b)) {
@@ -194,6 +194,70 @@ public class ColorUtil {
         } else if (Biomes.VOID.equals(b)) {
             return new Color(0x918F6E);
         }
+        else if (Biomes.MUTATED_PLAINS.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_DESERT.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_EXTREME_HILLS.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_FOREST.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_TAIGA.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_SWAMPLAND.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_ICE_FLATS.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_JUNGLE.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_JUNGLE_EDGE.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_BIRCH_FOREST.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_BIRCH_FOREST_HILLS.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_ROOFED_FOREST.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_TAIGA_COLD.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_REDWOOD_TAIGA.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_REDWOOD_TAIGA_HILLS.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_EXTREME_HILLS_WITH_TREES.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_SAVANNA.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_SAVANNA_ROCK.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_MESA.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_MESA_ROCK.equals(b)) {
+            return new Color(0x918F6E);
+        }
+        else if (Biomes.MUTATED_MESA_CLEAR_ROCK.equals(b)) {
+            return new Color(0x918F6E);
+        }
+
         return Color.WHITE;
     }
 }
