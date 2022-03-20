@@ -133,6 +133,7 @@ public class MapGui extends GuiPanelBase {
 
 
 
+
         Vec2i mousePosOnMap = SparkMap.getWorldPosFromScreenPosOnMap(zoom,pos,MouseX-offsetX,MouseY-offsetY,posX+width/2,posY+height/2);
 
         mousePosOnMap = new Vec2i((int) MathUtil.round(mousePosOnMap.x,(int)(2000/zoom)), (int) MathUtil.round(mousePosOnMap.y,(int)(2000/zoom)));
