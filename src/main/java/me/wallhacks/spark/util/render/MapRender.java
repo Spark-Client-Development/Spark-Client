@@ -81,7 +81,7 @@ public class MapRender implements MC {
             MapGrid grid = MapGrid.values()[i];
             if(grid.range.x < ImageScale && ImageScale < grid.range.y)
             {
-                float scale = grid.scaledSize/MapImage.size*ImageScale;
+                float scale = grid.scaledSize/SparkMap.size*ImageScale;
 
                 float conv = grid.size/SparkMap.getWidthAndHeight();
 
@@ -126,8 +126,14 @@ public class MapRender implements MC {
 
                 SparkMap map = MapManager.instance.getMap(new Vec2i(x, y), dim);
 
+                float x_ = map.getStartPos().x * (ImageScale / SparkMap.getWidthAndHeight()) - centerX;
+                float y_ = map.getStartPos().y * (ImageScale / SparkMap.getWidthAndHeight()) - centerY;
+
                 if(!map.structures.isEmpty())
                     structuresHashMap.addAll(new ArrayList<>(map.structures));
+
+
+
 
                 if(!map.isEmpty())
                 {
@@ -137,15 +143,14 @@ public class MapRender implements MC {
 
                     if(location != null)
                     {
-                        float x_ = map.getStartPos().x * (ImageScale / SparkMap.getWidthAndHeight()) - centerX;
-                        float y_ = map.getStartPos().y * (ImageScale / SparkMap.getWidthAndHeight()) - centerY;
-
 
                         mc.getTextureManager().bindTexture(location);
 
                         GuiUtil.drawCompleteImage(ImageStartX + x_, ImageStartY + y_, ImageScale, ImageScale);
                     }
                 }
+
+
 
             }
         }

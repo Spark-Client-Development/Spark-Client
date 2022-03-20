@@ -189,6 +189,14 @@ public class SeedManager implements MC {
         return integratedServer.getWorld(0);
     }
 
+    public Biome getBiome(int x, int y,int dim) {
+
+
+        return integratedServer.getWorld(dim).getBiome(new BlockPos(x, 0, y));
+
+
+    }
+
     public ArrayList<MCStructures> getStructures(int chunkX, int chunkY,int dim) {
         ArrayList<MCStructures> structures = new ArrayList<>();
         if(integratedServer == null)

@@ -33,10 +33,6 @@ public class MapManager implements MC {
 
         Spark.eventBus.register(this);
 
-
-
-
-
     }
     public static MapManager instance;
 
@@ -225,14 +221,16 @@ public class MapManager implements MC {
 
     public boolean LoadMap(SparkMap m){
 
-        int s = MapImage.size/16*SparkMap.scale;
+        int s = SparkMap.size/16*SparkMap.scale;
 
 
         try {
+
             for (int x = 0; x < s; x++) {
                 for (int y = 0; y < s; y++) {
                     int chunkX = m.pos.x*s+x;
                     int chunkY = m.pos.y*s+y;
+
 
                     ArrayList<MCStructures> structures = SeedManager.instance.getStructures(chunkX,chunkY,m.dim);
 
@@ -248,7 +246,7 @@ public class MapManager implements MC {
         }
         catch (Exception exception)
         {
-
+            exception.printStackTrace();
         }
 
         File f = new File(getPath(m));
@@ -259,7 +257,7 @@ public class MapManager implements MC {
 
         try {
             BufferedImage image = ImageIO.read(f);
-            if(image != null && image.getHeight() == MapImage.size && image.getWidth() == MapImage.size)
+            if(image != null && image.getHeight() == SparkMap.size && image.getWidth() == SparkMap.size)
                 m.setBufferedImage(image);
 
             return true;

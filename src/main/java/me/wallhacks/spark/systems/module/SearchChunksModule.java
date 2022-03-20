@@ -61,6 +61,7 @@ public class SearchChunksModule<T extends BlockPos> extends Module {
     }
     @SubscribeEvent
     public void onThread(ThreadEvent event) {
+        if(mc.world != null)
         if(!chunksToSearch.isEmpty())
         {
 

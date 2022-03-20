@@ -11,14 +11,19 @@ public class MapImage {
 
 
 
-    public static int size = 512;
+    int size = 512;
+
+    public int getSize() {
+        return size;
+    }
 
     ResourceLocation resourceLocation;
     DynamicTexture mapTextures;
     BufferedImage bufferedImages;
 
-    public MapImage() {
+    public MapImage(int size) {
 
+        this.size = size;
 
         bufferedImages = new BufferedImage(size, size, BufferedImage.TYPE_4BYTE_ABGR);
 
@@ -50,8 +55,6 @@ public class MapImage {
 
     public void setRGB(int x,int y,int rgb) {
         bufferedImages.setRGB(x,y,rgb);
-
-
     }
 
     public void setChangedImage() {
