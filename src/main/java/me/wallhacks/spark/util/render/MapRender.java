@@ -9,6 +9,7 @@ import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.MapConfig;
 import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.maps.SparkMap;
 import me.wallhacks.spark.util.objects.*;
 import net.minecraft.client.gui.Gui;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -31,7 +33,8 @@ public class MapRender implements MC {
     public enum MapGrid {
         Chunks(16, new Vec2i(200,Integer.MAX_VALUE), new Color(0xFF4D4D57, true)),
         Regions(16*32, new Vec2i(40,450), new Color(0xFF9F9FBD, true)),
-        Sector(4096, new Vec2i(0,80), new Color(0xFF6363D3, true));
+        Sector(4096, new Vec2i(3,80), new Color(0xFF838396, true)),
+        LargeSector(16384*2, new Vec2i(0,6), new Color(0xFFA1A6A6, true));
 
 
 
@@ -54,8 +57,42 @@ public class MapRender implements MC {
         }
     }
 
+    public enum Highway {
+        NorthHighway(0,0,Integer.MAX_VALUE,0,new Color(0x9E3434A6, true)),
+        EastHighway(0,0,0,Integer.MAX_VALUE,new Color(0x9E3434A6, true)),
+        WestHighway(0,0,0,Integer.MIN_VALUE,new Color(0x9E3434A6, true)),
+        SouthHighway(0,0,Integer.MIN_VALUE,0,new Color(0x9E3434A6, true)),
 
-    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, int ImageScale, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid, boolean showBiomes) {
+        NorthEastHighway(0,0,Integer.MAX_VALUE,Integer.MAX_VALUE,new Color(0x9D34A67A, true)),
+        SouthEastHighway(0,0,Integer.MIN_VALUE,Integer.MAX_VALUE,new Color(0x9D34A67A, true)),
+        SouthWestHighway(0,0,Integer.MIN_VALUE,Integer.MIN_VALUE,new Color(0x9D34A67A, true)),
+        NorthWestHighway(0,0,Integer.MAX_VALUE,Integer.MIN_VALUE,new Color(0x9D34A67A, true));
+
+
+        final int startX;
+        final int startZ;
+
+
+        final int endX;
+        final int endZ;
+
+
+        final Color color;
+
+        Highway(int startX, int startZ, int endX, int endZ, Color color) {
+            this.startX = startX;
+            this.startZ = startZ;
+            this.endX = endX;
+            this.endZ = endZ;
+            this.color = color;
+        }
+
+    }
+
+
+
+
+    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, float ImageScale, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid, boolean showBiomes) {
         GL11.glPushMatrix();
         GuiUtil.glScissor(ImageStartX, ImageStartY, ImageScaleX, ImageScaleY);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -73,6 +110,9 @@ public class MapRender implements MC {
         Vec2i WholeMapStartPos = SparkMap.getMapPosFrom2dMapPos(centerX, centerY, ImageScale);
         Vec2i WholeMapEndPos = SparkMap.getMapPosFrom2dMapPos(centerX + ImageScaleX, centerY + ImageScaleY, ImageScale);
 
+
+
+        float mapAlpha = MathHelper.clamp((ImageScale-10)/10f,0,1);
 
         float thick = 0.4f;
 
@@ -116,6 +156,8 @@ public class MapRender implements MC {
         }
 
 
+
+
         ArrayList<Pair<Vec2i,MCStructures>> structuresHashMap = new ArrayList<Pair<Vec2i, MCStructures>>();
 
 
@@ -124,6 +166,7 @@ public class MapRender implements MC {
 
         //render map
 
+        if(mapAlpha > 0)
         for (int x = WholeMapStartPos.x; x <= WholeMapEndPos.x; x++) {
             for (int y = WholeMapStartPos.y; y <= WholeMapEndPos.y; y++) {
 
@@ -148,9 +191,8 @@ public class MapRender implements MC {
                         if(location != null)
                         {
 
-                            mc.getTextureManager().bindTexture(location);
 
-                            GuiUtil.drawCompleteImage(ImageStartX + x_, ImageStartY + y_, ImageScale, ImageScale);
+                            GuiUtil.drawCompleteImage(ImageStartX + x_, ImageStartY + y_, ImageScale, ImageScale,location,new Color(1f,1f,1f,mapAlpha));
                         }
                     }
                     else
@@ -164,13 +206,59 @@ public class MapRender implements MC {
                     if(location != null)
                     {
 
-                        mc.getTextureManager().bindTexture(location);
 
-                        GuiUtil.drawCompleteImage(ImageStartX + x_, ImageStartY + y_, ImageScale, ImageScale);
+                        GuiUtil.drawCompleteImage(ImageStartX + x_, ImageStartY + y_, ImageScale, ImageScale,location,new Color(1f,1f,1f,mapAlpha));
                     }
                 }
 
 
+
+            }
+        }
+
+
+        FontManager fontManager = Spark.fontManager;
+
+        //highways
+        if(drawGrid)
+        {
+            for (Highway highway : Highway.values()) {
+                double xs = ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(highway.startX - TargetX, ImageScale);
+                double ys = ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(highway.startZ - TargetZ, ImageScale);
+
+                double xe = ImageStartX + ImageScaleX * 0.5 + offsetX + SparkMap.get2dMapPosFromWorldPos(highway.endX - TargetX, ImageScale);
+                double ye = ImageStartY + ImageScaleY * 0.5 + offsetY + SparkMap.get2dMapPosFromWorldPos(highway.endZ - TargetZ, ImageScale);
+
+                Vec2d cs = MathUtil.clamp(new Vec2d(xs,ys),new Vec2d(ImageStartX-5,ImageStartY-5),new Vec2d(ImageStartX+ImageScaleX+5,ImageStartY+ImageScaleY+5),new Vec2d(xe,ye));
+                Vec2d ce = MathUtil.clamp(new Vec2d(xe,ye),new Vec2d(ImageStartX-5,ImageStartY-5),new Vec2d(ImageStartX+ImageScaleX+5,ImageStartY+ImageScaleY+5),new Vec2d(xs,ys));
+
+                Vec2d mouse = new Vec2d(mouseX,mouseY);
+                boolean isOn = hover && MathUtil.inLine(cs,ce,mouse,5);
+
+                GuiUtil.linePre(highway.color,isOn ? 3f : 1.5f);
+
+
+                GL11.glBegin(2);
+                GL11.glVertex2d(cs.x,cs.y);
+                GL11.glVertex2d(ce.x,ce.y);
+                GL11.glEnd();
+
+
+                GuiUtil.linePost();
+
+                if(isOn)
+                {
+                    GL11.glPushMatrix();
+                    GlStateManager.translate(mouseX, mouseY, 0);
+
+                    String name = highway.name();
+                    GuiPanelBase.drawQuad(0, 0, fontManager.getTextWidth(name + 2), fontManager.getTextHeight() + 3, new Color(56, 53, 53, 245).getRGB());
+                    fontManager.drawString(name, 2, 2, new Color(239, 224, 224).getRGB());
+
+
+                    GL11.glPopMatrix();
+
+                }
 
             }
         }
@@ -221,7 +309,9 @@ public class MapRender implements MC {
 
 
 
-        FontManager fontManager = Spark.fontManager;
+
+
+
 
         for (WaypointManager.Waypoint point : Spark.waypointManager.getWayPoints()) {
 
@@ -299,7 +389,6 @@ public class MapRender implements MC {
 
         GL11.glPopMatrix();
     }
-
 
 
 

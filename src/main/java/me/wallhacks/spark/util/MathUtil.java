@@ -1,5 +1,6 @@
 package me.wallhacks.spark.util;
 
+import me.wallhacks.spark.util.objects.Vec2d;
 import me.wallhacks.spark.util.objects.Vec2i;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -11,6 +12,81 @@ public class MathUtil {
         current -= (current-target)*MathHelper.clamp(lerp,0, 1);
 
         return current;
+
+    }
+
+    //thanks to Richard from here: https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
+    public static boolean inLine(Vec2d A, Vec2d B, Vec2d C, double tolerance)
+    {
+        double minX = Math.min(A.x, B.x) - tolerance;
+        double maxX = Math.max(A.x, B.x) + tolerance;
+        double minY = Math.min(A.y, B.y) - tolerance;
+        double maxY = Math.max(A.y, B.y) + tolerance;
+
+        //Check C is within the bounds of the line
+        if (C.x >= maxX || C.x <= minX || C.y <= minY || C.y >= maxY)
+        {
+            return false;
+        }
+
+        // Check for when AB is vertical
+        if (A.x == B.x)
+        {
+            if (Math.abs(A.x - C.x) >= tolerance)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        // Check for when AB is horizontal
+        if (A.y == B.y)
+        {
+            if (Math.abs(A.y - C.y) >= tolerance)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+        // Check distance of the point form the line
+        double distFromLine = Math.abs(((B.x - A.x)*(A.y - C.y))-((A.x - C.x)*(B.y - A.y))) / Math.sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
+
+        if (distFromLine >= tolerance)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+
+
+    public static Vec2d clamp(Vec2d in, Vec2d min, Vec2d max, Vec2d relative) {
+
+        Vec2d dir = new Vec2d(in.x-relative.x,in.y-relative.y).normalized();
+
+
+
+
+
+        double x = MathHelper.clamp(in.x,min.x,max.x);
+        double y = MathHelper.clamp(in.y,min.y,max.y);
+
+        if(dir.x == 0 || dir.y == 0)
+            return new Vec2d(x,y);
+
+        double len = Math.max(Math.abs(relative.x-x),Math.abs(relative.y-y))*2;
+
+        x = relative.x + (dir.x) * len;
+        y = relative.y + (dir.y) * len;
+
+
+        return new Vec2d(x,y);
+
 
     }
     public static double moveTwards(double current,double target,double step){
@@ -52,6 +128,11 @@ public class MathUtil {
         double f1 = from.y - to.y;
         return MathHelper.sqrt(f * f + f1 * f1);
     }
+    public static double getDistanceFromTo(Vec2d from, Vec2d to) {
+        double f = from.x - to.x;
+        double f1 = from.y - to.y;
+        return MathHelper.sqrt(f * f + f1 * f1);
+    }
 
     public static double roundToClosest(double num, double low, double high) {
 		double d1 = num - low;
@@ -65,7 +146,11 @@ public class MathUtil {
 
     public static double roundAvoid(double value, int places) {
         double scale = Math.pow(10, places);
-        return Math.round(value * scale) / scale;
+        return round(value,scale);
     }
+    public static int round(double value, double scale) {
+        return (int) (Math.round(value / scale) * scale);
+    }
+
 }
 

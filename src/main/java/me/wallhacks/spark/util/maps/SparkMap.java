@@ -99,7 +99,7 @@ public class SparkMap {
 
     public static Vec2i getWorldPosFromScreenPosOnMap(double zoom, Vec2d pos, double x, double y, double centerX, double centerY) {
 
-        return new Vec2i(SparkMap.getWorldPosFrom2dMapPosRound(SparkMap.get2dMapPosFromWorldPos(pos.x,(int)zoom) + x - centerX, (int) zoom), SparkMap.getWorldPosFrom2dMapPosRound(SparkMap.get2dMapPosFromWorldPos(pos.y,(int)zoom) + y - centerY, (int) zoom));
+        return new Vec2i((int) SparkMap.getWorldPosFrom2dMapPos(SparkMap.get2dMapPosFromWorldPos(pos.x,zoom) + x - centerX, zoom), (int) SparkMap.getWorldPosFrom2dMapPos(SparkMap.get2dMapPosFromWorldPos(pos.y,zoom) + y - centerY,  zoom));
 
     }
 
@@ -124,7 +124,7 @@ public class SparkMap {
     }
 
 
-    public static Vec2i getMapPosFrom2dMapPos(double ScreenX,double ScreenY,int MapScale){
+    public static Vec2i getMapPosFrom2dMapPos(double ScreenX,double ScreenY,float MapScale){
         return getMapPosFromWorldPos(getWorldPosFrom2dMapPos(ScreenX,MapScale),getWorldPosFrom2dMapPos(ScreenY,MapScale));
     }
     public static Vec2i getMapPosFromWorldPos(double x,double y){

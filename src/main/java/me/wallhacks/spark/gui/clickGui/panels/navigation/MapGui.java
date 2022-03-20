@@ -89,7 +89,7 @@ public class MapGui extends GuiPanelBase {
             );
 
 
-            zoom = MathHelper.clamp(zoom+mWheel,10,1800);
+            zoom = MathHelper.clamp(zoom+mWheel,0.5,1800);
             if(screenInfoCoords != null)
                 screenInfoCoords = null;
 
@@ -102,7 +102,7 @@ public class MapGui extends GuiPanelBase {
 
 
         Vec2d pos = MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,dim);
-        MapRender.RenderWholeMap(posX,posY,width,height,(int)zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true,true,showBiomes);
+        MapRender.RenderWholeMap(posX,posY,width,height,(float) zoom,pos.x,pos.y,offsetX,offsetY,dim, MouseX, MouseY, true,true,showBiomes);
 
 
 
@@ -134,6 +134,10 @@ public class MapGui extends GuiPanelBase {
 
 
         Vec2i mousePosOnMap = SparkMap.getWorldPosFromScreenPosOnMap(zoom,pos,MouseX-offsetX,MouseY-offsetY,posX+width/2,posY+height/2);
+
+        mousePosOnMap = new Vec2i((int) MathUtil.round(mousePosOnMap.x,(int)(2000/zoom)), (int) MathUtil.round(mousePosOnMap.y,(int)(2000/zoom)));
+
+
         String coords = "("+mousePosOnMap.x +"," + mousePosOnMap.y+")";
         int coordsLen = fontManager.getTextWidth(coords)+4;
         int coordsHeight = fontManager.getTextHeight()+4;

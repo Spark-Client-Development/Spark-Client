@@ -42,6 +42,15 @@ public class Vec2d {
         }
     }
 
+    public double length(){
+        return Math.sqrt(x*x + y*y);
+    }
+    public Vec2d normalized() {
+        if(length() <= 0)
+            return new Vec2d(x,y);
+        return new Vec2d(x/length(),y/length());
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31).
