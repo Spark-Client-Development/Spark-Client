@@ -186,7 +186,7 @@ public class Scaffold extends Module {
             }
         }
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new SolidBlockSwitchItem(),Spark.switchManager.getModeFromString(switchingMode.getValue()), true, true));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x,new SolidBlockSwitchItem(),Spark.switchManager.getModeFromString(switchingMode.getValue()), true));
 
 
 

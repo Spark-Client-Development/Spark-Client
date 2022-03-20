@@ -140,7 +140,7 @@ public class HoleEsp extends SearchChunksModule<HoleEsp.HoleInfo> {
     protected void blockChanged(BlockPos pos) {
         if(pos == null || nullCheck())
             return;
-        List<BlockPos> blocks = WorldUtils.getSphere(pos,3,2,0);
+        List<BlockPos> blocks = WorldUtils.getSphere(pos,3,2,-1);
         for (BlockPos p : blocks)
             removeFound(p);
         for (BlockPos p : blocks)

@@ -113,7 +113,7 @@ public class AutoWither extends Module {
                         return;
 
 
-                    BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(p, new SpecBlockSwitchItem(i < 4 ? Blocks.SOUL_SAND : Blocks.SKULL), false, true);
+                    BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(p, new SpecBlockSwitchItem(i < 4 ? Blocks.SOUL_SAND : Blocks.SKULL), true);
 
 
 

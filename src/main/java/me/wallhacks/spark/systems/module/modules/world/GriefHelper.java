@@ -78,7 +78,7 @@ public class GriefHelper extends Module {
                                                 if(RedStoneCheck(place))
                                                     continue;
 
-                                                BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(place, new SpecBlockSwitchItem(Blocks.TNT),false, true);
+                                                BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(place, new SpecBlockSwitchItem(Blocks.TNT),true);
                                                 if(res != BlockInteractUtil.BlockPlaceResult.FAILED)
                                                 {
                                                     if (res == BlockInteractUtil.BlockPlaceResult.PLACED)

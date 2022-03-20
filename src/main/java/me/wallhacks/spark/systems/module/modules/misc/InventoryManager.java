@@ -397,11 +397,68 @@ public class InventoryManager extends Module {
             }
             else
             {
-                Item[] items = new Item[36];
-                items[0] = Items.DIAMOND_SWORD;
-                items[1] = Items.GOLDEN_APPLE;
-                items[8] = Items.DIAMOND_PICKAXE;
-                setKit("Default",items);
+                //default kits
+                {
+                    Item[] items = new Item[36];
+                    items[0] = Items.DIAMOND_SWORD;
+                    items[1] = Items.GOLDEN_APPLE;
+                    items[8] = Items.DIAMOND_PICKAXE;
+                    setKit("Basic",items);
+                }
+                {
+                    Item[] items = new Item[36];
+                    items[0] = Items.DIAMOND_SWORD;
+                    items[1] = Items.GOLDEN_APPLE;
+                    items[1] = Items.END_CRYSTAL;
+                    items[3] = Items.POTIONITEM;
+                    items[4] = Items.CHORUS_FRUIT;
+                    items[5] = Items.EXPERIENCE_BOTTLE;
+                    items[6] = Item.getItemFromBlock(Blocks.ENDER_CHEST);
+                    items[7] = Item.getItemFromBlock(Blocks.OBSIDIAN);
+                    items[8] = Items.DIAMOND_PICKAXE;
+                    setKit("Dvd",items);
+                }
+                {
+                    Item[] items = new Item[36];
+                    items[0] = Items.DIAMOND_HOE;
+                    items[1] = Items.DIAMOND_PICKAXE;
+                    items[2] = Items.DIAMOND_SHOVEL;
+                    items[3] = Items.DIAMOND_AXE;
+                    items[4] = Items.DIAMOND_SWORD;
+                    items[5] = Items.GOLDEN_APPLE;
+                    items[6] = Items.ENDER_PEARL;
+                    items[7] = Items.COOKED_BEEF;
+                    items[8] = Item.getItemFromBlock(Blocks.OBSIDIAN);
+                    items[9] = Items.ENDER_PEARL;
+                    items[10] = Items.ENDER_PEARL;
+                    items[11] = Items.ENDER_PEARL;
+                    items[12] = Items.ENDER_PEARL;
+                    items[13] = Items.ENDER_PEARL;
+                    items[14] = Item.getItemFromBlock(Blocks.OBSIDIAN);;
+                    items[15] = Item.getItemFromBlock(Blocks.OBSIDIAN);;
+                    items[16] = Item.getItemFromBlock(Blocks.OBSIDIAN);
+                    items[17] = Item.getItemFromBlock(Blocks.OBSIDIAN);
+                    items[18] = Items.TOTEM_OF_UNDYING;
+                    items[19] = Items.TOTEM_OF_UNDYING;
+                    items[20] = Items.TOTEM_OF_UNDYING;
+                    items[21] = Items.TOTEM_OF_UNDYING;
+                    items[22] = Items.TOTEM_OF_UNDYING;
+                    items[23] = Items.TOTEM_OF_UNDYING;
+                    items[24] = Items.TOTEM_OF_UNDYING;
+                    items[25] = Items.TOTEM_OF_UNDYING;
+                    items[26] = Items.TOTEM_OF_UNDYING;
+                    items[27] = Items.TOTEM_OF_UNDYING;
+                    items[28] = Items.TOTEM_OF_UNDYING;
+                    items[29] = Items.TOTEM_OF_UNDYING;
+                    items[30] = Items.TOTEM_OF_UNDYING;
+                    items[31] = Items.TOTEM_OF_UNDYING;
+                    items[32] = Items.TOTEM_OF_UNDYING;
+                    items[33] = Items.TOTEM_OF_UNDYING;
+                    items[34] = Items.TOTEM_OF_UNDYING;
+                    items[35] = Items.TOTEM_OF_UNDYING;
+                    setKit("Wallhacks",items);
+                }
+
             }
         } catch (Exception e) {
             Spark.logger.info("Failed to load kits");

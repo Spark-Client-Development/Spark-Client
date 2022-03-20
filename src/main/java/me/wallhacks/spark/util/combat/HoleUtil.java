@@ -23,10 +23,17 @@ public class HoleUtil implements MC {
         return mc.player.dimension == -1 ? (blockPos.getY() == 0 || blockPos.getY() == 127) && getBlockResistance(blockPos) == BlockResistance.Blank : blockPos.getY() == 0 && getBlockResistance(blockPos) == BlockResistance.Blank;
     }
 
+    public static boolean canGetIn(BlockPos pos) {
+
+        return getBlockResistance(pos.add(0,1,0)) == BlockResistance.Blank && getBlockResistance(pos.add(0,2,0)) == BlockResistance.Blank;
+    }
 
     public static int isDoubleHole(BlockPos blockPos, EnumFacing enumFacing) {
-        if (getBlockResistance(blockPos.add(enumFacing.getDirectionVec())) != BlockResistance.Blank || getBlockResistance(blockPos.add(enumFacing.getDirectionVec()).add(0,1,0)) != BlockResistance.Blank
-            || getBlockResistance(blockPos) != BlockResistance.Blank || getBlockResistance(blockPos.add(0,1,0)) != BlockResistance.Blank)
+        if (getBlockResistance(blockPos.add(enumFacing.getDirectionVec())) != BlockResistance.Blank
+            || getBlockResistance(blockPos) != BlockResistance.Blank)
+            return -1;
+
+        if(!canGetIn(blockPos) && !canGetIn(blockPos.add(enumFacing.getDirectionVec())))
             return -1;
 
         int bedrock = 0;
@@ -72,6 +79,10 @@ public class HoleUtil implements MC {
     public static int isSingleHole(BlockPos blockPos) {
         if(getBlockResistance(blockPos) != BlockResistance.Blank || getBlockResistance(blockPos.add(0,1,0)) != BlockResistance.Blank)
             return -1;
+
+        if(!canGetIn(blockPos))
+            return -1;
+
         int i = 0;
 
         BlockResistance resistance = getBlockResistance(blockPos.add(0, -1, 0));

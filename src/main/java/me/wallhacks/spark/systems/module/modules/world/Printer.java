@@ -98,7 +98,7 @@ public class Printer extends Module {
                 if(b != Blocks.AIR)
                 {
 
-                    BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(p, new SpecBlockSwitchItem(b), false, true);
+                    BlockInteractUtil.BlockPlaceResult res = BlockInteractUtil.tryPlaceBlock(p, new SpecBlockSwitchItem(b), true);
                     if(res != BlockInteractUtil.BlockPlaceResult.FAILED)
                     {
                         if (res == BlockInteractUtil.BlockPlaceResult.PLACED)

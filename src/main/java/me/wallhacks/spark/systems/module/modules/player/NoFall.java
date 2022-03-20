@@ -55,7 +55,7 @@ public class NoFall extends Module {
                         break;
                     if(!b.material.isReplaceable()) {
 
-                        BlockInteractUtil.tryPlaceBlock(p.add(0, 1-h, 0), new ItemStopFall(), false, false);
+                        BlockInteractUtil.tryPlaceBlock(p.add(0, 1-h, 0), new ItemStopFall(), false);
 
                         timer=10;
 
