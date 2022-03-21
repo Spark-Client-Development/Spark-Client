@@ -14,7 +14,10 @@ public class CommandManager {
 
 	public static final Map<String,Command> COMMANDSBYNAME = new HashMap<>();
 	public static final Map<String, ArrayList<String>> COMMANDUSAGES = new HashMap<>();
-	
+
+	//geza fix the commands!!!!
+	//rn
+
 	public CommandManager() {
 		new HClipCommand();
 		new VClipCommand();
