@@ -612,6 +612,8 @@ public class CrystalAura extends Module {
                 return false;
             }
         }
+        if(!needsRotating)
+            return true;
         return Spark.rotationManager.rotate(rot, isUpdate,false);
     }
 
