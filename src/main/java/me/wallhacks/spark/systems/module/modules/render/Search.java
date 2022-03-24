@@ -35,6 +35,8 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
             Block.getBlockFromName("end_portal_frame"),
             Block.getBlockFromName("portal")
     });
+    BooleanSetting renderFullBlocks = new BooleanSetting("FullBlocks",this,false);
+    BooleanSetting renderFill = new BooleanSetting("RenderFilled",this,false);
 
     @SubscribeEvent
     public void onSettingChange(SettingChangeEvent event) {
@@ -73,6 +75,8 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
             }
             if (!found.containsKey(c) || found.get(c) == null) return;
             GL11.glBegin(GL11.GL_QUADS);
+
+            if(renderFill.isOn())
             for (SearchBlock block : found.get(c)) {
                 ColorUtil.glColor(new Color(block.color.getRed(), block.color.getGreen(), block.color.getBlue(), 120));
                 int i = 0;
@@ -180,7 +184,7 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
 
            
             axisAlignedBB = mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos).offset(-pos.getX(),-pos.getY(),-pos.getZ());
-            
+
 
             lineMap = new Pair[]{
                     new Pair(true, new Pair(new Vec3d(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ))),
@@ -204,7 +208,7 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
                 IBlockState s = mc.world.getBlockState(p);
                 if (block == s.getBlock() && !p.equals(removed)) {
 
-                    AxisAlignedBB bb = mc.world.getBlockState(p).getSelectedBoundingBox(mc.world, p).offset(-p.getX(),-p.getY(),-p.getZ());
+                    AxisAlignedBB bb = renderFullBlocks.isOn() ? new AxisAlignedBB(0,0,0,1,1,1) : mc.world.getBlockState(p).getSelectedBoundingBox(mc.world, p).offset(-p.getX(),-p.getY(),-p.getZ());
 
                     if(!new AxisAlignedBB(0,0,0,1,1,1).equals(axisAlignedBB) || !new AxisAlignedBB(0,0,0,1,1,1).equals(bb))
                     switch (facing) {
