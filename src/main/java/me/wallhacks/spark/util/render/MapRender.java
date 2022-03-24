@@ -59,15 +59,15 @@ public class MapRender implements MC {
     }
 
     public enum Highway {
-        NorthHighway(0,0,Integer.MAX_VALUE,0,new Color(0x9E3434A6, true)),
-        EastHighway(0,0,0,Integer.MAX_VALUE,new Color(0x9E3434A6, true)),
-        WestHighway(0,0,0,Integer.MIN_VALUE,new Color(0x9E3434A6, true)),
-        SouthHighway(0,0,Integer.MIN_VALUE,0,new Color(0x9E3434A6, true)),
+        EastHighway(0,0,Integer.MAX_VALUE,0,new Color(0x9E3434A6, true)),
+        SouthHighway(0,0,0,Integer.MAX_VALUE,new Color(0x9E3434A6, true)),
+        NorthHighway(0,0,0,Integer.MIN_VALUE,new Color(0x9E3434A6, true)),
+        WestHighway(0,0,Integer.MIN_VALUE,0,new Color(0x9E3434A6, true)),
 
-        NorthEastHighway(0,0,Integer.MAX_VALUE,Integer.MAX_VALUE,new Color(0x9D34A67A, true)),
-        SouthEastHighway(0,0,Integer.MIN_VALUE,Integer.MAX_VALUE,new Color(0x9D34A67A, true)),
-        SouthWestHighway(0,0,Integer.MIN_VALUE,Integer.MIN_VALUE,new Color(0x9D34A67A, true)),
-        NorthWestHighway(0,0,Integer.MAX_VALUE,Integer.MIN_VALUE,new Color(0x9D34A67A, true));
+        SouthEastHighway(0,0,Integer.MAX_VALUE,Integer.MAX_VALUE,new Color(0x9D34A67A, true)),
+        SouthWestHighway(0,0,Integer.MIN_VALUE,Integer.MAX_VALUE,new Color(0x9D34A67A, true)),
+        NorthWestHighway(0,0,Integer.MIN_VALUE,Integer.MIN_VALUE,new Color(0x9D34A67A, true)),
+        NorthEastHighway(0,0,Integer.MAX_VALUE,Integer.MIN_VALUE,new Color(0x9D34A67A, true));
 
 
         final int startX;

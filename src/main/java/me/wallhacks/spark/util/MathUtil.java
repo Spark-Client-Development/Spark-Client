@@ -76,6 +76,9 @@ public class MathUtil {
         double x = MathHelper.clamp(in.x,min.x,max.x);
         double y = MathHelper.clamp(in.y,min.y,max.y);
 
+        if(in.x == x && in.y == y)
+            return new Vec2d(x,y);
+
         if(dir.x == 0 || dir.y == 0)
             return new Vec2d(x,y);
 

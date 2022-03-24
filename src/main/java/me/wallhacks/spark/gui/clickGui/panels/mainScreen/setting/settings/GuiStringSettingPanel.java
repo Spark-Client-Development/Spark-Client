@@ -28,16 +28,15 @@ public class GuiStringSettingPanel extends GuiSettingPanel<StringSetting> {
         else
             guiPanelInputField.setText(getSetting().getValue());
 
-        int inputFieldWidth = 50;
+        int inputFieldWidth = 140;
         int inputFieldHeight = 14;
 
         fontManager.drawString(getSetting().getName(),posX,posY+4, guiSettings.getContrastColor().getRGB());
 
 
-        int x = 0;
 
         guiPanelInputField.setBackGroundColor(guiSettings.getGuiSettingFieldColor().getRGB());
-        guiPanelInputField.setPositionAndSize(posX+x,posY+4+ 1 +  fontManager.getTextHeight(),inputFieldWidth,inputFieldHeight);
+        guiPanelInputField.setPositionAndSize(posX,posY+4+ 1 +  fontManager.getTextHeight(),inputFieldWidth,inputFieldHeight);
         guiPanelInputField.renderContent(MouseX, MouseY, deltaTime);
 
 
