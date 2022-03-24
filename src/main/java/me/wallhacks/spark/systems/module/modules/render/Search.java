@@ -36,12 +36,13 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
             Block.getBlockFromName("portal")
     });
     BooleanSetting renderFill = new BooleanSetting("RenderFilled",this,true);
+    BooleanSetting fullBlocks = new BooleanSetting("FullBlocks",this,true);
 
     @SubscribeEvent
     public void onSettingChange(SettingChangeEvent event) {
         if(mc.player == null)
             return;
-        if (event.getSetting() == searchBlocks) {
+        if (event.getSetting() == searchBlocks || event.getSetting() == fullBlocks) {
             refresh();
         }
     }
@@ -181,8 +182,10 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
             super(pos);
             Block block = state.getBlock();
 
-           
-            axisAlignedBB = mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos).offset(-pos.getX(),-pos.getY(),-pos.getZ());
+            boolean full = fullBlocks.isOn();
+
+
+            axisAlignedBB = full ? new AxisAlignedBB(0,0,0,1,1,1) : mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos).offset(-pos.getX(),-pos.getY(),-pos.getZ());
 
 
             lineMap = new Pair[]{
@@ -207,66 +210,65 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
                 IBlockState s = mc.world.getBlockState(p);
                 if (block == s.getBlock() && !p.equals(removed)) {
 
-                    boolean full = (!(s.getBlock() == Blocks.PORTAL)
-                            && !(s.getBlock() == Blocks.ENDER_CHEST)
-                            && !(s.getBlock() == Blocks.CHEST)
-                            && !(s.getBlock() == Blocks.BED)
-                            && !(s.getBlock() == Blocks.REDSTONE_TORCH)
-                            && !(s.getBlock() == Blocks.TORCH));
 
 
-                    AxisAlignedBB bb = full ? new AxisAlignedBB(0,0,0,1,1,1) : mc.world.getBlockState(p).getSelectedBoundingBox(mc.world, p).offset(-p.getX(),-p.getY(),-p.getZ());
 
-                    if(!new AxisAlignedBB(0,0,0,1,1,1).equals(axisAlignedBB) || !new AxisAlignedBB(0,0,0,1,1,1).equals(bb))
-                    switch (facing) {
-                        case UP:
-                            if(axisAlignedBB.maxY != 1)
-                                continue;
-                            if(bb.minY != 0)
-                                continue;
-                            if(axisAlignedBB.minX != bb.minX || axisAlignedBB.minZ != bb.minZ || axisAlignedBB.maxX != bb.maxX || axisAlignedBB.maxZ != bb.maxZ)
-                                continue;
-                            break;
-                        case DOWN:
-                            if(axisAlignedBB.minY != 0)
-                                continue;
-                            if(bb.maxY != 1)
-                                continue;
-                            if(axisAlignedBB.minX != bb.minX || axisAlignedBB.minZ != bb.minZ || axisAlignedBB.maxX != bb.maxX || axisAlignedBB.maxZ != bb.maxZ)
-                                continue;
-                            break;
-                        case WEST:
-                            if(axisAlignedBB.minX != 0)
-                                continue;
-                            if(bb.maxX != 1)
-                                continue;
-                            if(axisAlignedBB.minZ != bb.minZ || axisAlignedBB.minY != bb.minY || axisAlignedBB.maxZ != bb.maxZ || axisAlignedBB.maxY != bb.maxY)
-                                continue;
-                            break;
-                        case NORTH:
-                            if(axisAlignedBB.minZ != 0)
-                                continue;
-                            if(bb.maxZ != 1)
-                                continue;
-                            if(axisAlignedBB.minX != bb.minX || axisAlignedBB.minY != bb.minY || axisAlignedBB.maxX != bb.maxX || axisAlignedBB.maxY != bb.maxY)
-                                continue;
-                            break;
-                        case EAST:
-                            if(axisAlignedBB.maxX != 1)
-                                continue;
-                            if(bb.minX != 0)
-                                continue;
-                            if(axisAlignedBB.minZ != bb.minZ || axisAlignedBB.minY != bb.minY || axisAlignedBB.maxZ != bb.maxZ || axisAlignedBB.maxY != bb.maxY)
-                                continue;
-                            break;
-                        case SOUTH:
-                            if(axisAlignedBB.maxZ != 1)
-                                continue;
-                            if(bb.minZ != 0)
-                                continue;
-                            if(axisAlignedBB.minX != bb.minX || axisAlignedBB.minY != bb.minY || axisAlignedBB.maxX != bb.maxX || axisAlignedBB.maxY != bb.maxY)
-                                continue;
-                            break;
+                    if(!full)
+                    {
+                        AxisAlignedBB bb = mc.world.getBlockState(p).getSelectedBoundingBox(mc.world, p).offset(-p.getX(),-p.getY(),-p.getZ());
+
+
+                        if(!new AxisAlignedBB(0,0,0,1,1,1).equals(axisAlignedBB) || !new AxisAlignedBB(0,0,0,1,1,1).equals(bb))
+                            switch (facing) {
+                                case UP:
+                                    if(axisAlignedBB.maxY != 1)
+                                        continue;
+                                    if(bb.minY != 0)
+                                        continue;
+                                    if(axisAlignedBB.minX != bb.minX || axisAlignedBB.minZ != bb.minZ || axisAlignedBB.maxX != bb.maxX || axisAlignedBB.maxZ != bb.maxZ)
+                                        continue;
+                                    break;
+                                case DOWN:
+                                    if(axisAlignedBB.minY != 0)
+                                        continue;
+                                    if(bb.maxY != 1)
+                                        continue;
+                                    if(axisAlignedBB.minX != bb.minX || axisAlignedBB.minZ != bb.minZ || axisAlignedBB.maxX != bb.maxX || axisAlignedBB.maxZ != bb.maxZ)
+                                        continue;
+                                    break;
+                                case WEST:
+                                    if(axisAlignedBB.minX != 0)
+                                        continue;
+                                    if(bb.maxX != 1)
+                                        continue;
+                                    if(axisAlignedBB.minZ != bb.minZ || axisAlignedBB.minY != bb.minY || axisAlignedBB.maxZ != bb.maxZ || axisAlignedBB.maxY != bb.maxY)
+                                        continue;
+                                    break;
+                                case NORTH:
+                                    if(axisAlignedBB.minZ != 0)
+                                        continue;
+                                    if(bb.maxZ != 1)
+                                        continue;
+                                    if(axisAlignedBB.minX != bb.minX || axisAlignedBB.minY != bb.minY || axisAlignedBB.maxX != bb.maxX || axisAlignedBB.maxY != bb.maxY)
+                                        continue;
+                                    break;
+                                case EAST:
+                                    if(axisAlignedBB.maxX != 1)
+                                        continue;
+                                    if(bb.minX != 0)
+                                        continue;
+                                    if(axisAlignedBB.minZ != bb.minZ || axisAlignedBB.minY != bb.minY || axisAlignedBB.maxZ != bb.maxZ || axisAlignedBB.maxY != bb.maxY)
+                                        continue;
+                                    break;
+                                case SOUTH:
+                                    if(axisAlignedBB.maxZ != 1)
+                                        continue;
+                                    if(bb.minZ != 0)
+                                        continue;
+                                    if(axisAlignedBB.minX != bb.minX || axisAlignedBB.minY != bb.minY || axisAlignedBB.maxX != bb.maxX || axisAlignedBB.maxY != bb.maxY)
+                                        continue;
+                                    break;
+                            }
                     }
                     
 
