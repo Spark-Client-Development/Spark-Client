@@ -36,7 +36,7 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
             Block.getBlockFromName("portal")
     });
     BooleanSetting renderFill = new BooleanSetting("RenderFilled",this,true);
-    BooleanSetting fullBlocks = new BooleanSetting("FullBlocks",this,true);
+    BooleanSetting fullBlocks = new BooleanSetting("FullBlocks",this,false);
 
     @SubscribeEvent
     public void onSettingChange(SettingChangeEvent event) {
@@ -202,6 +202,7 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
                     new Pair(true, new Pair(new Vec3d(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ), new Vec3d(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ))),
                     new Pair(true, new Pair(new Vec3d(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ)))
             };
+
 
 
             for (int i = 0; i < EnumFacing.VALUES.length; i++) {
