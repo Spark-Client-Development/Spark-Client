@@ -35,8 +35,7 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
             Block.getBlockFromName("end_portal_frame"),
             Block.getBlockFromName("portal")
     });
-    BooleanSetting renderFullBlocks = new BooleanSetting("FullBlocks",this,false);
-    BooleanSetting renderFill = new BooleanSetting("RenderFilled",this,false);
+    BooleanSetting renderFill = new BooleanSetting("RenderFilled",this,true);
 
     @SubscribeEvent
     public void onSettingChange(SettingChangeEvent event) {
@@ -208,7 +207,15 @@ public class Search extends SearchChunksModule<Search.SearchBlock> {
                 IBlockState s = mc.world.getBlockState(p);
                 if (block == s.getBlock() && !p.equals(removed)) {
 
-                    AxisAlignedBB bb = renderFullBlocks.isOn() ? new AxisAlignedBB(0,0,0,1,1,1) : mc.world.getBlockState(p).getSelectedBoundingBox(mc.world, p).offset(-p.getX(),-p.getY(),-p.getZ());
+                    boolean full = (!(s.getBlock() == Blocks.PORTAL)
+                            && !(s.getBlock() == Blocks.ENDER_CHEST)
+                            && !(s.getBlock() == Blocks.CHEST)
+                            && !(s.getBlock() == Blocks.BED)
+                            && !(s.getBlock() == Blocks.REDSTONE_TORCH)
+                            && !(s.getBlock() == Blocks.TORCH));
+
+
+                    AxisAlignedBB bb = full ? new AxisAlignedBB(0,0,0,1,1,1) : mc.world.getBlockState(p).getSelectedBoundingBox(mc.world, p).offset(-p.getX(),-p.getY(),-p.getZ());
 
                     if(!new AxisAlignedBB(0,0,0,1,1,1).equals(axisAlignedBB) || !new AxisAlignedBB(0,0,0,1,1,1).equals(bb))
                     switch (facing) {
