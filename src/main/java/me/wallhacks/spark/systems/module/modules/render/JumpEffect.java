@@ -23,14 +23,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 @Module.Registration(name = "JumpEffect", description = "Renders effects when you jump")
 public class JumpEffect extends Module {
 
-	final String SHAPE = "Shape";
-	IntSetting vertices = new IntSetting("Vertices", this, 3, 2, 20, SHAPE);
-	DoubleSetting radius = new DoubleSetting("Radius", this, 1, 1, 5, SHAPE);
-	BooleanSetting doubled = new BooleanSetting("Doubled", this, true, SHAPE);
+	ModeSetting shape = new ModeSetting("Vertices", this, "Circle", Arrays.asList("Circle", "Triangle", "Square", "Pentagon", "Hexagon", "Star of David", "Demonic Circle"));
 	
 	final String PROPERTIES = "Properties";
 	DoubleSetting thickness = new DoubleSetting("Thickness", this, 1, 1, 20, PROPERTIES);
 	ColorSetting color = new ColorSetting("Color", this, Color.CYAN, PROPERTIES);
+	DoubleSetting radius = new DoubleSetting("Size", this, 1, 1, 5, PROPERTIES);
 	
 	final String ANIMATION = "Animation";
 	IntSetting duration = new IntSetting("Duration", this, 20, 0, 100, ANIMATION);
@@ -113,10 +111,20 @@ public class JumpEffect extends Module {
 			if(spin.getValue()) {
 				angle = 360*delta;
 			}
-			RenderUtil.draw3DHorizontalPolygonOutline(angle, 360+angle, vertices.getValue(), effect.getCameraRelativePos().add(-radius, 0, -radius), radius, (float)thickness.getNumber(), c);
-			if(doubled.getValue()) {
-				double offset = 360d/vertices.getValue()/2;
-				RenderUtil.draw3DHorizontalPolygonOutline(offset+angle, 360+offset+angle, vertices.getValue(), effect.getCameraRelativePos().add(-radius, 0, -radius), radius, (float)thickness.getNumber(), c);
+			int vertices = 0;
+			if(shape.getValueIndex() == 0) {
+				vertices = 100;
+			} else if(shape.getValueIndex() == 5) {
+				vertices = 3;
+			} else if(shape.getValueIndex() == 6) {
+				vertices = 5;
+			} else {
+				vertices = shape.getValueIndex()+2;
+			}
+			RenderUtil.draw3DHorizontalPolygonOutline(angle, 360+angle, vertices, effect.getCameraRelativePos().add(-radius, 0, -radius), radius, (float)thickness.getNumber(), c);
+			if(shape.getValueIndex() > 4) {
+				double offset = 360d/vertices/2;
+				RenderUtil.draw3DHorizontalPolygonOutline(offset+angle, 360+offset+angle, vertices, effect.getCameraRelativePos().add(-radius, 0, -radius), radius, (float)thickness.getNumber(), c);
 			}
 		}
 	}
