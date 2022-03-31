@@ -16,25 +16,18 @@ import java.lang.annotation.Target;
 
 public abstract class Module extends SettingsHolder implements MC {
 
-
-
-    private final String name = getMod().name();
-    private final String description = getMod().description();
-    private int bind = getMod().bind();
-    private boolean hold = getMod().hold();
-    private boolean visible = getMod().visible();
-    private boolean muted = getMod().muted();
+    private final String name = this.getMod().name(), description = this.getMod().description();
+    private int bind = this.getMod().bind();
+    private boolean hold = this.getMod().hold(), visible = this.getMod().visible(), muted = this.getMod().muted(), enabled = this.getMod().enabled(), this.getMod().alwaysListening();
     private Notification not;
     private Category category;
-    private boolean isEnabled = getMod().enabled();
-    private boolean alwaysListening = getMod().alwaysListening();
-
-    public Module() {
-        super();
+    
+    protected Module() {
+        if (this.getIsAlwaysListening()) Spark.eventBus.register(this);
     }
-
+        
     public Registration getMod() {
-        return getClass().getAnnotation(Registration.class);
+        return this.getClass().getAnnotation(Registration.class);
     }
 
     public boolean isEnabled() {
@@ -42,19 +35,19 @@ public abstract class Module extends SettingsHolder implements MC {
     }
 
     public void setEnabled(boolean enabled) {
-        if (enabled)
-            enable();
+        if (this.enabled)
+            this.enable();
         else
-            disable();
+            this.disable();
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getBind() {
-        return bind;
+        return this.bind;
     }
 
     public void setBind(int bind) {
@@ -70,7 +63,7 @@ public abstract class Module extends SettingsHolder implements MC {
     }
 
     public boolean isMuted() {
-        return muted;
+        return this.muted;
     }
 
     public void setMuted(boolean muted) {
@@ -86,11 +79,11 @@ public abstract class Module extends SettingsHolder implements MC {
     }
 
     public void toggle() {
-        setEnabled(!isEnabled());
+        this.setEnabled(!isEnabled());
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
     public void setCategory(Category category) {
@@ -100,13 +93,12 @@ public abstract class Module extends SettingsHolder implements MC {
     public void enable() {
         if (!this.isEnabled) {
 
-            if (!getIsAlwaysListening())
-                Spark.eventBus.register(this);
+            if (!this.getIsAlwaysListening()) Spark.eventBus.register(this);
 
             Spark.logger.info("Enabled " + getName());
 
             this.isEnabled = true;
-            onEnable();
+            this.onEnable();
             if (isEnabled)
                 if (!muted) {
                     Notifications.addNotification(new Notification(name + " " + TextFormatting.GREEN + "enabled",this));
@@ -117,32 +109,29 @@ public abstract class Module extends SettingsHolder implements MC {
 
     public void disable() {
         if (this.isEnabled) {
-            if (!getIsAlwaysListening())
-                Spark.eventBus.unregister(this);
+            if (!this.getIsAlwaysListening()) Spark.eventBus.unregister(this);
 
             Spark.logger.info("Disabled " + getName());
 
             this.isEnabled = false;
-            onDisable();
-            if (!isEnabled)
-                if (Notifications.INSTANCE.toggle.getValue() && !muted) {
+            this.onDisable();
+            if (!isEnabled) {
+                if (Notifications.INSTANCE.toggle.getValue() && !this.muted) {
                     Notifications.addNotification(new Notification(name + " " + TextFormatting.RED + "disabled",this));
-
                 }
+            }
         }
     }
 
-    public void onEnable() {
-    }
+    public void onEnable() {}
 
-    public void onDisable() {
-    }
+    public void onDisable() {}
 
     public boolean getIsAlwaysListening() {
-        return alwaysListening;
+        return this.alwaysListening;
     }
 
-    public enum Category {
+    public static enum Category {
         COMBAT("Combat"),
         MOVEMENT("Movement"),
         RENDER("Render"),
@@ -162,10 +151,9 @@ public abstract class Module extends SettingsHolder implements MC {
         }
     }
 
-
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
-    public @interface Registration {
+    public static @interface Registration {
         String name();
 
         String description();
@@ -182,6 +170,4 @@ public abstract class Module extends SettingsHolder implements MC {
 
         boolean alwaysListening() default false;
     }
-
-
 }
