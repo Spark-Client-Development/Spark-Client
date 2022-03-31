@@ -7,42 +7,32 @@ import java.util.ArrayList;
 
 public abstract class SettingsHolder {
 
-    static int lastId = 0;
+    protected static int lastId = 0;
     public final int modId;
-
-
+    
+    private ArrayList<Setting<?>> settings;
 
     public SettingsHolder(){
-        settings = new ArrayList<Setting<?>>();
+        this.settings = new ArrayList<Setting<?>>();
 
-        modId = lastId;
+        this.modId = lastId;
         lastId++;
     }
 
-    private ArrayList<Setting<?>> settings;
-
     public void addSetting(Setting<?> setting) {
-        if(settings != null && !settings.contains(setting))
-            settings.add(setting);
+        if(!this.settings.contains(setting))
+            this.settings.add(setting);
     }
 
     public ArrayList<Setting<?>> getSettings() {
-        return settings;
+        return this.settings;
     }
 
-    public void onConfigLoad(){
+    public void onConfigLoad(){}
 
-    }
-
-    public void onConfigSave(){
-
-    }
-
-
+    public void onConfigSave(){}
 
     public String getName() {
         return "";
     }
-
-
 }
