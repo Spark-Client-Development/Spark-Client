@@ -115,10 +115,9 @@ public abstract class Module extends SettingsHolder implements MC {
 
             this.isEnabled = false;
             this.onDisable();
-            if (!isEnabled) {
-                if (Notifications.INSTANCE.toggle.getValue() && !this.muted) {
-                    Notifications.addNotification(new Notification(name + " " + TextFormatting.RED + "disabled",this));
-                }
+            
+            if (Notifications.INSTANCE.toggle.getValue() && !this.muted) {
+                Notifications.addNotification(new Notification(name + " " + TextFormatting.RED + "disabled",this));
             }
         }
     }
