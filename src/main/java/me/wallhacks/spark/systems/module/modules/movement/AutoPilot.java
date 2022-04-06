@@ -48,16 +48,6 @@ public class AutoPilot extends Module {
     float pitch = 0;
     double prevVspeed = 0;
     
-    float snapAngle(float step, float angle) {
-        while (angle < 0) angle += 360;
-        float snappedAngle = angle + step/2;
-        snappedAngle -= snappedAngle % step;
-        if (snappedAngle == 360)
-            snappedAngle = 0;
-        return snappedAngle;
-    }
-    
-
     int tick = 0;
     boolean gofly = false;
     volatile double Vspeed;
@@ -122,9 +112,6 @@ public class AutoPilot extends Module {
 
                 Minecraft.getMinecraft().player.rotationPitch = pitch;
 
-                //YawLock
-                float snappedYaw = snapAngle(45, Minecraft.getMinecraft().player.rotationYaw);
-                Minecraft.getMinecraft().player.rotationYaw = (float) snappedYaw;
             }
             else {
                 pitch = 0;
