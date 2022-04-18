@@ -18,7 +18,7 @@ public abstract class Module extends SettingsHolder implements MC {
 
     private final String name = this.getMod().name(), description = this.getMod().description();
     private int bind = this.getMod().bind();
-    private boolean hold = this.getMod().hold(), visible = this.getMod().visible(), muted = this.getMod().muted(), enabled = this.getMod().enabled(), this.getMod().alwaysListening();
+    private boolean hold = this.getMod().hold(), visible = this.getMod().visible(), muted = this.getMod().muted(), enabled = this.getMod().enabled(), alwaysListening = this.getMod().alwaysListening();
     private Notification not;
     private Category category;
     
