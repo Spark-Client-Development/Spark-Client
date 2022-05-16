@@ -88,7 +88,7 @@ public class Spark implements MC {
         socialManager = new SocialManager();
         dataTrackingManager = new ItemTrackerManager();
         waypointManager = new WaypointManager();
-        configManager.Load(false);
+        configManager.Load();
         rpcManager = new RPCManager();
         positionManager = new PositionManager();
         logger.info("Spark client loaded successfully");

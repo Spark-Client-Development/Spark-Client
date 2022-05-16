@@ -1,6 +1,5 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
-import baritone.api.event.events.WorldEvent;
 import me.wallhacks.spark.event.render.RenderLivingEvent;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.module.Module;

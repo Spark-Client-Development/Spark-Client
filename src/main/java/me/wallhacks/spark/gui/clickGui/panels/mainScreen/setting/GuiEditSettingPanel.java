@@ -1,8 +1,5 @@
 package me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting;
 
-import baritone.api.BaritoneAPI;
-import baritone.api.pathing.goals.GoalBlock;
-import baritone.api.pathing.goals.GoalXZ;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.*;
 import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.KitSettingGui;
@@ -124,20 +121,7 @@ public class GuiEditSettingPanel extends GuiPanelBase {
 
                             Spark.waypointManager.getWayPoints().remove(waypoint);
                         }, "Delete"),
-                        new GuiPanelButton(() -> {
-                            WaypointManager.Waypoint waypoint = (WaypointManager.Waypoint) currentSettingsHolder;
 
-                            Vec3i v = waypoint.getLocation();
-
-                            Spark.sendInfo("Going to "+waypoint.getName());
-
-                            if(waypoint.hasY())
-                                BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalBlock(new BlockPos(v.getX(),v.getY(),v.getZ())));
-                            else
-                                BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(v.getX(),v.getZ()));
-
-                            mc.displayGuiScreen(null);
-                        }, "Goto")
                 };
 
             }

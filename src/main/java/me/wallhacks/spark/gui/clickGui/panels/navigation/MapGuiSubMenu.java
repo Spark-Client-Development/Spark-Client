@@ -1,7 +1,5 @@
 package me.wallhacks.spark.gui.clickGui.panels.navigation;
 
-import baritone.api.BaritoneAPI;
-import baritone.api.pathing.goals.GoalXZ;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
@@ -20,49 +18,34 @@ public class MapGuiSubMenu extends GuiPanelBase {
         this.mapGui = mapGui;
     }
 
-    GuiPanelButton gotoButton = new GuiPanelButton(() -> {
-        Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(mapGui.zoom, MapRender.ConvertPos(new Vec2d(mc.player.posX,mc.player.posZ),mc.player.dimension,mapGui.dim),posX-mapGui.offsetX,posY-mapGui.offsetY,mapGui.posX+mapGui.width/2,mapGui.posY+mapGui.height/2);
 
-        if(mapGui.dim == 0 && mc.player.dimension == -1) {
-        	BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x/8,pos.y/8));
-        } else if(mapGui.dim == -1 && mc.player.dimension == 0) {
-        	BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x*8,pos.y*8));
-        } else {
-        	BaritoneAPI.getProvider().getPrimaryBaritone().getCustomGoalProcess().setGoalAndPath(new GoalXZ(pos.x,pos.y));
-        }
-
-        //close gui
-        mc.displayGuiScreen(null);
-
-        mapGui.screenInfoCoords = null;
-    },"Goto");
     GuiPanelInputField inputField = new GuiPanelInputField(8,0,0,0,0);
 
-    boolean addingWayPoint = false;
+
 
     GuiPanelButton addWayPointButton = new GuiPanelButton(() -> {
         Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(mapGui.zoom, new Vec2d(mc.player.posX,mc.player.posZ),posX-mapGui.offsetX,posY-mapGui.offsetY,mapGui.posX+mapGui.width/2,mapGui.posY+mapGui.height/2);
 
-        if(addingWayPoint && inputField.getText().length() > 0)
+        if(inputField.getText().length() > 0)
         {
             Spark.waypointManager.createWayPoint(pos, mapGui.dim,inputField.getText());
 
             mapGui.screenInfoCoords = null;
         }
-        addingWayPoint = !addingWayPoint;
-    },"WayPoint");
+
+    },"Add Waypoint");
 
 
     @Override
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
         super.renderContent(MouseX, MouseY, deltaTime);
 
-        addWayPointButton.setText("Waypoint");
-        int lenGotoButton = 4+fontManager.getTextWidth(gotoButton.getText());
+
+
         int lenAddWayPointButton = 4+fontManager.getTextWidth(addWayPointButton.getText());
 
 
-        width = 6+lenGotoButton+lenAddWayPointButton;
+        width = lenAddWayPointButton;
 
         RenderUtil.drawFilledCircle(posX,posY,3,guiSettings.getContrastColor().getRGB());
         drawQuad(posX,posY,width,height,guiSettings.getContrastColor().getRGB());
@@ -70,26 +53,15 @@ public class MapGuiSubMenu extends GuiPanelBase {
 
         height = 15;
 
-        if(addingWayPoint)
-        {
-            inputField.setPositionAndSize(posX+2,posY+2,width-4,11);
-            inputField.setBackGroundColor(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
-            inputField.renderContent(MouseX, MouseY, deltaTime);
+        inputField.setPositionAndSize(posX+2,posY+2,width-4,11);
+        inputField.setBackGroundColor(guiSettings.getGuiSubPanelBackgroundColor().getRGB());
+        inputField.renderContent(MouseX, MouseY, deltaTime);
 
-            addWayPointButton.setText(inputField.getText().length() > 0 ? "Add Waypoint" : "Cancel");
-            addWayPointButton.setPositionAndSize(posX+2,posY+11+4,width-4,11);
-            addWayPointButton.renderContent(MouseX, MouseY, deltaTime);
 
-            height+=11+2;
-        }
-        else
-        {
-            gotoButton.setPositionAndSize(posX+2,posY+2,lenGotoButton,11);
-            gotoButton.renderContent(MouseX, MouseY, deltaTime);
-            addWayPointButton.setText("Waypoint");
-            addWayPointButton.setPositionAndSize(posX+lenGotoButton+4,posY+2,lenAddWayPointButton,11);
-            addWayPointButton.renderContent(MouseX, MouseY, deltaTime);
-        }
+        addWayPointButton.setPositionAndSize(posX+2,posY+11+4,width-4,11);
+        addWayPointButton.renderContent(MouseX, MouseY, deltaTime);
+
+        height+=11+2;
 
 
 

@@ -1,10 +1,5 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
-import baritone.api.BaritoneAPI;
-import baritone.api.pathing.movement.IMovement;
-import baritone.api.pathing.path.IPathExecutor;
-import baritone.pathing.movement.movements.MovementDiagonal;
-import baritone.pathing.movement.movements.MovementTraverse;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerMoveEvent;
@@ -243,7 +238,7 @@ public class Speed extends Module {
                 strafe *= Math.cos(0.7853981633974483D);
             }
             event.setCanceled(true);
-            float yaw = BaritoneAPI.getProvider().getPrimaryBaritone().getLookBehavior().getYaw();
+            float yaw = mc.player.rotationYaw; //BaritoneAPI.getProvider().getPrimaryBaritone().getLookBehavior().getYaw();
             event.setX(forward * speed * -Math.sin(Math.toRadians(yaw)) + strafe * speed * Math.cos(Math.toRadians(yaw)));
             event.setZ(forward * speed * Math.cos(Math.toRadians(yaw)) - strafe * speed * -Math.sin(Math.toRadians(yaw)));
         } else {
@@ -296,6 +291,8 @@ public class Speed extends Module {
     }
 
     boolean isSafeToSpeed() {
+        return true;
+        /*
         if (!BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().isPathing()) return true;
         IPathExecutor executor = BaritoneAPI.getProvider().getPrimaryBaritone().getPathingBehavior().getCurrent();
         int currentPostion = executor.getPosition();
@@ -313,7 +310,7 @@ public class Speed extends Module {
             }
             return false;
         }
-        return true;
+        return true;*/
     }
 
     public Vec3d getVelocity() {

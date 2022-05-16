@@ -19,7 +19,6 @@ public abstract class Module extends SettingsHolder implements MC {
     private final String name = this.getMod().name(), description = this.getMod().description();
     private int bind = this.getMod().bind();
     private boolean hold = this.getMod().hold(), visible = this.getMod().visible(), muted = this.getMod().muted(), enabled = this.getMod().enabled(), alwaysListening = this.getMod().alwaysListening();
-    private Notification not;
     private Category category;
     
     protected Module() {
@@ -31,11 +30,11 @@ public abstract class Module extends SettingsHolder implements MC {
     }
 
     public boolean isEnabled() {
-        return this.isEnabled;
+        return this.enabled;
     }
 
     public void setEnabled(boolean enabled) {
-        if (this.enabled)
+        if (enabled)
             this.enable();
         else
             this.disable();
@@ -66,6 +65,8 @@ public abstract class Module extends SettingsHolder implements MC {
         return this.muted;
     }
 
+
+
     public void setMuted(boolean muted) {
         this.muted = muted;
     }
@@ -79,7 +80,10 @@ public abstract class Module extends SettingsHolder implements MC {
     }
 
     public void toggle() {
+
+
         this.setEnabled(!isEnabled());
+
     }
 
     public Category getCategory() {
@@ -91,31 +95,32 @@ public abstract class Module extends SettingsHolder implements MC {
     }
 
     public void enable() {
-        if (!this.isEnabled) {
+
+        if (!this.enabled) {
 
             if (!this.getIsAlwaysListening()) Spark.eventBus.register(this);
 
             Spark.logger.info("Enabled " + getName());
 
-            this.isEnabled = true;
+            this.enabled = true;
             this.onEnable();
             
-            if (Notifications.INSTANCE.toggle.getValue() && isEnabled && !this.muted) {
+            if (Notifications.INSTANCE.toggle.getValue() && enabled && !this.muted) {
                 Notifications.addNotification(new Notification("$name${TextFormatting.GREEN} enabled",this));
             }
         }
     }
 
     public void disable() {
-        if (this.isEnabled) {
+        if (this.enabled) {
             if (!this.getIsAlwaysListening()) Spark.eventBus.unregister(this);
 
             Spark.logger.info("Disabled " + getName());
 
-            this.isEnabled = false;
+            this.enabled = false;
             this.onDisable();
             
-            if (Notifications.INSTANCE.toggle.getValue() && !isEnabled && !this.muted) {
+            if (Notifications.INSTANCE.toggle.getValue() && !enabled && !this.muted) {
                 Notifications.addNotification(new Notification(name + " " + TextFormatting.RED + "disabled",this));
             }
         }

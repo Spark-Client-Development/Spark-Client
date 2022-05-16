@@ -1,6 +1,5 @@
 package me.wallhacks.spark.manager;
 
-import baritone.api.event.events.WorldEvent;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.world.WorldLoadEvent;
 import me.wallhacks.spark.systems.SettingsHolder;

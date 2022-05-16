@@ -172,7 +172,6 @@ public class MapGui extends GuiPanelBase {
         {
             screenInfoCoords = new Vec2i(MouseX,MouseY);
             mapGuiSubMenu.inputField.setText("");
-            mapGuiSubMenu.addingWayPoint = false;
 
             Vec2i pos = SparkMap.getWorldPosFromScreenPosOnMap(zoom, new Vec2d(mc.player.posX,mc.player.posZ),MouseX-offsetX,MouseY-offsetY,posX+width/2,posY+height/2);
 

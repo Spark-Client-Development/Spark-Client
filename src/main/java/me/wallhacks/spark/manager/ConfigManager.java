@@ -4,7 +4,6 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.BaritoneConfig;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.module.Module;
@@ -79,8 +78,7 @@ public class ConfigManager implements MC {
         currentConfig = config;
 
         if (FileUtil.exists(getConfigPath(config))) {
-            LoadFromConfig(currentConfig, true);
-            LoadFromConfig(currentConfig, false);
+            LoadFromConfig(currentConfig);
         }
 
         return true;
@@ -129,7 +127,7 @@ public class ConfigManager implements MC {
     }
 
 
-    public void Load(boolean loadBaritone) {
+    public void Load() {
 
         configs.clear();
         currentConfig = null;
@@ -149,9 +147,8 @@ public class ConfigManager implements MC {
             currentConfig = configs.get(0);
         }
 
-        LoadFromConfig(currentConfig, false);
-        if (loadBaritone)
-            LoadFromConfig(currentConfig, true);
+        LoadFromConfig(currentConfig);
+
     }
 
     public void SaveConfigConfigs(boolean overrideUnused) {
@@ -182,8 +179,8 @@ public class ConfigManager implements MC {
     }
 
 
-    public void LoadFromConfig(Config config, boolean baritone) {
-        loadSystems(config, baritone);
+    public void LoadFromConfig(Config config) {
+        loadSystems(config);
     }
 
     public void SaveFromConfig(Config config, boolean saveDefaults) {
@@ -202,10 +199,8 @@ public class ConfigManager implements MC {
     }
 
 
-    private void loadSystems(Config config, boolean baritone) {
+    private void loadSystems(Config config) {
         for (SettingsHolder system : SystemManager.getSystems()) {
-            if (system instanceof BaritoneConfig && !baritone) continue;
-            if (!(system instanceof BaritoneConfig) && baritone) continue;
             if (system instanceof ClientConfig)
                 loadSettingHolder(system, new File(Spark.ParentPath.getAbsolutePath(), "ClientSettings.cfg").toString());
             else

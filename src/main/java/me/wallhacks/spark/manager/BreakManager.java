@@ -1,6 +1,5 @@
 package me.wallhacks.spark.manager;
 
-import baritone.api.utils.BlockUtils;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;

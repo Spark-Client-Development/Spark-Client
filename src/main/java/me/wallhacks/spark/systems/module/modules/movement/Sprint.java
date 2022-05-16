@@ -1,6 +1,5 @@
 package me.wallhacks.spark.systems.module.modules.movement;
 
-import baritone.api.BaritoneAPI;
 import me.wallhacks.spark.event.player.PlayerLivingTickEvent;
 import me.wallhacks.spark.event.player.PlayerMoveEvent;
 import me.wallhacks.spark.systems.module.Module;
@@ -42,7 +41,7 @@ public class Sprint extends Module {
                 strafe *= Math.cos(0.7853981633974483D);
             }
             event.setCanceled(true);
-            float yaw = BaritoneAPI.getProvider().getPrimaryBaritone().getLookBehavior().getYaw();
+            float yaw = mc.player.rotationYaw; // BaritoneAPI.getProvider().getPrimaryBaritone().getLookBehavior().getYaw();
             event.setX(forward * speed * -Math.sin(Math.toRadians(yaw)) + strafe * speed * Math.cos(Math.toRadians(yaw)));
             event.setZ(forward * speed * Math.cos(Math.toRadians(yaw)) - strafe * speed * -Math.sin(Math.toRadians(yaw)));
         }

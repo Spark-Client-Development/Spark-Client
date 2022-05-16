@@ -47,7 +47,7 @@ public class Configs extends ClickGuiPanel {
     }, "Create Config");
     public final GuiPanelButton refreshButton = new GuiPanelButton(() -> {
         Spark.configManager.SaveConfigConfigs(false);
-        Spark.configManager.Load(true);
+        Spark.configManager.Load();
 
     }, "Refresh");
 
