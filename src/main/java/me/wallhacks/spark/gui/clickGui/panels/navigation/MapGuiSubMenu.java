@@ -40,10 +40,7 @@ public class MapGuiSubMenu extends GuiPanelBase {
     public void renderContent(int MouseX, int MouseY, float deltaTime) {
         super.renderContent(MouseX, MouseY, deltaTime);
 
-
-
         int lenAddWayPointButton = 4+fontManager.getTextWidth(addWayPointButton.getText());
-
 
         width = lenAddWayPointButton;
 

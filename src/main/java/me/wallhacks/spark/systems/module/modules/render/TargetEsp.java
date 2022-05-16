@@ -66,11 +66,12 @@ public class TargetEsp extends Module {
                     return;
                 }
             }
+            GL11.glPushAttrib(10);
             GL11.glBlendFunc(770, 771);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glShadeModel(GL11.GL_SMOOTH);
-            GL11.glDepthFunc(GL11.GL_ALWAYS);
+
             GL11.glDisable(GL11.GL_CULL_FACE);
             float state = ((System.currentTimeMillis() % 1000) / 500f);
             float state2 = (((System.currentTimeMillis() - (500*offset.getFloatValue())) % 1000) / 500f);
@@ -97,8 +98,9 @@ public class TargetEsp extends Module {
             GL11.glEnable(GL11.GL_CULL_FACE);
             GL11.glShadeModel(GL11.GL_FLAT);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glDepthFunc(GL11.GL_LESS);
+
             GL11.glDisable(GL11.GL_BLEND);
+            GL11.glPopAttrib();
         }
         delta.reset();
     }

@@ -15,7 +15,7 @@ public class Wallhack extends Module {
     public Wallhack() { INSTANCE = this; }
     private BooleanSetting softReload = new BooleanSetting("SoftReload", this, true);
     public DoubleSetting opacity = new DoubleSetting("Opacity", this, 125.0, 0.0, 255.0);
-    private BooleanSetting xray = new BooleanSetting("XRay", this, false);
+    private BooleanSetting xray = new BooleanSetting("XRay", this, true);
     BlockListSelectSetting blocks = new BlockListSelectSetting("Blocks", this,
             new Block[]{
                     Block.getBlockFromName("coal_ore"),
@@ -53,7 +53,7 @@ public class Wallhack extends Module {
                     Block.getBlockFromName("spawner"),
                     Block.getBlockFromName("torch"),
 
-            }, "General");
+            }, v -> (xray.isOn()),"General");
 
     @Override
     public void onEnable() {
