@@ -10,8 +10,14 @@ import java.util.function.Predicate;
 
 public class ColorSetting extends Setting<SparkColor> {
 
+
+
     public ColorSetting(String name, SettingsHolder settingsHolder, Color color, boolean allowChangeAlpha, Predicate<SparkColor> visible, String settingCategory) {
         super(new SparkColor(color), name, settingsHolder,visible,settingCategory);
+
+
+
+        offset = (int) (Math.random() * (360 * 32));
 
         this.allowChangeAlpha = allowChangeAlpha;
     }
@@ -41,6 +47,7 @@ public class ColorSetting extends Setting<SparkColor> {
 
     final boolean allowChangeAlpha;
 
+    final int offset;
 
     public boolean isAllowChangeAlpha() {
         return allowChangeAlpha;
@@ -64,7 +71,9 @@ public class ColorSetting extends Setting<SparkColor> {
                 speed = 16;
             }
 
-            Color c = ColorUtil.fromHSB(((System.currentTimeMillis() * speed)/2 % (360 * 32)) / (360f * 32), ColorUtil.getSaturation(getValue().color), ColorUtil.getBrightness(getValue().color));
+
+
+            Color c = ColorUtil.fromHSB((((System.currentTimeMillis() * speed)/2 + offset) % (360 * 32)) / (360f * 32), ColorUtil.getSaturation(getValue().color), ColorUtil.getBrightness(getValue().color));
             getValue().color = (new Color(c.getRed(), c.getGreen(), c.getBlue(), getValue().color.getAlpha()));
         }
         return getValue().color;
