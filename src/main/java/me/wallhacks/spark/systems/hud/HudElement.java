@@ -52,7 +52,7 @@ public class HudElement extends SettingsHolder implements MC {
         percentPosSnappedX = getMod().snappedXPos();
         percentPosSnappedY = getMod().snappedYPos();
 
-        snappedElement = getMod().snappedElement();
+        setSnappedElement(getMod().snappedElement());
     }
 
     public int getSnappedElement() {
@@ -60,6 +60,17 @@ public class HudElement extends SettingsHolder implements MC {
     }
 
     public void setSnappedElement(int snappedElement) {
+        if(snappedElement >= 0)
+        {
+            HudElement check = (HudElement) SystemManager.getHudModules().toArray()[snappedElement];
+            while(check != null)
+            {
+                check = check.getSnappedElementObject();
+                if(check == this)
+                    return;
+            }
+        }
+
         this.snappedElement = snappedElement;
     }
 

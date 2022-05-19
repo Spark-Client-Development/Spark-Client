@@ -46,6 +46,12 @@ public class Scaffold extends Module {
     Timer towerStart = new Timer();
 
 
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        lastPosX = mc.player.posX;
+        lastPosZ = mc.player.posZ;
+    }
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {

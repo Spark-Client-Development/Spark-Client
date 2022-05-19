@@ -3,14 +3,21 @@ package me.wallhacks.spark.systems.hud.huds;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.HudSettings;
 import me.wallhacks.spark.systems.hud.AlignedHudElement;
 import me.wallhacks.spark.systems.hud.HudElement;
+import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
+
 @HudElement.Registration(name = "ArmorHud", description = "Shows you your fps", posX = 0.5, posY = 0.1, width = 62, height = 16)
 public class ArmorHud extends AlignedHudElement {
+
+    ModeSetting mode = new ModeSetting("Mode", this, "Icons", Arrays.asList("Icons", "Background", "Nothing"),"Color");
+
+
     ResourceLocation[] armor = new ResourceLocation[] {
             new ResourceLocation("textures/icons/armor/helmet.png"),
             new ResourceLocation("textures/icons/armor/chestplate.png"),
@@ -19,6 +26,10 @@ public class ArmorHud extends AlignedHudElement {
     };
     @Override
     public void draw(float delta) {
+
+        setBackGround(!mode.is("Nothing"));
+
+        if(mode.is("Icons"))
         for (int i = 5; i <= 8; i++) {
             ItemStack s = mc.player.inventoryContainer.getSlot(i).getStack();
             if (s.isEmpty()) {
