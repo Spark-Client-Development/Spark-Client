@@ -39,11 +39,11 @@ import net.minecraft.util.text.TextFormatting;
 import java.awt.*;
 import java.util.Arrays;
 
-@HudElement.Registration(name = "MiniMe", posX = 0.5, posY = 0, height = 66, width = 33, drawBackground = false, description = "Shows a small version of yourself")
+@HudElement.Registration(name = "MiniMe", posX = 1, posY = 0.5, height = 66, width = 33, drawBackground = false, description = "Shows a small version of yourself")
 public class MiniMe extends HudElement {
 
 
-    IntSetting scale = new IntSetting("Scale",this,33,10,40);
+    IntSetting scale = new IntSetting("Scale",this,30,15,40);
 
     @Override
     public void draw(float deltaTime) {

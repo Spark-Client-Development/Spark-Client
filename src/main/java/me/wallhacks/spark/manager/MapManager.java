@@ -170,6 +170,8 @@ public class MapManager implements MC {
     }
 
     public void addChunk(Chunk c) {
+
+
         Vec2i mapAtC = SparkMap.getMapPosFromWorldPos(c.getPos().x*16, c.getPos().z*16);
         Vec3i mapPos = (new Vec3i(mapAtC.x,getDim(),mapAtC.y));
 

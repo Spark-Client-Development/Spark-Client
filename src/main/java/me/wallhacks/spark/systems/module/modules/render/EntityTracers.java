@@ -1,7 +1,6 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.render.EspUtil;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.Entity;

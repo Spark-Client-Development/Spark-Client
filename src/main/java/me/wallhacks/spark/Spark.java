@@ -41,6 +41,7 @@ public class Spark implements MC {
     public static FontManager fontManager;
     public static CapeManager capeManager;
     public static CommandManager commandManager;
+
     public static CombatManager popManager;
     public static ClickGuiMenuBase clickGuiScreen;
     public static AltManager altManager;
@@ -91,6 +92,7 @@ public class Spark implements MC {
         configManager.Load();
         rpcManager = new RPCManager();
         positionManager = new PositionManager();
+
         logger.info("Spark client loaded successfully");
     }
 
