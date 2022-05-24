@@ -1,7 +1,7 @@
 package me.wallhacks.spark.mixin.mixins.spark;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
+import me.wallhacks.spark.systems.module.modules.player.InventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;

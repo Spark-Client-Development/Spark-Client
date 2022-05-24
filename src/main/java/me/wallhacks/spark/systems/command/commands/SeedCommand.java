@@ -5,7 +5,7 @@ import me.wallhacks.spark.manager.CommandManager;
 import me.wallhacks.spark.manager.SeedManager;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.command.Command;
-import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
+import me.wallhacks.spark.systems.module.modules.player.InventoryManager;
 import net.minecraft.client.Minecraft;
 
 public class SeedCommand extends Command {

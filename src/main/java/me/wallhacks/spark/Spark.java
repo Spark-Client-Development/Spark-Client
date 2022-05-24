@@ -2,7 +2,7 @@ package me.wallhacks.spark;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.wallhacks.spark.manager.*;
-import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
+import me.wallhacks.spark.systems.module.modules.player.InventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;

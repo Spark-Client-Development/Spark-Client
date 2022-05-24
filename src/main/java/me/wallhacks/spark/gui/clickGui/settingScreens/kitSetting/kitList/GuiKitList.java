@@ -2,7 +2,7 @@ package me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.kitList;
 
 import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.KitSettingGui;
 import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
-import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
+import me.wallhacks.spark.systems.module.modules.player.InventoryManager;
 
 import java.util.ArrayList;
 

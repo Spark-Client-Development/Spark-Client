@@ -6,18 +6,15 @@ import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.KitSettingGui;
 import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
 import me.wallhacks.spark.gui.dvdpanels.GuiPanelScroll;
-import me.wallhacks.spark.manager.ConfigManager;
 import me.wallhacks.spark.manager.WaypointManager;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.module.Module;
-import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
+import me.wallhacks.spark.systems.module.modules.player.InventoryManager;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.GuiUtil;
 import net.minecraft.util.ResourceLocation;
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.setting.Setting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
 

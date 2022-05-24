@@ -1,12 +1,10 @@
 package me.wallhacks.spark.systems.command.commands;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.clickGui.settingScreens.kitSetting.KitSettingGui;
 import me.wallhacks.spark.manager.CommandManager;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.command.Command;
-import me.wallhacks.spark.systems.module.modules.misc.InventoryManager;
-import net.minecraft.client.Minecraft;
+import me.wallhacks.spark.systems.module.modules.player.InventoryManager;
 
 public class KitCommand extends Command {
 
