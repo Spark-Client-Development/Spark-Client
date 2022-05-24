@@ -121,10 +121,10 @@ public class HoleFill extends Module {
 
                 smartChecks:
                 if(smart.isOn()) {
-                    if(isPlayerTryingToGetInHole(mc.player,posToCheck))
+                    if(PredictionUtil.isPlayerTryingToGetInHole(mc.player,posToCheck))
                         continue loopBlocks;
                     for(EntityPlayer e : EnemyList)
-                        if(isPlayerTryingToGetInHole(e,posToCheck)) break smartChecks;
+                        if(PredictionUtil.isPlayerTryingToGetInHole(e,posToCheck)) break smartChecks;
                     continue loopBlocks;
                 }
 
@@ -162,29 +162,7 @@ public class HoleFill extends Module {
 
 
 
-    public boolean isPlayerTryingToGetInHole(EntityPlayer player,BlockPos hole){
-        //if player is already in hole no point in filling it
-        if(PlayerUtil.getPlayerPosFloored(player).equals(hole))
-            return false;
 
 
-        for (AxisAlignedBB bb : PredictionUtil.PredictedTargetBoxes(player,5)) {
-            if(isBBCloseToHole(bb,hole))
-                return true;
-        }
-
-
-        return false;
-
-    }
-    boolean isBBCloseToHole (AxisAlignedBB box,BlockPos hole){
-        double posX = (box.minX + box.maxX) / 2.0D;
-        double posY = box.minY;
-        double posZ = (box.minZ + box.maxZ) / 2.0D;
-
-        return MathUtil.getDistanceFromTo(
-                new Vec3d(hole.getX()+0.5,hole.getY()+0.5,hole.getZ()+0.5),
-                new Vec3d(posX,posY,posZ)) < 2;
-    }
 
 }

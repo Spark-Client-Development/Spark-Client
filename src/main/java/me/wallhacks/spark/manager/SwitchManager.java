@@ -143,7 +143,7 @@ public class SwitchManager implements MC {
         return Switch(switcher,handType,switchType,5);
     }
 
-    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType,int constSwitchDelay){
+    public EnumHand Switch(SwitchItem switcher, ItemSwitcher.usedHand handType, ItemSwitcher.switchType switchType,int switchBackDelay){
 
         if(switchType == ItemSwitcher.switchType.Const)
            InventoryUtil.PlaceDownItemInMoveItemStack();
@@ -151,7 +151,7 @@ public class SwitchManager implements MC {
 
         ItemSwitcher.SwitchResult res = getCalculateAction(switcher, handType, switchType);
 
-        return Switch(res,switchType,constSwitchDelay);
+        return Switch(res,switchType,switchBackDelay);
     }
     public EnumHand Switch(ItemSwitcher.SwitchResult res,ItemSwitcher.switchType switchType,int switchBackDelay){
 

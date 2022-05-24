@@ -1,10 +1,15 @@
 package me.wallhacks.spark.util.combat;
 
 import me.wallhacks.spark.util.MC;
+import me.wallhacks.spark.util.MathUtil;
+import me.wallhacks.spark.util.player.PlayerUtil;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
@@ -123,4 +128,28 @@ public class PredictionUtil implements MC {
     }
 
 
+    public static boolean isPlayerTryingToGetInHole(EntityPlayer player,BlockPos hole){
+        //if player is already in hole no point in filling it
+        if(PlayerUtil.getPlayerPosFloored(player).equals(hole) || player.posY < hole.getY()+.2)
+            return false;
+
+
+        for (AxisAlignedBB bb : PredictionUtil.PredictedTargetBoxes(player,5)) {
+            if(isBBCloseToHole(bb,hole))
+                return true;
+        }
+
+
+        return false;
+
+    }
+    static boolean isBBCloseToHole (AxisAlignedBB box,BlockPos hole){
+        double posX = (box.minX + box.maxX) / 2.0D;
+        double posY = box.minY;
+        double posZ = (box.minZ + box.maxZ) / 2.0D;
+
+        return MathUtil.getDistanceFromTo(
+                new Vec3d(hole.getX()+0.5,hole.getY()+0.5,hole.getZ()+0.5),
+                new Vec3d(posX,posY,posZ)) < 2;
+    }
 }
