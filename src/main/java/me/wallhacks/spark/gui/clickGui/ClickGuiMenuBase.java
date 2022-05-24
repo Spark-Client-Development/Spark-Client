@@ -1,6 +1,5 @@
 package me.wallhacks.spark.gui.clickGui;
 
-import me.wallhacks.spark.gui.clickGui.panels.configs.Configs;
 import me.wallhacks.spark.gui.clickGui.panels.navigation.NavigationGui;
 import me.wallhacks.spark.gui.dvdpanels.GuiPanelButton;
 import me.wallhacks.spark.gui.dvdpanels.GuiPanelScreen;
@@ -18,7 +17,7 @@ import me.wallhacks.spark.util.render.ColorUtil;
 
 public class ClickGuiMenuBase extends GuiPanelScreen {
 
-    public final ClickGuiPanel[] panels = new ClickGuiPanel[]{new SystemsScreen(this),new HudEditor(this),new Socials(this),new Configs(this),new NavigationGui(this)};
+    public final ClickGuiPanel[] panels = new ClickGuiPanel[]{new SystemsScreen(this),new HudEditor(this),new Socials(this),new NavigationGui(this)};
 
 
     final GuiPanelButton[] menus;

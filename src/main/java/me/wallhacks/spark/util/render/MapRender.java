@@ -93,7 +93,7 @@ public class MapRender implements MC {
 
 
 
-    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, float ImageScale,float rotation, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid, boolean showBiomes) {
+    public static void RenderWholeMap(int ImageStartX, int ImageStartY, int ImageScaleX, int ImageScaleY, double ImageScale,float rotation, double TargetX, double TargetZ, double offsetX, double offsetY, int dim, double mouseX, double mouseY, boolean hover,boolean drawGrid, boolean showBiomes) {
         GL11.glPushMatrix();
         GuiUtil.glScissor(ImageStartX, ImageStartY, ImageScaleX, ImageScaleY);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -127,7 +127,7 @@ public class MapRender implements MC {
 
 
 
-        float mapAlpha = MathHelper.clamp((ImageScale-10)/10f,0,1);
+        float mapAlpha = (float) MathHelper.clamp((ImageScale-10)/10f,0,1);
 
         float thick = 0.4f;
 
@@ -136,7 +136,7 @@ public class MapRender implements MC {
             MapGrid grid = MapGrid.values()[i];
             if(grid.range.x < ImageScale && ImageScale < grid.range.y)
             {
-                float scale = grid.scaledSize/SparkMap.size*ImageScale;
+                double scale = grid.scaledSize/SparkMap.size*ImageScale;
 
                 float conv = grid.size/SparkMap.getWidthAndHeight();
 
@@ -188,8 +188,8 @@ public class MapRender implements MC {
 
                 SparkMap map = MapManager.instance.getMap(new Vec2i(x, y), dim);
 
-                float x_ = map.getStartPos().x * (ImageScale / SparkMap.getWidthAndHeight()) - centerX;
-                float y_ = map.getStartPos().y * (ImageScale / SparkMap.getWidthAndHeight()) - centerY;
+                double x_ = map.getStartPos().x * (ImageScale / SparkMap.getWidthAndHeight()) - centerX;
+                double y_ = map.getStartPos().y * (ImageScale / SparkMap.getWidthAndHeight()) - centerY;
 
                 if(!map.structures.isEmpty())
                     structuresHashMap.addAll(new ArrayList<>(map.structures));

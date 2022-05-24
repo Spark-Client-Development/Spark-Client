@@ -19,176 +19,56 @@ import java.util.ArrayList;
 
 public class ConfigManager implements MC {
 
-    ArrayList<Config> configs = new ArrayList<>();
-    Config currentConfig;
+
 
     public ConfigManager() {
         Spark.eventBus.register(this);
     }
 
 
-    //rename file lol
-    @SubscribeEvent
-    void OnSettingChangeEvent(SettingChangeEvent event) {
-        for (Config c : configs) {
-            if (c.name == event.getSetting())
-                c.syncFileName();
-        }
-    }
 
-    @SubscribeEvent
-    public void onJoin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        if (mc.currentServerData != null)
-            for (Config c : configs) {
 
-                if (c.isServer(mc.currentServerData.serverIP)) {
-                    if (loadConfig(c, true))
-                        return;
-                }
-            }
-    }
 
-    public ArrayList<Config> getConfigs() {
-        return configs;
-    }
 
-    public Config getCurrentConfig() {
-        return currentConfig;
+
+    String getConfigPath() {
+        return Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "configs";
     }
 
 
-    String getConfigPath(Config config) {
-        return Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "configs" + System.getProperty("file.separator") + config.getConfigName();
-    }
-
-    public void copyAndPasteConfig(Config from, Config to) {
-
-        FileUtil.copy(getConfigPath(from), getConfigPath(to));
-
-        if (to == currentConfig)
-            loadConfig(currentConfig, false);
-    }
-
-    public boolean loadConfig(Config config, boolean saveOld) {
-        if (!configs.contains(config))
-            return false;
-
-        if (saveOld)
-            SaveFromConfig(currentConfig, false);
-        currentConfig = config;
-
-        if (FileUtil.exists(getConfigPath(config))) {
-            LoadFromConfig(currentConfig);
-        }
-
-        return true;
-    }
-
-    public boolean deleteConfig(Config config) {
-        if (configs.size() <= 1)
-            return false;
-
-        if (!configs.contains(config))
-            return false;
-
-        String p = getConfigPath(config);
 
 
-        if (FileUtil.exists(p))
-            FileUtil.deleteDirectory(p);
 
 
-        configs.remove(config);
 
-        if (currentConfig == config) {
-            loadConfig(configs.get(0), false);
-        }
-
-
-        return true;
-    }
-
-    public boolean createConfig(Config config) {
-        if (configs.contains(config))
-            return false;
-        configs.add(config);
-        SaveFromConfig(config, true);
-        return true;
-    }
-
-    public Config getConfigFromName(String s) {
-        for (Config c : configs) {
-            if (c.getConfigName().equals(s))
-                return c;
-        }
-        return null;
-
-
-    }
 
 
     public void Load() {
 
-        configs.clear();
-        currentConfig = null;
-        String configFolder = (Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "configs");
-        for (String s : FileUtil.listFolderForFolder(configFolder)) {
-            Config c = new Config(s);
-            configs.add(c);
-            loadSettingHolder(c, getConfigPath(c) + System.getProperty("file.separator") + "configData.cfg");
-            c.name.setValue(s);
-        }
-        if (FileUtil.exists(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.cfg"))
-            currentConfig = getConfigFromName(FileUtil.read(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.cfg"));
-
-        if (currentConfig == null) {
-            if (configs.size() <= 0)
-                configs.add(new Config("Default"));
-            currentConfig = configs.get(0);
-        }
-
-        LoadFromConfig(currentConfig);
+        LoadFromConfig();
 
     }
 
-    public void SaveConfigConfigs(boolean overrideUnused) {
-        FileUtil.write(Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "config.cfg", currentConfig.getConfigName());
-        for (Config c : configs) {
-            saveSettingHolder(c, getConfigPath(c) + System.getProperty("file.separator") + "configData.cfg", false);
-        }
 
-        String configFolder = (Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "configs");
-
-        if (overrideUnused) {
-            deleteUnused:
-            for (String s : FileUtil.listFolderForFolder(configFolder)) {
-                for (Config c : configs) {
-                    if (c.getConfigName().equals(s))
-                        continue deleteUnused;
-                }
-                FileUtil.deleteDirectory(configFolder + System.getProperty("file.separator") + s);
-            }
-        }
-    }
 
     public void Save() {
 
-        SaveConfigConfigs(true);
-        SaveFromConfig(currentConfig, false);
+
+        SaveFromConfig(false);
 
     }
 
 
-    public void LoadFromConfig(Config config) {
-        loadSystems(config);
+    public void LoadFromConfig() {
+        loadSystems();
     }
 
-    public void SaveFromConfig(Config config, boolean saveDefaults) {
-        saveSystems(config, saveDefaults);
+    public void SaveFromConfig(boolean saveDefaults) {
+        saveSystems(saveDefaults);
     }
 
-    String getSystemSettingFile(SettingsHolder holder, Config config) {
-        String base = getConfigPath(config) + System.getProperty("file.separator") + "systems" + System.getProperty("file.separator");
+    String getSystemSettingFile(SettingsHolder holder) {
+        String base = getConfigPath() + System.getProperty("file.separator") + "systems" + System.getProperty("file.separator");
         if (holder instanceof Module)
             base = base + "modules" + System.getProperty("file.separator");
         if (holder instanceof ClientSetting)
@@ -199,12 +79,9 @@ public class ConfigManager implements MC {
     }
 
 
-    private void loadSystems(Config config) {
+    private void loadSystems() {
         for (SettingsHolder system : SystemManager.getSystems()) {
-            if (system instanceof ClientConfig)
-                loadSettingHolder(system, new File(Spark.ParentPath.getAbsolutePath(), "ClientSettings.cfg").toString());
-            else
-                loadSettingHolder(system, getSystemSettingFile(system, config));
+            loadSettingHolder(system, getSystemSettingFile(system));
         }
     }
 
@@ -262,12 +139,9 @@ public class ConfigManager implements MC {
         }
     }
 
-    private void saveSystems(Config config, boolean saveDefaults) {
+    private void saveSystems(boolean saveDefaults) {
         for (SettingsHolder system : SystemManager.getSystems()) {
-            if (system instanceof ClientConfig)
-                saveSettingHolder(system, new File(Spark.ParentPath.getAbsolutePath(), "ClientSettings.cfg").toString(), saveDefaults);
-            else
-                saveSettingHolder(system, getSystemSettingFile(system, config), saveDefaults);
+            saveSettingHolder(system, getSystemSettingFile(system), saveDefaults);
         }
     }
 
@@ -310,63 +184,5 @@ public class ConfigManager implements MC {
     }
 
 
-    public static class Config extends SettingsHolder {
-        public StringSetting name = new StringSetting("Name", this, "", "General");
-        //todo make this a string list LOL
-        StringSetting loadOnIp = new StringSetting("LoadOnIp", this, "", "General");
-
-        String fileName;
-
-        public Config(String inName) {
-            fileName = inName;
-            name.setValue(fileName);
-        }
-
-        public void syncFileName() {
-            if (fileName != name.getValue()) {
-                String configFolder = (Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "configs");
-                if (name.getValue().length() <= 0 || Spark.configManager.getConfigs().contains(name.getName()) || !FileUtil.renameDirectory(configFolder + System.getProperty("file.separator") + fileName, configFolder + System.getProperty("file.separator") + name.getValue()))
-                    name.setValue(this.fileName);
-            }
-
-            this.fileName = name.getValue();
-        }
-
-        public boolean isServer(String ip) {
-            return loadOnIp.getValue().equals(ip);
-        }
-
-        @Override
-        public String getName() {
-            return getConfigName();
-        }
-
-        public String getConfigName() {
-            return fileName;
-        }
-
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == this)
-                return true;
-            if ((o instanceof Config)) {
-                Config other = (Config) o;
-                if (other.getName() == null)
-                    return false;
-                return other.getName().equalsIgnoreCase(getName());
-            }
-            if (o instanceof String)
-                return ((String) o).equalsIgnoreCase(getName());
-
-
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return getConfigName().hashCode();
-        }
-    }
 }
 

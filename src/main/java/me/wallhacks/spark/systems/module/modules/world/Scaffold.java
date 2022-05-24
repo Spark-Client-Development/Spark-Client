@@ -49,16 +49,15 @@ public class Scaffold extends Module {
     @Override
     public void onEnable() {
         super.onEnable();
-        lastPosX = mc.player.posX;
-        lastPosZ = mc.player.posZ;
+
+
     }
 
     @SubscribeEvent
     void OnUpdate(PlayerUpdateEvent event) {
         doScaffold();
 
-        lastPosX = mc.player.posX;
-        lastPosZ = mc.player.posZ;
+
     }
 
     boolean doTowerCenter() {
@@ -154,8 +153,8 @@ public class Scaffold extends Module {
             return;
 
         //extended
-        int x = (int) Math.round(Math.max(-1,Math.min(1, (mc.player.posX - lastPosX)*20)));
-        int y = (int) Math.round(Math.max(-1,Math.min(1, (mc.player.posZ - lastPosZ)*20)));
+        int x = (int) Math.round(Math.max(-1,Math.min(1, (mc.player.posX - mc.player.lastReportedPosX)*20)));
+        int y = (int) Math.round(Math.max(-1,Math.min(1, (mc.player.posZ - mc.player.lastReportedPosZ)*20)));
 
 
 
@@ -175,8 +174,6 @@ public class Scaffold extends Module {
         }
 
     }
-    double lastPosX;
-    double lastPosZ;
 
 
     BlockInteractUtil.BlockPlaceResult Place(BlockPos x ){

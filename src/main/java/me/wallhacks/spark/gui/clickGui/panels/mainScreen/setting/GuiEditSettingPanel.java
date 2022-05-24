@@ -101,18 +101,6 @@ public class GuiEditSettingPanel extends GuiPanelBase {
                 };
 
             }
-            if(currentSettingsHolder instanceof ConfigManager.Config)
-            {
-                buttonFunction = new GuiPanelButton[] {
-                        new GuiPanelButton(() -> {
-                            Spark.configManager.deleteConfig((ConfigManager.Config) currentSettingsHolder);
-                        },"Delete"),
-                        new GuiPanelButton(() -> {
-                            Spark.configManager.loadConfig((ConfigManager.Config) currentSettingsHolder,true);
-                        },"Load")
-                };
-
-            }
             if(currentSettingsHolder instanceof WaypointManager.Waypoint)
             {
                 buttonFunction = new GuiPanelButton[] {

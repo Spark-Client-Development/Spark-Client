@@ -124,7 +124,7 @@ public class SparkMap {
     }
 
 
-    public static Vec2i getMapPosFrom2dMapPos(double ScreenX,double ScreenY,float MapScale){
+    public static Vec2i getMapPosFrom2dMapPos(double ScreenX,double ScreenY,double MapScale){
         return getMapPosFromWorldPos(getWorldPosFrom2dMapPos(ScreenX,MapScale),getWorldPosFrom2dMapPos(ScreenY,MapScale));
     }
     public static Vec2i getMapPosFromWorldPos(double x,double y){

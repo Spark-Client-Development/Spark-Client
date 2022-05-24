@@ -63,8 +63,16 @@ public class MapManager implements MC {
     }
     public SparkMap getMap(Vec3i mapPos){
 
+
+
         if(!loadedMaps.containsKey(mapPos)) {
-            toLoad.add(mapPos);
+
+            if(MapConfig.getInstance().SaveMap.isOn())
+                toLoad.add(mapPos);
+            else if(loadedMaps.size() <= 0)
+                for (Chunk c : mc.world.getChunkProvider().loadedChunks.values()) chunksToLoad.add(c.getPos());
+
+
             loadedMaps.put(mapPos, new SparkMap(mapPos));
         }
 
@@ -224,10 +232,18 @@ public class MapManager implements MC {
     public void onChunk(ChunkLoadEvent.Load event) {
         Chunk c = event.getChunk();
 
-        chunksToLoad.add(c.getPos());
+        if(MapConfig.getInstance().SaveMap.isOn() || loadedMaps.size() > 0)
+            chunksToLoad.add(c.getPos());
 
     }
+    @SubscribeEvent
+    public void onChunk(ChunkLoadEvent.Unload event) {
+        Chunk c = event.getChunk();
 
+        if(chunksToLoad.contains(c.getPos()))
+            chunksToLoad.remove(c.getPos());
+
+    }
 
 
 

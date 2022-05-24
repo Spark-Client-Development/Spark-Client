@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class MapConfig extends ClientSetting {
 
 
-    public BooleanSetting SaveMap = new BooleanSetting("SaveData", this, true, "MapManager");
+    public BooleanSetting SaveMap = new BooleanSetting("UseFileSystem", this, false, "MapManager");
 
     public BooleanSetting Structures = new BooleanSetting("ShowStructures", this, true, "MapManager");
 
