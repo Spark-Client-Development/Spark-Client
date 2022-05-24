@@ -39,10 +39,13 @@ public class BlockInteractUtil implements MC {
         return tryPlaceBlock(pos, switcher, AntiCheatConfig.getInstance().getBlockPlaceSwitchType(), false, false,true);
     }
     public static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided) {
-        return tryPlaceBlock(pos,switcher,switchType,true,clientSided,true);
+        return tryPlaceBlock(pos,switcher,switchType,clientSided,true,true);
     }
     public static BlockPlaceResult tryPlaceBlockNoEntityCheck(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType) {
         return tryPlaceBlock(pos,switcher,switchType,false,false,true);
+    }
+    public static BlockPlaceResult tryPlaceBlockNoEntityCheck(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided) {
+        return tryPlaceBlock(pos,switcher,switchType,false,clientSided,true);
     }
 
     static BlockPlaceResult tryPlaceBlock(BlockPos pos, BlockSwitchItem switcher, ItemSwitcher.switchType switchType, boolean clientSided, boolean checkEntities,boolean multiSpoof) {

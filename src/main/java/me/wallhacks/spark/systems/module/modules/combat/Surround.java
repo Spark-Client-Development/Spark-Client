@@ -173,7 +173,7 @@ public class Surround extends Module {
             }
 
 
-        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlock(x, allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN), Spark.switchManager.getModeFromString(switchingMode.getValue()),  false));
+        BlockInteractUtil.BlockPlaceResult res = (BlockInteractUtil.tryPlaceBlockNoEntityCheck(x, allowNonObi.isOn() ? new HardSolidBlockSwitchItem() : new SpecBlockSwitchItem(Blocks.OBSIDIAN), Spark.switchManager.getModeFromString(switchingMode.getValue())));
 
 
         return res;
