@@ -33,6 +33,7 @@ public class Spark implements MC {
     public static RPCManager rpcManager;
     public static SystemManager systemManager;
     public static ConfigManager configManager;
+    public static AutoConfigManager autoConfigManager;
     public static RotationManager rotationManager;
     //do not check this class nothing to see there totally no skidding involved
     public static TickManager tickManager;
@@ -92,7 +93,7 @@ public class Spark implements MC {
         configManager.Load();
         rpcManager = new RPCManager();
         positionManager = new PositionManager();
-
+        autoConfigManager = new AutoConfigManager();
         logger.info("Spark client loaded successfully");
     }
 

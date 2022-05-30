@@ -14,7 +14,7 @@ import java.util.Arrays;
 @Module.Registration(name = "Criticals", description = "Superior module litarly best ever")
 public class Criticals extends Module {
 
-    ModeSetting reverse = new ModeSetting("Mode",this,"Up", Arrays.asList("Reverse","ReverseCons","Up"));
+    public ModeSetting reverse = new ModeSetting("Mode",this,"Up", Arrays.asList("Reverse","ReverseCons","Up"));
 
 
     @SubscribeEvent

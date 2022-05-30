@@ -34,7 +34,7 @@ import java.awt.*;
 @Module.Registration(name = "CevBreaker", description = "Steals from chests")
 public class CevBreaker extends Module {
 
-    ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes);
+    public ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes);
 
     IntSetting breakBlockDelay = new IntSetting("breakBlockDelay",this,1,0,10);
     IntSetting placeBlockDelay = new IntSetting("placeBlockDelay",this,1,0,10);

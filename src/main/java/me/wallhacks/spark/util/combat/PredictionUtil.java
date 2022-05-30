@@ -130,11 +130,13 @@ public class PredictionUtil implements MC {
 
     public static boolean isPlayerTryingToGetInHole(EntityPlayer player,BlockPos hole){
         //if player is already in hole no point in filling it
-        if(PlayerUtil.getPlayerPosFloored(player).equals(hole) || player.posY < hole.getY()+.2)
+        if(PlayerUtil.getPlayerPosFloored(player).equals(hole) || player.posY < hole.getY()+.2 || HoleUtil.isInHole(player))
             return false;
 
+        if(MathUtil.getDistanceFromTo(new Vec3d(hole.getX()+0.5,hole.getY()+0.5,hole.getZ()+0.5),new Vec3d(mc.player.posX,mc.player.posY,mc.player.posZ)) > MathUtil.getDistanceFromTo(new Vec3d(hole.getX()+0.5,hole.getY()+0.5,hole.getZ()+0.5),new Vec3d(mc.player.lastTickPosX,mc.player.lastTickPosY,mc.player.lastTickPosZ)))
+            return false;
 
-        for (AxisAlignedBB bb : PredictionUtil.PredictedTargetBoxes(player,5)) {
+        for (AxisAlignedBB bb : PredictionUtil.PredictedTargetBoxes(player,8)) {
             if(isBBCloseToHole(bb,hole))
                 return true;
         }

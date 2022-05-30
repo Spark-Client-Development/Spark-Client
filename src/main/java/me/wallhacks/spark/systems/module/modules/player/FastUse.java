@@ -31,7 +31,7 @@ public class FastUse extends Module {
     BooleanSetting fireworks = new BooleanSetting("FireWorks", this, false);
     KeySetting bind = new KeySetting("PacketEXP", this, -1);
     ModeSetting switchMode = new ModeSetting("Switch", this, "Silent", Arrays.asList("Normal", "Silent","Const","NoSwitch"));
-    IntSetting takeOffVal = new IntSetting("TakeOffPercent", this, 101, 0, 101);
+    BooleanSetting takeOff = new BooleanSetting("TakeOffArmor", this, true);
     IntSetting packets = new IntSetting("Packets", this, 1, 1, 5);
     public static FastUse INSTANCE;
     private boolean shouldPause = false;
@@ -109,6 +109,9 @@ public class FastUse extends Module {
     }
 
     boolean takeArmorOff() {
+        if(!takeOff.getValue())
+            return true;
+
         boolean done = true;
         for (int slot = 5; slot <= 8; slot++) {
             ItemStack item;
@@ -116,7 +119,7 @@ public class FastUse extends Module {
             double max_dam = item.getMaxDamage();
             double dam_left = item.getMaxDamage() - item.getItemDamage();
             double percent = (dam_left / max_dam) * 100;
-            if (percent >= takeOffVal.getValue()) {
+            if (percent >= 95) {
                 if (InventoryUtil.notInInv(Items.AIR) || item.equals(Items.AIR)) {
                     continue;
                 }
@@ -129,9 +132,8 @@ public class FastUse extends Module {
                 mc.playerController.windowClick(0, slot, 0, ClickType.QUICK_MOVE, mc.player);
                 mc.playerController.updateController();
             }
-            if (percent < takeOffVal.getValue()) {
+            else
                 done = false;
-            }
         }
         return !done;
     }

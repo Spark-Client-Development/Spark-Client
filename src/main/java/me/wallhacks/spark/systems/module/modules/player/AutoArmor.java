@@ -100,7 +100,7 @@ public class AutoArmor extends Module {
         for (int i = 0; i < mc.player.inventoryContainer.getInventory().size(); ++i) {
             ItemStack s = mc.player.inventoryContainer.getInventory().get(i);
             if ((s.getItem() instanceof ItemArmor && ((ItemArmor) s.getItem()).armorType == type) || (s.getItem() instanceof ItemElytra && type == EntityEquipmentSlot.CHEST)) {
-                if (getDurability(s) < FastUse.INSTANCE.takeOffVal.getValue())
+                if (getDurability(s) < 95)
                     return i;
             }
         }

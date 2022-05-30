@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Module.Registration(name = "AutoHeadTrap", description = "Places Block on your Head to trap enemies")
+@Module.Registration(name = "HeadTrap", description = "Places Block on your Head to trap enemies")
 public class HeadTrap extends Module {
 
     BooleanSetting smart = new BooleanSetting("Smart", this, true, "General");
@@ -145,29 +145,5 @@ public class HeadTrap extends Module {
 
 
 
-    public boolean isPlayerTryingToGetInHole(EntityPlayer player,BlockPos hole){
-        //if player is already in hole no point in filling it
-        if(PlayerUtil.getPlayerPosFloored(player).equals(hole))
-            return false;
-
-
-        for (AxisAlignedBB bb : PredictionUtil.PredictedTargetBoxes(player,5)) {
-            if(isBBCloseToHole(bb,hole))
-                return true;
-        }
-
-
-        return false;
-
-    }
-    boolean isBBCloseToHole (AxisAlignedBB box,BlockPos hole){
-        double posX = (box.minX + box.maxX) / 2.0D;
-        double posY = box.minY;
-        double posZ = (box.minZ + box.maxZ) / 2.0D;
-
-        return MathUtil.getDistanceFromTo(
-                new Vec3d(hole.getX()+0.5,hole.getY()+0.5,hole.getZ()+0.5),
-                new Vec3d(posX,posY,posZ)) < 2;
-    }
 
 }
