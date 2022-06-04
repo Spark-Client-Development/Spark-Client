@@ -18,6 +18,8 @@
     "spark.MixinEntityLivingBase",
     "spark.MixinEntityPlayer",
     "spark.MixinEntityPlayerSP",
+    "spark.MixinAbstractHorse",
+    "spark.MixinEntityLlama",
     "spark.MixinLayerCape",
     "spark.MixinEntityRenderer",
     "spark.MixinGui",
