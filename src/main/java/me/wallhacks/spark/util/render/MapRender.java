@@ -403,6 +403,9 @@ public class MapRender implements MC {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         GL11.glPopMatrix();
+
+        GlStateManager.enableBlend();
+
     }
 
 
