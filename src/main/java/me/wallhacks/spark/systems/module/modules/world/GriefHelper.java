@@ -29,10 +29,10 @@ import java.util.Arrays;
 @Module.Registration(name = "GriefHelper", description = "Places tnt")
 public class GriefHelper extends Module {
 
-    IntSetting spacing = new IntSetting("Spacing",this,4,2,5,"General");
-    IntSetting delay = new IntSetting("Delay",this,0,0,8,"General");
-    BooleanSetting render = new BooleanSetting("Render", this, true, "General");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x389F5EDC, true), "General");
+    IntSetting spacing = new IntSetting("Spacing",this,4,2,5);
+    IntSetting delay = new IntSetting("Delay",this,0,0,8);
+    BooleanSetting render = new BooleanSetting("Render", this, true);
+    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x389F5EDC, true));
 
 
 

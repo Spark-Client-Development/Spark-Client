@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.world.GriefHelper;
 import me.wallhacks.spark.systems.module.modules.world.LogoutSpots;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
@@ -36,9 +37,9 @@ public class AutoTrap extends Module {
 
     ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal",  Arrays.asList("Normal","Silent","Const"));
 
-
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0xABE50F36, true), "Render");
+    SettingGroup renderG = new SettingGroup("Render", this);
+    BooleanSetting render = new BooleanSetting("Render", renderG, true);
+    ColorSetting fill = new ColorSetting("Color", renderG, new Color(0xABE50F36, true));
 
 
     @SubscribeEvent

@@ -5,45 +5,28 @@ import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.setting.Setting;
 
 public class DoubleSetting extends Setting<Double> implements NumberSetting {
-    public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, double sliderStep, Predicate<Double> visible, String settingCategory) {
-        super(value, name, settingsHolder,visible,settingCategory);
+    public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, double sliderStep, Predicate<Double> visible) {
+        super(value, name, settingsHolder,visible);
 
         this.sliderStep = sliderStep;
         this.min = min;
         this.max = max;
     }
 
-    public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max,Predicate<Double> visible, String settingCategory) {
-        this(name,settingsHolder,value,min,max,0.1,visible,settingCategory);
-    }
-
-    public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, double sliderStep,String settingCategory) {
-        this(name,settingsHolder,value,min,max,sliderStep,null,settingCategory);
-
-    }
 
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, double sliderStep) {
-        this(name,settingsHolder,value,min,max,sliderStep,null,"General");
+        this(name,settingsHolder,value,min,max,sliderStep,null);
+
     }
 
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max, Predicate<Double> visible) {
-        this(name,settingsHolder,value,min,max,0.1,visible,"General");
+        this(name,settingsHolder,value,min,max,0.1,visible);
     }
 
     public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max) {
         this(name,settingsHolder,value,min,max,0.1);
 
     }
-
-    public DoubleSetting(String name, SettingsHolder settingsHolder, double value, double min, double max,String settingCategory) {
-        this(name,settingsHolder,value,min,max,0.1,null,settingCategory);
-    }
-
-
-
-
-
-
 
     private final double min;
     private final double max;
@@ -82,5 +65,8 @@ public class DoubleSetting extends Setting<Double> implements NumberSetting {
     public float getFloatValue() {
         return getValue().floatValue();
     }
-
+    @Override
+    public String getValueString() {
+        return String.valueOf(getFloatValue());
+    }
 }

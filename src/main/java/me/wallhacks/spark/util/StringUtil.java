@@ -19,7 +19,16 @@ public class StringUtil {
         if(bind > 0)
             return Keyboard.getKeyName(bind);
         if(bind <= -2)
-            return "Mouse"+(-2+(-1*bind));
+            switch (bind) {
+                case -2:
+                    return "RClick";
+                case -3:
+                    return "LClick";
+                case -4:
+                    return "MClick";
+                default:
+                    return "Mouse" + (-bind - 2);
+            }
 
         return "None";
     }

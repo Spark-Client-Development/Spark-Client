@@ -2,6 +2,8 @@ package me.wallhacks.spark.systems.module.modules.render;
 
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
+import me.wallhacks.spark.util.GuiUtil;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.objects.Timer;
@@ -39,18 +41,22 @@ import static org.lwjgl.opengl.GL11.*;
 @Module.Registration(name = "NameTags", description = "NameTags with more info then default")
 public class NameTags extends Module {
     public static NameTags INSTANCE;
-    public DoubleSetting scale = new DoubleSetting("Scale", this, 2.0, 0.0, 10.0, "General");
-    public DoubleSetting scaleByDistance = new DoubleSetting("ScaleByDistance", this, 1,0,1, "General");
-    public ColorSetting outlineColor = new ColorSetting("Outline", this, new Color(0, 187, 255, 174), "General");
-    public BooleanSetting health = new BooleanSetting("Health", this, true, "Inline");
-    public BooleanSetting ping = new BooleanSetting("Ping", this, true, "Inline");
-    public BooleanSetting gamemode = new BooleanSetting("GameMode", this, false, "Inline");
-    public BooleanSetting healthBar = new BooleanSetting("HealthBar", this, false, "Inline");
-    public BooleanSetting armor = new BooleanSetting("Armor", this, true, "Above");
-    public BooleanSetting durability = new BooleanSetting("Durability", this, false, "Above");
-    public BooleanSetting enchants = new BooleanSetting("Enchants", this, false, "Above");
-    public BooleanSetting mainhand = new BooleanSetting("Mainhand", this, true, "Above");
-    public BooleanSetting offhand = new BooleanSetting("Offhand", this, true, "Above");
+    public DoubleSetting scale = new DoubleSetting("Scale", this, 2.0, 0.0, 10.0);
+    public DoubleSetting scaleByDistance = new DoubleSetting("ScaleByDistance", this, 1,0,1);
+    public ColorSetting outlineColor = new ColorSetting("Outline", this, new Color(0, 187, 255, 174));
+
+    SettingGroup inline = new SettingGroup("Inline", this);
+    public BooleanSetting health = new BooleanSetting("Health", inline, true);
+    public BooleanSetting ping = new BooleanSetting("Ping", inline, true);
+    public BooleanSetting gamemode = new BooleanSetting("GameMode", inline, false);
+    public BooleanSetting healthBar = new BooleanSetting("HealthBar", inline, false);
+
+    SettingGroup above = new SettingGroup("Above", this);
+    public BooleanSetting armor = new BooleanSetting("Armor", above, true);
+    public BooleanSetting durability = new BooleanSetting("Durability", above, false);
+    public BooleanSetting enchants = new BooleanSetting("Enchants", above, false);
+    public BooleanSetting mainhand = new BooleanSetting("Mainhand", above, true);
+    public BooleanSetting offhand = new BooleanSetting("Offhand", above, true);
     public ConcurrentHashMap<Entity, Float> healthMap = new ConcurrentHashMap<>();
     public NameTags() {
         INSTANCE = this;
@@ -311,14 +317,14 @@ public class NameTags extends Module {
         GlStateManager.scale(-(distanceScale / 100), -(distanceScale / 100), (distanceScale / 100));
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
-        drawRoundedRect((int) - width - 1, (int) -height, (int) width + 2, healthBar.getValue() ? 8 : 4, new Color(0x80000006, true).getRGB(), 3);
+        GuiUtil.rounded((int) - width - 1, (int) -height, (int) width + 2, healthBar.getValue() ? 8 : 4, new Color(0x80000006, true).getRGB(), 3);
         drawOutlineRoundedRect((int) - width - 1, (int) -height, (int) width + 2, healthBar.getValue() ? 8 : 4, outlineColor.getColor().getRGB(), 3, distance, distanceScale);
         if (healthBar.getValue()) {
             int length = (int) ((width * 2 - 1) * percent);
             length = Math.max(2, length);
             Color color = ColorUtil.lerpColor(new Color(0xBB0A0A),new Color(0x27DC00), colorPercent);
             GlStateManager.disableDepth();
-            drawRoundedRect((int) - width + 1, 4, (int) (length - width + 1), 6, color.getRGB(), 1);
+            GuiUtil.rounded((int) - width + 1, 4, (int) (length - width + 1), 6, color.getRGB(), 1);
         }
         GlStateManager.disableDepth();
         GlStateManager.disableBlend();
@@ -326,29 +332,7 @@ public class NameTags extends Module {
     }
 
 
-    public void drawRoundedRect(int x, int y, int right, int bottom, int color, int radius) {
-        GlStateManager.pushMatrix();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 0, 1);
-        glEnable(GL_LINE_SMOOTH);
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.depthMask(false);
-        GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        GL11.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-        glBegin(GL_TRIANGLE_FAN);
-        drawFilledCircle(right - radius, bottom - radius, radius, color, 0, 90);
-        drawFilledCircle(right - radius, y + radius, radius, color, 90, 180);
-        drawFilledCircle(x + radius, y + radius, radius, color, 180, 270);
-        drawFilledCircle(x + radius, bottom - radius, radius, color, 270, 360);
-        glEnd();
-        glDisable(GL_LINE_SMOOTH);
-        GL11.glDisable(GL_LINE_SMOOTH);
-        GlStateManager.depthMask(true);
-        GlStateManager.enableDepth();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
-    }
+
 
     public void drawOutlineRoundedRect(int x, int y, int right, int bottom, int color, int radius, double distance, double distanceScale) {
 
@@ -399,13 +383,6 @@ public class NameTags extends Module {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
-    }
-
-
-    public static void drawFilledCircle(int x, int y, double radius, int color, int start, int stop) {
-        glColor4f(((color >> 16) & 0xff) / 255F, ((color >> 8) & 0xff) / 255F, (color & 0xff) / 255F, ((color >> 24) & 0xff) / 255F);
-        for (int i = start; i <= stop; i++)
-            glVertex2d( x + Math.sin(((i * Math.PI) / 180)) * radius, y + Math.cos(((i * Math.PI) / 180)) * radius);
     }
 }
 

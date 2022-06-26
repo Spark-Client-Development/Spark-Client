@@ -16,22 +16,22 @@ import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 @Module.Registration(name = "NoRender", description = "Stop rendering shit we don't want to render")
 public class NoRender extends Module {
 
-    BooleanSetting fog = new BooleanSetting("LiquidFog",this,true,"General");
-    BooleanSetting hurtCam = new BooleanSetting("HurtCam",this,true,"General");
+    BooleanSetting fog = new BooleanSetting("LiquidFog",this,true);
+    BooleanSetting hurtCam = new BooleanSetting("HurtCam",this,true);
     //public cause used in mixin
-    public BooleanSetting armor = new BooleanSetting("Armor",this,false,"General");
-    BooleanSetting blindness = new BooleanSetting("PotionEffects",this,true,"General");
+    public BooleanSetting armor = new BooleanSetting("Armor",this,false);
+    BooleanSetting blindness = new BooleanSetting("PotionEffects",this,true);
 
 
 
-    BooleanSetting overlay = new BooleanSetting("BlockOverlay",this,true,"Gui");
-    BooleanSetting potionIcon = new BooleanSetting("PotionIcons",this,true,"Gui");
-    BooleanSetting bosshealth = new BooleanSetting("Bosshealth",this,false,"Gui");
+    BooleanSetting overlay = new BooleanSetting("BlockOverlay",this,true);
+    BooleanSetting potionIcon = new BooleanSetting("PotionIcons",this,true);
+    BooleanSetting bosshealth = new BooleanSetting("Bosshealth",this,false);
 
 
-    BooleanSetting explosion = new BooleanSetting("Explosion",this,true,"Particles");
-    BooleanSetting firework = new BooleanSetting("Fireworks",this,false,"Particles");
-    BooleanSetting blockbreaking = new BooleanSetting("Blockbreaking",this,false,"Particles");
+    BooleanSetting explosion = new BooleanSetting("Explosion",this,true);
+    BooleanSetting firework = new BooleanSetting("Fireworks",this,false);
+    BooleanSetting blockbreaking = new BooleanSetting("Blockbreaking",this,false);
 
 
 

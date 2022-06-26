@@ -11,8 +11,8 @@ import java.awt.*;
 import java.util.function.Predicate;
 
 public class VectorSetting extends Setting<Vec3i> {
-    public VectorSetting(String name, SettingsHolder settingsHolder, Vec3i value, Predicate<Vec3i> hasY, Predicate<Vec3i> visible, String settingCategory) {
-        super(value, name, settingsHolder,visible,settingCategory);
+    public VectorSetting(String name, SettingsHolder settingsHolder, Vec3i value, Predicate<Vec3i> hasY, Predicate<Vec3i> visible) {
+        super(value, name, settingsHolder,visible);
 
         this.hasY = hasY;
     }
@@ -21,11 +21,11 @@ public class VectorSetting extends Setting<Vec3i> {
     private final Predicate<Vec3i> hasY;
 
     public VectorSetting(String name, SettingsHolder settingsHolder, Vec3i value) {
-        this(name,settingsHolder,value,null,null,"General");
+        this(name,settingsHolder,value,null,null);
 
     }
     public VectorSetting(String name, SettingsHolder settingsHolder, Vec3i value, Predicate<Vec3i> hasY) {
-        this(name,settingsHolder,value,hasY,null,"General");
+        this(name,settingsHolder,value,hasY,null);
 
     }
 

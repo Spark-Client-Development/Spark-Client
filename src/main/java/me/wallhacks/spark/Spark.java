@@ -1,6 +1,7 @@
 package me.wallhacks.spark;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import me.wallhacks.spark.gui.ClickGui;
 import me.wallhacks.spark.manager.*;
 import me.wallhacks.spark.systems.module.modules.player.InventoryManager;
 import net.minecraft.client.Minecraft;
@@ -13,7 +14,6 @@ import net.minecraftforge.fml.common.eventhandler.EventBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
-import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
 import me.wallhacks.spark.systems.command.CommandHandler;
 import me.wallhacks.spark.util.MC;
 
@@ -44,8 +44,7 @@ public class Spark implements MC {
     public static CommandManager commandManager;
 
     public static CombatManager popManager;
-    public static ClickGuiMenuBase clickGuiScreen;
-    public static AltManager altManager;
+    public static ClickGui clickGuiScreen;
     public static PositionManager positionManager;
     public static WaypointManager waypointManager;
     public static BreakManager breakManager;
@@ -82,11 +81,10 @@ public class Spark implements MC {
         seedManager = new SeedManager();
         breakManager = new BreakManager();
         fadeManager = new FadeManager();
-        clickGuiScreen = new ClickGuiMenuBase();
+        clickGuiScreen = new ClickGui();
         threadManager = new ThreadManager();
         switchManager = new SwitchManager();
         capeManager = new CapeManager();
-        altManager = new AltManager();
         socialManager = new SocialManager();
         dataTrackingManager = new ItemTrackerManager();
         waypointManager = new WaypointManager();
@@ -101,7 +99,6 @@ public class Spark implements MC {
         Spark.configManager.Save();
         Spark.socialManager.SaveFriends();
         InventoryManager.instance.SaveKits();
-        Spark.altManager.saveAlts();
         Spark.waypointManager.Save();
         Spark.seedManager.SAVESEEDS();
     }

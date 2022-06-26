@@ -25,16 +25,14 @@ import java.awt.*;
 
 @Module.Registration(name = "EntityEsp", description = "Render shader esp for entities")
 public class EntityEsp extends Module {
-    BooleanSetting player = new BooleanSetting("Player",this, true,"Entities");
+    BooleanSetting player = new BooleanSetting("Player",this, true);
+    BooleanSetting living = new BooleanSetting("Living",this, true);
+    BooleanSetting RenderItems = new BooleanSetting("RenderItems", this, false);
 
-    BooleanSetting living = new BooleanSetting("Living",this, true,"Entities");
-    BooleanSetting RenderItems = new BooleanSetting("RenderItems", this, false, "Entities");
-
-    IntSetting lineWidth = new IntSetting("LineWidth",this, 2, 1, 10,"Render");
-    ColorSetting playerColor = new ColorSetting("PlayerColor",this, new Color(177,41,18,186),"Render");
-    ColorSetting livingColor = new ColorSetting("LivingColor",this, new Color(83,83,77,255),"Render");
-
-    ColorSetting itemColor = new ColorSetting("Item", this, new Color(60,60,60,140), "Render");
+    IntSetting lineWidth = new IntSetting("LineWidth",this, 2, 1, 10);
+    ColorSetting playerColor = new ColorSetting("PlayerColor",this, new Color(177,41,18,186));
+    ColorSetting livingColor = new ColorSetting("LivingColor",this, new Color(83,83,77,255));
+    ColorSetting itemColor = new ColorSetting("Item", this, new Color(60,60,60,140));
 
 
     @SubscribeEvent

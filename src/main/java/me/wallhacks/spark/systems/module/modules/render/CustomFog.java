@@ -1,6 +1,7 @@
 package me.wallhacks.spark.systems.module.modules.render;
 
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.util.render.ColorUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -13,19 +14,17 @@ import java.awt.*;
 @Module.Registration(name = "CustomFog", description = "Stop rendering shit we don't want to render")
 public class CustomFog extends Module {
 
-    private ColorSetting netherMainColor = new ColorSetting("Color",this, new Color(137, 80, 80,255),false,"Nether");
+    SettingGroup nether = new SettingGroup("Nether", this);
+    private ColorSetting netherMainColor = new ColorSetting("Color",nether, new Color(135, 66, 66, 186),false);
+    private IntSetting netherFogDensity = new IntSetting("FogDensity",nether,30,0,100);
 
-    private IntSetting netherFogDensity = new IntSetting("FogDensity",this,30,0,100,"Nether");
+    SettingGroup overworld = new SettingGroup("Overworld", this);
+    private ColorSetting owMainColor = new ColorSetting("Color",overworld, new Color(67, 102, 176, 181),false);
+    private IntSetting owFogDensity = new IntSetting("FogDensity",overworld,30,0,100);
 
-
-    private ColorSetting owMainColor = new ColorSetting("Color",this, new Color(137, 80, 80,255),false,"Overworld");
-
-    private IntSetting owFogDensity = new IntSetting("FogDensity",this,30,0,100,"Overworld");
-
-
-    private ColorSetting endMainColor = new ColorSetting("Color",this, new Color(137, 80, 80,255),false,"End");
-
-    private IntSetting endFogDensity = new IntSetting("FogDensity",this,30,0,100,"End");
+    SettingGroup end = new SettingGroup("End", this);
+    private ColorSetting endMainColor = new ColorSetting("Color",end, new Color(62, 190, 145, 134),false);
+    private IntSetting endFogDensity = new IntSetting("FogDensity",end,30,0,100);
 
 
     @SubscribeEvent

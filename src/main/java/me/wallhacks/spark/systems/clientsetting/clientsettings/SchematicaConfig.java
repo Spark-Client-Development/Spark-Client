@@ -10,6 +10,7 @@ import me.wallhacks.spark.event.client.InputEvent;
 import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
 import me.wallhacks.spark.systems.setting.Setting;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.BlockListSelectSetting;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -30,15 +31,15 @@ public class SchematicaConfig extends ClientSetting {
     public BooleanSetting highlightAir = new BooleanSetting("HighlightAir", this, true);
     public BooleanSetting showDebugInfo = new BooleanSetting("ShowDebugInfo", this, false);
 
-
-    public KeySetting LOAD = new KeySetting("LoadSchematic", this, -1, "Binds");
-    public KeySetting CONTROL = new KeySetting("MoveSchematic", this, -1, "Binds");
-    public KeySetting LAYER_INC = new KeySetting("NextLayer", this, -1, "Binds");
-    public KeySetting LAYER_DEC = new KeySetting("PreviousLayer", this, -1, "Binds");
-    public KeySetting LAYER_TOGGLE = new KeySetting("ToggleLayerMode", this, -1, "Binds");
-    public KeySetting RENDER_TOGGLE = new KeySetting("ToggleRender", this, -1, "Binds");
-    public KeySetting MOVE_HERE = new KeySetting("MoveHere", this, -1, "Binds");
-    public KeySetting PICK_BLOC = new KeySetting("PickBlock", this, -1, "Binds");
+    public SettingGroup binds = new SettingGroup("Binds", this);
+    public KeySetting LOAD = new KeySetting("LoadSchematic", binds, -1);
+    public KeySetting CONTROL = new KeySetting("MoveSchematic", binds, -1);
+    public KeySetting LAYER_INC = new KeySetting("NextLayer", binds, -1);
+    public KeySetting LAYER_DEC = new KeySetting("PreviousLayer", binds, -1);
+    public KeySetting LAYER_TOGGLE = new KeySetting("ToggleLayerMode", binds, -1);
+    public KeySetting RENDER_TOGGLE = new KeySetting("ToggleRender", binds, -1);
+    public KeySetting MOVE_HERE = new KeySetting("MoveHere", binds, -1);
+    public KeySetting PICK_BLOC = new KeySetting("PickBlock", binds, -1);
 
     public SchematicaConfig() {
         super();
@@ -54,10 +55,10 @@ public class SchematicaConfig extends ClientSetting {
     public void onSettingChange(SettingChangeEvent event) {
         Setting setting = event.getSetting();
         if (!this.getSettings().contains(setting)) return;
-        if (setting.getCategory().equals("General") && setting != showDebugInfo) RenderSchematic.INSTANCE.refresh();
-        if (setting.getCategory().equals("Binds")) {
-            for (Setting bind : this.getSettings()) {
-                if (!bind.getCategory().equals("Binds") || bind == setting) continue;
+        if (setting.getSettingsHolder() == this && setting != showDebugInfo) RenderSchematic.INSTANCE.refresh();
+        if (setting.getSettingsHolder() == binds) {
+            for (Setting bind : binds.getSettings()) {
+                if (bind == setting) continue;
                 if (((KeySetting) bind).getKey() == -1) continue;
                 if (((KeySetting) bind).getKey() == ((KeySetting) setting).getKey()) bind.setValue(-1);
             }

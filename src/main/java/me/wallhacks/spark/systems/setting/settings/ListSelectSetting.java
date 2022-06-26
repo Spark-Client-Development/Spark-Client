@@ -13,9 +13,9 @@ import java.util.function.Predicate;
 
 public class ListSelectSetting<N> extends Setting<Map<N, Boolean>> {
 
-    public ListSelectSetting(String name, SettingsHolder holder, N[] list, N[] selected, Predicate<Map<N, Boolean>> visible, String settingCategory) {
+    public ListSelectSetting(String name, SettingsHolder holder, N[] list, N[] selected, Predicate<Map<N, Boolean>> visible) {
 
-        super(new HashMap<N, Boolean>(), name, holder, visible, settingCategory);
+        super(new HashMap<N, Boolean>(), name, holder, visible);
 
 
         for (int i = 0; i < list.length; i++) {
@@ -24,8 +24,8 @@ public class ListSelectSetting<N> extends Setting<Map<N, Boolean>> {
 
     }
 
-    public ListSelectSetting(String name, SettingsHolder holder, N[] list, N[] selected, String settingCategory) {
-        this(name, holder, list, selected, null, settingCategory);
+    public ListSelectSetting(String name, SettingsHolder holder, N[] list, N[] selected) {
+        this(name, holder, list, selected, null);
     }
 
     public void setValueSelected(N[] selected) {

@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.util.FileUtil;
 import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.player.InventoryUtil;
@@ -29,22 +30,20 @@ import java.util.Map;
 @Module.Registration(name = "InventoryManager", description = "Steals from chests")
 public class InventoryManager extends Module {
 
+    BooleanSetting onlyIfInventoryOpen = new BooleanSetting("OnlyInInventory", this, true);
+    IntSetting delay = new IntSetting("Delay", this, 5, 0, 30);
 
-    BooleanSetting onlyIfInventoryOpen = new BooleanSetting("OnlyInInventory", this, true, "Cleaning");
-    IntSetting delay = new IntSetting("Delay", this, 5, 0, 30, "Cleaning");
+    BooleanSetting SortInventory = new BooleanSetting("SortInventory", this, false);
 
-    BooleanSetting SortInventory = new BooleanSetting("SortInventory", this, false, "Sort");
+    BooleanSetting RemoveNonKits = new BooleanSetting("RemoveNonKitItems", this, false, v -> SortInventory.isOn());
+    BooleanSetting RemoveUseless = new BooleanSetting("RemoveUseless", this, false);
 
-    BooleanSetting RemoveNonKits = new BooleanSetting("RemoveNonKitItems", this, false, v -> SortInventory.isOn(), "Remove");
-    BooleanSetting RemoveUseless = new BooleanSetting("RemoveUseless", this, false, "Remove");
+    ItemListSelectSetting useless = new ItemListSelectSetting("Useless", this, new Item[]{Item.getItemFromBlock(Blocks.NETHERRACK), Items.ROTTEN_FLESH});
 
-    ItemListSelectSetting useless = new ItemListSelectSetting("Useless", this, new Item[]{Item.getItemFromBlock(Blocks.NETHERRACK), Items.ROTTEN_FLESH
-    }, "Remove");
-
-
-    BooleanSetting autoSteal = new BooleanSetting("Auto", this, false,"Stealer");
-    IntSetting stealDelay = new IntSetting("Delay", this, 5, 0, 30,"Stealer");
-    BooleanSetting stealKitNeeded = new BooleanSetting("OnlyForKit", this, false,"Stealer");
+    SettingGroup stealer = new SettingGroup("Stealer", this);
+    BooleanSetting autoSteal = new BooleanSetting("Auto", stealer, false);
+    IntSetting stealDelay = new IntSetting("Delay", stealer, 5, 0, 30);
+    BooleanSetting stealKitNeeded = new BooleanSetting("OnlyForKit", stealer, false);
 
 
     public boolean isAuto(GuiContainer container) {

@@ -6,6 +6,7 @@ import me.wallhacks.spark.event.player.SafeWalkEvent;
 import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -36,16 +37,17 @@ import java.util.List;
 @Module.Registration(name = "Surround", description = "Steals from chests")
 public class Surround extends Module {
     public static Surround instance;
-    IntSetting blocksPerTick = new IntSetting("BlocksPerTick", this, 4, 1, 8, "General");
-    BooleanSetting bottomFill = new BooleanSetting("BottomFill", this, true, "General");
-    ModeSetting SnapToCenter = new ModeSetting("Center", this, "Always", Arrays.asList("Always", "Off", "ForPlace"), "General");
-    ModeSetting disable = new ModeSetting("Disable", this, "Off", Arrays.asList("Off", "Done", "OffGround"), "General");
-    BooleanSetting IgnoreCrystals = new BooleanSetting("IgnoreCrystals", this, true, "Crystals");
-    BooleanSetting BreakCrystals = new BooleanSetting("BreakCrystals", this, false, "Crystals");
-    BooleanSetting allowNonObi = new BooleanSetting("AllowNonObi", this, true, "ItemSwitch");
+    IntSetting blocksPerTick = new IntSetting("BlocksPerTick", this, 4, 1, 8);
+    BooleanSetting bottomFill = new BooleanSetting("BottomFill", this, true);
+    ModeSetting SnapToCenter = new ModeSetting("Center", this, "Always", Arrays.asList("Always", "Off", "ForPlace"));
+    ModeSetting disable = new ModeSetting("Disable", this, "Off", Arrays.asList("Off", "Done", "OffGround"));
+    BooleanSetting IgnoreCrystals = new BooleanSetting("IgnoreCrystals", this, true);
+    BooleanSetting BreakCrystals = new BooleanSetting("BreakCrystals", this, false);
+    BooleanSetting allowNonObi = new BooleanSetting("AllowNonObi", this, true);
     ModeSetting switchingMode = new ModeSetting("Switch", this, "Silent", Arrays.asList("Normal", "Silent", "Const"));
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DCB45E, true), "Render");
+    SettingGroup renderG = new SettingGroup("Render", this);
+    BooleanSetting render = new BooleanSetting("Render", renderG, true);
+    ColorSetting fill = new ColorSetting("Fill", renderG, new Color(0x3846C372, true));
     boolean isPlacing = true;
 
 

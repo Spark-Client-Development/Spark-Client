@@ -6,18 +6,14 @@ import me.wallhacks.spark.systems.setting.Setting;
 import java.util.function.Predicate;
 
 public class StringSetting extends Setting<String> {
-    public StringSetting(String name, SettingsHolder settingsHolder, String value, Predicate<String> visible, String settingCategory) {
-        super(value, name, settingsHolder,visible,settingCategory);
+    public StringSetting(String name, SettingsHolder settingsHolder, String value, Predicate<String> visible) {
+        super(value, name, settingsHolder,visible);
 
 
-    }
-
-    public StringSetting(String name, SettingsHolder settingsHolder, String value, String settingCategory) {
-        this(name, settingsHolder,value,null,settingCategory);
     }
 
     public StringSetting(String name, SettingsHolder settingsHolder, String value) {
-        this(name, settingsHolder,value,null, "General");
+        this(name, settingsHolder,value,null);
     }
 
     @Override

@@ -11,8 +11,8 @@ import java.util.function.Predicate;
 
 public class StructureListSelectSetting extends ListSelectSetting<MCStructures> {
 
-    public StructureListSelectSetting(String name, SettingsHolder module, MCStructures[] selected, Predicate<Map<MCStructures, Boolean>> visible, String settingCategory) {
-        super(name, module, MCStructures.values(), selected,visible,settingCategory);
+    public StructureListSelectSetting(String name, SettingsHolder module, MCStructures[] selected, Predicate<Map<MCStructures, Boolean>> visible) {
+        super(name, module, MCStructures.values(), selected,visible);
     }
 
 

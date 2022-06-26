@@ -7,6 +7,7 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.player.Offhand;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.WorldUtils;
 import me.wallhacks.spark.util.combat.AttackUtil;
@@ -51,35 +52,48 @@ import static me.wallhacks.spark.systems.module.modules.combat.CrystalAura.Rotat
 @Module.Registration(name = "CrystalAura", description = "Superior module litarly best ever")
 public class CrystalAura extends Module {
     public static CrystalAura instance;
-    IntSetting prediction = new IntSetting("Prediction", this, 0, 0, 20, "Prediction");
-    BooleanSetting prePlace = new BooleanSetting("PrePlace", this, true, "Prediction");
-    BooleanSetting PlayersOnly = new BooleanSetting("PlayersOnly", this, true, "Attacking");
-    IntSetting maxSelfdamage = new IntSetting("MaxSelfDam", this, 15, 0, 20, "Attacking");
-    IntSetting minEnemydamage = new IntSetting("MinEnemyDam", this, 6, 0, 20, "Attacking");
-    public DoubleSetting protectSelf = new DoubleSetting("ProtectSelf", this, 0.5, 0, 1, "Attacking");
-    BooleanSetting NoSuicide = new BooleanSetting("NoSuicide", this, true, "Attacking");
-    public IntSetting speed = new IntSetting("Speed", this, 18, 1, 20, "Time");
-    public IntSetting breakCooldown = new IntSetting("BreakCooldown", this, 6, 0, 10, "Time");
-    public IntSetting placeCooldown = new IntSetting("PlaceCooldown", this, 6, 0, 10, "Time");
-    public IntSetting placeTries = new IntSetting("PlaceTries", this, 2, 1, 5, "Other");
-    public ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes, "Other");
-    public BooleanSetting instantReplace = new BooleanSetting("InstantReplace", this, true, "Other");
-    public BooleanSetting InstantBreak = new BooleanSetting("InstantBreak", this, true, "Other");
-    BooleanSetting DebugCs = new BooleanSetting("DebugSpeed", this, false, "Other");
-    BooleanSetting Debug = new BooleanSetting("Debug", this, false, "Other");
-    IntSetting switchThreshold = new IntSetting("SwitchThreshold", this, 3, 0, 6, "Attacking");
-    public IntSetting breakArmor = new IntSetting("Armor", this, 15, 0, 100, "FacePlace");
-    public IntSetting facePlaceHealth = new IntSetting("HP", this, 5, 0, 36, "FacePlace");
-    KeySetting facePlaceKey = new KeySetting("Force", this, -1, "FacePlace");
-    BooleanSetting slowFacePlace = new BooleanSetting("Slow", this, true, "FacePlace");
-    ModeSetting render = new ModeSetting("Mode", this, "Normal", Arrays.asList("Normal", "Fancy", "Off"), "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DC5E5E, true), "Render");
-    BooleanSetting surround = new BooleanSetting("Surround", this, false, "Pause");
-    BooleanSetting cevBreaker = new BooleanSetting("CEVBreaker", this, true, "Pause");
-    BooleanSetting shulkerAura = new BooleanSetting("ShulkerAura", this, true, "Pause");
-    IntSetting hp = new IntSetting("HP", this, 3, 0, 20, "Pause");
-    BooleanSetting eating = new BooleanSetting("Eating", this, false, "Pause");
-    BooleanSetting mining = new BooleanSetting("Mining", this, false, "Pause");
+    SettingGroup predictionG = new SettingGroup("Prediction", this);
+    IntSetting prediction = new IntSetting("Prediction", predictionG, 0, 0, 20);
+    BooleanSetting prePlace = new BooleanSetting("PrePlace", predictionG, true);
+
+    SettingGroup attackingG = new SettingGroup("Attacking", this);
+    BooleanSetting PlayersOnly = new BooleanSetting("PlayersOnly", attackingG, true);
+    IntSetting maxSelfdamage = new IntSetting("MaxSelfDam", attackingG, 15, 0, 20);
+    IntSetting minEnemydamage = new IntSetting("MinEnemyDam", attackingG, 6, 0, 20);
+    public DoubleSetting protectSelf = new DoubleSetting("ProtectSelf", attackingG, 0.5, 0, 1);
+    BooleanSetting NoSuicide = new BooleanSetting("NoSuicide", attackingG, true);
+    IntSetting switchThreshold = new IntSetting("SwitchThreshold", attackingG, 3, 0, 6);
+
+    SettingGroup timeG = new SettingGroup("Timing", this);
+    public IntSetting speed = new IntSetting("Speed", timeG, 18, 1, 20);
+    public IntSetting breakCooldown = new IntSetting("BreakCooldown", timeG, 6, 0, 10);
+    public IntSetting placeCooldown = new IntSetting("PlaceCooldown", timeG, 6, 0, 10);
+
+    SettingGroup otherG = new SettingGroup("Other", this);
+    public IntSetting placeTries = new IntSetting("PlaceTries", otherG, 2, 1, 5);
+    public ModeSetting switchingMode = new ModeSetting("Switch", otherG, "Normal", ItemSwitcher.modes);
+    public BooleanSetting instantReplace = new BooleanSetting("InstantReplace", otherG, true);
+    public BooleanSetting InstantBreak = new BooleanSetting("InstantBreak", otherG, true);
+    BooleanSetting DebugCs = new BooleanSetting("DebugSpeed", otherG, false);
+    BooleanSetting Debug = new BooleanSetting("Debug", otherG, false);
+
+    SettingGroup faceplaceG = new SettingGroup("FacePlace", this);
+    public IntSetting breakArmor = new IntSetting("Armor", faceplaceG, 15, 0, 100);
+    public IntSetting facePlaceHealth = new IntSetting("HP", faceplaceG, 5, 0, 36);
+    KeySetting facePlaceKey = new KeySetting("Force", faceplaceG, -1);
+    BooleanSetting slowFacePlace = new BooleanSetting("Slow", faceplaceG, true);
+
+    SettingGroup renderG = new SettingGroup("Render", this);
+    ModeSetting render = new ModeSetting("Mode", renderG, "Normal", Arrays.asList("Normal", "Fancy", "Off"));
+    ColorSetting fill = new ColorSetting("Color", renderG, new Color(0x38DC5E5E, true));
+
+    SettingGroup pauseG = new SettingGroup("Pause", this);
+    BooleanSetting surround = new BooleanSetting("Surround", pauseG, false);
+    BooleanSetting cevBreaker = new BooleanSetting("CEVBreaker", pauseG, true);
+    BooleanSetting shulkerAura = new BooleanSetting("ShulkerAura", pauseG, true);
+    IntSetting hp = new IntSetting("HP", pauseG, 3, 0, 20);
+    BooleanSetting eating = new BooleanSetting("Eating", pauseG, false);
+    BooleanSetting mining = new BooleanSetting("Mining", pauseG, false);
     //enemies predicted
     ArrayList<PredictedEntity> predictedEnemies = new ArrayList<>();
     PredictedEntity predictedPlayer;

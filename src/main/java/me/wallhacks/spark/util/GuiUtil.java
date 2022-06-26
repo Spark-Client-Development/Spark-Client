@@ -1,6 +1,6 @@
 package me.wallhacks.spark.util;
 
-import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.util.render.ColorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -13,7 +13,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
-import me.wallhacks.spark.util.render.ColorUtil;
 
 import java.awt.*;
 
@@ -38,12 +37,48 @@ public class GuiUtil implements MC {
         GL11.glPopMatrix();
     }
 
+    public static void setup(int color) {
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        glColor4f(((color >> 16) & 0xff) / 255F, ((color >> 8) & 0xff) / 255F, (color & 0xff) / 255F, ((color >> 24) & 0xff) / 255F);
+        glBegin(GL_TRIANGLE_FAN);
+    }
+
+    public static void finish() {
+        glEnd();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+    }
+
+    public static void rounded(int x, int y, int right, int bottom, int color, int radius) {
+        setup(color);
+        corner(right - radius, bottom - radius, radius, 0, 90);
+        corner(right - radius, y + radius, radius, 90, 180);
+        corner(x + radius, y + radius, radius, 180, 270);
+        corner(x + radius, bottom - radius, radius, 270, 360);
+        finish();
+    }
+
+
+    public static void corner(int x, int y, double radius, int start, int stop) {
+        int i = start;
+        while (true) {
+            i = Math.min(stop, i+5);
+            glVertex2d(x + Math.sin(((i * Math.PI) / 180)) * radius, y + Math.cos(((i * Math.PI) / 180)) * radius);
+            if (i==stop) break;
+        }
+    }
 
     public static String getLoadingText(boolean text) {
-        long time = (System.currentTimeMillis() % 300);
+        long time = (System.currentTimeMillis() % 600);
         String dot = ".";
-        if (time > 100) dot += ".";
         if (time > 200) dot += ".";
+        if (time > 400) dot += ".";
         return (text ? "Loading" : "") + dot;
     }
 
@@ -74,8 +109,7 @@ public class GuiUtil implements MC {
     public static void drawCompleteImage(double posX, double posY, double width, double height, ResourceLocation image, Color c) {
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(image);
-
-        GlStateManager.color(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f, c.getAlpha() / 255f);
+        ColorUtil.glColor(c);
         drawCompleteImage(posX, posY, width, height);
 
         GlStateManager.color(1, 1, 1, 1);
@@ -190,58 +224,6 @@ public class GuiUtil implements MC {
         GlStateManager.disableBlend();
     }
 
-    public static void drawPickerBase(int pickerX, int pickerY, int pickerWidth, int pickerHeight, float red, float green, float blue, float alpha) {
-        GL11.glPushMatrix();
-        glEnable(GL_BLEND);
-        glDisable(GL_TEXTURE_2D);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glShadeModel(GL_SMOOTH);
-        glBegin(GL_POLYGON);
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        glVertex2f(pickerX, pickerY);
-        glVertex2f(pickerX, pickerY + pickerHeight);
-        glColor4f(red, green, blue, alpha);
-        glVertex2f(pickerX + pickerWidth, pickerY + pickerHeight);
-        glVertex2f(pickerX + pickerWidth, pickerY);
-        glEnd();
-        glDisable(GL_ALPHA_TEST);
-        glBegin(GL_POLYGON);
-        glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
-        glVertex2f(pickerX, pickerY);
-        glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-        glVertex2f(pickerX, pickerY + pickerHeight);
-        glVertex2f(pickerX + pickerWidth, pickerY + pickerHeight);
-        glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
-        glVertex2f(pickerX + pickerWidth, pickerY);
-        glEnd();
-        glEnable(GL_ALPHA_TEST);
-        glShadeModel(GL_FLAT);
-        glEnable(GL_TEXTURE_2D);
-        glDisable(GL_BLEND);
-        GL11.glPopMatrix();
-    }
-
-    public static void drawLeftGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
-        GL11.glPushMatrix();
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(GL_SMOOTH);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(right, top, 0).color((float) (endColor >> 24 & 255) / 255.0F, (float) (endColor >> 16 & 255) / 255.0F, (float) (endColor >> 8 & 255) / 255.0F, (float) (endColor >> 24 & 255) / 255.0F).endVertex();
-        buffer.pos(left, top, 0).color((float) (startColor >> 16 & 255) / 255.0F, (float) (startColor >> 8 & 255) / 255.0F, (float) (startColor & 255) / 255.0F, (float) (startColor >> 24 & 255) / 255.0F).endVertex();
-        buffer.pos(left, bottom, 0).color((float) (startColor >> 16 & 255) / 255.0F, (float) (startColor >> 8 & 255) / 255.0F, (float) (startColor & 255) / 255.0F, (float) (startColor >> 24 & 255) / 255.0F).endVertex();
-        buffer.pos(right, bottom, 0).color((float) (endColor >> 24 & 255) / 255.0F, (float) (endColor >> 16 & 255) / 255.0F, (float) (endColor >> 8 & 255) / 255.0F, (float) (endColor >> 24 & 255) / 255.0F).endVertex();
-        tessellator.draw();
-        GlStateManager.shadeModel(GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
-        GL11.glPopMatrix();
-    }
 
     static Vec3d glTransformOffset = new Vec3d(0, 0, 0);
 
@@ -307,17 +289,5 @@ public class GuiUtil implements MC {
         GL11.glEnable(3553);
 
         GL11.glDisable(2848);
-    }
-
-
-    public static boolean drawButton(String text, int left, int top, int right, int bottom, Color color, int mouseX, int mouseY, boolean clicked) {
-        boolean hover = false;
-        if ((mouseX > left && mouseX < right && mouseY > top && mouseY < bottom) || clicked) {
-            if (!clicked) hover = true;
-            color = ColorUtil.fromHSB(ColorUtil.getHue(color), (float) Math.min(1, ColorUtil.getSaturation(color) + (clicked ? 0.4 : 0.2)), (float) Math.max(0, ColorUtil.getBrightness(color) - (clicked ? 0.2 : 0.0)));
-        }
-        Gui.drawRect(left, top, right, bottom, color.getRGB());
-        Spark.fontManager.drawString(text, left + (right - left)/2 - Spark.fontManager.getTextWidth(text)/2, top + (bottom - top) / 2 - Spark.fontManager.getTextHeight() / 2, -1);
-        return hover;
     }
 }

@@ -1,7 +1,6 @@
 package me.wallhacks.spark.util.render;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
 import me.wallhacks.spark.manager.FontManager;
 import me.wallhacks.spark.manager.MapManager;
 import me.wallhacks.spark.manager.WaypointManager;
@@ -267,7 +266,7 @@ public class MapRender implements MC {
                     GlStateManager.translate(mouseX, mouseY, 0);
 
                     String name = highway.name();
-                    GuiPanelBase.drawQuad(0, 0, fontManager.getTextWidth(name + 2), fontManager.getTextHeight() + 3, new Color(56, 53, 53, 245).getRGB());
+                    GuiUtil.drawQuad(0, 0, fontManager.getTextWidth(name + 2), fontManager.getTextHeight() + 3, new Color(56, 53, 53, 245).getRGB());
                     fontManager.drawString(name, 2, 2, new Color(239, 224, 224).getRGB());
 
 
@@ -347,7 +346,7 @@ public class MapRender implements MC {
                 RenderUtil.drawFilledCircle(0, 0, hovered ? 3 : 2, point.getColor().getRGB());
                 if (hovered) {
 
-                    GuiPanelBase.drawQuad(0, 0, fontManager.getTextWidth(point.getName() + 2), fontManager.getTextHeight() + 3, new Color(56, 53, 53, 245).getRGB());
+                    GuiUtil.drawQuad(0, 0, fontManager.getTextWidth(point.getName() + 2), fontManager.getTextHeight() + 3, new Color(56, 53, 53, 245).getRGB());
                     fontManager.drawString(point.getName(), 2, 2, new Color(239, 224, 224).getRGB());
                 }
 

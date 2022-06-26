@@ -19,11 +19,11 @@ import java.util.List;
 @HudElement.Registration(name = "ModuleList", description = "List of modules", posX = 1, posY = 0, width = 40, height = 100, enabled = true)
 public class ModuleList extends AlignedHudElement {
     ModeSetting sort = new ModeSetting("Sorting",this,"Length",Arrays.asList("Length","CharLength","Name"));
-    ModeSetting mode = new ModeSetting("Mode", this, "Rainbow", Arrays.asList("AlphaStep", "Rainbow", "Normal", "Module"),"Color");
-    DoubleSetting speed = new DoubleSetting("RainbowSpeed", this, 20.0D, 1.0D, 100.0D, v -> mode.is("Rainbow"),"Color");
-    DoubleSetting saturation = new DoubleSetting("RainbowSaturation", this, 0.8D, 0.0D, 1.0D,v -> mode.is("Rainbow"),"Color");
-    DoubleSetting brightness = new DoubleSetting("RainbowBrightness", this, 0.8D, 0.0D, 1.0D,v -> mode.is("Rainbow"),"Color");
-    DoubleSetting difference = new DoubleSetting("RainbowDifference", this, 20.0D, 1.0D, 100.0D,v -> mode.is("Rainbow") ,"Color");
+    ModeSetting mode = new ModeSetting("Mode", this, "Rainbow", Arrays.asList("AlphaStep", "Rainbow", "Normal", "Module"));
+    DoubleSetting speed = new DoubleSetting("RainbowSpeed", this, 20.0D, 1.0D, 100.0D, v -> mode.is("Rainbow"));
+    DoubleSetting saturation = new DoubleSetting("RainbowSaturation", this, 0.8D, 0.0D, 1.0D,v -> mode.is("Rainbow"));
+    DoubleSetting brightness = new DoubleSetting("RainbowBrightness", this, 0.8D, 0.0D, 1.0D,v -> mode.is("Rainbow"));
+    DoubleSetting difference = new DoubleSetting("RainbowDifference", this, 20.0D, 1.0D, 100.0D,v -> mode.is("Rainbow"));
 
 
     ArrayList<Pair<String, Integer>> list = new ArrayList<>();

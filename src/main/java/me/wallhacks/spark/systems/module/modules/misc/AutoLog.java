@@ -23,7 +23,7 @@ public class AutoLog extends Module {
 
 
 	BooleanSetting larpMsg = new BooleanSetting("LarpMsg",this,false);
-	StringSetting customMsg = new StringSetting("CustomMsg",this,"Internal server error", v -> larpMsg.isOn(),"General");
+	StringSetting customMsg = new StringSetting("CustomMsg",this,"Internal server error", v -> larpMsg.isOn());
 
 	//waits x amount of ticks on relog before kicking again
 	int timer = 0;

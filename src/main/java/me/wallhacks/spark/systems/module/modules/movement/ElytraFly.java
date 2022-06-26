@@ -13,10 +13,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Module.Registration(name = "ElytraFly", description = "fly better")
 public class ElytraFly extends Module {
-    DoubleSetting movespeed = new DoubleSetting("MoveSpeed", this, 1,0,5, "Movement");
-    DoubleSetting upspeed = new DoubleSetting("UpSpeed", this, 0.4,0,4, "Movement");
+    DoubleSetting movespeed = new DoubleSetting("MoveSpeed", this, 1,0,5);
+    DoubleSetting upspeed = new DoubleSetting("UpSpeed", this, 0.4,0,4);
 
-    BooleanSetting autoClose = new BooleanSetting("AutoClose", this, false, "Movement");
+    BooleanSetting autoClose = new BooleanSetting("AutoClose", this, false);
 
 
     @SubscribeEvent

@@ -24,11 +24,10 @@ public class EntityTracers extends Module {
 
     BooleanSetting RenderItems = new BooleanSetting("RenderItems", this, false);
 
-    IntSetting lineWidth = new IntSetting("LineWidth",this, 1, 1, 10,"Render");
-
-    ColorSetting playerColor = new ColorSetting("PlayerColor",this, new Color(177,41,18,186),"Render");
-    ColorSetting livingColor = new ColorSetting("LivingColor",this, new Color(83,83,77,255),"Render");
-    ColorSetting itemColor = new ColorSetting("ItemColor",this, new Color(40,40,40,255),"Render");
+    IntSetting lineWidth = new IntSetting("LineWidth",this, 1, 1, 10);
+    ColorSetting playerColor = new ColorSetting("PlayerColor",this, new Color(177,41,18,186));
+    ColorSetting livingColor = new ColorSetting("LivingColor",this, new Color(83,83,77,255));
+    ColorSetting itemColor = new ColorSetting("ItemColor",this, new Color(40,40,40,255));
 
 
     IntSetting range = new IntSetting("Range",this, 260, 20, 260);

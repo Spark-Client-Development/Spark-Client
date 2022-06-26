@@ -15,8 +15,8 @@ public class HudSettings extends ClientSetting {
         INSTANCE = this;
     }
 
-    ColorSetting hudMainColor = new ColorSetting("GuiColor",this, new Color(137, 80, 80,255),"Hud");
-    BooleanSetting infoBackGrounds = new BooleanSetting("InfoBackgrounds",this,true,"Hud");
+    ColorSetting hudMainColor = new ColorSetting("GuiColor",this, new Color(137, 80, 80,255));
+    BooleanSetting infoBackGrounds = new BooleanSetting("InfoBackgrounds",this,true);
 
 
     Color hudSecondColor = new Color(150,150,150,255);

@@ -128,17 +128,17 @@ public class WaypointManager implements MC {
 
 
     public static class Waypoint extends SettingsHolder {
-        public StringSetting name = new StringSetting("Name",this,"Name","Display");
+        public StringSetting name = new StringSetting("Name",this,"Name");
 
-        ColorSetting color = new ColorSetting("Color",this,new Color(1,1,1),false,"Display");
+        ColorSetting color = new ColorSetting("Color",this,new Color(1,1,1),false);
 
-        ModeSetting dim = new ModeSetting("Dim",this,"Overworld", Arrays.asList("Nether","Overworld","End"),"Location");
+        ModeSetting dim = new ModeSetting("Dim",this,"Overworld", Arrays.asList("Nether","Overworld","End"));
 
-        BooleanSetting hasY = new BooleanSetting("HasY",this,false,"Location");
+        BooleanSetting hasY = new BooleanSetting("HasY",this,false);
 
 
 
-        VectorSetting pos = new VectorSetting("Pos",this,new Vec3i(0,0,0),integer -> hasY.isOn(),null,"Location");
+        VectorSetting pos = new VectorSetting("Pos",this,new Vec3i(0,0,0),integer -> hasY.isOn(),null);
 
 
 

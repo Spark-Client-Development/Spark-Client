@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -47,8 +48,9 @@ public class CevBreaker extends Module {
     BooleanSetting smartCrystalPlayer = new BooleanSetting("SmartCrystal",this,true,aBoolean -> insta.isOn());
     BooleanSetting predictBreak = new BooleanSetting("PredictBlockBreak",this,false,aBoolean -> insta.isOn());
 
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC7B, true), "Render");
+    SettingGroup renderG = new SettingGroup("Render", this);
+    BooleanSetting render = new BooleanSetting("Render", renderG, true);
+    ColorSetting fill = new ColorSetting("Color", renderG, new Color(0x385EDC7B, true));
 
 
     public static CevBreaker INSTANCE;

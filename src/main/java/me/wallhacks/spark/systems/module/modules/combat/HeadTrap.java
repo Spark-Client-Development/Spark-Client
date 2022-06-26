@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.exploit.PacketMine;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -34,15 +35,16 @@ import java.util.List;
 @Module.Registration(name = "HeadTrap", description = "Places Block on your Head to trap enemies")
 public class HeadTrap extends Module {
 
-    BooleanSetting smart = new BooleanSetting("Smart", this, true, "General");
-    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,1,1,8,"General");
+    BooleanSetting smart = new BooleanSetting("Smart", this, true);
+    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,1,1,8);
     ModeSetting switchingMode = new ModeSetting("Switch", this, "Silent",  Arrays.asList("Normal","Silent","Const"));
 
-    ModeSetting disable = new ModeSetting("Disable", this, "Off", Arrays.asList("Off", "Done", "OffGround"), "General");
+    ModeSetting disable = new ModeSetting("Disable", this, "Off", Arrays.asList("Off", "Done", "OffGround"));
 
 
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x38B928AD, true), "Render");
+    SettingGroup renderG = new SettingGroup("Render", this);
+    BooleanSetting render = new BooleanSetting("Render", renderG, true);
+    ColorSetting fill = new ColorSetting("Fill", renderG, new Color(0x38B928AD, true));
 
 
     @SubscribeEvent

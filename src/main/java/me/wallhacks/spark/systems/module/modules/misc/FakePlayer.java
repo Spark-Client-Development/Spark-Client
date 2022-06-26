@@ -14,7 +14,7 @@ import java.util.UUID;
 @Module.Registration(name = "FakePlayer", description = "Adds a fake player to your world")
 public class FakePlayer extends Module {
 
-    StringSetting name = new StringSetting("Name",this,"fit","General");
+    StringSetting name = new StringSetting("Name",this,"fit");
 
     @SubscribeEvent
     public void onWorld(WorldEvent.Load event) {

@@ -15,7 +15,7 @@ import java.util.Arrays;
 @HudElement.Registration(name = "ArmorHud", description = "Shows you your fps", posX = 0.5, posY = 0.1, width = 62, height = 16)
 public class ArmorHud extends AlignedHudElement {
 
-    ModeSetting mode = new ModeSetting("Mode", this, "Icons", Arrays.asList("Icons", "Background", "Nothing"),"Color");
+    ModeSetting mode = new ModeSetting("Mode", this, "Icons", Arrays.asList("Icons", "Background", "Nothing"));
 
 
     ResourceLocation[] armor = new ResourceLocation[] {

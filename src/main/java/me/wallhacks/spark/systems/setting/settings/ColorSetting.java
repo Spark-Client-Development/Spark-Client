@@ -12,8 +12,8 @@ public class ColorSetting extends Setting<SparkColor> {
 
 
 
-    public ColorSetting(String name, SettingsHolder settingsHolder, Color color, boolean allowChangeAlpha, Predicate<SparkColor> visible, String settingCategory) {
-        super(new SparkColor(color), name, settingsHolder,visible,settingCategory);
+    public ColorSetting(String name, SettingsHolder settingsHolder, Color color, boolean allowChangeAlpha, Predicate<SparkColor> visible) {
+        super(new SparkColor(color), name, settingsHolder,visible);
 
 
 
@@ -21,28 +21,17 @@ public class ColorSetting extends Setting<SparkColor> {
 
         this.allowChangeAlpha = allowChangeAlpha;
     }
-    public ColorSetting(String name, SettingsHolder settingsHolder, Color color,boolean allowChangeAlpha,Predicate<SparkColor> visible) {
-        this(name,settingsHolder,color,allowChangeAlpha,visible,"General");
-    }
 
     public ColorSetting(String name, SettingsHolder settingsHolder, Color color,boolean allowChangeAlpha) {
-        this(name,settingsHolder,color,allowChangeAlpha, (Predicate<SparkColor>) null);
-    }
-    public ColorSetting(String name, SettingsHolder settingsHolder, Color color,boolean allowChangeAlpha,String settingCategory) {
-        this(name,settingsHolder,color,allowChangeAlpha,null,settingCategory);
+        this(name,settingsHolder,color,allowChangeAlpha,null);
     }
 
     public ColorSetting(String name, SettingsHolder settingsHolder, Color color,Predicate<SparkColor> visible) {
         this(name,settingsHolder,color,true,visible);
     }
-    public ColorSetting(String name, SettingsHolder settingsHolder, Color color,Predicate<SparkColor> visible,String settingCategory) {
-        this(name,settingsHolder,color,true,visible,settingCategory);
-    }
+
     public ColorSetting(String name, SettingsHolder settingsHolder, Color color) {
-        this(name,settingsHolder,color,(Predicate<SparkColor>) null);
-    }
-    public ColorSetting(String name, SettingsHolder settingsHolder, Color color, String settingCategory) {
-        this(name,settingsHolder,color,true,null,settingCategory);
+        this(name,settingsHolder,color,true,null);
     }
 
     final boolean allowChangeAlpha;

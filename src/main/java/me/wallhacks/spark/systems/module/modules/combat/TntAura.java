@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -50,8 +51,9 @@ public class TntAura extends Module {
     IntSetting delay = new IntSetting("Delay", this, 4, 0, 10);
 
 
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DC865E, true), "Render");
+    SettingGroup renderG = new SettingGroup("Render", this);
+    BooleanSetting render = new BooleanSetting("Render", renderG, true);
+    ColorSetting fill = new ColorSetting("Fill", renderG, new Color(0x38DC865E, true));
     int cooldown = 0;
 
 

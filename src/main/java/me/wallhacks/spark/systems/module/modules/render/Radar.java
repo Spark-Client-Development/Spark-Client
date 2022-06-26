@@ -3,6 +3,7 @@ package me.wallhacks.spark.systems.module.modules.render;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.player.PlayerUtil;
 import me.wallhacks.spark.util.render.ColorUtil;
@@ -28,26 +29,21 @@ import java.awt.*;
 @Module.Registration(name = "Radar", description = "Render arrows to show close players")
 public class Radar extends Module {
 
+    private final IntSetting range = new IntSetting("Range", this,260, 25, 260);
 
-    private final IntSetting range = new IntSetting("Range", this,260, 25, 260,"General");
+    private final IntSetting tilt = new IntSetting("Tilt", this,45, 20, 90);
 
-    private final IntSetting tilt = new IntSetting("Tilt", this,45, 20, 90,"General");
-
-
-    private final IntSetting radius = new IntSetting("Radius", this,45, 10, 200,"Shape");
-    private final IntSetting size = new IntSetting("Size",this, 10, 5, 25,"Shape");
+    private final IntSetting radius = new IntSetting("Radius", this,45, 10, 200);
+    private final IntSetting size = new IntSetting("Size",this, 10, 5, 25);
 
 
+    SettingGroup color = new SettingGroup("Color", this);
+    private final ColorSetting closeColor = new ColorSetting("CloseColor",color,new Color(222, 6, 6,250));
+    private final ColorSetting distantColor = new ColorSetting("DistantColor",color,new Color(44, 141, 17,250));
+    private final BooleanSetting outline = new BooleanSetting("Outline",color, false);
+    private final DoubleSetting outlineWidth = new DoubleSetting("OutlineWidth",color, 1.0, 0.5, 3.0,0.5,v -> outline.isOn());
 
-    private final ColorSetting closeColor = new ColorSetting("CloseColor",this,new Color(222, 6, 6,250),"Color");
-    private final ColorSetting distantColor = new ColorSetting("DistantColor",this,new Color(44, 141, 17,250),"Color");
-
-
-
-    private final BooleanSetting outline = new BooleanSetting("Outline",this, false,"Color");
-    private final DoubleSetting outlineWidth = new DoubleSetting("OutlineWidth",this, 1.0, 0.5, 3.0,0.5,v -> outline.isOn(),"Color");
-
-    private final ColorSetting outlineColor = new ColorSetting("OutlineColor",this,new Color(149,70,70,250),v -> outline.isOn(),"Color");
+    private final ColorSetting outlineColor = new ColorSetting("OutlineColor",color,new Color(149,70,70,250),v -> outline.isOn());
 
 
 

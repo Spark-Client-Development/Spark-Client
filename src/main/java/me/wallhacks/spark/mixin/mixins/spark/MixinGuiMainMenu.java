@@ -16,12 +16,10 @@ public class MixinGuiMainMenu {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton, CallbackInfo info) {
         if(Minecraft.getMinecraft().world != null)
             return;
-        if (Spark.altManager.isMouseIn(mouseX)) info.cancel();
     }
     @Inject(method = "keyTyped", at = @At("HEAD"), cancellable = true)
     protected void keyTyped(char typedChar, int keyCode, CallbackInfo info) {
         if(Minecraft.getMinecraft().world != null)
             return;
-        Spark.altManager.keyTyped(keyCode, typedChar);
     }
 }

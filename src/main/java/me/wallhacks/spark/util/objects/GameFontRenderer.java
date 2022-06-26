@@ -1,5 +1,6 @@
 package me.wallhacks.spark.util.objects;
 
+import me.wallhacks.spark.util.render.ColorUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import org.lwjgl.opengl.GL11;
@@ -26,6 +27,7 @@ public class GameFontRenderer extends CustomFont {
     public void drawString(String text, float x, float y, int color, boolean shadow) {
         if (shadow)
             this.drawText(text, x + 0.4f, y + 0.3f, new Color(0, 0, 0, 150).getRGB());
+        ColorUtil.glColor(new Color(color));
         drawText(text, x, y, color);
     }
 

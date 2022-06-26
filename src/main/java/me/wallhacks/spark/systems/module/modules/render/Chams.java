@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import me.wallhacks.spark.event.entity.DeathEvent;
 import me.wallhacks.spark.event.render.RenderLivingEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
@@ -45,14 +46,16 @@ public class Chams extends Module {
     BooleanSetting lighting = new BooleanSetting("Lighting", this, false);
     ColorSetting hiddenColor = new ColorSetting("HiddenColor", this, new Color(0x442CD512, true));
     ColorSetting visibleColor = new ColorSetting("VisibleColor", this, new Color(0x5715D7D7, true));
-    BooleanSetting popChams = new BooleanSetting("PopChams", this, false, "PopChams");
-    BooleanSetting deathChams = new BooleanSetting("DeathChams", this, false, "PopChams");
-    ColorSetting popColor = new ColorSetting("PopColor", this, new Color(0x76FFFFFF, true), "PopChams");
-    BooleanSetting glintP = new BooleanSetting("Glint", this, false, "PopChams");
-    DoubleSetting popTime = new DoubleSetting("StayTime", this, 1.5D, 0.5D, 5D, "PopChams");
-    ModeSetting glint = new ModeSetting("Glint", this, "Off", Arrays.asList("Off", "Normal", "Custom"), "Glint");
-    DoubleSetting glintScale = new DoubleSetting("GlintScale", this, 1.0f, 0.1f, 10.0f, "Glint");
-    DoubleSetting glintSpeed = new DoubleSetting("GlintSpeed", this, 5.0f, 0.1f, 20.0f, "Glint");
+    SettingGroup popG = new SettingGroup("PopChams", this);
+    BooleanSetting popChams = new BooleanSetting("PopChams", popG, false);
+    BooleanSetting deathChams = new BooleanSetting("DeathChams", popG, false);
+    ColorSetting popColor = new ColorSetting("PopColor", popG, new Color(0x76FFFFFF, true));
+    BooleanSetting glintP = new BooleanSetting("Glint", popG, false);
+    DoubleSetting popTime = new DoubleSetting("StayTime", popG, 1.5D, 0.5D, 5D);
+    SettingGroup glintG = new SettingGroup("Glint", this);
+    ModeSetting glint = new ModeSetting("Glint", glintG, "Off", Arrays.asList("Off", "Normal", "Custom"));
+    DoubleSetting glintScale = new DoubleSetting("GlintScale", glintG, 1.0f, 0.1f, 10.0f);
+    DoubleSetting glintSpeed = new DoubleSetting("GlintSpeed", glintG, 5.0f, 0.1f, 20.0f);
 
     CopyOnWriteArrayList<PopCham> pops = new CopyOnWriteArrayList<>();
 

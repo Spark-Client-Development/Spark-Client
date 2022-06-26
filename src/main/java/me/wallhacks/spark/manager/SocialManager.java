@@ -1,7 +1,6 @@
 package me.wallhacks.spark.manager;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.clickGui.panels.socials.playerLists.PlayerListItem;
 import me.wallhacks.spark.util.FileUtil;
 import me.wallhacks.spark.util.SessionUtils;
 import net.minecraft.client.network.NetworkPlayerInfo;

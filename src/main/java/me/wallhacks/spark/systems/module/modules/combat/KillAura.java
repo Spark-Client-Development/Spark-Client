@@ -3,6 +3,7 @@ package me.wallhacks.spark.systems.module.modules.combat;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.combat.AttackUtil;
@@ -37,18 +38,16 @@ public class KillAura extends Module {
     public KillAura() {
         instance = this;
     }
+    BooleanSetting delay = new BooleanSetting("Delay", this, true);
+    IntSetting cps = new IntSetting("APS", this, 10, 5, 22);
+    IntSetting failPercentage = new IntSetting("FailPercentage", this, 0, 0, 50);
+    ModeSetting switchMode = new ModeSetting("Switch", this, "Off", Arrays.asList("Off", "Auto", "OnlySword"));
 
-    IntSetting targetFov = new IntSetting("TargetFov", this, 180, 45, 180, "Targeting");
-
-    BooleanSetting delay = new BooleanSetting("Delay", this, true, "Time");
-    IntSetting cps = new IntSetting("APS", this, 10, 5, 22, "Time");
-    IntSetting failPercentage = new IntSetting("FailPercentage", this, 0, 0, 50, "Time");
-
-    BooleanSetting mobs = new BooleanSetting("Mobs", this, false, "Attacking");
-    BooleanSetting living = new BooleanSetting("Living", this, false, "Attacking");
-
-    BooleanSetting FilterInvisible = new BooleanSetting("FilterInvisible", this, false, "Attacking");
-    ModeSetting switchMode = new ModeSetting("Switch", this, "Off", Arrays.asList("Off", "Auto", "OnlySword"), "Attacking");
+    SettingGroup targeting = new SettingGroup("Targeting", this);
+    IntSetting targetFov = new IntSetting("TargetFov", targeting, 180, 45, 180);
+    BooleanSetting mobs = new BooleanSetting("Mobs", targeting, false);
+    BooleanSetting living = new BooleanSetting("Living", targeting, false);
+    BooleanSetting FilterInvisible = new BooleanSetting("FilterInvisible", targeting, false);
 
     EntityLivingBase killaurTarget = null;
 

@@ -14,7 +14,7 @@ import java.util.Arrays;
 @Module.Registration(name = "NoEntityTrace", description = "Steals from chests")
 public class NoEntityTrace extends Module {
     ModeSetting interact = new ModeSetting("Interact", this, "RightClick", Arrays.asList("RightClick", "LeftClick", "Both"));
-    BooleanSetting all = new BooleanSetting("PickaxeOnly",this,false,"General");
+    BooleanSetting all = new BooleanSetting("PickaxeOnly",this,false);
 
     public boolean noTrace() {
         if(Mouse.isButtonDown(1) && interact.is("LeftClick"))

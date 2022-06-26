@@ -10,15 +10,11 @@ import java.util.function.Predicate;
 
 public class BlockListSelectSetting extends ListSelectSetting<Block> {
 
-    public BlockListSelectSetting(String name, SettingsHolder module, Block[] selected, String settingCategory) {
-        super(name, module, WorldUtils.getListOfBlocks(), selected,settingCategory);
-    }
-    public BlockListSelectSetting(String name, SettingsHolder module, Block[] selected, Predicate<Map<Block, Boolean>> visible, String settingCategory) {
-        super(name, module, WorldUtils.getListOfBlocks(), selected,visible,settingCategory);
-    }
-
     public BlockListSelectSetting(String name, SettingsHolder module, Block[] selected) {
-        super(name, module, WorldUtils.getListOfBlocks(), selected, "General");
+        super(name, module, WorldUtils.getListOfBlocks(), selected);
+    }
+    public BlockListSelectSetting(String name, SettingsHolder module, Block[] selected, Predicate<Map<Block, Boolean>> visible) {
+        super(name, module, WorldUtils.getListOfBlocks(), selected,visible);
     }
 
     @Override

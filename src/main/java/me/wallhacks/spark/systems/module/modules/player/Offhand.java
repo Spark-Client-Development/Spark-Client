@@ -6,6 +6,7 @@ import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.module.modules.combat.CevBreaker;
 import me.wallhacks.spark.systems.module.modules.combat.CrystalAura;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.combat.CrystalUtil;
 import me.wallhacks.spark.util.player.InventoryUtil;
@@ -39,23 +40,19 @@ public class Offhand extends Module {
     ModeSetting mode = new ModeSetting("Mode", this, "Totem", Arrays.asList("Totem", "Crystal", "Gapple"));
     ModeSetting fallbackMode = new ModeSetting("FallbackMode", this, "Gapple", Arrays.asList("Totem", "Crystal", "Gapple"));
 
-
-
     ModeSetting gapSwap = new ModeSetting("GapSwap", this, "Off", Arrays.asList("Off", "Sword", "Pick", "Both", "Always"));
     BooleanSetting CrystalSwap = new BooleanSetting("CrystalAuraSwap", this,false);
     BooleanSetting CevBreakSwap = new BooleanSetting("CevBreakSwap", this,false);
 
+    SettingGroup safety = new SettingGroup("Totem", this);
+    IntSetting TotemHp = new IntSetting("TotemHP", safety,16, 0, 36);
+    BooleanSetting CrystalCheck = new BooleanSetting("CrystalCheck", safety,false);
+    BooleanSetting bowCheck = new BooleanSetting("BowCheck", safety,false);
 
-
-
-    IntSetting TotemHp = new IntSetting("TotemHP", this,16, 0, 36,"Totem");
-    BooleanSetting CrystalCheck = new BooleanSetting("CrystalCheck", this,false,"Totem");
-    BooleanSetting bowCheck = new BooleanSetting("BowCheck", this,false,"Totem");
-
-
-    BooleanSetting closeContainer = new BooleanSetting("CloseContainer", this,false,"Swapping");
-    BooleanSetting hotbar = new BooleanSetting("Hotbar", this,true,"Swapping");
-    IntSetting cooldown = new IntSetting("Cooldown", this, 0, 0, 20 ,"Swapping");
+    SettingGroup swapping = new SettingGroup("Swapping", this);
+    BooleanSetting closeContainer = new BooleanSetting("CloseContainer", swapping,false);
+    BooleanSetting hotbar = new BooleanSetting("Hotbar", swapping,true);
+    IntSetting cooldown = new IntSetting("Cooldown", swapping, 0, 0, 20 );
 
 
 

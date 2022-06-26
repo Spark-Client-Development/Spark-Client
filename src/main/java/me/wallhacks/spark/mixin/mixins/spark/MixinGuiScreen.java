@@ -25,7 +25,6 @@ public class MixinGuiScreen {
         if(Minecraft.getMinecraft().world != null)
             return;
         float deltaTime = (System.nanoTime()-Time)/1000000f;
-        Spark.altManager.render(mouseX, mouseY, deltaTime);
         Time=System.nanoTime();
     }
 
@@ -33,14 +32,12 @@ public class MixinGuiScreen {
     protected void keyTyped(char typedChar, int keyCode, CallbackInfo info) {
         if(Minecraft.getMinecraft().world != null)
             return;
-        Spark.altManager.keyTyped(keyCode, typedChar);
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton, CallbackInfo info) {
         if(Minecraft.getMinecraft().world != null)
             return;
-        if (Spark.altManager.isMouseIn(mouseX)) info.cancel();
     }
 
 

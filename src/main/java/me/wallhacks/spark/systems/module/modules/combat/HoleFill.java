@@ -3,6 +3,7 @@ package me.wallhacks.spark.systems.module.modules.combat;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import me.wallhacks.spark.util.MathUtil;
 import me.wallhacks.spark.util.WorldUtils;
@@ -34,15 +35,16 @@ import java.util.List;
 @Module.Registration(name = "HoleFill", description = "Steals from chests")
 public class HoleFill extends Module {
 
-    BooleanSetting smart = new BooleanSetting("Smart", this, true, "General");
-    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,1,1,8,"General");
+    BooleanSetting smart = new BooleanSetting("Smart", this, true);
+    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,1,1,8);
     ModeSetting switchingMode = new ModeSetting("Switch", this, "Silent",  Arrays.asList("Normal","Silent","Const"));
 
-    BooleanSetting FillDoubles = new BooleanSetting("FillDoubles",this,true,"General");
+    BooleanSetting FillDoubles = new BooleanSetting("FillDoubles",this,true);
 
 
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x389F5EDC, true), "Render");
+    SettingGroup renderG = new SettingGroup("Render", this);
+    BooleanSetting render = new BooleanSetting("Render", renderG, true);
+    ColorSetting fill = new ColorSetting("Fill", renderG, new Color(0x389F5EDC, true));
     /*
     @Todo: add support for double holes
     */

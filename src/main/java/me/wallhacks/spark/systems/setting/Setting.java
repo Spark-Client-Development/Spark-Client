@@ -1,6 +1,5 @@
 package me.wallhacks.spark.systems.setting;
 
-import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.systems.SettingsHolder;
 
@@ -11,7 +10,6 @@ public class Setting<T> {
     private final T defaultValue;
     private final String name;
     private final SettingsHolder settingsHolder;
-    private final String settingCategory;
 
 
     private final Predicate<T> visible;
@@ -23,12 +21,11 @@ public class Setting<T> {
         return this.visible.test(this.getValue());
     }
 
-    public Setting(T value, String name, SettingsHolder settingsHolder,Predicate<T> visible, String settingCategory) {
+    public Setting(T value, String name, SettingsHolder settingsHolder,Predicate<T> visible) {
         this.value = value;
         this.defaultValue = value;
         this.name = name;
         this.settingsHolder = settingsHolder;
-        this.settingCategory = settingCategory;
         this.visible = visible;
 
         settingsHolder.addSetting(this);
@@ -55,11 +52,6 @@ public class Setting<T> {
     public String getName() {
         return this.name;
     }
-
-    public String getCategory() {
-        return this.settingCategory;
-    }
-
 
     public SettingsHolder getSettingsHolder() {
         return settingsHolder;

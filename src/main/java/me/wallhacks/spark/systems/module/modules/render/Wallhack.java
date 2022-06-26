@@ -53,7 +53,7 @@ public class Wallhack extends Module {
                     Block.getBlockFromName("spawner"),
                     Block.getBlockFromName("torch"),
 
-            }, v -> (xray.isOn()),"General");
+            }, v -> (xray.isOn()));
 
     @Override
     public void onEnable() {

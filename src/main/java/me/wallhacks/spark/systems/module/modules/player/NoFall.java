@@ -19,9 +19,9 @@ import java.util.Arrays;
 @Module.Registration(name = "NoFall", description = "Prevents death from falling :D")
 public class NoFall extends Module {
 
-    ModeSetting Mode = new ModeSetting("Mode", this, "Packet", Arrays.asList("Packet","Dream","Rubberband"),"General");
+    ModeSetting Mode = new ModeSetting("Mode", this, "Packet", Arrays.asList("Packet","Dream","Rubberband"));
 
-    BooleanSetting AntiElytraGlitch = new BooleanSetting("AntiElytraGlitch", this, true,v -> Mode.isValueName("Packet"),"General");
+    BooleanSetting AntiElytraGlitch = new BooleanSetting("AntiElytraGlitch", this, true,v -> Mode.isValueName("Packet"));
 
 
 

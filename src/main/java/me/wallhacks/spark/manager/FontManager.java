@@ -16,6 +16,7 @@ public class FontManager implements MC {
     public int fontSize = 17;
     private GameFontRenderer font = new GameFontRenderer(new Font(fontName, Font.PLAIN, fontSize), true, false);
     private GameFontRenderer largeFont = new GameFontRenderer(new Font(fontName, Font.PLAIN, 27), true, false);
+    private GameFontRenderer thickFont = new GameFontRenderer(getClientFont("Thick.ttf", 20), true, false);
     private GameFontRenderer badaboom = new GameFontRenderer(getClientFont("badaboom.ttf", 27), true, false);
 
     public String[] getFonts() {
@@ -24,7 +25,7 @@ public class FontManager implements MC {
 
     public void setFont() {
         this.font = new GameFontRenderer(new Font(fontName, Font.PLAIN, fontSize), true, false);
-        this.largeFont = new GameFontRenderer(new Font(fontName, Font.PLAIN, 27), true, false);
+        this.largeFont = new GameFontRenderer(new Font(fontName, Font.PLAIN, 23), true, false);
     }
 
     public GameFontRenderer getBadaboom() {
@@ -33,6 +34,10 @@ public class FontManager implements MC {
 
     public GameFontRenderer getLargeFont() {
         return this.largeFont;
+    }
+
+    public GameFontRenderer getThickFont() {
+        return this.thickFont;
     }
 
     public void reset() {

@@ -8,6 +8,7 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.player.RightClickEvent;
 import me.wallhacks.spark.systems.clientsetting.clientsettings.AntiCheatConfig;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -40,12 +41,13 @@ import java.util.Arrays;
 @Module.Registration(name = "AutoWither", description = "Steals from chests")
 public class AutoWither extends Module {
 
-    ModeSetting witherPlaceMode = new ModeSetting("Place", this, "Toggle", Arrays.asList("Toggle","ClickSkull","Walk"), "Place");
-    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,10,"Place");
-    BooleanSetting autoName = new BooleanSetting("AutoName", this, true, "Place");
+    ModeSetting witherPlaceMode = new ModeSetting("Place", this, "Toggle", Arrays.asList("Toggle","ClickSkull","Walk"));
+    IntSetting blocksPerTick = new IntSetting("BlocksPerTick",this,4,1,10);
+    BooleanSetting autoName = new BooleanSetting("AutoName", this, true);
 
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0x38DC865E, true), "Render");
+    SettingGroup renderG = new SettingGroup("Render", this);
+    BooleanSetting render = new BooleanSetting("Render", renderG, true);
+    ColorSetting fill = new ColorSetting("Color", renderG, new Color(0x38DC865E, true));
 
 
 

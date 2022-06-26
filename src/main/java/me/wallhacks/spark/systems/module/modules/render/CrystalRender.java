@@ -2,6 +2,7 @@ package me.wallhacks.spark.systems.module.modules.render;
 
 import me.wallhacks.spark.event.render.RenderLivingEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.render.RenderUtil;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,11 +29,12 @@ public class CrystalRender extends Module {
     BooleanSetting lighting = new BooleanSetting("Lighting", this, false);
     ColorSetting hiddenColor = new ColorSetting("HiddenColor", this, new Color(0x442CD512, true));
     ColorSetting visibleColor = new ColorSetting("VisibleColor", this, new Color(0x5715D7D7, true));
-    BooleanSetting glint = new BooleanSetting("Glint", this, false, "Glint");
-    BooleanSetting customColor = new BooleanSetting("CustomColor", this, false, "Glint");
-    ColorSetting glintColor = new ColorSetting("GlintColor", this, new Color(0x81FFFFFF, true), "Glint");
-    DoubleSetting glintScale = new DoubleSetting("GlintScale", this, 1.0f, 0.1f, 10.0f, "Glint");
-    DoubleSetting glintSpeed = new DoubleSetting("GlintSpeed", this, 5.0f, 0.1f, 20.0f, "Glint");
+    SettingGroup glintG = new SettingGroup("Glint", this);
+    BooleanSetting glint = new BooleanSetting("Glint", glintG, false);
+    BooleanSetting customColor = new BooleanSetting("CustomColor", glintG, false);
+    ColorSetting glintColor = new ColorSetting("GlintColor", glintG, new Color(0x81FFFFFF, true));
+    DoubleSetting glintScale = new DoubleSetting("GlintScale", glintG, 1.0f, 0.1f, 10.0f);
+    DoubleSetting glintSpeed = new DoubleSetting("GlintSpeed", glintG, 5.0f, 0.1f, 20.0f);
 
     @SubscribeEvent
     public void renderCrystal(RenderLivingEvent event) {

@@ -9,8 +9,8 @@ import net.minecraft.util.text.translation.I18n;
 
 public class ItemListSelectSetting extends ListSelectSetting<Item> {
 
-    public ItemListSelectSetting(String name, SettingsHolder holder, Item[] selected, String settingCategory) {
-        super(name, holder, InventoryUtil.getListOfItems(), selected,settingCategory);
+    public ItemListSelectSetting(String name, SettingsHolder holder, Item[] selected) {
+        super(name, holder, InventoryUtil.getListOfItems(), selected);
 
 
 

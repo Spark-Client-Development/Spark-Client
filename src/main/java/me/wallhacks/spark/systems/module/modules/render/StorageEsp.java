@@ -15,10 +15,10 @@ import java.awt.*;
 @Module.Registration(name = "StorageEsp", description = "Render esp for entities")
 public class StorageEsp extends Module {
 
-    ColorSetting ChestColor = new ColorSetting("Chest", this, new Color(40,40,220), "Colors");
-    ColorSetting EnderChestColor = new ColorSetting("EnderChest", this, new Color(66,30,220), "Colors");
-    ColorSetting UtilsColor = new ColorSetting("Utils", this, new Color(40,40,40), "Colors");
-    ColorSetting ShulkerColor = new ColorSetting("Shulker", this, new Color(160,60,130), "Colors");
+    ColorSetting ChestColor = new ColorSetting("Chest", this, new Color(40,40,220));
+    ColorSetting EnderChestColor = new ColorSetting("EnderChest", this, new Color(66,30,220));
+    ColorSetting UtilsColor = new ColorSetting("Utils", this, new Color(40,40,40));
+    ColorSetting ShulkerColor = new ColorSetting("Shulker", this, new Color(160,60,130));
 
 
     @SubscribeEvent

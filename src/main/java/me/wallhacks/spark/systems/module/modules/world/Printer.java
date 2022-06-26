@@ -1,49 +1,30 @@
 package me.wallhacks.spark.systems.module.modules.world;
 
-import com.github.lunatrius.core.handler.ConfigurationHandler;
 import com.github.lunatrius.core.util.math.BlockPosHelper;
 import com.github.lunatrius.core.util.math.MBlockPos;
-import com.github.lunatrius.schematica.Schematica;
 import com.github.lunatrius.schematica.proxy.ClientProxy;
-import com.github.lunatrius.schematica.world.storage.Schematic;
-import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.ColorSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
-import me.wallhacks.spark.util.MC;
-import me.wallhacks.spark.util.WorldUtils;
-import me.wallhacks.spark.util.combat.AttackUtil;
 import me.wallhacks.spark.util.objects.FadePos;
-import me.wallhacks.spark.util.objects.Timer;
 import me.wallhacks.spark.util.player.BlockInteractUtil;
-import me.wallhacks.spark.util.player.PlayerUtil;
-import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.ItemStopFall;
-import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SolidBlockSwitchItem;
 import me.wallhacks.spark.util.player.itemswitcher.itemswitchers.SpecBlockSwitchItem;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemFood;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
-import java.security.Signature;
-import java.util.ArrayList;
-import java.util.List;
 
 @Module.Registration(name = "Printer", description = "Steals from chests")
 public class Printer extends Module {
 
 
-    IntSetting delay = new IntSetting("Delay",this,0,0,8,"General");
-    BooleanSetting render = new BooleanSetting("Render", this, true, "General");
-    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x389F5EDC, true), "General");
+    IntSetting delay = new IntSetting("Delay",this,0,0,8);
+    BooleanSetting render = new BooleanSetting("Render", this, true);
+    ColorSetting fill = new ColorSetting("Fill", this, new Color(0x389F5EDC, true));
 
 
     int cooldown = 0;

@@ -2,12 +2,6 @@ package me.wallhacks.spark.systems.module.modules.movement;
 
 import me.wallhacks.spark.event.player.PlayerLivingTickEvent;
 import me.wallhacks.spark.event.player.UpdateEntityAction;
-import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiDoubleSettingPanel;
-import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiIntSettingPanel;
-import me.wallhacks.spark.gui.clickGui.panels.mainScreen.setting.settings.GuiKeySettingPanel;
-import me.wallhacks.spark.gui.dvdpanels.GuiPanelBase;
-import me.wallhacks.spark.gui.dvdpanels.GuiPanelInputField;
-import me.wallhacks.spark.gui.dvdpanels.GuiPanelScreen;
 import me.wallhacks.spark.systems.module.Module;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreenBook;
@@ -58,13 +52,7 @@ public class InventoryMove extends Module {
     }
 
     boolean useInventoryMove(){
-        return (mc.currentScreen != null &&
-                !(mc.currentScreen instanceof GuiChat) &&
-                !(mc.currentScreen instanceof GuiEditSign) &&
-                !(mc.currentScreen instanceof GuiScreenBook) &&
-                !(mc.currentScreen instanceof GuiPanelScreen &&
-                        (GuiPanelBase.FocusedMouse instanceof GuiPanelInputField || GuiPanelBase.FocusedMouse instanceof GuiIntSettingPanel ||
-                                GuiPanelBase.FocusedMouse instanceof GuiDoubleSettingPanel || GuiPanelBase.FocusedMouse instanceof GuiKeySettingPanel)));
+        return (mc.currentScreen != null && !(mc.currentScreen instanceof GuiChat) && !(mc.currentScreen instanceof GuiEditSign) && !(mc.currentScreen instanceof GuiScreenBook));
     }
 
 

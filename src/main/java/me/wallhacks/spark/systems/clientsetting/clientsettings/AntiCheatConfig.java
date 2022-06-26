@@ -4,6 +4,7 @@ import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.DoubleSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -24,27 +25,30 @@ import java.util.List;
 @ClientSetting.Registration(name = "AntiCheatConfig", description = "Anti cheat config")
 public class AntiCheatConfig extends ClientSetting {
 
-    public DoubleSetting placeRange = new DoubleSetting("Range",this,4,0,5,0.25,"Placing");
-    public DoubleSetting placeWallRange = new DoubleSetting("WallRange",this,0,0,5,0.25,"Placing");
-    public BooleanSetting placeStrict = new BooleanSetting("NeedsToSeeFace",this,false,"Placing");
-    public ModeSetting placeSwing = new ModeSetting("Swing",this,"Normal", Arrays.asList("Off","Normal","Packet"), "Placing");
-    public ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes,"Placing");
-    public BooleanSetting placeRotate = new BooleanSetting("Rotate",this,true,"Placing");
-    public BooleanSetting raytrace = new BooleanSetting("RaytraceBypass", this, false, "Placing");
+    SettingGroup placing = new SettingGroup("Placing", this);
+    public DoubleSetting placeRange = new DoubleSetting("Range",placing,4,0,5,0.25);
+    public DoubleSetting placeWallRange = new DoubleSetting("WallRange",placing,0,0,5,0.25);
+    public BooleanSetting placeStrict = new BooleanSetting("NeedsToSeeFace",placing,false);
+    public ModeSetting placeSwing = new ModeSetting("Swing",placing,"Normal", Arrays.asList("Off","Normal","Packet"));
+    public ModeSetting switchingMode = new ModeSetting("Switch", placing, "Normal", ItemSwitcher.modes);
+    public BooleanSetting placeRotate = new BooleanSetting("Rotate",placing,true);
+    public BooleanSetting raytrace = new BooleanSetting("RaytraceBypass", placing, false);
 
-    public DoubleSetting attackRange = new DoubleSetting("Range",this,4,1,6,0.25, "Attacking");
-    public DoubleSetting attackWallRange = new DoubleSetting("WallRange",this,0,0,6,0.25, "Attacking");
-    public ModeSetting attackSwing = new ModeSetting("Swing",this,"Normal" ,  Arrays.asList("Off","Normal","Packet"), "Attacking");
-    public ModeSetting attackHand = new ModeSetting("Hand",this,"Both", Arrays.asList("Both","MainHand","OffHand"), "Attacking");
-    public ModeSetting antiWeakness = new ModeSetting("AntiWeakness",this,"Normal", Arrays.asList("Silent","Normal","Off"), "Attacking");
-    public BooleanSetting attackRotate = new BooleanSetting("Rotate",this,true,"Attacking");
+    SettingGroup attacking = new SettingGroup("Attacking", this);
+    public DoubleSetting attackRange = new DoubleSetting("Range",attacking,4,1,6,0.25);
+    public DoubleSetting attackWallRange = new DoubleSetting("WallRange",attacking,0,0,6,0.25);
+    public ModeSetting attackSwing = new ModeSetting("Swing",attacking,"Normal" ,  Arrays.asList("Off","Normal","Packet"));
+    public ModeSetting attackHand = new ModeSetting("Hand",attacking,"Both", Arrays.asList("Both","MainHand","OffHand"));
+    public ModeSetting antiWeakness = new ModeSetting("AntiWeakness",attacking,"Normal", Arrays.asList("Silent","Normal","Off"));
+    public BooleanSetting attackRotate = new BooleanSetting("Rotate",attacking,true);
 
-    public IntSetting rotStep = new IntSetting("RotStep", this, 180, 45, 180, "Rotations");
-    public IntSetting stayTicks = new IntSetting("StayTicks", this, 2, 0, 10, "Rotations");
+    SettingGroup rotations = new SettingGroup("Rotations", this);
+    public IntSetting rotStep = new IntSetting("RotStep", rotations, 180, 45, 180);
+    public IntSetting stayTicks = new IntSetting("StayTicks", rotations, 2, 0, 10);
 
-    public DoubleSetting tickAdjustment = new DoubleSetting("TickAdjustment", this, 0.95D, 0.1D, 2.0D, "AEF");
-    public IntSetting maxPacketFlyLevels = new IntSetting("MaxPacketFlyLevels", this, 25, 1, 200, "AEF");
-    public IntSetting packetFlyTicks = new IntSetting("PacketFlyTicks", this, 25, 1, 1000, "AEF");
+    public DoubleSetting tickAdjustment = new DoubleSetting("TickAdjustment", this, 0.95D, 0.1D, 2.0D);
+    public IntSetting maxPacketFlyLevels = new IntSetting("MaxPacketFlyLevels", this, 25, 1, 200);
+    public IntSetting packetFlyTicks = new IntSetting("PacketFlyTicks", this, 25, 1, 1000);
 
     private static AntiCheatConfig INSTANCE;
     public AntiCheatConfig() {

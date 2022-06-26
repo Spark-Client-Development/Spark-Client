@@ -10,17 +10,11 @@ import org.lwjgl.input.Mouse;
 import java.util.function.Predicate;
 
 public class KeySetting extends Setting<Integer> {
-    public KeySetting(String name, SettingsHolder settingsHolder, int key, Predicate<Integer> visible, String settingCategory) {
-        super(key, name, settingsHolder,visible,settingCategory);
-    }
-    public KeySetting(String name, SettingsHolder settingsHolder, int key,Predicate<Integer> visible) {
-        this(name, settingsHolder,key,visible,"General");
-    }
-    public KeySetting(String name, SettingsHolder settingsHolder, int key, String settingCategory) {
-        this(name, settingsHolder,key,null,settingCategory);
+    public KeySetting(String name, SettingsHolder settingsHolder, int key, Predicate<Integer> visible) {
+        super(key, name, settingsHolder,visible);
     }
     public KeySetting(String name, SettingsHolder settingsHolder, int key) {
-        this(name, settingsHolder,key, (Predicate<Integer>) null);
+        this(name, settingsHolder,key,null);
     }
 
     public int getKey() {

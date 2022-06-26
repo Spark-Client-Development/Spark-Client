@@ -9,23 +9,15 @@ import java.util.function.Predicate;
 public class ModeSetting extends Setting<String> implements EnumSetting {
     private final List<String> modeNames;
 
-    public ModeSetting(String name, SettingsHolder settingsHolder, String value, List<String> modeNames, Predicate<String> visible, String settingCategory) {
+    public ModeSetting(String name, SettingsHolder settingsHolder, String value, List<String> modeNames, Predicate<String> visible) {
 
-        super(value, name, settingsHolder,visible,settingCategory);
+        super(value, name, settingsHolder,visible);
 
         this.modeNames = modeNames;
     }
-    public ModeSetting(String name, SettingsHolder settingsHolder, String value, List<String> modeNames,String settingCategory) {
-        this(name,settingsHolder,value,modeNames,null,settingCategory);
-    }
-
     public ModeSetting(String name, SettingsHolder settingsHolder, String value, List<String> modeNames) {
-        this(name,settingsHolder,value,modeNames, (Predicate<String>) null);
+        this(name,settingsHolder,value,modeNames,null);
     }
-    public ModeSetting(String name, SettingsHolder settingsHolder, String value, List<String> modeNames,Predicate<String> visible) {
-        this(name,settingsHolder,value,modeNames,visible,"General");
-    }
-
 
     public List<String> getModes() {
         return this.modeNames;

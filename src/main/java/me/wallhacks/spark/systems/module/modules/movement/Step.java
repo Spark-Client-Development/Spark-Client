@@ -19,9 +19,9 @@ public class Step extends Module {
     public Step() {
         INSTANCE = this;
     }
-    public ModeSetting mode = new ModeSetting("Mode",this,"Vanilla", Arrays.asList("Vanilla", "Packet", "AAC"),"General");
-    public IntSetting height = new IntSetting("StepHeight",this,2,1,4,"General");
-    private IntSetting cooldown = new IntSetting("Cooldown",this,0,0,20,"General");
+    public ModeSetting mode = new ModeSetting("Mode",this,"Vanilla", Arrays.asList("Vanilla", "Packet", "AAC"));
+    public IntSetting height = new IntSetting("StepHeight",this,2,1,4);
+    private IntSetting cooldown = new IntSetting("Cooldown",this,0,0,20);
 
     int ticksSinceLastStep = 0;
 

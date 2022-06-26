@@ -30,8 +30,8 @@ public class Speed extends Module {
     DoubleSetting boostF = new DoubleSetting("Boost", this, 1.5D, 1D, 3D, v -> mode.is("BoostStrafe"));
     DoubleSetting boosty = new DoubleSetting("YFactor", this, 0.8D, 0.2D, 1D, v -> mode.is("BoostStrafe"));
     BooleanSetting liquids = new BooleanSetting("Liquids", this, false);
-    BooleanSetting useSpeed = new BooleanSetting("UseSpeed", this, false, "Effects");
-    BooleanSetting useJumpBoost = new BooleanSetting("UseJumpBoost", this, false, "Effects");
+    BooleanSetting useSpeed = new BooleanSetting("UseSpeed", this, false);
+    BooleanSetting useJumpBoost = new BooleanSetting("UseJumpBoost", this, false);
     private double prevMotion = 0.0D;
     private int state;
     private double speed;

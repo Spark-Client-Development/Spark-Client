@@ -5,6 +5,7 @@ import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.event.player.SafeWalkEvent;
 import me.wallhacks.spark.event.player.SneakEvent;
 import me.wallhacks.spark.systems.module.Module;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.systems.setting.settings.*;
 import me.wallhacks.spark.util.MC;
 import me.wallhacks.spark.util.objects.FadePos;
@@ -23,22 +24,20 @@ import java.util.Arrays;
 @Module.Registration(name = "Scaffold", description = "Steals from chests")
 public class Scaffold extends Module {
 
-
-    BooleanSetting Strict = new BooleanSetting("Strict",this,false,"General");
-
-    IntSetting Extended = new IntSetting("Extended",this,2,0,4,v -> Strict.isOn(),"General");
-
-
-
-    BooleanSetting Tower = new BooleanSetting("FastTower",this,true,"General");
-    IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> !Tower.isOn(),"General");
-    BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,v -> !Tower.isOn(),"General");
-    KeySetting down = new KeySetting("Downwards",this,-1,"General");
-    BooleanSetting render = new BooleanSetting("Render", this, true, "Render");
-    ColorSetting fill = new ColorSetting("Color", this, new Color(0x385EDC5E, true), "Render");
-
-
+    BooleanSetting Strict = new BooleanSetting("Strict",this,false);
+    IntSetting Extended = new IntSetting("Extended",this,2,0,4,v -> Strict.isOn());
+    BooleanSetting Tower = new BooleanSetting("FastTower",this,true);
+    IntSetting TowerPause = new IntSetting("TowerPause",this,15,10,50,v -> !Tower.isOn());
+    BooleanSetting TowerCenter = new BooleanSetting("TowerCenter",this,false,v -> !Tower.isOn());
+    KeySetting down = new KeySetting("Downwards",this,-1);
     ModeSetting switchingMode = new ModeSetting("Switch", this, "Normal", ItemSwitcher.modes);
+
+    SettingGroup renderG = new SettingGroup("Render", this);
+    BooleanSetting render = new BooleanSetting("Render", renderG, true);
+    ColorSetting fill = new ColorSetting("Color", renderG, new Color(0x385EDC5E, true));
+
+
+
 
 
     Timer scaffoldPauseTimer = new Timer();

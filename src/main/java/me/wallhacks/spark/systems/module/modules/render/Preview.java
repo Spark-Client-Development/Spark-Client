@@ -57,13 +57,13 @@ public class Preview extends Module {
         INSTANCE = this;
     }
 
-    BooleanSetting showNametags = new BooleanSetting("ShowNametags", this, true, "Nametags");
-    DoubleSetting scale = new DoubleSetting("Scale", this, 2, 1, 3, "Nametags");
+    BooleanSetting showNametags = new BooleanSetting("ShowNametags", this, true);
+    DoubleSetting scale = new DoubleSetting("Scale", this, 2, 1, 3);
 
 
-    BooleanSetting hotbarPreview = new BooleanSetting("HotbarShulker", this, false, "GuiPreview");
-    BooleanSetting hoverPreview = new BooleanSetting("HoverShulker", this, true, "GuiPreview");
-    BooleanSetting hovermapPreview = new BooleanSetting("HoverMap", this, true, "GuiPreview");
+    BooleanSetting hotbarPreview = new BooleanSetting("HotbarShulker", this, false);
+    BooleanSetting hoverPreview = new BooleanSetting("HoverShulker", this, true);
+    BooleanSetting hovermapPreview = new BooleanSetting("HoverMap", this, true);
 
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {

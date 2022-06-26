@@ -108,7 +108,7 @@ public class MSAuth implements MC {
             acc = new MSAccount(session, msToken.refresh, profile.name, session.getProfile().getId().toString());
         } catch (AuthException t) {
             failed = true;
-            Spark.altManager.status = t.getText();
+            //Spark.altManager.status = t.getText();
         }
     }
 

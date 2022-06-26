@@ -1,24 +1,18 @@
 package me.wallhacks.spark.manager;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.event.client.SettingChangeEvent;
 import me.wallhacks.spark.systems.SettingsHolder;
 import me.wallhacks.spark.systems.clientsetting.ClientSetting;
-import me.wallhacks.spark.systems.clientsetting.clientsettings.ClientConfig;
 import me.wallhacks.spark.systems.hud.HudElement;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.Setting;
-import me.wallhacks.spark.systems.setting.settings.StringSetting;
+import me.wallhacks.spark.systems.setting.SettingGroup;
 import me.wallhacks.spark.util.FileUtil;
 import me.wallhacks.spark.util.MC;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ConfigManager implements MC {
-
 
 
     public ConfigManager() {
@@ -26,21 +20,9 @@ public class ConfigManager implements MC {
     }
 
 
-
-
-
-
-
     String getConfigPath() {
         return Spark.ParentPath.getAbsolutePath() + System.getProperty("file.separator") + "configs";
     }
-
-
-
-
-
-
-
 
 
     public void Load() {
@@ -48,7 +30,6 @@ public class ConfigManager implements MC {
         LoadFromConfig();
 
     }
-
 
 
     public void Save() {
@@ -123,11 +104,9 @@ public class ConfigManager implements MC {
 
                         }
                         for (Setting<?> setting : holder.getSettings()) {
-                            if (n.equalsIgnoreCase(setting.getName()) || n.equalsIgnoreCase(setting.getCategory() + "/" + setting.getName()))
+                            if (n.equalsIgnoreCase(setting.getName()) || n.equalsIgnoreCase(setting.getsettingsHolder().getName() + "/" + setting.getName()))
                                 setting.setValueString(v);
-
                         }
-
                     }
 
                 }
@@ -141,6 +120,7 @@ public class ConfigManager implements MC {
 
     private void saveSystems(boolean saveDefaults) {
         for (SettingsHolder system : SystemManager.getSystems()) {
+            if (system instanceof SettingGroup) continue;
             saveSettingHolder(system, getSystemSettingFile(system), saveDefaults);
         }
     }
@@ -167,7 +147,7 @@ public class ConfigManager implements MC {
             }
 
             for (Setting<?> setting : holder.getSettings())
-                lines.add(setting.getCategory() + "/" + setting.getName() + ":" + (saveDefaults ? setting.getDefaultValueString() : setting.getValueString()));
+                lines.add(setting.getsettingsHolder().getName() + "/" + setting.getName() + ":" + (saveDefaults ? setting.getDefaultValueString() : setting.getValueString()));
 
             String content = "";
             for (String e : lines)

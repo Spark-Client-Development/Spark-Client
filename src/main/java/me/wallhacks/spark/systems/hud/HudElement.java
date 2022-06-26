@@ -1,8 +1,6 @@
 package me.wallhacks.spark.systems.hud;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.gui.clickGui.ClickGuiMenuBase;
-import me.wallhacks.spark.gui.clickGui.panels.hudeditor.HudEditor;
 import me.wallhacks.spark.manager.FontManager;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.SettingsHolder;
@@ -295,16 +293,16 @@ public class HudElement extends SettingsHolder implements MC {
     }
 
     protected boolean isInHudEditor() {
-        if (mc.currentScreen instanceof ClickGuiMenuBase)
-            return ((ClickGuiMenuBase) mc.currentScreen).getPanel() instanceof HudEditor;
+        //if (mc.currentScreen instanceof ClickGuiMenuBase)
+        //    return ((ClickGuiMenuBase) mc.currentScreen).getPanel() instanceof HudEditor;
         return false;
     }
 
     protected boolean isSelectedInHudEditor() {
-        if (mc.currentScreen instanceof ClickGuiMenuBase)
-            if (((ClickGuiMenuBase) mc.currentScreen).getPanel() instanceof HudEditor) {
-                return ((HudEditor) ((ClickGuiMenuBase) mc.currentScreen).getPanel()).getSelected() == this;
-            }
+        //if (mc.currentScreen instanceof ClickGuiMenuBase)
+        //    if (((ClickGuiMenuBase) mc.currentScreen).getPanel() instanceof HudEditor) {
+        //        return ((HudEditor) ((ClickGuiMenuBase) mc.currentScreen).getPanel()).getSelected() == this;
+        //    }
         return false;
     }
 
