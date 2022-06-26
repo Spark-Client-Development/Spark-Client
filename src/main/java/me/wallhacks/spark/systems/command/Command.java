@@ -63,7 +63,7 @@ public abstract class Command {
 			for(Option option : OPTIONS) {
 				if(args[0].equals(option.getName())) {
 					if(args.length > 1) {
-						option.run(args[1]);
+						option.run(combine(args,1));
 						return;
 					}
 					option.run(null);
@@ -74,11 +74,18 @@ public abstract class Command {
 				}
 			}
 			if(defaultOption != null) {
-				defaultOption.run(args[0]);
+				defaultOption.run(combine(args,0));
 				return;
 			}
 		}
 		noArgInfo();
+	}
+	String combine (String[] ins,int from) {
+		String s = "";
+		for (int i = from; i < ins.length; i++) {
+			s = s + ins[i] + (i == ins.length-1 ? "" : " ");
+		}
+		return s;
 	}
 	
 	public void noArgInfo() {

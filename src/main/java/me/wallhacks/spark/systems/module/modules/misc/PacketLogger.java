@@ -5,9 +5,7 @@ import me.wallhacks.spark.event.player.PacketReceiveEvent;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.systems.module.Module;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
-import net.minecraft.network.play.client.CPacketPlaceRecipe;
-import net.minecraft.network.play.client.CPacketPlayer;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
+import net.minecraft.network.play.client.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.setting.settings.ModeSetting;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,6 +18,10 @@ public class PacketLogger extends Module {
 
     ModeSetting mode = new ModeSetting("Mode",this,"client", Arrays.asList("client","server","both"));
     BooleanSetting pos = new BooleanSetting("PosPacks",this,true);
+    BooleanSetting alive = new BooleanSetting("KeepAlive",this,true);
+    BooleanSetting resourcePack = new BooleanSetting("ResourcePack",this,true);
+    BooleanSetting confirmTransaction = new BooleanSetting("ConfirmTransaction",this,true);
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onServer(PacketReceiveEvent e) {
@@ -42,6 +44,12 @@ public class PacketLogger extends Module {
         if(mode.is("client") || mode.is("both"))
         {
             if(e.getPacket() instanceof CPacketPlayer && !pos.isOn())
+                return;
+            else if(e.getPacket() instanceof CPacketKeepAlive && !alive.isOn())
+                return;
+            else if(e.getPacket() instanceof CPacketResourcePackStatus && !resourcePack.isOn())
+                return;
+            else if(e.getPacket() instanceof CPacketConfirmTransaction && !confirmTransaction.isOn())
                 return;
             else if(e.getPacket() instanceof CPacketPlayerTryUseItemOnBlock)
             {

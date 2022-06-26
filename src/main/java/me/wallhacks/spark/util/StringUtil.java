@@ -106,4 +106,40 @@ public class StringUtil {
         i %= 60;
         return i < 10 ? j + ":0" + i : j + ":" + i;
     }
+
+    public static String SpeedConvertFromShort(double currentSpeed,String shortForm) {
+
+        if(shortForm.equalsIgnoreCase("mps")){
+
+            currentSpeed = currentSpeed * 20f;
+        }
+        else if(shortForm.equalsIgnoreCase("kmph"))
+        {
+
+            currentSpeed = ((currentSpeed * 20) / 1000)*60*60;
+        }
+        else if(shortForm.equalsIgnoreCase("mpmin"))
+        {
+
+            currentSpeed = ((currentSpeed * 20))*60;
+        }
+
+        return StringUtil.fmt(currentSpeed,1);
+    }
+    public static String SpeedUnitShortToLong(String shortForm) {
+        String end = "m/tick";
+        if(shortForm.equalsIgnoreCase("mps")){
+            end = "m/s";
+        }
+        else if(shortForm.equalsIgnoreCase("kmph"))
+        {
+            end = "km/h";
+        }
+        else if(shortForm.equalsIgnoreCase("mpmin"))
+        {
+            end = "m/min";
+        }
+
+        return end;
+    }
 }

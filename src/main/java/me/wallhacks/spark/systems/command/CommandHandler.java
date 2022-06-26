@@ -8,6 +8,7 @@ import java.util.List;
 import me.wallhacks.spark.Spark;
 import me.wallhacks.spark.event.player.PacketSendEvent;
 import me.wallhacks.spark.manager.CommandManager;
+import me.wallhacks.spark.systems.command.commands.Post;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.gui.Gui;

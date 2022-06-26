@@ -1,17 +1,18 @@
 package me.wallhacks.spark.mixin.mixins.spark;
 
 import me.wallhacks.spark.Spark;
-import me.wallhacks.spark.event.player.AttackEvent;
-import me.wallhacks.spark.event.player.PlayerDamageBlockEvent;
-import me.wallhacks.spark.event.player.PlayerProcessRightClickEvent;
+import me.wallhacks.spark.event.player.*;
 import me.wallhacks.spark.util.MC;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -68,12 +69,37 @@ public class MixinPlayerControllerMP implements MC {
 
     }
 
+    @Inject(method = "processRightClickBlock", at = @At(value = "HEAD"), cancellable = true)
+    public void processRightClickBlock(EntityPlayerSP player, WorldClient worldIn, BlockPos pos, EnumFacing direction, Vec3d vec, EnumHand hand, CallbackInfoReturnable<EnumActionResult> info) {
 
-    @Inject(method = "processRightClick", at = @At(value = "HEAD"))
+        PlayerProcessRightClickOnBlockEvent event = new PlayerProcessRightClickOnBlockEvent(player,worldIn,pos,direction,vec,hand);
+
+        Spark.eventBus.post(event);
+
+        if (event.isCanceled())
+        {
+            info.setReturnValue(EnumActionResult.FAIL);
+            info.cancel();
+        }
+
+
+
+    }
+
+
+    @Inject(method = "processRightClick", at = @At(value = "HEAD"), cancellable = true)
     public void processRightClick(EntityPlayer player, World worldIn, EnumHand hand, CallbackInfoReturnable<EnumActionResult> info) {
 
         PlayerProcessRightClickEvent event = new PlayerProcessRightClickEvent(player,worldIn,hand);
+
         Spark.eventBus.post(event);
+
+        if (event.isCanceled())
+        {
+            info.setReturnValue(EnumActionResult.FAIL);
+            info.cancel();
+        }
+
 
 
     }
