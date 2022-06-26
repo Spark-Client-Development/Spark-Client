@@ -28,6 +28,7 @@ public class CommandManager {
 		new SeedCommand();
 		new FontCommand();
 		new AutoConfigCommand();
+		new Post();
 	}
 
 	public static ChatFormatting ErrorColor = ChatFormatting.RED;

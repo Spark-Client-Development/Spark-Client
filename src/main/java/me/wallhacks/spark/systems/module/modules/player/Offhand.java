@@ -1,6 +1,8 @@
 package me.wallhacks.spark.systems.module.modules.player;
 
 import me.wallhacks.spark.Spark;
+import me.wallhacks.spark.event.player.PlayerProcessRightClickEvent;
+import me.wallhacks.spark.event.player.PlayerProcessRightClickOnBlockEvent;
 import me.wallhacks.spark.event.player.PlayerUpdateEvent;
 import me.wallhacks.spark.manager.SystemManager;
 import me.wallhacks.spark.systems.module.Module;
@@ -20,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSword;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import me.wallhacks.spark.systems.setting.settings.BooleanSetting;
 import me.wallhacks.spark.systems.setting.settings.IntSetting;
@@ -69,6 +72,26 @@ public class Offhand extends Module {
         timer++;
         update();
     }
+
+    @SubscribeEvent
+    public void onRightClick(PlayerProcessRightClickOnBlockEvent event) {
+        if (nullCheck()) return;
+
+
+        if (mc.playerController.currentGameType.isSurvivalOrAdventure()) {
+            float hp = mc.player.getHealth() + mc.player.getAbsorptionAmount();
+            if ((hp > TotemHp.getValue() && lethalToLocalCheck() && mc.player.fallDistance < 10 && bowCheck()) || (getItemSlot(Items.TOTEM_OF_UNDYING)) == -1 && mc.player.getHeldItemOffhand().getItem() != Items.TOTEM_OF_UNDYING) {
+                //if we are not in danger of dying
+
+                if (shouldGapSwap()) {
+                    event.setCanceled(true);
+                }
+            }
+
+
+        }
+    }
+
 
     public boolean handlesCrystal() {
         return useCrystal && isEnabled();

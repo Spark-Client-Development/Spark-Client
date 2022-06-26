@@ -21,7 +21,11 @@ import java.util.Arrays;
 @HudElement.Registration(name = "SpeedGraph", description = "Graph that shows your speed", posX = 0.5, posY = 0.8, width = 140, height = 40)
 public class SpeedGraph extends HudElement {
     BooleanSetting average = new BooleanSetting("Average", this, false);
-    BooleanSetting ShowSpeed = new BooleanSetting("SpeedText",this,true);
+    BooleanSetting UseYMovement = new BooleanSetting("UseYMovement",this,true);
+    BooleanSetting ShowSpeed = new BooleanSetting("SpeedText",this,false);
+
+    ModeSetting Calculate = new ModeSetting("Show",this,"average", Arrays.asList("current","average"));
+
     ModeSetting SpeedDisplay = new ModeSetting("Type",this,"mps", Arrays.asList("kmph","mps","mpt","mpmin"), v -> ShowSpeed.isOn());
 
 
@@ -34,7 +38,7 @@ public class SpeedGraph extends HudElement {
         Entity e = mc.player.ridingEntity == null ? mc.player : mc.player.ridingEntity;
         Vec3d v = new Vec3d(e.prevPosX- e.posX, e.prevPosY- e.posY, e.prevPosZ- e.posZ);
 
-        double speed = ((MathHelper.sqrt(v.x * v.x + v.z * v.z)));
+        double speed = UseYMovement.isOn() ? ((MathHelper.sqrt(v.y * v.y + v.x * v.x + v.z * v.z))) : ((MathHelper.sqrt(v.x * v.x + v.z * v.z)));
         speed*=(50/mc.timer.tickLength);
 
 
@@ -64,27 +68,13 @@ public class SpeedGraph extends HudElement {
                 total+=speeds.get(i);
             }
 
-            double currentSpeed = total/size;
+            double average = total/size;
+            double current = speeds.get(speeds.size()-1);
 
-            String speedString = "m/tick";
-            if(SpeedDisplay.isValueName("mps")){
-                speedString = "m/s";
-                currentSpeed = currentSpeed * 20f;
-            }
-            else if(SpeedDisplay.isValueName("kmph"))
-            {
-                speedString = "km/h";
-                currentSpeed = ((currentSpeed * 20) / 1000)*60*60;
-            }
-            else if(SpeedDisplay.isValueName("mpmin"))
-            {
-                speedString = "m/min";
-                currentSpeed = ((currentSpeed * 20))*60;
-            }
-            speedString = StringUtil.fmt(currentSpeed,1)+" "+speedString;
+            String speedText = StringUtil.SpeedConvertFromShort(Calculate.is("current") ? current : average,SpeedDisplay.getValue())+" "+StringUtil.SpeedUnitShortToLong(SpeedDisplay.getValue());
 
-            int x = getRenderPosX()+getWidth()/2-fontManager.getTextWidth(speedString)/2;
-            fontManager.drawString(speedString,x,getEndRenderPosY()+fontManager.getTextHeight()-2,hudSettings.getGuiHudSecondColor().getRGB());
+            int x = getRenderPosX()+getWidth()/2-fontManager.getTextWidth(speedText)/2;
+            fontManager.drawString(speedText,x,getEndRenderPosY()+fontManager.getTextHeight()-2,hudSettings.getGuiHudSecondColor().getRGB());
         }
 
 
