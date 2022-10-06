@@ -106,7 +106,7 @@ public abstract class Module extends SettingsHolder implements MC {
             this.onEnable();
             
             if (Notifications.INSTANCE.toggle.getValue() && enabled && !this.muted) {
-                Notifications.addNotification(new Notification("$name${TextFormatting.GREEN} enabled",this));
+                Notifications.addNotification(new Notification(name + " " + TextFormatting.GREEN + "enabled",this));
             }
         }
     }
